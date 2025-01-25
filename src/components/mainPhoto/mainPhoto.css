@@ -5,7 +5,7 @@
     height: 100vh;
     position: relative;
     cursor: crosshair;
-    /* cursor: url("custom-cursor.png"), crosshair; */
+    /* cursor: url("custom-cursor.png"), crosshair;  */
   }
   
   .photo-frame {
