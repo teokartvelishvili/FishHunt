@@ -1,0 +1,27 @@
+.UlCont {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; 
+  list-style: none;
+  z-index: 2;
+}
+
+.UlCont li {
+  display: flex;
+  align-items: center;
+}
+
+.UlCont li a {
+  display: flex; /* Flex layout ტექსტისთვის და აიკონისთვის */
+  align-items: center;
+  text-decoration: none;
+  color: #37241E;
+  padding-bottom: 5px;
+  border-bottom: 3px solid #EAEEEA;
+  gap: 10px;
+}
+
+.UlCont li a:hover {
+  color: #19100d;
+  border-bottom: 3px solid #a5bda5;
+}
