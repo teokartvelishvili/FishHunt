@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  color: #2A5530;
 }
 
 .form {
@@ -24,25 +25,38 @@
   font-weight: bold;
 }
 
-.input-group input {
+input {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #2A5530;
   border-radius: 4px;
+  font-size: 14px;
+  transition: border 0.3s ease-in-out;
+  outline: none; 
 }
 
+input:focus {
+  border: 2px solid #2A5530; /* უფრო სქელი და იგივე ფერის ბორდერი */
+}
 .error-text {
   font-size: 12px;
   color: red;
 }
 
 .submit-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: #0070f3;
+  padding: 10px 20px;
+  background: linear-gradient(to left, #EC9843, #2A5530 );
+  background-size: 130% 100%; /* გრადიენტის ზომა */
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-position 0.9s ease-in-out; /* ნელი მოძრაობა */
+  background-position: right;
+}
+.submit-btn:hover {
+  background-position: left;
 }
 
 .submit-btn:disabled {
@@ -52,14 +66,28 @@
 
 .divider {
   text-align: center;
-  font-size: 12px;
-  margin: 10px 0;
-  position: relative;
+    margin: 10px 0;
+    position: relative;
 }
+.divider::before,
+.divider::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: #2a5530b2;
+    position: absolute;
+    top: 50%;
+    left: 0;
+  }
 
 .divider span {
   background: white;
-  padding: 0 8px;
+  padding: 0 10px;
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: #2a5530b2;
 }
 
 .social-buttons {
@@ -69,20 +97,40 @@
 }
 
 .social-btn {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
-  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  border: 2px solid transparent;
   border-radius: 4px;
-  background: white;
   cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  color: #333;
+  transition: border 1.5s ease-in-out, color 0.5s ease-in-out;
+  background-clip: padding-box;
+  position: relative;
 }
 
-.social-btn:disabled {
-  cursor: not-allowed;
-  background: #f3f3f3;
+.social-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 1px; /* ბორდერის სისქე */
+  background: linear-gradient(to right, #2A5530, #EC9843); 
+  mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+  -webkit-mask-composite: xor;
+
+  transition: background-position 1.5s ease-in-out;
+}
+
+
+.social-btn:hover::before {
+    background: linear-gradient(to left, #2A5530, #EC9843); 
 }
 
 .icon {
@@ -92,11 +140,13 @@
 .text-center {
   text-align: center;
   font-size: 14px;
+  color: #2a5530b2;
 }
 
 .login-link {
-  color: #0070f3;
-  text-decoration: none;
+  color: #2A5530;
+    text-decoration: none;
+    font-weight: 600;
 }
 
 .login-link:hover {

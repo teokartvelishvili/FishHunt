@@ -7,7 +7,7 @@ import { AuthLayout } from "@/modules/auth/layouts/auth-layout";
 export default function RegisterPage() {
   return (
     <AuthLayout
-      title="Welcome to Elecshop!"
+      title="Welcome to FishHunt!"
       subtitle="Enter your details to get started."
     >
       <RegisterForm />
