@@ -1,0 +1,34 @@
+.auth-layout {
+  height: calc(100vh - 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-layout-inner {
+  width: 100%;
+  max-width: 24rem; /* max-w-sm */
+}
+
+.auth-layout-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.auth-layout-title {
+  font-size: 1.25rem; /* text-2xl */
+  font-weight: 600; /* font-semibold */
+  letter-spacing: 0.025em; /* tracking-tight */
+}
+
+.auth-layout-subtitle {
+  font-size: 0.875rem; /* text-sm */
+  color: #6b7280; /* muted-foreground */
+}
+
+.auth-layout-children {
+  margin-top: 2rem; /* mt-8 */
+}

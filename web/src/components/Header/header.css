@@ -1,59 +1,94 @@
-/* .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid #0b0b0b;
-  background-color: gray;
-}
-
-.lang-toggle {
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-} */
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.header-content {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 30px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: gray;
+  height: 64px;
 }
 
-.header__logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-}
-
-.header__search {
+.left-section {
   display: flex;
   align-items: center;
-  /* border: 1px solid #ddd; */
-  border-radius: 10px;
-  padding: 5px;
-  width: 40%;
-}
-.header__search input {
-  border-radius: 5px;
-}
-.header__input {
-  flex-grow: 1;
-  border: none;
-  outline: none;
-  padding: 5px;
+  gap: 12px;
 }
 
-.header__icon {
+.menu-button {
   background: none;
   border: none;
+  font-size: 24px;
   cursor: pointer;
-  font-size: 1.2rem;
-  color: #fff;
+  display: none;
 }
-.header__icon span {
-  margin-left: 7px;
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobile-menu {
+  display: none;
+  border-top: 1px solid #e0e0e0;
+  background: white;
+}
+
+.mobile-menu-content {
+  padding: 16px;
+}
+
+.menu-icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .menu-button {
+    display: block;
+  }
+
+  .search-box {
+    max-width: 200px;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+  }
 }
 
 .header__actions {

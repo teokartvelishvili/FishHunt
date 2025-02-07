@@ -5,12 +5,21 @@ import { LanguageContext } from "../../hooks/LanguageContext"; // ენის �
 import Image from "next/image"; // Next.js-ის Image კომპონენტი
 import geoFlag from "../../assets/geoFlag.png"; // ქართული დროშა
 import engFlag from "../../assets/engFlag.png"; // ინგლისური დროშა
-import "./header.css"; // სტილები
-import AuthModal from "../AuthModal/AuthModal";
+import Link from "next/link";
 
-const Header: React.FC = () => {
+// import { UserMenu } from '../navbar/user-menu';
+// import { CartIcon } from '@/modules/cart/components/cart-icon';
+
+import "./Header.css";
+import SearchBox from "../SearchBox/search-box";
+import { CartIcon } from "@/modules/cart/components/cart-icon";
+import UserMenu from "./user-menu";
+
+// import { SearchBox } from "../SearchBox/search-box";
+
+export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
   const { language, setLanguage } = useContext(LanguageContext); // ენის კონტროლი
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLangClick = () => {
     const newLanguage = language === "ge" ? "en" : "ge"; // ენების გადართვა
@@ -19,40 +28,52 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      {/* ლოგო */}
-      <div className="header__logo">FishHunt</div>
+      <div className="container">
+        <div className="header-content">
+          <div className="left-section">
+            <button className="menu-button" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? "✖" : "☰"}
+            </button>
+            <Link href="/" className="logo">
+              FishHant
+            </Link>
+          </div>
 
-      {/* საძიებო ველი */}
-      <div className="header__search">
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="header__input"
-        />
-        <button className="header__icon">🔍</button>
+          <div className="search-box">
+            <SearchBox />
+          </div>
+
+          <nav className="nav-menu">
+            <CartIcon />
+            <UserMenu />
+          </nav>
+        </div>
       </div>
 
-      {/* მოქმედებები */}
-      <div className="header__actions">
-        <Image
-          src={language === "ge" ? engFlag : geoFlag}
-          alt={language === "ge" ? "English Flag" : "Georgian Flag"}
-          width={35}
-          height={25}
-          onClick={handleLangClick}
-          className="header__lang"
-        />
-        <button className="header__icon">🛒</button>
-        <button
-          className="header__icon header__auth"
-          onClick={() => setShowAuthModal(true)}
-        >
-          👤 <span> Sign In</span>
-        </button>
-        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-      </div>
+      {/* Mobile Navigation */}
+      {isOpen && (
+        <div className="mobile-menu">
+          <div className="container">
+            <div className="mobile-menu-content">
+              <SearchBox />
+              <div className="menu-icons">
+                <div className="header__actions">
+                  <Image
+                    src={language === "ge" ? engFlag : geoFlag}
+                    alt={language === "ge" ? "English Flag" : "Georgian Flag"}
+                    width={35}
+                    height={25}
+                    onClick={handleLangClick}
+                    className="header__lang"
+                  />
+                </div>
+                <CartIcon />
+                <UserMenu />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
-};
-
-export default Header;
+}
