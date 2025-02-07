@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { LanguageContext } from "../../hooks/LanguageContext"; // ენის კონტექსტი
 import Image from "next/image"; // Next.js-ის Image კომპონენტი
 import geoFlag from "../../assets/geoFlag.png"; // ქართული დროშა
 import engFlag from "../../assets/engFlag.png"; // ინგლისური დროშა
 import "./header.css"; // სტილები
+import AuthModal from "../AuthModal/AuthModal";
 
 const Header: React.FC = () => {
   const { language, setLanguage } = useContext(LanguageContext); // ენის კონტროლი
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLangClick = () => {
     const newLanguage = language === "ge" ? "en" : "ge"; // ენების გადართვა
@@ -41,9 +43,13 @@ const Header: React.FC = () => {
           className="header__lang"
         />
         <button className="header__icon">🛒</button>
-        <button className="header__icon">
+        <button
+          className="header__icon header__auth"
+          onClick={() => setShowAuthModal(true)}
+        >
           👤 <span> Sign In</span>
         </button>
+        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
       </div>
     </header>
   );
