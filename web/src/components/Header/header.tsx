@@ -1,40 +1,51 @@
 "use client";
 
 import React, { useContext } from "react";
-import { LanguageContext } from "../../hooks/LanguageContext"; // Import LanguageContext
-import Image from "next/image"; // Import Next.js Image component
-import geoFlag from "../../assets/geoFlag.png";
-import engFlag from "../../assets/engFlag.png";
-// import Navbar from "../navbar/navbar";
-import "./header.css";
+import { LanguageContext } from "../../hooks/LanguageContext"; // ენის კონტექსტი
+import Image from "next/image"; // Next.js-ის Image კომპონენტი
+import geoFlag from "../../assets/geoFlag.png"; // ქართული დროშა
+import engFlag from "../../assets/engFlag.png"; // ინგლისური დროშა
+import "./header.css"; // სტილები
 
 const Header: React.FC = () => {
-  const { language, setLanguage } = useContext(LanguageContext); // Access LanguageContext
+  const { language, setLanguage } = useContext(LanguageContext); // ენის კონტროლი
 
   const handleLangClick = () => {
-    const newLanguage = language === "ge" ? "en" : "ge"; // Toggle language
-    setLanguage(newLanguage); // Update language in context
+    const newLanguage = language === "ge" ? "en" : "ge"; // ენების გადართვა
+    setLanguage(newLanguage); // ახალი ენის დაყენება
   };
 
   return (
-    <div className="header">
-      <div className="ThemeToggle">
-        <div className="toggles">
-          <div>
-            <Image
-              className="lang"
-              src={language === "ge" ? engFlag : geoFlag} // Toggle between flags
-              alt={language === "ge" ? "English Flag" : "Georgian Flag"}
-              width={50}
-              height={35}
-              onClick={handleLangClick} // Make image clickable
-              style={{ cursor: "pointer" }}
-            />
-          </div>
-        </div>
+    <header className="header">
+      {/* ლოგო */}
+      <div className="header__logo">FishHunt</div>
+
+      {/* საძიებო ველი */}
+      <div className="header__search">
+        <input
+          type="text"
+          placeholder="Search products..."
+          className="header__input"
+        />
+        <button className="header__icon">🔍</button>
       </div>
-      {/* <Navbar /> */}
-    </div>
+
+      {/* მოქმედებები */}
+      <div className="header__actions">
+        <Image
+          src={language === "ge" ? engFlag : geoFlag}
+          alt={language === "ge" ? "English Flag" : "Georgian Flag"}
+          width={35}
+          height={25}
+          onClick={handleLangClick}
+          className="header__lang"
+        />
+        <button className="header__icon">🛒</button>
+        <button className="header__icon">
+          👤 <span> Sign In</span>
+        </button>
+      </div>
+    </header>
   );
 };
 
