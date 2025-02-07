@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGithub, FaGoogle, FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import "./login-form.css";
 
@@ -69,8 +69,8 @@ export function LoginForm() {
 
         <div className="social-buttons">
           <button className="social-button">
-            <FaGithub className="icon" />
-            Github
+            <FaFacebook className="icon" />
+            Facebook
           </button>
           <button className="social-button">
             <FaGoogle className="icon" />

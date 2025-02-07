@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    color: #2A5530;
   }
   
   .login-form {
@@ -24,10 +25,16 @@
   
   input {
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #2A5530;
     border-radius: 4px;
     font-size: 14px;
-  }
+    transition: border 0.3s ease-in-out;
+    outline: none; 
+}
+
+input:focus {
+    border: 2px solid #2A5530; /* უფრო სქელი და იგივე ფერის ბორდერი */
+}
   
   .error-text {
     color: red;
@@ -35,17 +42,23 @@
   }
   
   .login-button {
-    padding: 10px;
-    background-color: #007bff;
+    padding: 10px 20px;
+    background: linear-gradient(to left, #EC9843, #2A5530 );
+    background-size: 130% 100%; /* გრადიენტის ზომა */
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .login-button:hover {
-    background-color: #0056b3;
-  }
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-position 0.9s ease-in-out; /* ნელი მოძრაობა */
+    background-position: right;
+}
+
+.login-button:hover {
+    background-position: left; /* ფერები ნელა იცვლება */
+}
+
   
   .loading-spinner {
     width: 16px;
@@ -77,7 +90,7 @@
     display: block;
     width: 100%;
     height: 1px;
-    background-color: #ccc;
+    background-color: #2a5530b2;
     position: absolute;
     top: 50%;
     left: 0;
@@ -89,7 +102,7 @@
     position: relative;
     z-index: 1;
     font-size: 12px;
-    color: gray;
+    color: #2a5530b2;
   }
   
   .social-buttons {
@@ -103,15 +116,37 @@
     justify-content: center;
     padding: 10px;
     background-color: #f5f5f5;
-    border: 1px solid #ccc;
+    border: 2px solid transparent;
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
-  }
-  
-  .social-button:hover {
-    background-color: #e0e0e0;
-  }
+    font-weight: bold;
+    color: #333;
+    transition: border 1.5s ease-in-out, color 0.5s ease-in-out;
+    background-clip: padding-box;
+    position: relative;
+}
+
+.social-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 1px; /* ბორდერის სისქე */
+  background: linear-gradient(to right, #2A5530, #EC9843); 
+  mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+  -webkit-mask-composite: xor;
+
+  transition: background-position 1.5s ease-in-out;
+}
+
+
+.social-button:hover::before {
+    background: linear-gradient(to left, #2A5530, #EC9843); 
+}
+
   
   .icon {
     margin-right: 5px;
@@ -120,11 +155,11 @@
   .signup-text {
     text-align: center;
     font-size: 14px;
-    color: gray;
+    color: #2a5530b2;
   }
   
   .signup-link {
-    color: #007bff;
+    color: #2A5530;
     text-decoration: none;
     font-weight: 600;
   }
