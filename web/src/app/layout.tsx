@@ -1,8 +1,7 @@
 import "./globals.css";
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer"
+import Header from "@/components/Header/header";
+import Footer from "../components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
-// import Footer from '@/components/Footer/Footer';
 
 interface RootLayoutProps {
   children: React.ReactNode;
