@@ -5,7 +5,7 @@ import { LanguageContext } from "../../hooks/LanguageContext"; // Import Languag
 import Image from "next/image"; // Import Next.js Image component
 import geoFlag from "../../assets/geoFlag.png";
 import engFlag from "../../assets/engFlag.png";
-import Navbar from "../navbar/navbar";
+// import Navbar from "../navbar/navbar";
 import "./header.css";
 
 const Header: React.FC = () => {
