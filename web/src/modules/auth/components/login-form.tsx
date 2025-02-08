@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaGithub, FaGoogle, FaFacebook } from "react-icons/fa";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import "./login-form.css";
 

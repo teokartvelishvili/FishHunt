@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/api-client';
-import type { User } from '@apps/shared/types';
+import { apiClient } from "@/lib/api-client";
+import { User } from "@/types";
 
 interface LoginCredentials {
   email: string;
@@ -15,23 +15,23 @@ interface AuthResponse {
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
     const response = await apiClient.post<AuthResponse>(
-      '/auth/login',
-      credentials,
+      "/auth/login",
+      credentials
     );
     return response.data;
   },
 
   register: async (data: LoginCredentials & { name: string }) => {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
+    const response = await apiClient.post<AuthResponse>("/auth/register", data);
     return response.data;
   },
 
   getProfile: async () => {
-    const response = await apiClient.get<User>('/auth/profile');
+    const response = await apiClient.get<User>("/auth/profile");
     return response.data;
   },
 
   logout: async () => {
-    await apiClient.post('/auth/logout');
+    await apiClient.post("/auth/logout");
   },
 };

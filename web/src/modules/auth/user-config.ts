@@ -1,9 +1,10 @@
-import { authApi } from '@/modules/auth/api/auth-api';
+import { authApi } from "@/modules/auth/api/auth-api";
+import { AxiosError } from "axios";
 
 export const userQueryConfig = {
-  queryKey: ['user'],
+  queryKey: ["user"],
   queryFn: authApi.getProfile,
-  retry: (failureCount: number, error: any) => {
+  retry: (failureCount: number, error: AxiosError) => {
     // Allow one retry for 401 errors to give refresh interceptor a chance
     if (error?.response?.status === 401) {
       return failureCount < 1;
