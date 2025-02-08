@@ -1,50 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "../validation";
+import { useLogin } from "../hooks/use-auth";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import "./login-form.css";
 
+import type * as z from "zod";
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
-  const [isPending, setIsPending] = useState(false);
+  const { mutate: login, isPending } = useLogin();
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [errors, setErrors] = useState({ email: "", password: "" });
+  // const [isPending, setIsPending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsPending(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const newErrors = { email: "", password: "" };
-
-    if (!email) newErrors.email = "Email is required";
-    if (!password) newErrors.password = "Password is required";
-
-    setErrors(newErrors);
-
-    if (!newErrors.email && !newErrors.password) {
-      setTimeout(() => {
-        setIsPending(false);
-        alert("Login successful!");
-      }, 2000);
-    } else {
-      setIsPending(false);
-    }
+  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
+    login(data);
   };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsPending(true);
+
+  //   const newErrors = { email: "", password: "" };
+
+  //   if (!email) newErrors.email = "Email is required";
+  //   if (!password) newErrors.password = "Password is required";
+
+  //   setErrors(newErrors);
+
+  //   if (!newErrors.email && !newErrors.password) {
+  //     setTimeout(() => {
+  //       setIsPending(false);
+  //       alert("Login successful!");
+  //     }, 2000);
+  //   } else {
+  //     setIsPending(false);
+  //   }
+  // };
 
   return (
     <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form">
+      <form onSubmit={handleSubmit(onSubmit)} className="login-form">
         <div className="input-group">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email")}
           />
-          {errors.email && <p className="error-text">{errors.email}</p>}
+          {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
 
         <div className="input-group">
@@ -53,10 +71,11 @@ export function LoginForm() {
             id="password"
             type="password"
             placeholder="********"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
           />
-          {errors.password && <p className="error-text">{errors.password}</p>}
+          {errors.password && (
+            <p className="error-text">{errors.password.message}</p>
+          )}
         </div>
 
         <button type="submit" className="login-button">
