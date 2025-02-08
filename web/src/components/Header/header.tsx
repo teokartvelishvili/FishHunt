@@ -10,7 +10,7 @@ import Link from "next/link";
 // import { UserMenu } from '../navbar/user-menu';
 // import { CartIcon } from '@/modules/cart/components/cart-icon';
 
-import "./Header.css";
+import "./header.css";
 import SearchBox from "../SearchBox/search-box";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
 import UserMenu from "./user-menu";
