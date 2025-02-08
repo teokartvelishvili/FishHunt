@@ -59,14 +59,10 @@
   transform: translateX(-50%); */
 }
 .hookWrapper img {
-  height: 30px;
+  height: 20px;
   width: auto;
 }
 
-.hook {
-  width: 10px;
-  height: auto;
-}
 
 
 .itemCard p {
