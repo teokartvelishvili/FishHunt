@@ -1,0 +1,86 @@
+.container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.fisher {
+  height: 50px; 
+  width: auto;
+  align-self: flex-start;
+
+}
+
+.scroller {
+  border-top: 3px solid #0F1E11;
+  padding-top: 8px;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.inner {
+  display: flex;
+  gap: 30px;
+  margin: 0px 15px;
+  width: max-content;
+  animation: scrollLoop 10s linear infinite;
+}
+
+.itemCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  background-color: #0F1E11; 
+  border: 2px solid #0F1E11;
+  /* padding: 10px; */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.itemCard img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  /* border: 2px solid #EC9843; */
+}
+.hookWrapper {
+  position: absolute;
+  top: -12px; 
+  /* left: 50%; 
+  transform: translateX(-50%); */
+}
+.hookWrapper img {
+  height: 30px;
+  width: auto;
+}
+
+.hook {
+  width: 10px;
+  height: auto;
+}
+
+
+.itemCard p {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #EC9843; /* ოქროსფერი ტექსტი */
+}
+
+@keyframes scrollLoop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

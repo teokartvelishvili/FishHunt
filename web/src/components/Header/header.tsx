@@ -6,6 +6,7 @@ import Image from "next/image"; // Next.js-ის Image კომპონენ
 import geoFlag from "../../assets/geoFlag.png"; // ქართული დროშა
 import engFlag from "../../assets/engFlag.png"; // ინგლისური დროშა
 import Link from "next/link";
+import logo from "../../assets/logo.png"
 
 // import { UserMenu } from '../navbar/user-menu';
 // import { CartIcon } from '@/modules/cart/components/cart-icon';
@@ -35,7 +36,9 @@ export default function Header() {
               {isOpen ? "✖" : "☰"}
             </button>
             <Link href="/" className="logo">
-              FishHunt
+            Fish
+            <Image className="logoImage" src={logo} alt="" />
+             Hunt
             </Link>
           </div>
 

@@ -1,4 +1,5 @@
 import HomePagesHead from "@/components/homePagesHead/homePagesHead";
+import TopItems from "@/components/TopItems/TopItems";
 
 
 const HomePage = () => {
@@ -6,6 +7,7 @@ const HomePage = () => {
   return (
     <div>
       <HomePagesHead/>
+      <TopItems/>
     </div>
   );
 };
