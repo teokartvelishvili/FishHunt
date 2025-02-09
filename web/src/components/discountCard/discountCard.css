@@ -15,7 +15,7 @@
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    border: 3px solid #4c2c1a;
+    border: 3px solid #0F1E11;
     display: flex;
     justify-content: center;
     padding: 10px;
@@ -25,7 +25,7 @@
   
   .line {
     position: absolute;
-    background-color: #4c2c1a;
+    background-color: #0F1E11;
   }
   
   .top-line {
@@ -62,7 +62,7 @@
   
   .circle-text {
     position: absolute;
-    color: #4c2c1a;
+    color: #0F1E11;
     font-size: 12px;
     text-align: center;
     text-justify: start;
@@ -77,7 +77,7 @@
     bottom: -58px; 
     right: 0px;
     overflow: hidden;
-    border: 3px solid #4c2c1a;
+    border: 3px solid #0F1E11;
   }
   .circle-image {
     width: 100%;

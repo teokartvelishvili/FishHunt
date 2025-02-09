@@ -1,4 +1,6 @@
 .HomePageshead{
+    /* max-width: 90%; */
+    padding: 5%;
     display: flex;
     justify-content: space-around;
     

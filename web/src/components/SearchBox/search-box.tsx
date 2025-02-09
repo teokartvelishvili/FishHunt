@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import "./SearchBox.css";
+import searchIcon from "../../assets/icons/search.png"
 
 export default function SearchBox() {
   const router = useRouter();
@@ -17,18 +19,19 @@ export default function SearchBox() {
 
   return (
     <form onSubmit={onSubmit} className="search-form">
+      <Image src={searchIcon} alt="search icon" className="searchIcon" />
       <input
         type="text"
-        placeholder="Search products..."
+        placeholder="ძიება FishHunt-ზე"
         value={keyword}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setKeyword(e.target.value)
         }
         className="search-input"
       />
-      <button type="submit" className="search-button">
-        🔍
-      </button>
+      {/* <button type="submit" className="search-button">
+        <Image src={searchIcon} alt="search icon" className="searchIcon" />
+      </button> */}
     </form>
   );
 }

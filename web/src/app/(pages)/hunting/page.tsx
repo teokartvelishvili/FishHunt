@@ -1,4 +1,4 @@
-import HuntingPage from "@/components/huntingPage/huntingPage";
+import HuntingPage from "@/components/huntingPageMain/huntingPageMain";
 
 
 const Hunting = () => {
