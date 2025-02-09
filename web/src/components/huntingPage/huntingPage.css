@@ -25,19 +25,19 @@
     margin-bottom: 80px;
   }
   
-  /* .map {
+.huntingMap {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
-  } */
+  } 
   
-  .map h5 {
+  .huntingMap h5 {
     font-size: 18px;
     color: #37241E;
     margin-bottom: 10px;
   }
   
-  .map img {
+  .huntingMap img {
     width: 100%;
     height: auto;
     border-radius: 8px;

@@ -14,7 +14,7 @@ const HuntingPage = () => {
         გაკავშირებს ბუნების სულთან და გახსენებს, რა არის ნამდვილი ჰარმონია.
       </p>
 
-      <div className="map">
+      <div className="huntingMap">
         <h5>იპოვე რუკაზე სანადირო ლოკაციები საქართველოში</h5>
         <Image src={mapImage} alt="Hunting Map" />
       </div>
