@@ -1,0 +1,65 @@
+.hunting-container {
+    max-width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+
+  }
+  
+  h1 {
+    font-size: 36px;
+    color: #37241E; 
+  }
+  
+  h3 {
+    font-size: 24px;
+    color: #2A5530; 
+    margin-bottom: 40px;
+  }
+  
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #37241E;
+    margin-bottom: 80px;
+  }
+  
+  /* .map {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  } */
+  
+  .map h5 {
+    font-size: 18px;
+    color: #37241E;
+    margin-bottom: 10px;
+  }
+  
+  .map img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .permit-link {
+    width: 100%;
+    display: inline-block;
+    background-color: #37241E; 
+    color: #EC9843; 
+    padding: 50px 0px;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    margin-top: 40px;
+  }
+  
+  .permit-link:hover {
+    background-color: #34211d;
+    color: #e9a562;
+  }
+  
