@@ -1,60 +1,77 @@
 "use client";
 
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "../validation";
+import { useRegister } from "../hooks/use-auth";
+// import { useState } from "react";
 import Link from "next/link";
 import "./register-form.css";
+import type * as z from "zod";
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+  const { mutate: register, isPending } = useRegister();
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const [isPending, setIsPending] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const onSubmit = handleSubmit((data) => {
+    register(data);
+  });
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   email: "",
+  //   password: "",
+  // });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // const [isPending, setIsPending] = useState(false);
+  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.includes("@"))
-      newErrors.email = "Invalid email address";
-    if (formData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
-    return newErrors;
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-    setErrors({});
-    setIsPending(true);
-    setTimeout(() => setIsPending(false), 2000);
-  };
+  // const validateForm = () => {
+  //   const newErrors: { [key: string]: string } = {};
+  //   if (!formData.name.trim()) newErrors.name = "Name is required";
+  //   if (!formData.email.includes("@"))
+  //     newErrors.email = "Invalid email address";
+  //   if (formData.password.length < 6)
+  //     newErrors.password = "Password must be at least 6 characters";
+  //   return newErrors;
+  // };
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const validationErrors = validateForm();
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+  //   setErrors({});
+  //   setIsPending(true);
+  //   setTimeout(() => setIsPending(false), 2000);
+  // };
 
   return (
     <div className="form-container">
-      <form onSubmit={handleSubmit} className="form">
+      <form onSubmit={onSubmit} className="form">
         <div className="input-group">
           <label htmlFor="name">Name</label>
           <input
             id="name"
             type="text"
-            name="name"
-            placeholder="John Doe"
-            value={formData.name}
-            onChange={handleChange}
+            placeholder="სახელი"
+            {...registerField("name")}
           />
-          {errors.name && <p className="error-text">{errors.name}</p>}
+          {errors.name && <p className="error-text">{errors.name.message}</p>}
         </div>
 
         <div className="input-group">
@@ -62,12 +79,10 @@ export function RegisterForm() {
           <input
             id="email"
             type="email"
-            name="email"
             placeholder="name@example.com"
-            value={formData.email}
-            onChange={handleChange}
+            {...registerField("email")}
           />
-          {errors.email && <p className="error-text">{errors.email}</p>}
+          {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
 
         <div className="input-group">
@@ -75,12 +90,12 @@ export function RegisterForm() {
           <input
             id="password"
             type="password"
-            name="password"
             placeholder="********"
-            value={formData.password}
-            onChange={handleChange}
+            {...registerField("password")}
           />
-          {errors.password && <p className="error-text">{errors.password}</p>}
+          {errors.password && (
+            <p className="error-text">{errors.password.message}</p>
+          )}
         </div>
 
         <button type="submit" className="submit-btn" disabled={isPending}>
