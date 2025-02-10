@@ -1,17 +1,13 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2, XCircle } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Order } from '@apps/shared/types/order';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/api-client';
+import { CheckCircle2, XCircle } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Order } from "@/types/order";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { apiClient } from "@/lib/api-client";
+import "./AdminOrderDetails.css";
 
 interface AdminOrderDetailsProps {
   order: Order;
@@ -24,158 +20,130 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const markAsDelivered = async () => {
     try {
       await apiClient.put(`/orders/${order._id}/deliver`);
-      toast({
-        title: 'Success',
-        description: 'Order marked as delivered',
-      });
+      toast({ title: "Success", description: "Order marked as delivered" });
       router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error);
       toast({
-        title: 'Error',
-        description: 'Failed to mark order as delivered',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to mark order as delivered",
+        variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Order #{order._id}</h1>
-        <div className="space-x-4">
-          <Badge
-            variant={order.isPaid ? 'default' : 'destructive'}
-            className="text-sm"
-          >
-            {order.isPaid ? 'Paid' : 'Pending Payment'}
-          </Badge>
+    <div className="admin-order-details">
+      <div className="header">
+        <h1>Order #{order._id}</h1>
+        <div className="status">
+          <span className={`badge ${order.isPaid ? "paid" : "pending"}`}>
+            {order.isPaid ? "Paid" : "Pending Payment"}
+          </span>
           {order.isPaid && !order.isDelivered && (
-            <Button onClick={markAsDelivered}>Mark as Delivered</Button>
+            <button className="deliver-btn" onClick={markAsDelivered}>
+              Mark as Delivered
+            </button>
           )}
         </div>
       </div>
 
-      {/* Reuse the existing OrderDetails layout but without PayPal button */}
-      <div className="grid grid-cols-12 gap-8">
-        <div className="col-span-8 space-y-6">
+      <div className="grid-container">
+        <div className="left-section">
           {/* Shipping Info */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Shipping</h2>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Customer: </span>
-                {order.user.name} ({order.user.email})
-              </p>
-              <p>
-                <span className="font-medium">Address: </span>
-                {order.shippingDetails.address}, {order.shippingDetails.city},{' '}
-                {order.shippingDetails.postalCode},{' '}
-                {order.shippingDetails.country}
-              </p>
-              {order.isDelivered ? (
-                <Alert variant="default" className="mt-4">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertDescription>
-                    Delivered on{' '}
-                    {new Date(order.deliveredAt!).toLocaleDateString()}
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert variant="destructive" className="mt-4">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription>Not Delivered</AlertDescription>
-                </Alert>
-              )}
+          <div className="card">
+            <h2>Shipping</h2>
+            <p>
+              <strong>Customer:</strong> {order.user.name} ({order.user.email})
+            </p>
+            <p>
+              <strong>Address:</strong> {order.shippingDetails.address},{" "}
+              {order.shippingDetails.city}, {order.shippingDetails.postalCode},{" "}
+              {order.shippingDetails.country}
+            </p>
+            <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
+              {order.isDelivered ? <CheckCircle2 /> : <XCircle />}
+              <span>
+                {order.isDelivered
+                  ? `Delivered on ${new Date(
+                      order.deliveredAt!
+                    ).toLocaleDateString()}`
+                  : "Not Delivered"}
+              </span>
             </div>
-          </Card>
+          </div>
 
           {/* Payment Info */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Payment</h2>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Method: </span>
-                {order.paymentMethod}
-              </p>
-              {order.isPaid ? (
-                <Alert variant="default" className="mt-4">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertDescription>
-                    Paid on {new Date(order.paidAt!).toLocaleDateString()}
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert variant="destructive" className="mt-4">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription>Not Paid</AlertDescription>
-                </Alert>
-              )}
+          <div className="card">
+            <h2>Payment</h2>
+            <p>
+              <strong>Method:</strong> {order.paymentMethod}
+            </p>
+            <div className={`alert ${order.isPaid ? "success" : "error"}`}>
+              {order.isPaid ? <CheckCircle2 /> : <XCircle />}
+              <span>
+                {order.isPaid
+                  ? `Paid on ${new Date(order.paidAt!).toLocaleDateString()}`
+                  : "Not Paid"}
+              </span>
             </div>
-          </Card>
+          </div>
 
           {/* Order Items */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Order Items</h2>
-            <div className="space-y-4">
-              {order.orderItems.map(item => (
-                <div
-                  key={item.productId}
-                  className="flex items-center space-x-4"
-                >
-                  <div className="relative h-20 w-20">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Link
-                      href={`/products/${item.productId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {item.name}
-                    </Link>
-                    <p className="text-sm text-muted-foreground">
-                      {item.qty} x ${item.price.toFixed(2)} = $
-                      {(item.qty * item.price).toFixed(2)}
-                    </p>
-                  </div>
+          <div className="card">
+            <h2>Order Items</h2>
+            {order.orderItems.map((item) => (
+              <div key={item.productId} className="order-item">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={80}
+                  height={80}
+                  className="item-image"
+                />
+                <div>
+                  <Link
+                    href={`/products/${item.productId}`}
+                    className="item-name"
+                  >
+                    {item.name}
+                  </Link>
+                  <p>
+                    {item.qty} x ${item.price.toFixed(2)} = $
+                    {(item.qty * item.price).toFixed(2)}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </Card>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Order Summary Card */}
-        <div className="col-span-4">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Items</span>
-                <span>${order.itemsPrice.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping</span>
-                <span>
-                  {order.shippingPrice === 0
-                    ? 'Free'
-                    : `$${order.shippingPrice.toFixed(2)}`}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tax</span>
-                <span>${order.taxPrice.toFixed(2)}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between font-medium">
-                <span>Total</span>
-                <span>${order.totalPrice.toFixed(2)}</span>
-              </div>
+        {/* Order Summary */}
+        <div className="right-section">
+          <div className="card">
+            <h2>Order Summary</h2>
+            <div className="summary-item">
+              <span>Items</span>
+              <span>${order.itemsPrice.toFixed(2)}</span>
             </div>
-          </Card>
+            <div className="summary-item">
+              <span>Shipping</span>
+              <span>
+                {order.shippingPrice === 0
+                  ? "Free"
+                  : `$${order.shippingPrice.toFixed(2)}`}
+              </span>
+            </div>
+            <div className="summary-item">
+              <span>Tax</span>
+              <span>${order.taxPrice.toFixed(2)}</span>
+            </div>
+            <hr />
+            <div className="summary-total">
+              <span>Total</span>
+              <span>${order.totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

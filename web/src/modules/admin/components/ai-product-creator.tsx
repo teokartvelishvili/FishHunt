@@ -1,37 +1,43 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { useAiProductCreation } from '../hooks/use-ai-product-creation';
-import { Card } from '@/components/ui/card';
-import { formatPrice } from '@/lib/utils';
+import { useEffect, useRef } from "react";
+import { cn, formatPrice } from "@/lib/utils";
+import { useAiProductCreation } from "../hooks/use-ai-product-creation";
+import "./AiProductCreator.css";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  data?: {
+    validationErrors?: { message: string }[];
+  };
+}
 
 function formatProductInfo(content: string) {
   console.log(content);
 
-  if (content.includes('Brand:') && content.includes('Category:')) {
-    // Split content into product info and follow-up message
+  if (content.includes("Brand:") && content.includes("Category:")) {
     const [productInfo, ...followUpParts] = content.split(
-      /(?=Next,|Would you like|Let's)/i,
+      /(?=Next,|Would you like|Let's)/i
     );
-    const followUpMessage = followUpParts.join(' ').trim();
+    const followUpMessage = followUpParts.join(" ").trim();
 
     const lines = productInfo
       .split(/[-\n]/)
-      .map(line => line.trim())
+      .map((line) => line.trim())
       .filter(Boolean);
 
     return (
-      <div className="space-y-4">
-        {/* Product Information */}
-        <div className="space-y-3">
-          <div className="font-medium">{lines[0].split(':')[0]}</div>
+      <div className="ai-product-creator__info">
+        <div className="ai-product-creator__info-section">
+          <div className="ai-product-creator__info-title">
+            {lines[0].split(":")[0]}
+          </div>
 
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            {lines.slice(1).map((line, i) => {
-              const colonIndex = line.indexOf(':');
+          <div className="ai-product-creator__info-grid">
+            {lines.slice(1).map((line: string, i: number) => {
+              const colonIndex = line.indexOf(":");
               if (colonIndex === -1) return null;
 
               const label = line.slice(0, colonIndex).trim();
@@ -39,41 +45,45 @@ function formatProductInfo(content: string) {
 
               if (!label || !value) return null;
 
-              if (label === 'Price') {
+              if (label === "Price") {
                 const priceMatch = value.match(/\$?([\d,]+)/);
                 const price = priceMatch
-                  ? parseFloat(priceMatch[1].replace(/,/g, ''))
+                  ? parseFloat(priceMatch[1].replace(/,/g, ""))
                   : 0;
 
                 return (
-                  <div key={i} className="col-span-2">
-                    <span className="text-muted-foreground">{label}:</span>{' '}
-                    <span className="font-semibold">{formatPrice(price)}</span>
+                  <div key={i} className="ai-product-creator__price">
+                    <span className="ai-product-creator__label">{label}:</span>{" "}
+                    <span className="ai-product-creator__price-value">
+                      {formatPrice(price)}
+                    </span>
                   </div>
                 );
               }
 
-              if (label === 'Description') {
+              if (label === "Description") {
                 return (
-                  <div key={i} className="col-span-2">
-                    <span className="text-muted-foreground">{label}:</span>
-                    <p className="mt-1 text-sm">{value}</p>
+                  <div key={i} className="ai-product-creator__description">
+                    <span className="ai-product-creator__label">{label}:</span>
+                    <p className="ai-product-creator__description-text">
+                      {value}
+                    </p>
                   </div>
                 );
               }
 
-              if (label === 'Stock Availability') {
+              if (label === "Stock Availability") {
                 return (
-                  <div key={i} className="col-span-2">
-                    <span className="text-muted-foreground">Stock:</span>{' '}
+                  <div key={i} className="ai-product-creator__stock">
+                    <span className="ai-product-creator__label">Stock:</span>{" "}
                     <span>{value}</span>
                   </div>
                 );
               }
 
               return (
-                <div key={i}>
-                  <span className="text-muted-foreground">{label}:</span>{' '}
+                <div key={i} className="ai-product-creator__field">
+                  <span className="ai-product-creator__label">{label}:</span>{" "}
                   <span>{value}</span>
                 </div>
               );
@@ -81,17 +91,14 @@ function formatProductInfo(content: string) {
           </div>
         </div>
 
-        {/* Follow-up Message */}
         {followUpMessage && (
-          <div className="text-sm text-muted-foreground border-t pt-3">
-            {followUpMessage}
-          </div>
+          <div className="ai-product-creator__follow-up">{followUpMessage}</div>
         )}
       </div>
     );
   }
 
-  return <div className="prose prose-sm">{content}</div>;
+  return <div className="ai-product-creator__default">{content}</div>;
 }
 
 export function AiProductCreator() {
@@ -106,10 +113,8 @@ export function AiProductCreator() {
     stop,
   } = useAiProductCreation();
 
-  // Add ref for chat container
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -118,83 +123,84 @@ export function AiProductCreator() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[600px]">
-      {/* Messages Container */}
-      <Card className="flex-1 overflow-hidden flex flex-col">
+    <div className="ai-product-creator">
+      <div className="ai-product-creator__card">
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+          className="ai-product-creator__chat-container"
         >
-          {messages.map(message => (
+          {messages.map((message: Message) => (
             <div
               key={message.id}
               className={cn(
-                'max-w-[80%] rounded-lg p-4 animate-slide-in',
-                message.role === 'assistant'
-                  ? 'bg-muted ml-4'
-                  : 'bg-primary/10 ml-auto',
+                "ai-product-creator__message",
+                message.role === "assistant"
+                  ? "ai-product-creator__message--assistant"
+                  : "ai-product-creator__message--user"
               )}
             >
-              <div className="text-sm font-medium mb-1 text-muted-foreground">
-                {message.role === 'assistant' ? 'AI Assistant' : 'You'}
+              <div className="ai-product-creator__message-header">
+                {message.role === "assistant" ? "AI Assistant" : "You"}
               </div>
               {formatProductInfo(message.content)}
 
               {message.data?.validationErrors && (
-                <ul className="mt-2 space-y-1">
-                  {message.data.validationErrors.map((error, i) => (
-                    <li
-                      key={i}
-                      className="text-destructive text-sm flex items-center gap-2"
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
-                      {error.message}
-                    </li>
-                  ))}
+                <ul className="ai-product-creator__error-list">
+                  {message.data.validationErrors.map(
+                    (error: { message: string }, i: number) => (
+                      <li key={i} className="ai-product-creator__error-item">
+                        <span className="ai-product-creator__error-dot" />
+                        {error.message}
+                      </li>
+                    )
+                  )}
                 </ul>
               )}
             </div>
           ))}
         </div>
 
-        {/* Input Form */}
-        <div className="p-4 border-t bg-background">
+        <div className="ai-product-creator__input-container">
           {error && (
-            <div className="mb-4 text-destructive text-sm p-2 rounded bg-destructive/10">
+            <div className="ai-product-creator__error-message">
               {error.message}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
+          <form onSubmit={handleSubmit} className="ai-product-creator__form">
+            <input
               value={input}
               onChange={handleInputChange}
               placeholder="Describe the product you want to create..."
               disabled={isLoading}
-              className="flex-1"
+              className="ai-product-creator__input"
             />
-            <Button type="submit" disabled={isLoading}>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="ai-product-creator__button"
+            >
               Send
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant="outline"
               onClick={stop}
               disabled={!isLoading}
+              className="ai-product-creator__button ai-product-creator__button--outline"
             >
               Stop
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant="outline"
               onClick={reload}
               disabled={isLoading || messages.length === 0}
+              className="ai-product-creator__button ai-product-creator__button--outline"
             >
               Retry
-            </Button>
+            </button>
           </form>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
