@@ -1,20 +1,11 @@
-'use client';
+"use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Sparkles, Plus } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import type { Product } from '@apps/shared/types';
-import { ProductsActions } from './products-actions';
+import Image from "next/image";
+import Link from "next/link";
+import type { Product } from "@/types";
+import { ProductsActions } from "./products-actions";
+import { Sparkles, Plus } from "lucide-react";
+import "./productList.css";
 
 interface ProductsListProps {
   products: Product[];
@@ -22,61 +13,61 @@ interface ProductsListProps {
 
 export function ProductsList({ products }: ProductsListProps) {
   return (
-    <Card>
-      <div className="flex items-center justify-between p-5">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <div className="flex gap-2">
+    <div className="prd-card">
+      <div className="prd-header">
+        <h1 className="prd-title">Products</h1>
+        <div className="prd-actions">
           <Link href="/admin/products/create">
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
+            <button className="prd-btn-outline">
+              <Plus className="prd-icon" />
               Add Product
-            </Button>
+            </button>
           </Link>
           <Link href="/admin/products/ai">
-            <Button>
-              <Sparkles className="h-4 w-4" />
+            <button className="prd-btn">
+              <Sparkles className="prd-icon" />
               Create Products with AI
-            </Button>
+            </button>
           </Link>
         </div>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>IMAGE</TableHead>
-            <TableHead>NAME</TableHead>
-            <TableHead>PRICE</TableHead>
-            <TableHead>CATEGORY</TableHead>
-            <TableHead>STOCK</TableHead>
-            <TableHead className="text-right">ACTIONS</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map(product => (
-            <TableRow key={product._id}>
-              <TableCell className="font-medium">#{product._id}</TableCell>
-              <TableCell>
-                <div className="relative h-10 w-10">
+      <table className="prd-table">
+        <thead>
+          <tr className="prd-thead-row">
+            <th className="prd-th">ID</th>
+            <th className="prd-th">IMAGE</th>
+            <th className="prd-th">NAME</th>
+            <th className="prd-th">PRICE</th>
+            <th className="prd-th">CATEGORY</th>
+            <th className="prd-th">STOCK</th>
+            <th className="prd-th prd-th-right">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => (
+            <tr key={product._id} className="prd-tr">
+              <td className="prd-td prd-td-bold">#{product._id}</td>
+              <td className="prd-td">
+                <div className="prd-img-wrapper">
                   <Image
                     src={product.images[0]}
                     alt={product.name}
                     fill
-                    className="object-cover rounded-md"
+                    className="prd-img"
                   />
                 </div>
-              </TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>${product.price}</TableCell>
-              <TableCell>{product.category}</TableCell>
-              <TableCell>{product.countInStock}</TableCell>
-              <TableCell className="text-right">
+              </td>
+              <td className="prd-td">{product.name}</td>
+              <td className="prd-td">${product.price}</td>
+              <td className="prd-td">{product.category}</td>
+              <td className="prd-td">{product.countInStock}</td>
+              <td className="prd-td prd-td-right">
                 <ProductsActions product={product} />
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-    </Card>
+        </tbody>
+      </table>
+    </div>
   );
 }

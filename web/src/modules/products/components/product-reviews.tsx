@@ -1,18 +1,15 @@
-import { StarIcon } from 'lucide-react';
-import type { Product } from '@apps/shared/types';
+import { StarIcon } from "lucide-react";
+import type { Product } from "@/types";
 
 interface ProductReviewsProps {
   product: Product;
 }
 
 export function ProductReviews({ product }: ProductReviewsProps) {
-  const ratings = product.reviews.reduce(
-    (acc, review) => {
-      acc[review.rating] = (acc[review.rating] || 0) + 1;
-      return acc;
-    },
-    {} as Record<number, number>,
-  );
+  const ratings = product.reviews.reduce((acc, review) => {
+    acc[review.rating] = (acc[review.rating] || 0) + 1;
+    return acc;
+  }, {} as Record<number, number>);
 
   // Ensure all ratings (1-5) exist in the object
   const ratingCounts = {
@@ -38,8 +35,8 @@ export function ProductReviews({ product }: ProductReviewsProps) {
                 key={i}
                 className={`h-5 w-5 sm:h-4 sm:w-4 ${
                   i < Math.floor(product.rating)
-                    ? 'text-yellow-400 fill-yellow-400'
-                    : 'text-gray-300'
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-300"
                 }`}
               />
             ))}
@@ -84,8 +81,8 @@ export function ProductReviews({ product }: ProductReviewsProps) {
                   key={i}
                   className={`h-4 w-4 sm:h-3 sm:w-3 ${
                     i < review.rating
-                      ? 'text-yellow-400 fill-yellow-400'
-                      : 'text-gray-300'
+                      ? "text-yellow-400 fill-yellow-400"
+                      : "text-gray-300"
                   }`}
                 />
               ))}

@@ -1,6 +1,6 @@
-import { Container } from '@/components/ui/container';
-import { ProductsList } from '@/modules/admin/components/products-list';
-import { getProducts } from '@/modules/admin/actions/get-products';
+import { Container } from "@/components/ui/container";
+import { ProductsList } from "@/modules/admin/components/products-list";
+import { getProducts } from "@/modules/admin/actions/get-products";
 import {
   Pagination,
   PaginationContent,
@@ -9,10 +9,8 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationEllipsis,
-} from '@/components/ui/pagination';
-import { getVisiblePages } from '@/lib/utils';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/pagination";
+import { getVisiblePages } from "@/lib/utils";
 
 interface AdminProductsPageProps {
   searchParams: { page?: string };
@@ -56,7 +54,7 @@ export default async function AdminProductsPage({
                         {pageNum}
                       </PaginationLink>
                     </PaginationItem>
-                  ),
+                  )
                 )}
 
                 <PaginationItem>

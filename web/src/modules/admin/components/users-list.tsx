@@ -1,21 +1,11 @@
-'use client';
+"use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, ShieldCheck, User as UserIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from '@/hooks/use-toast';
-import { deleteUser } from '@/modules/admin/actions/delete-user';
-import type { User } from '@apps/shared/types';
+import { Pencil, Trash2, ShieldCheck, User as UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+import { deleteUser } from "@/modules/admin/actions/delete-user";
+import type { User } from "@/types";
+import "./usersList.css";
 
 interface UsersListProps {
   users: User[];
@@ -25,18 +15,18 @@ export function UsersList({ users }: UsersListProps) {
   const router = useRouter();
 
   const handleDelete = async (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
+    if (confirm("Are you sure you want to delete this user?")) {
       const result = await deleteUser(userId);
 
       if (result.success) {
         toast({
-          title: 'Success',
+          title: "Success",
           description: result.message,
         });
       } else {
         toast({
-          variant: 'destructive',
-          title: 'Error',
+          variant: "destructive",
+          title: "Error",
           description: result.message,
         });
       }
@@ -44,66 +34,63 @@ export function UsersList({ users }: UsersListProps) {
   };
 
   return (
-    <Card>
-      <div className="flex items-center justify-between p-5">
-        <h1 className="text-2xl font-bold">Users</h1>
+    <div className="usr-card">
+      <div className="usr-header">
+        <h1 className="usr-title">Users</h1>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>NAME</TableHead>
-            <TableHead>EMAIL</TableHead>
-            <TableHead>ROLE</TableHead>
-            <TableHead>JOINED</TableHead>
-            <TableHead className="text-right">ACTIONS</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users.map(user => (
-            <TableRow className="hover:bg-muted/50" key={user._id}>
-              <TableCell className="font-medium">#{user._id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>
+      <table className="usr-table">
+        <thead>
+          <tr className="usr-thead-row">
+            <th className="usr-th">ID</th>
+            <th className="usr-th">NAME</th>
+            <th className="usr-th">EMAIL</th>
+            <th className="usr-th">ROLE</th>
+            <th className="usr-th">JOINED</th>
+            <th className="usr-th usr-th-right">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr className="usr-tr" key={user._id}>
+              <td className="usr-td usr-td-bold">#{user._id}</td>
+              <td className="usr-td">{user.name}</td>
+              <td className="usr-td">{user.email}</td>
+              <td className="usr-td">
                 {user.isAdmin ? (
-                  <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
-                    <ShieldCheck className="mr-1 h-3 w-3" />
+                  <span className="usr-badge-admin">
+                    <ShieldCheck className="usr-icon" />
                     Admin
-                  </Badge>
+                  </span>
                 ) : (
-                  <Badge variant="secondary">
-                    <UserIcon className="mr-1 h-3 w-3" />
+                  <span className="usr-badge">
+                    <UserIcon className="usr-icon" />
                     Customer
-                  </Badge>
+                  </span>
                 )}
-              </TableCell>
-              <TableCell>
+              </td>
+              <td className="usr-td">
                 {new Date(user.createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex items-center justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
+              </td>
+              <td className="usr-td usr-td-right">
+                <div className="usr-actions">
+                  <button
+                    className="usr-btn"
                     onClick={() => router.push(`/admin/users/${user._id}/edit`)}
                   >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-red-500 hover:text-red-600"
+                    <Pencil className="usr-icon" />
+                  </button>
+                  <button
+                    className="usr-btn usr-btn-danger"
                     onClick={() => handleDelete(user._id)}
                   >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                    <Trash2 className="usr-icon" />
+                  </button>
                 </div>
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-    </Card>
+        </tbody>
+      </table>
+    </div>
   );
 }

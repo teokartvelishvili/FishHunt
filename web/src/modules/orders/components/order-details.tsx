@@ -1,158 +1,121 @@
-'use client';
+"use client";
 
-import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2, XCircle } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Order } from '@apps/shared/types/order';
-import { PayPalButton } from './paypal-button';
-import { StripeButton } from './stripe-button';
+import { useForm, Controller } from "react-hook-form";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { getCountries } from "@/lib/countries";
+import "./order-details.css";
+import { useCheckout } from "@/modules/checkout/context/checkout-context";
 
-interface OrderDetailsProps {
-  order: Order;
+interface ShippingFormData {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
 
-export function OrderDetails({ order }: OrderDetailsProps) {
+export function ShippingForm() {
+  const { setShippingAddress } = useCheckout();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    control,
+  } = useForm<ShippingFormData>();
+
+  const onSubmit = async (data: ShippingFormData) => {
+    try {
+      const response = await apiClient.post("/cart/shipping", data);
+      const shippingAddress = response.data;
+      setShippingAddress(shippingAddress);
+      router.push("/checkout/payment");
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error saving shipping details",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Order #{order._id}</h1>
-        <Badge
-          variant={order.isPaid ? 'default' : 'destructive'}
-          className="text-sm"
-        >
-          {order.isPaid ? 'Paid' : 'Pending Payment'}
-        </Badge>
+    <div className="shipping-form-card">
+      <div className="shipping-form-header">
+        <h1>Shipping Address</h1>
+        <p>Enter your shipping details</p>
       </div>
-
-      <div className="grid grid-cols-12 gap-8">
-        <div className="col-span-8 space-y-6">
-          {/* Shipping Info */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Shipping</h2>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Address: </span>
-                {order.shippingDetails.address}, {order.shippingDetails.city},{' '}
-                {order.shippingDetails.postalCode},{' '}
-                {order.shippingDetails.country}
-              </p>
-              {order.isDelivered ? (
-                <Alert variant="default" className="mt-4">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertDescription>
-                    Delivered on{' '}
-                    {new Date(order.deliveredAt!).toLocaleDateString()}
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert variant="destructive" className="mt-4">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription>Not Delivered</AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </Card>
-
-          {/* Payment Info */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Payment</h2>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Method: </span>
-                {order.paymentMethod}
-              </p>
-              {order.isPaid ? (
-                <Alert variant="default" className="mt-4">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertDescription>
-                    Paid on {new Date(order.paidAt!).toLocaleDateString()}
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert variant="destructive" className="mt-4">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription>Not Paid</AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </Card>
-
-          {/* Order Items */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Order Items</h2>
-            <div className="space-y-4">
-              {order.orderItems.map(item => (
-                <div
-                  key={item.productId}
-                  className="flex items-center space-x-4"
-                >
-                  <div className="relative h-20 w-20">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Link
-                      href={`/products/${item.productId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {item.name}
-                    </Link>
-                    <p className="text-sm text-muted-foreground">
-                      {item.qty} x ${item.price.toFixed(2)} = $
-                      {(item.qty * item.price).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+      <form onSubmit={handleSubmit(onSubmit)} className="shipping-form">
+        <div>
+          <label htmlFor="address">Street Address</label>
+          <input
+            id="address"
+            {...register("address", { required: "Address is required" })}
+            placeholder="123 Main St"
+          />
+          {errors.address && (
+            <p className="error-text">{errors.address.message}</p>
+          )}
         </div>
 
-        {/* Order Summary */}
-        <div className="col-span-4">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Items</span>
-                <span>${order.itemsPrice.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping</span>
-                <span>
-                  {order.shippingPrice === 0
-                    ? 'Free'
-                    : `$${order.shippingPrice.toFixed(2)}`}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tax</span>
-                <span>${order.taxPrice.toFixed(2)}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between font-medium">
-                <span>Total</span>
-                <span>${order.totalPrice.toFixed(2)}</span>
-              </div>
+        <div>
+          <label htmlFor="city">City</label>
+          <input
+            id="city"
+            {...register("city", { required: "City is required" })}
+            placeholder="New York"
+          />
+          {errors.city && <p className="error-text">{errors.city.message}</p>}
+        </div>
 
-              {!order.isPaid &&
-                (order.paymentMethod === 'PayPal' ? (
-                  <PayPalButton orderId={order._id} amount={order.totalPrice} />
-                ) : (
-                  <StripeButton orderId={order._id} amount={order.totalPrice} />
+        <div>
+          <label htmlFor="postalCode">Postal Code</label>
+          <input
+            id="postalCode"
+            {...register("postalCode", { required: "Postal code is required" })}
+            placeholder="10001"
+          />
+          {errors.postalCode && (
+            <p className="error-text">{errors.postalCode.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="country">Country</label>
+          <Controller
+            name="country"
+            control={control}
+            rules={{ required: "Country is required" }}
+            render={({ field }) => (
+              <select {...field} defaultValue="">
+                <option value="" disabled>
+                  Select a country
+                </option>
+                {getCountries().map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
                 ))}
-            </div>
-          </Card>
+              </select>
+            )}
+          />
+          {errors.country && (
+            <p className="error-text">{errors.country.message}</p>
+          )}
         </div>
-      </div>
+
+        <button
+          type="submit"
+          className="shipping-form-button"
+          disabled={isSubmitting}
+        >
+          Continue to Payment
+        </button>
+      </form>
     </div>
   );
 }

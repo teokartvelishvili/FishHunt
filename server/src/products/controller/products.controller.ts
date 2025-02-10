@@ -22,10 +22,14 @@ import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
 import { CurrentUser } from '@/decorators/current-user.decorator';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
 import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
-import { ChatRequest } from '@/types/agents';
+import { ChatRequest } from '@apps/shared/types/agents';
 import { Response } from 'express';
 
 @Controller('products')
@@ -64,35 +68,59 @@ export class ProductsController {
   @UseGuards(AdminGuard)
   @Post()
   @UseInterceptors(
-    FilesInterceptor('images', 10, {
-      fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif)$/)) {
-          cb(new Error('Only image files are allowed!'), false);
-        }
-        cb(null, true);
+    FileFieldsInterceptor(
+      [
+        {
+          name: 'images',
+          maxCount: 10,
+        },
+        {
+          name: 'brandLogo',
+          maxCount: 1,
+        },
+      ],
+      {
+        fileFilter: (req, file, cb) => {
+          if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif)$/)) {
+            cb(new Error('Only image files are allowed!'), false);
+          }
+          cb(null, true);
+        },
       },
-    }),
+    ),
   )
   async createProduct(
     @Body() productData: Omit<ProductDto, 'images'>,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles()
+    allFiles: {
+      images: Express.Multer.File[];
+      brandLogo: Express.Multer.File[];
+    },
   ) {
+    const files = allFiles.images;
+    const { brandLogo } = allFiles;
     if (!files || files.length === 0) {
       throw new BadRequestException('At least one image is required');
     }
 
     try {
       const imageUrls = await Promise.all(
-        files.map((file) => this.appService.uploadImageToCloudinary(file)),
+        files.map(file => this.appService.uploadImageToCloudinary(file)),
+      );
+      const brandLogoUrl = await this.appService.uploadImageToCloudinary(
+        brandLogo[0],
       );
 
+      console.log('success');
       return this.productsService.create({
         ...productData,
         images: imageUrls,
+        brandLogo: brandLogoUrl,
       });
-    } catch (error) {
+    } catch (error: any) {
       throw new InternalServerErrorException(
-        'Failed to process images or create product',
+        'Failed to process images or create product ',
+        error.message,
       );
     }
   }

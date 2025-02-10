@@ -1,16 +1,14 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useCheckout } from '../context/checkout-context';
-import { useCart } from '@/modules/cart/context/cart-context';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
-import { apiClient } from '@/lib/api-client';
-import { TAX_RATE } from '@/config/constants';
+import { useCheckout } from "../context/checkout-context";
+import { useCart } from "@/modules/cart/context/cart-context";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/api-client";
+import { TAX_RATE } from "@/config/constants";
+import Image from "next/image";
+import Link from "next/link";
+import "./order-review.css";
 
 export function OrderReview() {
   const { shippingAddress: shippingDetails, paymentMethod } = useCheckout();
@@ -20,7 +18,7 @@ export function OrderReview() {
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
-    0,
+    0
   );
   const shippingPrice = itemsPrice > 100 ? 0 : 10;
   const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
@@ -28,7 +26,7 @@ export function OrderReview() {
 
   const handlePlaceOrder = async () => {
     try {
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         name: item.name,
         qty: item.qty,
         image: item.image,
@@ -36,7 +34,7 @@ export function OrderReview() {
         productId: item.productId,
       }));
 
-      const response = await apiClient.post('/orders', {
+      const response = await apiClient.post("/orders", {
         orderItems,
         shippingDetails,
         paymentMethod,
@@ -49,43 +47,47 @@ export function OrderReview() {
       await clearCart();
       router.push(`/orders/${response.data._id}`);
     } catch (error) {
+      console.log(error);
       toast({
-        title: 'Error placing order',
-        description: 'Please try again.',
-        variant: 'destructive',
+        title: "Error placing order",
+        description: "Please try again.",
+        variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="grid grid-cols-12 gap-8">
-      <div className="col-span-8 space-y-6">
+    <div className="order-review-grid">
+      <div className="order-details col-span-8 space-y-6">
         {/* Shipping Address */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Shipping</h2>
-          <p className="text-muted-foreground">
+        <div className="card p-6">
+          <h2 className="section-title">Shipping</h2>
+          <p className="address-details">
             <strong>Address: </strong>
-            {shippingDetails?.address}, {shippingDetails?.city},{' '}
+            {shippingDetails?.address}, {shippingDetails?.city},{" "}
             {shippingDetails?.postalCode}, {shippingDetails?.country}
           </p>
-        </Card>
+        </div>
 
         {/* Payment Method */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Payment</h2>
-          <p className="text-muted-foreground">
+        <div className="card p-6">
+          <h2 className="section-title">Payment</h2>
+          <p className="payment-method">
             <strong>Method: </strong>
             {paymentMethod}
           </p>
-        </Card>
+        </div>
 
         {/* Order Items */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Order Items</h2>
-          <div className="space-y-4">
-            {items.map(item => (
-              <div key={item.productId} className="flex items-center space-x-4">
-                <div className="relative h-20 w-20">
+        <div className="card p-6">
+          <h2 className="section-title">Order Items</h2>
+          <div className="order-items space-y-4">
+            {items.map((item) => (
+              <div
+                key={item.productId}
+                className="order-item flex items-center space-x-4"
+              >
+                <div className="image-container relative h-20 w-20">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -93,52 +95,57 @@ export function OrderReview() {
                     className="object-cover rounded-md"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="order-item-details flex-1">
                   <Link
                     href={`/products/${item.productId}`}
-                    className="font-medium hover:underline"
+                    className="item-name font-medium hover:underline"
                   >
                     {item.name}
                   </Link>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="item-price text-sm text-muted-foreground">
                     {item.qty} x ${item.price} = ${item.qty * item.price}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* Order Summary */}
-      <div className="col-span-4">
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Items</span>
+      <div className="order-summary col-span-4">
+        <div className="card p-6">
+          <h2 className="section-title">Order Summary</h2>
+          <div className="summary-details space-y-4">
+            <div className="summary-row flex justify-between">
+              <span className="summary-label text-muted-foreground">Items</span>
               <span>${itemsPrice.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Shipping</span>
+            <div className="summary-row flex justify-between">
+              <span className="summary-label text-muted-foreground">
+                Shipping
+              </span>
               <span>
-                {shippingPrice === 0 ? 'Free' : `$${shippingPrice.toFixed(2)}`}
+                {shippingPrice === 0 ? "Free" : `$${shippingPrice.toFixed(2)}`}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Tax</span>
+            <div className="summary-row flex justify-between">
+              <span className="summary-label text-muted-foreground">Tax</span>
               <span>${taxPrice.toFixed(2)}</span>
             </div>
-            <Separator />
-            <div className="flex justify-between font-medium">
+            <div className="separator" />
+            <div className="summary-row flex justify-between font-medium">
               <span>Total</span>
               <span>${totalPrice.toFixed(2)}</span>
             </div>
-            <Button className="w-full" size="lg" onClick={handlePlaceOrder}>
+            <button
+              className="place-order-button w-full"
+              onClick={handlePlaceOrder}
+            >
               Place Order
-            </Button>
+            </button>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

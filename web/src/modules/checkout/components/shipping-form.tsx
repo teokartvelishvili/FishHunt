@@ -1,22 +1,13 @@
-'use client';
+"use client";
 
-import { useForm, Controller } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { apiClient } from '@/lib/api-client';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { useCheckout } from '../context/checkout-context';
-import { getCountries } from '@/lib/countries';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import Image from 'next/image';
+import { useForm, Controller } from "react-hook-form";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { useCheckout } from "../context/checkout-context";
+import { getCountries } from "@/lib/countries";
+
+import "./shipping-form.css";
 
 interface ShippingFormData {
   address: string;
@@ -39,61 +30,58 @@ export function ShippingForm() {
 
   const onSubmit = async (data: ShippingFormData) => {
     try {
-      const response = await apiClient.post('/cart/shipping', data);
+      const response = await apiClient.post("/cart/shipping", data);
       const shippingAddress = response.data;
       setShippingAddress(shippingAddress);
-      router.push('/checkout/payment');
+      router.push("/checkout/payment");
     } catch (error) {
+      console.log(error);
       toast({
-        title: 'Error saving shipping details',
-        description: 'Please try again.',
-        variant: 'destructive',
+        title: "Error saving shipping details",
+        description: "Please try again.",
+        variant: "destructive",
       });
     }
   };
 
   return (
-    <Card className="p-6 space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Shipping Address</h1>
-        <p className="text-sm text-muted-foreground">
-          Enter your shipping details
-        </p>
+    <div className="shipping-form-card">
+      <div className="shipping-form-header">
+        <h1>Shipping Address</h1>
+        <p>Enter your shipping details</p>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="shipping-form">
         <div>
           <label htmlFor="address">Street Address</label>
-          <Input
+          <input
             id="address"
-            {...register('address', { required: 'Address is required' })}
+            {...register("address", { required: "Address is required" })}
             placeholder="123 Main St"
           />
           {errors.address && (
-            <p className="text-sm text-red-500">{errors.address.message}</p>
+            <p className="error-text">{errors.address.message}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="city">City</label>
-          <Input
+          <input
             id="city"
-            {...register('city', { required: 'City is required' })}
+            {...register("city", { required: "City is required" })}
             placeholder="New York"
           />
-          {errors.city && (
-            <p className="text-sm text-red-500">{errors.city.message}</p>
-          )}
+          {errors.city && <p className="error-text">{errors.city.message}</p>}
         </div>
 
         <div>
           <label htmlFor="postalCode">Postal Code</label>
-          <Input
+          <input
             id="postalCode"
-            {...register('postalCode', { required: 'Postal code is required' })}
+            {...register("postalCode", { required: "Postal code is required" })}
             placeholder="10001"
           />
           {errors.postalCode && (
-            <p className="text-sm text-red-500">{errors.postalCode.message}</p>
+            <p className="error-text">{errors.postalCode.message}</p>
           )}
         </div>
 
@@ -102,33 +90,33 @@ export function ShippingForm() {
           <Controller
             name="country"
             control={control}
-            rules={{ required: 'Country is required' }}
+            rules={{ required: "Country is required" }}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {getCountries().map(country => (
-                    <SelectItem key={country.code} value={country.code}>
-                      <div className="flex items-center gap-2">
-                        {country.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select {...field} defaultValue="">
+                <option value="" disabled>
+                  Select a country
+                </option>
+                {getCountries().map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
             )}
           />
           {errors.country && (
-            <p className="text-sm text-red-500">{errors.country.message}</p>
+            <p className="error-text">{errors.country.message}</p>
           )}
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <button
+          type="submit"
+          className="shipping-form-button"
+          disabled={isSubmitting}
+        >
           Continue to Payment
-        </Button>
+        </button>
       </form>
-    </Card>
+    </div>
   );
 }

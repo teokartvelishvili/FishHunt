@@ -1,8 +1,9 @@
 export const sampleProduct = {
   name: 'Sample name',
   price: 0,
-  image: 'image',
+  images: ['image'],
   brand: 'Sample brand',
+  brandLogo: 'BrandLogo',
   category: 'Sample category',
   numReviews: 0,
   countInStock: 0,

@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { StarIcon } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { apiClient } from '@/lib/api-client';
+import { useState } from "react";
+import { StarIcon } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/api-client";
+import "./ReviewForm.css";
 
 interface ReviewFormProps {
   productId: string;
@@ -12,7 +11,7 @@ interface ReviewFormProps {
 
 export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -22,18 +21,18 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
 
     if (rating === 0) {
       toast({
-        title: 'Error',
-        description: 'Please select a rating',
-        variant: 'destructive',
+        title: "Error",
+        description: "Please select a rating",
+        variant: "destructive",
       });
       return;
     }
 
     if (!comment.trim()) {
       toast({
-        title: 'Error',
-        description: 'Please enter a review comment',
-        variant: 'destructive',
+        title: "Error",
+        description: "Please enter a review comment",
+        variant: "destructive",
       });
       return;
     }
@@ -46,18 +45,33 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
       });
 
       toast({
-        title: 'Success',
-        description: 'Review submitted successfully',
+        title: "Success",
+        description: "Review submitted successfully",
       });
 
       setRating(0);
-      setComment('');
+      setComment("");
       onSuccess();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = "Failed to submit review";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error
+      ) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      }
+
       toast({
-        title: 'Error',
-        description: error.response?.data?.message || 'Failed to submit review',
-        variant: 'destructive',
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -65,24 +79,24 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Rating</label>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map(value => (
+    <form onSubmit={handleSubmit} className="review-form">
+      <div className="review-section">
+        <label className="review-label">Rating</label>
+        <div className="review-stars">
+          {[1, 2, 3, 4, 5].map((value) => (
             <button
               key={value}
               type="button"
               onClick={() => setRating(value)}
               onMouseEnter={() => setHoveredRating(value)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="p-1"
+              className="review-star-button"
             >
               <StarIcon
-                className={`h-6 w-6 ${
+                className={`review-star ${
                   value <= (hoveredRating || rating)
-                    ? 'text-yellow-400 fill-yellow-400'
-                    : 'text-gray-300'
+                    ? "filled-star"
+                    : "empty-star"
                 }`}
               />
             </button>
@@ -90,22 +104,22 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="comment" className="text-sm font-medium">
+      <div className="review-section">
+        <label htmlFor="comment" className="review-label">
           Review
         </label>
-        <Textarea
+        <textarea
           id="comment"
           value={comment}
-          onChange={e => setComment(e.target.value)}
+          onChange={(e) => setComment(e.target.value)}
           placeholder="Write your review here..."
-          className="h-24"
+          className="review-textarea"
         />
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? 'Submitting...' : 'Submit Review'}
-      </Button>
+      <button type="submit" disabled={isSubmitting} className="review-submit">
+        {isSubmitting ? "Submitting..." : "Submit Review"}
+      </button>
     </form>
   );
 }

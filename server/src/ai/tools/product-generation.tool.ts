@@ -3,7 +3,7 @@ import { generateObject } from 'ai';
 import { z } from 'zod';
 import { AiConfigService } from '../services/ai-config.service';
 import { ImageGenerationService } from '../services/image-generation.service';
-import { ProductCreationStep } from '@/types/agents';
+import { ProductCreationStep } from '@apps/shared/types/agents';
 import { ProductsService } from '@/products/services/products.service';
 
 @Injectable()
@@ -73,7 +73,7 @@ export class ProductGenerationTool {
     ];
 
     const images = await Promise.all(
-      angles.map((angle) =>
+      angles.map(angle =>
         this.imageService.generateProductImage({
           prompt: angle.prompt,
           negativePrompt:
@@ -218,9 +218,7 @@ export class ProductGenerationTool {
       const transformedData = {
         ...product,
         images: Array.isArray(product.images)
-          ? product.images.map((img) =>
-              typeof img === 'string' ? img : img.url,
-            )
+          ? product.images.map(img => (typeof img === 'string' ? img : img.url))
           : [],
         brandLogo:
           typeof product.brandLogo === 'string'
@@ -245,7 +243,7 @@ export class ProductGenerationTool {
         return {
           success: false,
           message: 'Invalid product data',
-          errors: error.errors.map((e) => ({
+          errors: error.errors.map(e => ({
             field: e.path.join('.'),
             message: e.message,
           })),

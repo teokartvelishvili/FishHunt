@@ -22,4 +22,7 @@ export class ProductDto {
 
   @IsNumber()
   countInStock!: number;
+
+  @IsString()
+  brandLogo!: string;
 }

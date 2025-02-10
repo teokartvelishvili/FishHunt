@@ -7,9 +7,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
-import { generateUsers } from '@/utils/seed-users';
-import { PaginatedResponse } from '@/types';
 import { hashPassword } from '@/utils/password';
+import { generateUsers } from '@/utils/seed-users';
+import { PaginatedResponse } from '@apps/shared/types';
 
 @Injectable()
 export class UsersService {
@@ -127,7 +127,7 @@ export class UsersService {
     // Remove undefined values
     type UpdateKeys = keyof Partial<User>;
     Object.keys(updateData as Record<UpdateKeys, unknown>).forEach(
-      (key) =>
+      key =>
         updateData[key as UpdateKeys] === undefined &&
         delete updateData[key as UpdateKeys],
     );

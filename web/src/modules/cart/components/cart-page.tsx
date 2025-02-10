@@ -1,13 +1,11 @@
-'use client';
+"use client";
 
-import { useCart } from '../context/cart-context';
-import { CartEmpty } from './cart-empty';
-import { CartItem } from './cart-item';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { useRouter } from 'next/navigation';
-import { formatPrice } from '@/lib/utils';
+import { useCart } from "../context/cart-context";
+import { CartEmpty } from "./cart-empty";
+import { CartItem } from "./cart-item";
+import { formatPrice } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import "./cart-page.css";
 
 export function CartPage() {
   const { items, loading } = useCart();
@@ -27,51 +25,48 @@ export function CartPage() {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="space-y-8 pb-10 pt-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold md:text-2xl">Shopping Cart</h1>
-        <p className="text-muted-foreground">{items.length} items</p>
+    <div className="cart-page">
+      <div className="cart-header">
+        <h1 className="cart-title">Shopping Cart</h1>
+        <p className="cart-items-count">{items.length} items</p>
       </div>
 
-      <div className="grid grid-cols-12 gap-8 lg:gap-6 md:grid-cols-1">
-        <div className="col-span-8 md:col-span-1">
-          <div className="space-y-4">
-            {items.map(item => (
-              <CartItem key={item.productId} item={item} />
-            ))}
-          </div>
+      <div className="cart-content">
+        <div className="cart-items">
+          {items.map((item) => (
+            <CartItem key={item.productId} item={item} />
+          ))}
         </div>
 
-        <div className="col-span-4 md:col-span-1">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold">Order Summary</h2>
-            <div className="mt-4 space-y-4">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
+        <div className="order-summary">
+          <div className="summary-card">
+            <h2 className="summary-title">Order Summary</h2>
+            <div className="summary-details">
+              <div className="summary-row">
+                <span className="summary-label">Subtotal</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping</span>
-                <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
+              <div className="summary-row">
+                <span className="summary-label">Shipping</span>
+                <span>{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tax</span>
+              <div className="summary-row">
+                <span className="summary-label">Tax</span>
                 <span>{formatPrice(tax)}</span>
               </div>
-              <Separator />
-              <div className="flex justify-between font-medium">
+              <hr className="separator" />
+              <div className="summary-row total">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
-              <Button
-                className="w-full"
-                size="lg"
-                onClick={() => router.push('/checkout/shipping')}
+              <button
+                className="checkout-button"
+                onClick={() => router.push("/checkout/shipping")}
               >
                 Proceed to Checkout
-              </Button>
+              </button>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

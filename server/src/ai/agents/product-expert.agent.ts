@@ -3,7 +3,7 @@ import { convertToCoreMessages, Message, streamText, tool } from 'ai';
 import { z } from 'zod';
 import { AiConfigService } from '../services/ai-config.service';
 import { ProductGenerationTool } from '../tools/product-generation.tool';
-import { ProductCreationStep } from '@/types/agents';
+import { ProductCreationStep } from '@apps/shared/types/agents';
 
 @Injectable()
 export class ProductExpertAgent {
@@ -14,7 +14,7 @@ export class ProductExpertAgent {
 
   async chat(messages: Message[]) {
     const coreMessages = convertToCoreMessages(messages).filter(
-      (message) => message.content.length > 0,
+      message => message.content.length > 0,
     );
 
     const systemPrompt = `
@@ -137,7 +137,7 @@ export class ProductExpertAgent {
               ...result,
               productInfo: {
                 ...productInfo,
-                images: result.images.map((img) => img.url),
+                images: result.images.map(img => img.url),
               },
             };
           },
