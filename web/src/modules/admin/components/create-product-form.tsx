@@ -241,6 +241,33 @@ export function CreateProductForm() {
             <p className="create-product-error">{errors.images}</p>
           )}
         </div>
+        <div>
+          <label htmlFor="brand">Brand</label>
+          <input
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            placeholder="Enter brand name"
+            required
+          />
+          {errors.brand && <p className="text-red-500">{errors.brand}</p>}
+        </div>
+        <div>
+          <label htmlFor="countInStock">Stock Count</label>
+          <input
+            id="countInStock"
+            name="countInStock"
+            type="number"
+            value={formData.countInStock}
+            onChange={handleChange}
+            min={0}
+            required
+          />
+          {errors.countInStock && (
+            <p className="text-red-500">{errors.countInStock}</p>
+          )}
+        </div>
 
         <div>
           <label htmlFor="brandLogo">Brand Logo</label>
