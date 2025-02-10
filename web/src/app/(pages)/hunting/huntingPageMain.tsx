@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import "./huntingPageMain.css";
-import mapImage from "../../assets/map.png";
+import mapImage from "../../../assets/map.png";
 
 const HuntingPageMain = () => {
   return (
