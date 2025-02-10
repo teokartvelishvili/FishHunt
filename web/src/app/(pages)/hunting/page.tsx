@@ -1,11 +1,12 @@
-import HuntingPage from "@/components/huntingPageMain/huntingPageMain";
+import HuntingPageMain from "./huntingPageMain";
+
 
 
 const Hunting = () => {
 
   return (
     <div>
-<HuntingPage/>
+<HuntingPageMain/>
     </div>
   );
 };

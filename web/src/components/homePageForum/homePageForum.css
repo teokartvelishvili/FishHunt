@@ -1,0 +1,16 @@
+.homePageForum {
+    padding: 10px 5%;
+    background-color: #E9EBF8;
+}
+.homePageForumH1 {
+    display: flex;
+    justify-content: start;
+    color: #402000;
+}
+.forumPageLink {
+    display: flex;
+    justify-content: end;
+    text-decoration: none;
+    color: #402000;
+    font-size: 20px;
+}
