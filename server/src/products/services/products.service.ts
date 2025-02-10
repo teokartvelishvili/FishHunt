@@ -8,7 +8,7 @@ import { Model, Types } from 'mongoose';
 import { UserDocument } from 'src/users/schemas/user.schema';
 import { sampleProduct } from '../../utils/data/product';
 import { Product, ProductDocument } from '../schemas/product.schema';
-import { PaginatedResponse } from '../../../../shared/types';
+import { PaginatedResponse } from '@/types';
 import { Order } from '../../orders/schemas/order.schema';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class ProductsService {
     const searchPattern = decodedKeyword
       ? decodedKeyword
           .split(' ')
-          .map(term => `(?=.*${term})`)
+          .map((term) => `(?=.*${term})`)
           .join('')
       : '';
 
@@ -140,7 +140,7 @@ export class ProductsService {
     if (!product) throw new NotFoundException('No product with given ID.');
 
     const alreadyReviewed = product.reviews.find(
-      r => r.user.toString() === user._id.toString(),
+      (r) => r.user.toString() === user._id.toString(),
     );
 
     if (alreadyReviewed)

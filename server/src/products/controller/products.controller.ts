@@ -29,8 +29,9 @@ import {
 } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
 import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
-import { ChatRequest } from '@apps/shared/types/agents';
+// import { ChatRequest } from '@/types/agents';
 import { Response } from 'express';
+import { ChatRequest } from '@/types/agents';
 
 @Controller('products')
 export class ProductsController {
@@ -105,7 +106,7 @@ export class ProductsController {
 
     try {
       const imageUrls = await Promise.all(
-        files.map(file => this.appService.uploadImageToCloudinary(file)),
+        files.map((file) => this.appService.uploadImageToCloudinary(file)),
       );
       const brandLogoUrl = await this.appService.uploadImageToCloudinary(
         brandLogo[0],
