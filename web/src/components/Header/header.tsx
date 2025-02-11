@@ -1,22 +1,16 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-import { LanguageContext } from "../../hooks/LanguageContext"; // ენის კონტექსტი
-import Image from "next/image"; // Next.js-ის Image კომპონენტი
-import geoFlag from "../../assets/geoFlag.png"; // ქართული დროშა
-import engFlag from "../../assets/engFlag.png"; // ინგლისური დროშა
+import { LanguageContext } from "../../hooks/LanguageContext";
+import Image from "next/image";
+import geoFlag from "../../assets/geoFlag.png";
+import engFlag from "../../assets/engFlag.png";
 import Link from "next/link";
-import logo from "../../assets/logo.png"
-
-// import { UserMenu } from '../navbar/user-menu';
-// import { CartIcon } from '@/modules/cart/components/cart-icon';
-
-import "./header.css";
+import logo from "../../assets/logo.png";
 import SearchBox from "../SearchBox/search-box";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
 import UserMenu from "./user-menu";
-
-// import { SearchBox } from "../SearchBox/search-box";
+import "./Header.css";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,9 +30,9 @@ export default function Header() {
               {isOpen ? "✖" : "☰"}
             </button>
             <Link href="/" className="logo">
-            Fish
-            <Image className="logoImage" src={logo} alt="" />
-             Hunt
+              Fish
+              <Image className="logoImage" src={logo} alt="" />
+              Hunt
             </Link>
           </div>
 
