@@ -1,10 +1,9 @@
-import { CartPage } from '@/modules/cart/components/cart-page';
-import { Container } from '@/components/ui/container';
+import { CartPage } from "@/modules/cart/components/cart-page";
 
 export default function Page() {
   return (
-    <Container>
+    <div className="Container">
       <CartPage />
-    </Container>
+    </div>
   );
 }

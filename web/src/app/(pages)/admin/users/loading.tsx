@@ -1,25 +1,23 @@
-import React from 'react';
-import { Container } from '@/components/ui/container';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import React from "react";
+import "./loading.css";
 
 export default function Loading() {
   return (
-    <Container>
-      <div className="py-10 space-y-6">
-        <Card>
-          <div className="flex items-center justify-between p-6">
-            <Skeleton className="h-8 w-32" />
+    <div className="container">
+      <div className="loading-wrapper">
+        <div className="card">
+          <div className="card-header">
+            <div className="skeleton skeleton-header"></div>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
+          <div className="card-content">
+            <div className="skeleton-list">
               {Array.from({ length: 10 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
+                <div key={i} className="skeleton skeleton-item"></div>
               ))}
             </div>
           </div>
-        </Card>
+        </div>
       </div>
-    </Container>
+    </div>
   );
 }

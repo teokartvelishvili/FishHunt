@@ -1,7 +1,6 @@
-import { ProductDetails } from '@/modules/products/components/product-details';
-import { Container } from '@/components/ui/container';
-import { getProduct } from '@/modules/products/actions/get-product';
-import { notFound } from 'next/navigation';
+import { ProductDetails } from "@/modules/products/components/product-details";
+import { getProduct } from "@/modules/products/actions/get-product";
+import { notFound } from "next/navigation";
 
 interface ProductPageProps {
   params: Promise<{
@@ -18,8 +17,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <Container>
+    <div className="Container">
       <ProductDetails product={product} />
-    </Container>
+    </div>
   );
 }

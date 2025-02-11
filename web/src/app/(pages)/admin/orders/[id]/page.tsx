@@ -1,7 +1,7 @@
-import { Container } from '@/components/ui/container';
+
 import { fetchWithAuth } from '@/lib/fetch-with-auth';
 import { AdminOrderDetails } from '@/modules/admin/components/admin-order-details';
-import { Order } from '@apps/shared/types/order';
+import { Order } from '@/types/order';
 
 interface AdminOrderPageProps {
   params: Promise<{
@@ -15,10 +15,10 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
   const order: Order = await response.json();
 
   return (
-    <Container>
+    <div className='orderPage'>
       <div className="max-w-7xl mx-auto py-10">
         <AdminOrderDetails order={order} />
       </div>
-    </Container>
+    </div>
   );
 }

@@ -1,121 +1,142 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
-import { apiClient } from "@/lib/api-client";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { getCountries } from "@/lib/countries";
+import { CheckCircle2, XCircle } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Order } from "@/types/order";
+import { PayPalButton } from "./paypal-button";
+import { StripeButton } from "./stripe-button";
 import "./order-details.css";
-import { useCheckout } from "@/modules/checkout/context/checkout-context";
 
-interface ShippingFormData {
-  address: string;
-  city: string;
-  postalCode: string;
-  country: string;
+interface OrderDetailsProps {
+  order: Order;
 }
 
-export function ShippingForm() {
-  const { setShippingAddress } = useCheckout();
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    control,
-  } = useForm<ShippingFormData>();
-
-  const onSubmit = async (data: ShippingFormData) => {
-    try {
-      const response = await apiClient.post("/cart/shipping", data);
-      const shippingAddress = response.data;
-      setShippingAddress(shippingAddress);
-      router.push("/checkout/payment");
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Error saving shipping details",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
+export function OrderDetails({ order }: OrderDetailsProps) {
   return (
-    <div className="shipping-form-card">
-      <div className="shipping-form-header">
-        <h1>Shipping Address</h1>
-        <p>Enter your shipping details</p>
+    <div className="order-container">
+      <div className="order-header">
+        <h1 className="order-title">Order #{order._id}</h1>
+        <span className={`order-badge ${order.isPaid ? "paid" : "pending"}`}>
+          {order.isPaid ? "Paid" : "Pending Payment"}
+        </span>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="shipping-form">
-        <div>
-          <label htmlFor="address">Street Address</label>
-          <input
-            id="address"
-            {...register("address", { required: "Address is required" })}
-            placeholder="123 Main St"
-          />
-          {errors.address && (
-            <p className="error-text">{errors.address.message}</p>
-          )}
+
+      <div className="order-grid">
+        <div className="order-left">
+          {/* Shipping Info */}
+          <div className="order-card">
+            <h2 className="order-subtitle">Shipping</h2>
+            <p>
+              <span className="font-medium">Address: </span>
+              {order.shippingDetails.address}, {order.shippingDetails.city},{" "}
+              {order.shippingDetails.postalCode},{" "}
+              {order.shippingDetails.country}
+            </p>
+            <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
+              {order.isDelivered ? (
+                <CheckCircle2 className="icon" />
+              ) : (
+                <XCircle className="icon" />
+              )}
+              <span>
+                {order.isDelivered
+                  ? `Delivered on ${new Date(
+                      order.deliveredAt!
+                    ).toLocaleDateString()}`
+                  : "Not Delivered"}
+              </span>
+            </div>
+          </div>
+
+          {/* Payment Info */}
+          <div className="order-card">
+            <h2 className="order-subtitle">Payment</h2>
+            <p>
+              <span className="font-medium">Method: </span>
+              {order.paymentMethod}
+            </p>
+            <div className={`alert ${order.isPaid ? "success" : "error"}`}>
+              {order.isPaid ? (
+                <CheckCircle2 className="icon" />
+              ) : (
+                <XCircle className="icon" />
+              )}
+              <span>
+                {order.isPaid
+                  ? `Paid on ${new Date(order.paidAt!).toLocaleDateString()}`
+                  : "Not Paid"}
+              </span>
+            </div>
+          </div>
+
+          {/* Order Items */}
+          <div className="order-card">
+            <h2 className="order-subtitle">Order Items</h2>
+            {order.orderItems.map((item) => (
+              <div key={item.productId} className="order-item">
+                <div className="order-item-image">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                </div>
+                <div className="order-item-details">
+                  <Link
+                    href={`/products/${item.productId}`}
+                    className="order-item-link"
+                  >
+                    {item.name}
+                  </Link>
+                  <p>
+                    {item.qty} x ${item.price.toFixed(2)} = $
+                    {(item.qty * item.price).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="city">City</label>
-          <input
-            id="city"
-            {...register("city", { required: "City is required" })}
-            placeholder="New York"
-          />
-          {errors.city && <p className="error-text">{errors.city.message}</p>}
-        </div>
+        {/* Order Summary */}
+        <div className="order-right">
+          <div className="order-card">
+            <h2 className="order-subtitle">Order Summary</h2>
+            <div className="order-summary">
+              <div className="summary-item">
+                <span>Items</span>
+                <span>${order.itemsPrice.toFixed(2)}</span>
+              </div>
+              <div className="summary-item">
+                <span>Shipping</span>
+                <span>
+                  {order.shippingPrice === 0
+                    ? "Free"
+                    : `$${order.shippingPrice.toFixed(2)}`}
+                </span>
+              </div>
+              <div className="summary-item">
+                <span>Tax</span>
+                <span>${order.taxPrice.toFixed(2)}</span>
+              </div>
+              <hr />
+              <div className="summary-total">
+                <span>Total</span>
+                <span>${order.totalPrice.toFixed(2)}</span>
+              </div>
 
-        <div>
-          <label htmlFor="postalCode">Postal Code</label>
-          <input
-            id="postalCode"
-            {...register("postalCode", { required: "Postal code is required" })}
-            placeholder="10001"
-          />
-          {errors.postalCode && (
-            <p className="error-text">{errors.postalCode.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="country">Country</label>
-          <Controller
-            name="country"
-            control={control}
-            rules={{ required: "Country is required" }}
-            render={({ field }) => (
-              <select {...field} defaultValue="">
-                <option value="" disabled>
-                  Select a country
-                </option>
-                {getCountries().map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
-                  </option>
+              {!order.isPaid &&
+                (order.paymentMethod === "PayPal" ? (
+                  <PayPalButton orderId={order._id} amount={order.totalPrice} />
+                ) : (
+                  <StripeButton orderId={order._id} amount={order.totalPrice} />
                 ))}
-              </select>
-            )}
-          />
-          {errors.country && (
-            <p className="error-text">{errors.country.message}</p>
-          )}
+            </div>
+          </div>
         </div>
-
-        <button
-          type="submit"
-          className="shipping-form-button"
-          disabled={isSubmitting}
-        >
-          Continue to Payment
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
