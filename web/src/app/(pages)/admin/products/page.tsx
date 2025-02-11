@@ -1,4 +1,3 @@
-import { Container } from "@/components/ui/container";
 import { ProductsList } from "@/modules/admin/components/products-list";
 import { getProducts } from "@/modules/admin/actions/get-products";
 import {
@@ -26,7 +25,7 @@ export default async function AdminProductsPage({
   const visiblePages = getVisiblePages(currentPage, pages);
 
   return (
-    <Container>
+    <div>
       <div className="py-10 space-y-6">
         <ProductsList products={products} />
         <div className="flex justify-center">
@@ -68,6 +67,6 @@ export default async function AdminProductsPage({
           )}
         </div>
       </div>
-    </Container>
+    </div>
   );
 }
