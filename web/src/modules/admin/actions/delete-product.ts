@@ -1,28 +1,29 @@
-'use server';
+"use server";
 
-import { fetchWithAuth } from '@/lib/fetch-with-auth';
-import { revalidatePath } from 'next/cache';
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { revalidatePath } from "next/cache";
 
 export async function deleteProduct(productId: string) {
   try {
     const response = await fetchWithAuth(`/products/${productId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
 
     if (!response.ok) {
-      throw new Error('Failed to delete product');
+      throw new Error("Failed to delete product");
     }
 
-    revalidatePath('/admin/products');
+    revalidatePath("/admin/products");
 
     return {
       success: true,
-      message: 'Product deleted successfully',
+      message: "Product deleted successfully",
     };
   } catch (error) {
+    console.log(error);
     return {
       success: false,
-      message: 'Failed to delete product',
+      message: "Failed to delete product",
     };
   }
 }
