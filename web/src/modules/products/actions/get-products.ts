@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { fetchWithAuth } from '@/lib/fetch-with-auth';
-import type { PaginatedResponse, Product } from '@apps/shared/types';
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import type { PaginatedResponse, Product } from "@/types";
 
 export async function getProducts(
   page: number = 1,
   limit: number = 10,
-  keyword?: string,
+  keyword?: string
 ): Promise<PaginatedResponse<Product>> {
   try {
     const searchParams = new URLSearchParams({
@@ -15,22 +15,22 @@ export async function getProducts(
     });
 
     if (keyword) {
-      searchParams.append('keyword', keyword);
+      searchParams.append("keyword", keyword);
     }
 
     const response = await fetchWithAuth(
-      `/products?${searchParams.toString()}`,
+      `/products?${searchParams.toString()}`
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch products');
+      throw new Error("Failed to fetch products");
     }
 
     const data = (await response.json()) as PaginatedResponse<Product>;
 
     return data;
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     return {
       items: [],
       total: 0,
