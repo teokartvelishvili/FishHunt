@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
 import noPhoto from "../../../assets/nophoto.webp";
 
 const ForumPage = ({ limit }: { limit?: number | null }) => {
-    const allPosts = [
+  const allPosts = useMemo(
+    () => [
       {
         id: 1,
         image: noPhoto.src,
@@ -21,16 +22,16 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 2,
                 text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src }
-              }
-            ]
+                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
+              },
+            ],
           },
           {
             id: 3,
             text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
             author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: []
-          }
+            replies: [],
+          },
         ],
         time: "3 hours ago",
       },
@@ -49,10 +50,10 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 5,
                 text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src }
-              }
-            ]
-          }
+                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
+              },
+            ],
+          },
         ],
         time: "5 hours ago",
       },
@@ -71,16 +72,16 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 2,
                 text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src }
-              }
-            ]
+                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
+              },
+            ],
           },
           {
             id: 3,
             text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
             author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: []
-          }
+            replies: [],
+          },
         ],
         time: "3 hours ago",
       },
@@ -99,10 +100,10 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 5,
                 text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src }
-              }
-            ]
-          }
+                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
+              },
+            ],
+          },
         ],
         time: "5 hours ago",
       },
@@ -121,16 +122,16 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 2,
                 text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src }
-              }
-            ]
+                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
+              },
+            ],
           },
           {
             id: 3,
             text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
             author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: []
-          }
+            replies: [],
+          },
         ],
         time: "3 hours ago",
       },
@@ -149,10 +150,10 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 5,
                 text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src }
-              }
-            ]
-          }
+                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
+              },
+            ],
+          },
         ],
         time: "5 hours ago",
       },
@@ -171,16 +172,16 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 2,
                 text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src }
-              }
-            ]
+                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
+              },
+            ],
           },
           {
             id: 3,
             text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
             author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: []
-          }
+            replies: [],
+          },
         ],
         time: "3 hours ago",
       },
@@ -199,15 +200,16 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
               {
                 id: 5,
                 text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src }
-              }
-            ]
-          }
+                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
+              },
+            ],
+          },
         ],
         time: "5 hours ago",
-      }
-    ];
-    
+      },
+    ],
+    []
+  );
 
   const [visiblePosts, setVisiblePosts] = useState(
     limit ? allPosts.slice(0, limit) : allPosts.slice(0, 5)
@@ -218,17 +220,20 @@ const ForumPage = ({ limit }: { limit?: number | null }) => {
 
     const handleScroll = () => {
       if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
       ) {
         setVisiblePosts((prev) =>
-          allPosts.length > prev.length ? allPosts.slice(0, prev.length + 2) : prev
+          allPosts.length > prev.length
+            ? allPosts.slice(0, prev.length + 2)
+            : prev
         );
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [visiblePosts, limit]);
+  }, [visiblePosts, limit, allPosts]);
 
   return (
     <div className="forum-page">

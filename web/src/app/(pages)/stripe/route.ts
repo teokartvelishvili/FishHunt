@@ -1,4 +1,4 @@
-import { stripe } from '@/lib/stripe';
+import { stripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
   try {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100),
-      currency: 'usd',
+      currency: "usd",
       automatic_payment_methods: {
         enabled: true,
       },
@@ -15,9 +15,10 @@ export async function POST(req: Request) {
 
     return Response.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
+    console.log(error, "stripe errors");
     return Response.json(
-      { error: 'Error creating payment intent' },
-      { status: 500 },
+      { error: "Error creating payment intent" },
+      { status: 500 }
     );
   }
 }

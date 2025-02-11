@@ -1,10 +1,10 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { useRef, useState } from "react";
+// import {  useState } from "react";
 import { Message } from "./message";
 import { ProductExpertInput } from "./product-expert-input";
-import { Attachment } from "ai";
+// import { Attachment } from "ai";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 
 export default function ProductExpertChat() {
@@ -25,7 +25,7 @@ export default function ProductExpertChat() {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
-  const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  // const [attachments, setAttachments] = useState<Array<Attachment>>([]);
 
   return (
     <div className="flex flex-col h-[600px] rounded-lg border bg-background">

@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { getAccessToken } from '@/modules/auth/api/get-access-token';
+import { getAccessToken } from "@/modules/auth/api/get-access-token";
 
 interface FetchWithAuthConfig extends RequestInit {
   revalidatePaths?: string[];
@@ -8,9 +8,9 @@ interface FetchWithAuthConfig extends RequestInit {
 
 export async function fetchWithAuth(
   url: string,
-  config: FetchWithAuthConfig = {},
+  config: FetchWithAuthConfig = {}
 ) {
-  const { revalidatePaths, headers, ...rest } = config;
+  const { headers, ...rest } = config;
   const accessToken = await getAccessToken();
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
@@ -23,7 +23,7 @@ export async function fetchWithAuth(
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Request failed');
+    throw new Error(error.message || "Request failed");
   }
 
   return response;

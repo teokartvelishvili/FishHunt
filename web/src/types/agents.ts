@@ -1,5 +1,5 @@
-import { Product } from '.';
-import { Message } from 'ai';
+import { Product } from ".";
+import { Message } from "ai";
 
 export interface ChatRequest {
   id: string;
@@ -7,11 +7,11 @@ export interface ChatRequest {
 }
 
 export type ProductCreationStep =
-  | 'basic-info' // Brand & Category
-  | 'details' // Name, Price, Description
+  | "basic-info" // Brand & Category
+  | "details" // Name, Price, Description
   // | 'features' // Technical specs & features
-  | 'images' // Product images
-  | 'review'; // Final review
+  | "images" // Product images
+  | "review"; // Final review
 
 export interface ValidationError {
   field: string;
@@ -20,7 +20,7 @@ export interface ValidationError {
 }
 
 export interface AgentMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
   name?: string;
 }
@@ -28,7 +28,7 @@ export interface AgentMessage {
 export interface AgentState {
   messages: AgentMessage[];
   productDraft?: Partial<Product>;
-  status: 'idle' | 'thinking' | 'validating' | 'clarifying' | 'complete';
+  status: "idle" | "thinking" | "validating" | "clarifying" | "complete";
   context: {
     currentStep: ProductCreationStep;
     validationErrors?: ValidationError[];
@@ -37,12 +37,12 @@ export interface AgentState {
 
 export interface AgentAction {
   type:
-    | 'ASK_CLARIFICATION'
-    | 'PROVIDE_SUGGESTIONS'
-    | 'UPDATE_PRODUCT'
-    | 'COMPLETE';
+    | "ASK_CLARIFICATION"
+    | "PROVIDE_SUGGESTIONS"
+    | "UPDATE_PRODUCT"
+    | "COMPLETE";
   message: string;
-  payload: any;
+  payload: unknown;
   validationErrors?: ValidationError[];
   choices?: string[];
   productUpdate?: Partial<Product>;

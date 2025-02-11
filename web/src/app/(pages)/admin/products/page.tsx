@@ -1,71 +1,85 @@
 import { ProductsList } from "@/modules/admin/components/products-list";
 import { getProducts } from "@/modules/admin/actions/get-products";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/pagination";
 import { getVisiblePages } from "@/lib/utils";
+import "./adminProduct.css";
 
+// searchParams არ გამოიყენება, როგორც ეს იყო
 interface AdminProductsPageProps {
-  searchParams: { page?: string };
+  searchParams: URLSearchParams;
 }
 
 export default async function AdminProductsPage({
   searchParams,
 }: AdminProductsPageProps) {
-  const { page } = searchParams;
+  const page = searchParams.get("page");
   const currentPage = Number(page) || 1;
   const { items: products, pages } = await getProducts(currentPage, 8);
-
   const visiblePages = getVisiblePages(currentPage, pages);
 
   return (
-    <div>
-      <div className="py-10 space-y-6">
+    <div className="admin-products-container">
+      <div className="products-content">
         <ProductsList products={products} />
-        <div className="flex justify-center">
-          {pages > 1 && (
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href={`/admin/products?page=${currentPage - 1}`}
-                    isActive={currentPage > 1}
-                  />
-                </PaginationItem>
 
-                {visiblePages.map((pageNum, idx) =>
-                  pageNum === null ? (
-                    <PaginationItem key={`ellipsis-${idx}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={pageNum}>
-                      <PaginationLink
-                        href={`/admin/products?page=${pageNum}`}
-                        isActive={currentPage === pageNum}
-                      >
-                        {pageNum}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
-                )}
+        {pages > 1 && (
+          <nav className="pagination">
+            <ul className="pagination-content">
+              {/* Previous Button */}
+              <li
+                className={`pagination-item ${
+                  currentPage > 1 ? "" : "disabled"
+                }`}
+              >
+                <a
+                  href={`/admin/products?page=${currentPage - 1}`}
+                  className="pagination-link"
+                >
+                  « Previous
+                </a>
+              </li>
 
-                <PaginationItem>
-                  <PaginationNext
-                    href={`/admin/products?page=${currentPage + 1}`}
-                    isActive={currentPage < pages}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
-        </div>
+              {/* Page Numbers */}
+              {visiblePages.map((pageNum, idx) =>
+                pageNum === null ? (
+                  <li
+                    key={`ellipsis-${idx}`}
+                    className="pagination-item pagination-ellipsis"
+                  >
+                    ...
+                  </li>
+                ) : (
+                  <li
+                    key={pageNum}
+                    className={`pagination-item ${
+                      currentPage === pageNum ? "active" : ""
+                    }`}
+                  >
+                    <a
+                      href={`/admin/products?page=${pageNum}`}
+                      className="pagination-link"
+                    >
+                      {pageNum}
+                    </a>
+                  </li>
+                )
+              )}
+
+              {/* Next Button */}
+              <li
+                className={`pagination-item ${
+                  currentPage < pages ? "" : "disabled"
+                }`}
+              >
+                <a
+                  href={`/admin/products?page=${currentPage + 1}`}
+                  className="pagination-link"
+                >
+                  Next »
+                </a>
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </div>
   );
