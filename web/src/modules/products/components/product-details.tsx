@@ -185,7 +185,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 }`}
                 onClick={() => setActiveTab("details")}
               >
-                Details
+                {product.description}
               </button>
               <button
                 className={`tabs-trigger ${
