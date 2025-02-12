@@ -48,7 +48,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('E-commerce API')
-      .setDescription('Modern E-commerce REST API')
+      .setDescription('FishHunt E-commerce REST API')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
