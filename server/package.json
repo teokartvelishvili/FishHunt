@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "npm install rimraf",
     "prebuild": "rimraf dist",
     "seed": "ts-node -r tsconfig-paths/register src/cli.ts",
     "build": "nest build",
