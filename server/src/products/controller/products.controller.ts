@@ -33,7 +33,7 @@ import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
 import { Response } from 'express';
 import { ChatRequest } from '@/types/agents';
 
-@Controller('products')
+@Controller('products') 
 export class ProductsController {
   constructor(
     private productsService: ProductsService,
