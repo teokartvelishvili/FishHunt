@@ -5,13 +5,13 @@ import "./adminProduct.css";
 
 // searchParams არ გამოიყენება, როგორც ეს იყო
 interface AdminProductsPageProps {
-  searchParams: URLSearchParams;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function AdminProductsPage({
   searchParams,
 }: AdminProductsPageProps) {
-  const page = searchParams.get("page");
+  const page = await searchParams;
   const currentPage = Number(page) || 1;
   const { items: products, pages } = await getProducts(currentPage, 8);
   const visiblePages = getVisiblePages(currentPage, pages);
