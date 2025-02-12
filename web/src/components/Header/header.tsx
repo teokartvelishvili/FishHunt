@@ -10,7 +10,7 @@ import logo from "../../assets/logo.png";
 import SearchBox from "../SearchBox/search-box";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
 import UserMenu from "./user-menu";
-import "./Header.css";
+import "./header.css";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
