@@ -39,6 +39,9 @@ export class Forum {
   @Prop({type: Number, default: 0})
   likes: number
 
+  @Prop({type: String})
+  imagePath: string
+
 }
 
 export const FourmSchema = SchemaFactory.createForClass(Forum)

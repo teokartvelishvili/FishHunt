@@ -1,15 +1,9 @@
 import { ArrayNotEmpty, ArrayUnique, IsArray, IsNotEmpty, IsString } from "class-validator";
 
-export class CreateForumDto {
+export class AddCommentDto {
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   content: string
-
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayUnique()
-  tags: string[]
-  
 
 }
