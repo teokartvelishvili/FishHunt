@@ -6,9 +6,9 @@ import { AuthProvider } from "@/components/auth-provider";
 import { CartProvider } from "@/modules/cart/context/cart-context";
 import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
 import { satoshi } from "./(pages)/fonts";
-import Header from "@/components/Header/header";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
+import Header from "@/components/header/header";
 
 export const metadata: Metadata = {
   title: "FishHunt",

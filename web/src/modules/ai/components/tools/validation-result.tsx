@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { motion } from "framer-motion";
+import { CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import "./validation.css";
 
 interface ValidationResultProps {
   isValid: boolean;
@@ -20,15 +20,13 @@ export function ValidationResult({
   pricingFeedback,
 }: ValidationResultProps) {
   if (!isValid) {
-    return <Card className="w-full h-32 animate-pulse" />;
+    return <div className="card pulse" />;
   }
 
   const getStatusIcon = () => {
-    if (marketFitScore >= 80)
-      return <CheckCircle2 className="text-green-500 h-6 w-6" />;
-    if (marketFitScore >= 50)
-      return <AlertCircle className="text-yellow-500 h-6 w-6" />;
-    return <XCircle className="text-red-500 h-6 w-6" />;
+    if (marketFitScore >= 80) return <CheckCircle2 className="textGreen" />;
+    if (marketFitScore >= 50) return <AlertCircle className="textYellow" />;
+    return <XCircle className="textRed" />;
   };
 
   return (
@@ -37,29 +35,25 @@ export function ValidationResult({
       animate={{ opacity: 1, y: 0 }}
       className="w-full"
     >
-      <Card className="p-4 space-y-4">
-        <div className="flex items-center gap-3">
+      <div className="card">
+        <div className="statusContainer">
           {getStatusIcon()}
           <div>
-            <h3 className="font-semibold">
-              Market Fit Score: {marketFitScore}/100
-            </h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="title">Market Fit Score: {marketFitScore}/100</h3>
+            <p className="subtitle">
               {isValid
-                ? 'Product details are complete'
-                : 'Missing required information'}
+                ? "Product details are complete"
+                : "Missing required information"}
             </p>
           </div>
         </div>
 
         {missingFields.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium text-red-500 mb-2">
-              Missing Fields:
-            </h4>
-            <ul className="list-disc list-inside space-y-1">
+          <div className="listContainer">
+            <h4 className="listTitle textRed">Missing Fields:</h4>
+            <ul className="list">
               {missingFields.map((field, index) => (
-                <li key={index} className="text-sm text-red-500">
+                <li key={index} className="listItem textRed">
                   {field}
                 </li>
               ))}
@@ -67,24 +61,24 @@ export function ValidationResult({
           </div>
         )}
 
-        <div>
-          <h4 className="text-sm font-medium mb-2">Pricing Analysis:</h4>
-          <p className="text-sm text-muted-foreground">{pricingFeedback}</p>
+        <div className="listContainer">
+          <h4 className="listTitle">Pricing Analysis:</h4>
+          <p className="subtitle">{pricingFeedback}</p>
         </div>
 
         {suggestions.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium mb-2">Suggestions:</h4>
-            <ul className="list-disc list-inside space-y-1">
+          <div className="listContainer">
+            <h4 className="listTitle">Suggestions:</h4>
+            <ul className="list">
               {suggestions.map((suggestion, index) => (
-                <li key={index} className="text-sm text-muted-foreground">
+                <li key={index} className="listItem">
                   {suggestion}
                 </li>
               ))}
             </ul>
           </div>
         )}
-      </Card>
+      </div>
     </motion.div>
   );
 }

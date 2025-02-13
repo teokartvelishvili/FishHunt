@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { Card } from '@/components/ui/card';
+import { motion } from "framer-motion";
+import Image from "next/image";
+import "./brandAssets.css";
 
 interface BrandAssetsProps {
   brandLogo?: {
@@ -13,9 +13,9 @@ interface BrandAssetsProps {
 export function BrandAssets({ brandLogo }: BrandAssetsProps) {
   if (!brandLogo) {
     return (
-      <Card className="w-full p-4">
-        <div className="h-32 animate-pulse bg-muted rounded-md" />
-      </Card>
+      <div className="container">
+        <div className="pulse" />
+      </div>
     );
   }
 
@@ -23,10 +23,10 @@ export function BrandAssets({ brandLogo }: BrandAssetsProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full"
+      className="container"
     >
-      <Card className="p-4 space-y-4">
-        <div className="aspect-video relative">
+      <div className="brandContainer">
+        <div className="imageWrapper">
           <Image
             src={brandLogo.url}
             alt="Brand logo"
@@ -34,7 +34,7 @@ export function BrandAssets({ brandLogo }: BrandAssetsProps) {
             className="object-contain"
           />
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }

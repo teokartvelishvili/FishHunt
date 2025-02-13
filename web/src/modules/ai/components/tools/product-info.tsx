@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
+import { motion } from "framer-motion";
 
 interface ProductInfoProps {
   productInfo?: {
@@ -16,7 +15,7 @@ interface ProductInfoProps {
 
 export function ProductInfo({ productInfo }: ProductInfoProps) {
   if (!productInfo) {
-    return <Card className="w-full h-32 animate-pulse" />;
+    return <div className="w-full h-32 animate-pulse" />;
   }
 
   const isOutOfStock = productInfo.countInStock === 0;
@@ -27,7 +26,7 @@ export function ProductInfo({ productInfo }: ProductInfoProps) {
       animate={{ opacity: 1, y: 0 }}
       className="w-full"
     >
-      <Card className="p-4 space-y-4">
+      <div className="p-4 space-y-4">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg">{productInfo.name}</h3>
@@ -52,7 +51,7 @@ export function ProductInfo({ productInfo }: ProductInfoProps) {
             </div>
           )}
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }

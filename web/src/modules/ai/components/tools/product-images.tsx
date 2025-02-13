@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface ProductImagesProps {
   images?: {
@@ -15,8 +14,8 @@ export function ProductImages({ images }: ProductImagesProps) {
   if (!images) {
     return (
       <div className="grid grid-cols-2 gap-4">
-        {[1, 2, 3, 4].map(i => (
-          <Card key={i} className="aspect-square animate-pulse" />
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="aspect-square animate-pulse" />
         ))}
       </div>
     );
@@ -30,11 +29,11 @@ export function ProductImages({ images }: ProductImagesProps) {
     >
       <div className="grid grid-cols-2 gap-4">
         {images.map((image, index) => (
-          <Card
+          <div
             key={index}
             className={cn(
-              'overflow-hidden',
-              index === 0 && images.length === 1 && 'col-span-2',
+              "overflow-hidden",
+              index === 0 && images.length === 1 && "col-span-2"
             )}
           >
             <div className="aspect-square relative">
@@ -45,7 +44,7 @@ export function ProductImages({ images }: ProductImagesProps) {
                 className="object-cover"
               />
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </motion.div>
