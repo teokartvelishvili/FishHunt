@@ -4,8 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { StarIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCart } from "@/modules/cart/context/cart-context";
-import { useToast } from "@/hooks/use-toast";
 import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
 import { useRouter } from "next/navigation";
