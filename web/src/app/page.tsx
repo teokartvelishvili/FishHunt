@@ -1,6 +1,6 @@
 import HomePageForum from "@/components/homePageForum/homePageForum";
 import HomePagesHead from "@/components/homePagesHead/homePagesHead";
-import HomePageShop from "@/components/homePageShop/homePageShop";
+// import HomePageShop from "@/components/homePageShop/homePageShop";
 import TopItems from "@/components/TopItems/TopItems";
 
 const Home = () => {
@@ -10,7 +10,7 @@ const Home = () => {
     <div>
       <HomePagesHead/>
       <TopItems/>
-      <HomePageShop/>
+      {/* <HomePageShop/> */}
       <HomePageForum/>
     </div>
   );
