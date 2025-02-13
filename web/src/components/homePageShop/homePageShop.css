@@ -1,0 +1,13 @@
+.homePageShop{
+    padding: 5%;
+}
+/* .homePageShopH1 {
+    color: black;
+    margin-bottom: 40px;
+} */
+.productGrid {
+    display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding-bottom: 50px;
+}
