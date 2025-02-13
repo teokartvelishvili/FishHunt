@@ -1,102 +1,167 @@
-/* ProductCard.css */
-
 .product-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
+  width: calc(20% - 20px); /* 4-5 ბარათი გვერდიგვერდ */
+  min-width: 300px;
+  padding: 15px;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #2a553020;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  text-decoration: none;
+  margin: 10px;
+}
+.product-card a {
   text-decoration: none;
 }
 
 .product-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .product-image {
   position: relative;
-  height: 250px;
   width: 100%;
-  background-color: #f9f9f9;
+  max-height: 80px;
+  /* background-color: #EC9843; */
+  border:  1px solid #2A5530;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .image {
   object-fit: cover;
-  border-bottom: 1px solid #e0e0e0;
-  border-radius: 8px 8px 0 0;
+  width: 100%;
+  height: 100%;
 }
 
 .product-info {
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 150px;
 }
 
 .product-name {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 8px;
-  color: #333;
+  margin: 10px 0;
+  color: #2A5530;
+  text-align: center;
 }
 
 .product-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1rem;
+  color: #fff;
 }
+.priceAndRaiting{
+display: flex;
+gap: 150px;
 
+
+}
 .product-price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #ff5722;
+  font-weight: 900;
+  color: #2A5530;
 }
 
 .product-rating {
   display: flex;
   align-items: center;
+  color: #b26b2d;
 }
 
-.product-rating span {
-  margin-right: 4px;
+.quantity-container {
+  display: flex;
+  align-items: center;
+  background-color: #2a5530c4;
+  padding: 4px;
+  border-radius: 6px;
+  width: fit-content;
 }
 
-.rating-text {
-  font-size: 0.9rem;
-  color: #777;
+.quantity-button {
+  background-color: #EC9843;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.quantity-button:hover {
+  background-color: #b26b2d;
+}
+
+.quantity-input {
+  text-align: center;
+  width: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background-color: transparent;
+  border: none;
+}
+
+
+.quantity-input {
+  text-align: center;
+  width: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: transparent;
+  border: none;
+}
+
+.addButtonCart {
+  background: linear-gradient(to left, #2A5530, #EC9843);
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* .addButtonCart:hover {
+  background: linear-gradient(to right, #2A5530, #EC9843);
+} */
+
+.addButtonCart:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+  .product-card {
+    width: calc(33% - 20px);
+  }
 }
 
 @media (max-width: 768px) {
   .product-card {
-    flex-direction: row;
-    align-items: center;
-    height: auto;
+    width: calc(50% - 20px);
   }
+}
 
-  .product-image {
-    height: 150px;
-    width: 120px;
-  }
-
-  .product-info {
-    flex: 1;
-    padding: 8px 12px;
-  }
-
-  .product-name {
-    font-size: 1rem;
-  }
-
-  .product-price {
-    font-size: 1rem;
-  }
-
-  .rating-text {
-    font-size: 0.8rem;
+@media (max-width: 480px) {
+  .product-card {
+    width: 100%;
   }
 }
