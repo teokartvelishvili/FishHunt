@@ -44,6 +44,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.use('/favicon.ico', (req, res) => res.status(204).send());
 
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
