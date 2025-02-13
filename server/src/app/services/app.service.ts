@@ -6,11 +6,15 @@ export class AppService {
   constructor(private cloudinary: CloudinaryService) {}
 
   async uploadImageToCloudinary(file: Express.Multer.File) {
-    const result = await this.cloudinary.uploadImage(file).catch(err => {
+    const result = await this.cloudinary.uploadImage(file).catch((err) => {
       console.log(err);
       throw new BadRequestException('Invalid file type.');
     });
 
-    return result.secure_url;
+    const optimizedUrl = result.secure_url.replace(
+      '/upload/',
+      '/upload/q_auto,f_auto,w_1024/',
+    );
+    return optimizedUrl;
   }
 }
