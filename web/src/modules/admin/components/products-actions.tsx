@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { deleteProduct } from "@/modules/admin/actions/delete-product";
 import type { Product } from "@/types";
+import "./productActions.css";
 
 interface ProductsActionsProps {
   product: Product;
