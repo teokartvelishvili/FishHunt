@@ -46,17 +46,17 @@ async function bootstrap() {
   );
   app.use('/favicon.ico', (req, res) => res.status(204).send());
 
-  if (process.env.NODE_ENV !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('E-commerce API')
-      .setDescription('FishHunt E-commerce REST API')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
+  // if (process.env.NODE_ENV !== 'production') {
+  const config = new DocumentBuilder()
+    .setTitle('E-commerce API')
+    .setDescription('FishHunt E-commerce REST API')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, document);
-  }
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+  // }
 
   app.enableShutdownHooks();
 
