@@ -8,7 +8,7 @@ import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
 import { satoshi } from "./(pages)/fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
-import Header from "@/components/header/header";
+import Header from "@/components/Header/header";
 
 export const metadata: Metadata = {
   title: "FishHunt",

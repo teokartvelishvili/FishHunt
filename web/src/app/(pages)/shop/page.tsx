@@ -7,7 +7,7 @@ interface HomePageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-export default async function Home({ searchParams }: HomePageProps) {
+export default async function home({ searchParams }: HomePageProps) {
   const { page } = await searchParams;
   const currentPage = Number(page) || 1;
   const { items: products, pages } = await getProducts(currentPage, 10);
@@ -65,3 +65,4 @@ export default async function Home({ searchParams }: HomePageProps) {
     </div>
   );
 }
+

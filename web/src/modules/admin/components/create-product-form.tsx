@@ -11,12 +11,10 @@ import { ProductFormData } from "@/modules/products/validation/product";
 import "./CreateProductForm.css";
 
 const categories = [
-  "Electronics",
-  "Computers",
-  "Smart Home",
-  "Phones",
-  "Cameras",
-  "Gaming",
+  "Fishing",
+  "Hunting",
+  "Camping",
+  "Other"
 ];
 
 export function CreateProductForm() {

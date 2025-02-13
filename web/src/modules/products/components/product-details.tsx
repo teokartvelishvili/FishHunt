@@ -3,26 +3,21 @@
 import { useState } from "react";
 import Image from "next/image";
 import { StarIcon } from "lucide-react";
-import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCart } from "@/modules/cart/context/cart-context";
-import { useToast } from "@/hooks/use-toast";
 import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
 import { useRouter } from "next/navigation";
 import "./productDetails.css";
 import { Product } from "@/types";
+import { AddToCartButton } from "./AddToCartButton";
 
 interface ProductDetailsProps {
   product: Product;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
-  const { addItem } = useCart();
-  const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
   const router = useRouter();
 
@@ -30,26 +25,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   const isOutOfStock = product.countInStock === 0;
 
-  const handleAddToCart = async () => {
-    setLoading(true);
-    toast({
-      title: "Adding to cart...",
-      description: "Please wait while we add your item.",
-    });
-
-    try {
-      await addItem(product._id, quantity);
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="container">
@@ -164,7 +139,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             )}
           </div>
 
-          <button
+          {/* <button
             className="add-to-cart-btn"
             disabled={isOutOfStock || loading}
             onClick={handleAddToCart}
@@ -175,7 +150,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               : loading
               ? "Adding..."
               : "Add to Cart"}
-          </button>
+          </button> */}
+          <AddToCartButton productId={product._id} countInStock={product.countInStock} className="custom-style-2" />
 
           <div className="tabs">
             <div className="tabs-list">

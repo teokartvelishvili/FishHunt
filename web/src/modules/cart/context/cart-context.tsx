@@ -31,54 +31,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   const { toast } = useToast();
 
-  // Load initial cart data
-  useEffect(() => {
-    const loadCart = async () => {
-      setLoading(true);
-      try {
-        if (user) {
-          const localCart = localStorage.getItem(CART_STORAGE_KEY);
-          const localItems = localCart ? JSON.parse(localCart) : [];
-
-          const { data } = await apiClient.get("/cart");
-
-          if (localItems.length > 0) {
-            toast({
-              title: "Syncing your cart...",
-              description: "We're adding your saved items to your account.",
-            });
-            await mergeCarts(localItems, data.items);
-            toast({
-              title: "Cart synced!",
-              description: "Your items have been saved to your account.",
-            });
-            localStorage.removeItem(CART_STORAGE_KEY);
-          } else {
-            setItems(data.items);
-          }
-        } else {
-          const storedCart = localStorage.getItem(CART_STORAGE_KEY);
-          if (storedCart) {
-            setItems(JSON.parse(storedCart));
-          }
-        }
-      } catch (error) {
-        console.error("Error loading cart:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCart();
-  }, [user]);
-
-  // Sync cart to localStorage for guests
-  useEffect(() => {
-    if (!user) {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    }
-  }, [items, user]);
-
   const addItem = useCallback(
     async (productId: string, qty: number) => {
       setLoading(true);
@@ -230,6 +182,52 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     },
     [updateQuantity, addItem]
   );
+
+  useEffect(() => {
+    const loadCart = async () => {
+      setLoading(true);
+      try {
+        if (user) {
+          const localCart = localStorage.getItem(CART_STORAGE_KEY);
+          const localItems = localCart ? JSON.parse(localCart) : [];
+
+          const { data } = await apiClient.get("/cart");
+
+          if (localItems.length > 0) {
+            toast({
+              title: "Syncing your cart...",
+              description: "We're adding your saved items to your account.",
+            });
+            await mergeCarts(localItems, data.items);
+            toast({
+              title: "Cart synced!",
+              description: "Your items have been saved to your account.",
+            });
+            localStorage.removeItem(CART_STORAGE_KEY);
+          } else {
+            setItems(data.items);
+          }
+        } else {
+          const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+          if (storedCart) {
+            setItems(JSON.parse(storedCart));
+          }
+        }
+      } catch (error) {
+        console.error("Error loading cart:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCart();
+  }, [user, mergeCarts, toast]);
+
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    }
+  }, [items, user]);
 
   return (
     <CartContext.Provider
