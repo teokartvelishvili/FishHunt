@@ -15,7 +15,7 @@ export const verifyPassword = async (
 ): Promise<boolean> => {
   try {
     const result = await argon2.verify(hashedPassword, plainPassword);
-    console.log('RESULT', result);
+    console.log('RESULT pass', result);
     return result;
   } catch (error) {
     console.log('ERROR', error);
