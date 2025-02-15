@@ -1,15 +1,23 @@
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
+  ConflictException,
+  
 } from '@nestjs/common';
+
+
 import { User, UserDocument } from '../schemas/user.schema';
 import { hashPassword } from '@/utils/password';
 import { generateUsers } from '@/utils/seed-users';
 import { PaginatedResponse } from '@/types';
+import { Role } from '@/types/role.enum';
+import { SellerRegisterDto } from '../dtos/seller-register.dto';
+
 
 @Injectable()
 export class UsersService {
@@ -23,6 +31,7 @@ export class UsersService {
       return await this.userModel.create({
         ...user,
         password: hashedPassword,
+        role: user.role ?? Role.User,
       });
     } catch (error: any) {
       this.logger.error(`Failed to create user: ${error.message}`);
@@ -105,7 +114,8 @@ export class UsersService {
   async update(
     id: string,
     attrs: Partial<User>,
-    isAdmin = false,
+    // isAdmin = false,
+    adminRole = false
   ): Promise<UserDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid user ID');
@@ -120,7 +130,8 @@ export class UsersService {
 
     const updateData: Partial<User> = {
       ...attrs,
-      isAdmin: isAdmin ? attrs.isAdmin : undefined,
+      // isAdmin: isAdmin ? attrs.isAdmin : undefined,
+      role: adminRole ? attrs.role : undefined,
       password: attrs.password ? await hashPassword(attrs.password) : undefined,
     };
 
@@ -169,4 +180,21 @@ export class UsersService {
     const generatedUsers = await generateUsers(count);
     return this.createMany(generatedUsers);
   }
+
+  async createSeller(dto: SellerRegisterDto): Promise<UserDocument> {
+    const existingUser = await this.userModel.findOne({ email: dto.email });
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+  
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const seller = new this.userModel({
+      ...dto,
+      password: hashedPassword,
+      role: Role.Seller,
+    });
+  
+    return seller.save();
+  }
+  
 }

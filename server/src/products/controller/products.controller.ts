@@ -15,7 +15,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminGuard } from '@/guards/roles.guard';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { ProductDto } from '../dtos/product.dto';
 import { ReviewDto } from '../dtos/review.dto';

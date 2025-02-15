@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminGuard } from '@/guards/roles.guard';
 import { OrdersService } from '../services/orders.service';
 import { UserDocument } from '@/users/schemas/user.schema';
 import { CurrentUser } from '@/decorators/current-user.decorator';
