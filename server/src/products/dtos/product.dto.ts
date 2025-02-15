@@ -25,4 +25,5 @@ export class ProductDto {
 
   @IsString()
   brandLogo!: string;
+  
 }

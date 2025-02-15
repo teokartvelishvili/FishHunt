@@ -59,6 +59,7 @@ export class Product {
 
   @Prop({ required: true, default: 0 })
   countInStock!: number;
+  
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
