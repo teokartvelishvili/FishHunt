@@ -16,22 +16,29 @@ export const authApi = {
   login: async (credentials: LoginCredentials) => {
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",
-      credentials
+      credentials,
+      { withCredentials: true }
     );
     return response.data;
   },
 
   register: async (data: LoginCredentials & { name: string }) => {
-    const response = await apiClient.post<AuthResponse>("/auth/register", data);
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/register",
+      data,
+      { withCredentials: true }
+    );
     return response.data;
   },
 
   getProfile: async () => {
-    const response = await apiClient.get<User>("/auth/profile");
+    const response = await apiClient.get<User>("/auth/profile", {
+      withCredentials: true,
+    });
     return response.data;
   },
 
   logout: async () => {
-    await apiClient.post("/auth/logout");
+    await apiClient.post("/auth/logout", {}, { withCredentials: true });
   },
 };

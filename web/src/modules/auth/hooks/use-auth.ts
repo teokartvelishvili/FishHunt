@@ -58,7 +58,9 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: authApi.logout,
+    mutationFn: async () => {
+      await authApi.logout(); // აქ სერვერის ლოგაუთ API-ს ეძახი
+    },
     onSuccess: () => {
       queryClient.setQueryData(["user"], null);
       toast({

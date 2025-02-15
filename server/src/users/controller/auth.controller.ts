@@ -112,8 +112,29 @@ export class AuthController {
   ) {
     await this.authService.logout(user._id.toString());
 
-    response.clearCookie('access_token');
-    response.clearCookie('refresh_token');
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
+      expires: new Date(0),
+    });
+
+    response.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
+      expires: new Date(0),
+    });
 
     return { success: true };
   }
