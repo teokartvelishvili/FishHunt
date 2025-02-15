@@ -2,6 +2,7 @@ import { ProductsList } from "@/modules/admin/components/products-list";
 import { getProducts } from "@/modules/admin/actions/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import "./adminProduct.css";
+import Link from "next/link";
 
 // searchParams არ გამოიყენება, როგორც ეს იყო
 interface AdminProductsPageProps {
@@ -30,12 +31,12 @@ export default async function AdminProductsPage({
                   currentPage > 1 ? "" : "disabled"
                 }`}
               >
-                <a
+                <Link
                   href={`/admin/products?page=${currentPage - 1}`}
                   className="pagination-link"
                 >
                   « Previous
-                </a>
+                </Link>
               </li>
 
               {/* Page Numbers */}
@@ -54,12 +55,12 @@ export default async function AdminProductsPage({
                       currentPage === pageNum ? "active" : ""
                     }`}
                   >
-                    <a
+                    <Link
                       href={`/admin/products?page=${pageNum}`}
                       className="pagination-link"
                     >
                       {pageNum}
-                    </a>
+                    </Link>
                   </li>
                 )
               )}
@@ -70,12 +71,12 @@ export default async function AdminProductsPage({
                   currentPage < pages ? "" : "disabled"
                 }`}
               >
-                <a
+                <Link
                   href={`/admin/products?page=${currentPage + 1}`}
                   className="pagination-link"
                 >
                   Next »
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
