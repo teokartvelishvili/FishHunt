@@ -20,6 +20,8 @@ export async function fetchWithAuth(
       Cookie: `access_token=${accessToken}`,
     },
   });
+  console.log("API Request URL:", `${process.env.NEXT_PUBLIC_API_URL}${url}`);
+  console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 
   if (!response.ok) {
     const error = await response.json();
