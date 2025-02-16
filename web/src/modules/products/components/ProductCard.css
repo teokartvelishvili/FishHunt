@@ -41,6 +41,8 @@
   /* padding: 5px; */
   display: flex;
   flex-direction: column;
+  min-height: 130px;
+  max-height: 130px;
 }
 
 .product-name {
