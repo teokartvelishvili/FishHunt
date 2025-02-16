@@ -123,11 +123,8 @@ export class AuthController {
           : false,
       sameSite: 'none',
       path: '/', // Ensure the correct path
-<<<<<<< HEAD
+
       maxAge: 0,
-=======
-      expires: new Date(0),
->>>>>>> teo
     });
 
     response.clearCookie('refresh_token', {
@@ -139,11 +136,8 @@ export class AuthController {
           : false,
       sameSite: 'none',
       path: '/', // Ensure the correct path
-<<<<<<< HEAD
+
       maxAge: 0,
-=======
-      expires: new Date(0),
->>>>>>> teo
     });
 
     return { success: true };
