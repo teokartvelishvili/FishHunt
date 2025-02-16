@@ -15,7 +15,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { RolesGuard } from '@/guards/roles.guard';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { ProductDto } from '../dtos/product.dto';
 import { ReviewDto } from '../dtos/review.dto';
@@ -60,13 +60,13 @@ export class ProductsController {
     return this.productsService.findById(id);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
     return this.productsService.deleteOne(id);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -127,7 +127,7 @@ export class ProductsController {
     }
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
   @Put(':id')
   updateProduct(@Param('id') id: string, @Body() product: ProductDto) {
     return this.productsService.update(id, product);

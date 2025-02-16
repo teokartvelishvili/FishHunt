@@ -1,3 +1,5 @@
+import { Role } from "./role";
+
 export interface Product {
   _id: string;
   name: string;
@@ -33,7 +35,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  isAdmin: boolean;
+  role: Role; 
   createdAt: string;
   updatedAt: string;
 }

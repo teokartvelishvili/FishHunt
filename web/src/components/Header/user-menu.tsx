@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useLogout } from "@/modules/auth/hooks/use-auth";
 import "./user-menu.css";
+import { Role } from "@/types/role";
 
 export default function UserMenu() {
   const { user, isLoading } = useUser();
@@ -38,13 +39,19 @@ export default function UserMenu() {
           <Link href="/profile/orders" className="dropdown-item">
             Orders
           </Link>
-          {user.isAdmin && (
+
+          {(user.role === Role.Admin || user.role === Role.Seller) && (
             <>
               <hr />
               <div className="dropdown-label">Admin Dashboard</div>
               <Link href="/admin/products" className="dropdown-item">
                 Products
               </Link>
+            </>
+          )}
+
+          {user.role === Role.Admin && (
+            <>
               <Link href="/admin/users" className="dropdown-item">
                 Users
               </Link>
@@ -53,6 +60,7 @@ export default function UserMenu() {
               </Link>
             </>
           )}
+
           <hr />
           <button onClick={() => logout.mutate()} className="dropdown-item">
             Sign Out

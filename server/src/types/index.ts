@@ -1,3 +1,5 @@
+import { Role } from './role.enum';
+
 export interface Product {
   _id: string;
   name: string;
@@ -33,9 +35,15 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  isAdmin: boolean;
+  // isAdmin: boolean;
+  role: Role;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Seller extends User {
+  storeName: string;
+  products: Product[]; 
 }
 
 export interface ApiResponse<T> {

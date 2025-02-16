@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { RolesGuard } from '@/guards/roles.guard';
 import { OrdersService } from '../services/orders.service';
 import { UserDocument } from '@/users/schemas/user.schema';
 import { CurrentUser } from '@/decorators/current-user.decorator';
@@ -23,7 +23,7 @@ export class OrdersController {
     return this.ordersService.create(body, user._id.toString());
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
   @Get()
   async getOrders() {
     return this.ordersService.findAll();
@@ -50,7 +50,7 @@ export class OrdersController {
     return this.ordersService.updatePaid(id, paymentResult);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
   @Put(':id/deliver')
   async updateOrderDelivery(@Param('id') id: string) {
     return this.ordersService.updateDelivered(id);

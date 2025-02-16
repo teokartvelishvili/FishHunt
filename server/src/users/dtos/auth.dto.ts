@@ -1,5 +1,6 @@
 import { IsEmail, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '../../types/role.enum';
 
 export class LoginDto {
   @ApiProperty({
@@ -34,7 +35,8 @@ export class TokensDto {
 export interface TokenPayload {
   sub: string; // user id
   email: string;
-  isAdmin: boolean;
+  // isAdmin: boolean;
+  role?: Role;
   type: 'access' | 'refresh';
   jti?: string; // Add this for refresh tokens
 }
@@ -50,7 +52,7 @@ export class UserResponseDto {
   name!: string;
 
   @ApiProperty()
-  isAdmin!: boolean;
+  role?: Role;
 }
 
 export class AuthResponseDto {

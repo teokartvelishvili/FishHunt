@@ -9,6 +9,9 @@ import {
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Roles } from '@/decorators/roles.decorator';
+import { Role } from '@/types/role.enum';
+import { RolesGuard } from '@/guards/roles.guard';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
@@ -24,7 +27,7 @@ import { AuthResponseDto, LoginDto } from '../dtos/auth.dto';
 import { NotAuthenticatedGuard } from '@/guards/not-authenticated.guard';
 import { Response, Request } from 'express';
 import { cookieConfig } from '@/cookie-config';
-// import { cookieConfig } from 'cookie-config';
+import { SellerRegisterDto } from '../dtos/seller-register.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -33,7 +36,6 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
-
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({
     status: 200,
@@ -62,7 +64,6 @@ export class AuthController {
       tokens.accessToken,
       cookieConfig.access.options,
     );
-
     response.cookie(
       'refresh_token',
       tokens.refreshToken,
@@ -71,9 +72,11 @@ export class AuthController {
 
     return { user: userData };
   }
+  //aqamde sworia
 
   @Serialize(UserDto)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User, Role.Seller)
   @Get('profile')
   getProfile(@CurrentUser() user: UserDocument) {
     return user;
@@ -103,7 +106,6 @@ export class AuthController {
 
     return { success: true };
   }
-
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   async logout(
@@ -121,7 +123,11 @@ export class AuthController {
           : false,
       sameSite: 'none',
       path: '/', // Ensure the correct path
+<<<<<<< HEAD
       maxAge: 0,
+=======
+      expires: new Date(0),
+>>>>>>> teo
     });
 
     response.clearCookie('refresh_token', {
@@ -133,12 +139,15 @@ export class AuthController {
           : false,
       sameSite: 'none',
       path: '/', // Ensure the correct path
+<<<<<<< HEAD
       maxAge: 0,
+=======
+      expires: new Date(0),
+>>>>>>> teo
     });
 
     return { success: true };
   }
-
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({
     status: 201,
@@ -155,7 +164,8 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User, Role.Seller)
   @Put('profile')
   async updateProfile(
     @CurrentUser() user: UserDocument,

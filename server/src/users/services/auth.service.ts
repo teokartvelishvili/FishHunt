@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { verifyPassword } from '@/utils/password';
 import { randomUUID } from 'crypto';
+import { Role } from '../../types/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,8 @@ export class AuthService {
         id: user._id.toString(),
         email: user.email,
         name: user.name,
-        isAdmin: user.isAdmin,
+        // isAdmin: user.isAdmin,
+        role: user.role,
       },
     };
   }
@@ -52,7 +54,8 @@ export class AuthService {
         {
           sub: user._id.toString(),
           email: user.email,
-          isAdmin: user.isAdmin,
+          // isAdmin: user.isAdmin,
+          role: user.role,
           type: 'access',
         } as TokenPayload,
         {
@@ -64,7 +67,8 @@ export class AuthService {
         {
           sub: user._id.toString(),
           email: user.email,
-          isAdmin: user.isAdmin,
+          // isAdmin: user.isAdmin,
+          role: user.role,
           type: 'refresh',
           jti,
         } as TokenPayload,

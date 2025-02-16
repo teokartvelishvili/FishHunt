@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { deleteUser } from "@/modules/admin/actions/delete-user";
 import type { User } from "@/types";
+import { Role } from "@/types/role"; // Role enum იმპორტი
 import "./usersList.css";
 
 interface UsersListProps {
@@ -56,10 +57,15 @@ export function UsersList({ users }: UsersListProps) {
               <td className="usr-td">{user.name}</td>
               <td className="usr-td">{user.email}</td>
               <td className="usr-td">
-                {user.isAdmin ? (
+                {user.role === Role.Admin ? (
                   <span className="usr-badge-admin">
                     <ShieldCheck className="usr-icon" />
                     Admin
+                  </span>
+                ) : user.role === Role.Seller ? (
+                  <span className="usr-badge-seller">
+                    <ShieldCheck className="usr-icon" />
+                    Seller
                   </span>
                 ) : (
                   <span className="usr-badge">

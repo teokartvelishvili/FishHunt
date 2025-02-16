@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsBoolean,
 } from 'class-validator';
+import { Role } from '../../types/role.enum';
 
 export class AdminProfileDto {
   @IsString()
@@ -20,5 +21,6 @@ export class AdminProfileDto {
 
   @IsBoolean()
   @IsOptional()
-  isAdmin?: boolean;
+  // isAdmin?: boolean;
+  role?: Role;
 }
