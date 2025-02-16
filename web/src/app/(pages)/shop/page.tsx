@@ -25,7 +25,7 @@ export default async function home({ searchParams }: HomePageProps) {
         {pages > 1 && (
           <div className="pagination">
             <Link
-              href={`/?page=${currentPage - 1}`}
+              href={`/shop/?page=${currentPage - 1}`}
               className={`pagination-button ${
                 currentPage === 1 ? "disabled" : ""
               }`}
@@ -41,7 +41,7 @@ export default async function home({ searchParams }: HomePageProps) {
               ) : (
                 <Link
                   key={pageNum}
-                  href={`/?page=${pageNum}`}
+                  href={`/shop/?page=${pageNum}`}
                   className={`pagination-button ${
                     currentPage === pageNum ? "active" : ""
                   }`}
@@ -52,7 +52,7 @@ export default async function home({ searchParams }: HomePageProps) {
             )}
 
             <Link
-              href={`/?page=${currentPage + 1}`}
+              href={`/shop/?page=${currentPage + 1}`}
               className={`pagination-button ${
                 currentPage === pages ? "disabled" : ""
               }`}
