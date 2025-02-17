@@ -6,6 +6,8 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import { useLogout } from "@/modules/auth/hooks/use-auth";
 import "./user-menu.css";
 import { Role } from "@/types/role";
+import hunterIcon from "../../assets/icons/hunter.png";
+import Image from "next/image";
 
 export default function UserMenu() {
   const { user, isLoading } = useUser();
@@ -19,7 +21,10 @@ export default function UserMenu() {
   if (!user) {
     return (
       <Link href="/login" className="button">
-        <span className="icon">👤</span> Sign In
+        <span className="icon">
+          {/* 👤 */}
+          <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
+          </span> Sign In
       </Link>
     );
   }
@@ -27,7 +32,11 @@ export default function UserMenu() {
   return (
     <div className="dropdown">
       <button onClick={() => setIsOpen(!isOpen)} className="button">
-        <span className="icon">👤</span> {user.name}
+        <span className="icon">
+          <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />
+          
+          {/* 👤 */}
+          </span> {user.name}
       </button>
       {isOpen && (
         <div className="dropdown-menu">
