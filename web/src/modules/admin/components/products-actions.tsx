@@ -1,5 +1,3 @@
-"use client";
-
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
@@ -46,7 +44,9 @@ export function ProductsActions({ product }: ProductsActionsProps) {
   return (
     <div className="space-x-2">
       <button
-        onClick={() => router.push(`/admin/products/${product._id}/edit`)}
+        onClick={() =>
+          router.push(`/admin/products/${product._id}/edit?id=${product._id}`)
+        }
       >
         <Pencil className="h-4 w-4" />
       </button>
