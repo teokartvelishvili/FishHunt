@@ -8,6 +8,8 @@ import {
   Res,
   Req,
   UnauthorizedException,
+  ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/types/role.enum';
@@ -166,5 +168,30 @@ export class AuthController {
     @Body() updateDto: ProfileDto,
   ) {
     return this.usersService.update(user._id.toString(), updateDto);
+  }
+
+  @ApiOperation({ summary: 'Register a new seller' })
+  @ApiResponse({
+    status: 201,
+    description: 'Seller successfully registered',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - validation error',
+  })
+  @Post('sellers-register')
+  async registerSeller(@Body() sellerRegisterDto: SellerRegisterDto) {
+    try {
+      const seller = await this.usersService.createSeller(sellerRegisterDto);
+      const { tokens, user } = await this.authService.login(seller);
+      
+      return { tokens, user };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      throw new BadRequestException('Registration failed');
+    }
   }
 }
