@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { useCart } from "@/modules/cart/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
+import cartIcon from "../../../assets/icons/fishing-net.png";
+import Image from "next/image";
+
 
 interface AddToCartButtonProps {
   productId: string;
@@ -65,7 +67,8 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
         disabled={isOutOfStock || loading}
         onClick={handleAddToCart}
       >
-        <HiOutlineShoppingBag size={20} />
+        {/* <HiOutlineShoppingBag size={20} /> */}
+        <Image src={cartIcon} alt="Cart Icon" width={28} height={28} />
         {isOutOfStock ? "Out of Stock" : loading ? "Adding..." : "Add to Cart"}
       </button>
     </div>
