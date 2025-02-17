@@ -1,5 +1,5 @@
 import { ProductsList } from "@/modules/admin/components/products-list";
-import { getProducts } from "@/modules/admin/actions/get-products";
+import { getProducts } from "@/modules/admin/api/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import "./adminProduct.css";
 import Link from "next/link";

@@ -1,5 +1,5 @@
 import { ProductGrid } from "@/modules/products/components/product-grid";
-import { getProducts } from "@/modules/products/actions/get-products";
+import { getProducts } from "@/modules/products/api/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import Link from "next/link";
 
@@ -65,4 +65,3 @@ export default async function home({ searchParams }: HomePageProps) {
     </div>
   );
 }
-

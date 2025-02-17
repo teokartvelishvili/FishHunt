@@ -1,8 +1,7 @@
-
 import Link from "next/link";
 import "./homePageShop.css";
 import { ProductCard } from "@/modules/products/components/product-card";
-import { getProducts } from "@/modules/products/actions/get-products";
+import { getProducts } from "@/modules/products/api/get-products";
 
 const HomePageShop = async () => {
   const { items: products } = await getProducts(1, 6); // მოაქვს მხოლოდ 6 პროდუქტი
@@ -15,10 +14,12 @@ const HomePageShop = async () => {
           <ProductCard key={product._id || product.name} product={product} />
         ))}
       </div>
-      <Link href="/shop" className="forumPageLink"> See More </Link>
+      <Link href="/shop" className="forumPageLink">
+        {" "}
+        See More{" "}
+      </Link>
     </div>
   );
 };
 
 export default HomePageShop;
-

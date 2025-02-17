@@ -1,7 +1,7 @@
 import React from "react";
 import "./loading.css";
 import { UsersList } from "@/modules/admin/components/users-list";
-import { getUsers } from "@/modules/admin/actions/get-users";
+import { getUsers } from "@/modules/admin/api/get-users";
 import { getVisiblePages } from "@/lib/utils";
 
 interface AdminUsersPageProps {

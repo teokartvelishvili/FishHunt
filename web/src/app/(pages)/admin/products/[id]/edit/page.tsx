@@ -1,19 +1,16 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
-import { productSchema } from "@/modules/products/validation/product";
-import { ZodError } from "zod";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProductFormData } from "@/modules/products/validation/product";
-import "./CreateProductForm.css";
-// import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Loader2 } from "lucide-react";
 
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
-
-export function CreateProductForm() {
+export default function EditProduct() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("id");
+
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
@@ -28,22 +25,86 @@ export function CreateProductForm() {
     brandLogo: undefined,
   });
 
-  const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState(false); // For handling form submission state
 
+  // ✅ Fetch product data
   useEffect(() => {
-    // Handle success or error response for product creation
-  }, [formData]);
+    if (!productId) return;
 
-  const validateField = (field: keyof ProductFormData, value: unknown) => {
-    try {
-      productSchema.shape[field].parse(value);
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-      return true;
-    } catch (error) {
-      if (error instanceof ZodError) {
-        setErrors((prev) => ({ ...prev, [field]: error.errors[0].message }));
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+          {
+            method: "GET",
+            headers: {
+              Cookie: `access_token=${
+                document.cookie
+                  .split("; ")
+                  .find((row) => row.startsWith("access_token="))
+                  ?.split("=")[1] || ""
+              }`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch product");
+
+        const data = await response.json();
+        console.log("Fetched product:", data);
+
+        setFormData((prev) => ({
+          ...prev,
+          name: data.name || "",
+          price: data.price || 0,
+          description: data.description || "",
+          images: data.images || [],
+          brand: data.brand || "",
+          category: data.category || "",
+          countInStock: data.countInStock || 0,
+          brandLogo: data.brandLogo || undefined,
+        }));
+      } catch (error) {
+        console.error("Error fetching product:", error);
       }
-      return false;
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  // ✅ Handle form submission (PUT)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setPending(true); // Start loading state
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `access_token=${
+              document.cookie
+                .split("; ")
+                .find((row) => row.startsWith("access_token="))
+                ?.split("=")[1] || ""
+            }`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update product");
+
+      alert("Product updated successfully!");
+      router.push("/products");
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Failed to update product.");
+    } finally {
+      setPending(false); // End loading state
     }
   };
 
@@ -53,106 +114,37 @@ export function CreateProductForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === "price" || name === "countInStock" ? Number(value) : value,
+      [name]: value,
     }));
-  };
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      category: e.target.value,
-    }));
-    validateField("category", e.target.value);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files) {
+      const fileNames = Array.from(files).map((file) => file.name); // ფაილის სახელების ჩამონათვალი
       setFormData((prev) => ({
         ...prev,
-        [name]: Array.from(files), // მხოლოდ სახელები გადავა FormData-ში
+        [name]: fileNames, // დააბრუნეთ მხოლოდ ფაილის სახელები
       }));
     }
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleBrandLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
-    if (files && files[0]) {
+    if (files) {
+      const fileNames = Array.from(files).map((file) => file.name); // Only file name
       setFormData((prev) => ({
         ...prev,
-        [name]: files[0], // ბრენდის ლოგოს მხოლოდ სახელი
+        [name]: fileNames[0], // If only one file, take the first file name
       }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form data on submit", formData);
-    setPending(true);
-
-    const result = productSchema.safeParse(formData);
-
-    if (!result.success) {
-      toast({
-        variant: "destructive",
-        title: "Validation Error in `" + result.error.issues[0].path[0] + "`",
-        description: result.error.issues[0].message,
-      });
-      setPending(false);
-      return;
-    }
-
-    const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "images" && key !== "brandLogo") {
-        formDataToSend.append(key, String(value)); // სხვა ყველა მონაცემი
-      }
-    });
-
-    formData.images.forEach((fileName: File) => {
-      formDataToSend.append("images", fileName); // სურათების სახელები
-    });
-
-    if (formData.brandLogo) {
-      formDataToSend.append("brandLogo", formData.brandLogo);
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`,
-        {
-          method: "POST",
-          headers: {
-            Cookie: `access_token=${
-              document.cookie
-                .split("; ")
-                .find((row) => row.startsWith("access_token="))
-                ?.split("=")[1] || ""
-            }`,
-          },
-          body: formDataToSend, // FormData, სადაც მხოლოდ ერთჯერ გაიგზავნება images
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to create product");
-      }
-
-      toast({
-        title: "Product created successfully",
-        description: "Your product has been added.",
-      });
-
-      router.push("/admin/products");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "Something went wrong",
-      });
-    } finally {
-      setPending(false);
     }
   };
 
@@ -239,6 +231,7 @@ export function CreateProductForm() {
             <p className="create-product-error">{errors.images}</p>
           )}
         </div>
+
         <div>
           <label htmlFor="brand">Brand</label>
           <input
@@ -251,6 +244,7 @@ export function CreateProductForm() {
           />
           {errors.brand && <p className="text-red-500">{errors.brand}</p>}
         </div>
+
         <div>
           <label htmlFor="countInStock">Stock Count</label>
           <input

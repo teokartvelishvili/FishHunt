@@ -1,5 +1,5 @@
 import { ProductDetails } from "@/modules/products/components/product-details";
-import { getProduct } from "@/modules/products/actions/get-product";
+import { getProduct } from "@/modules/products/api/get-product";
 import { notFound } from "next/navigation";
 
 interface ProductPageProps {

@@ -4,7 +4,7 @@ import { Product } from "@/types";
 import { ProductCard } from "./product-card";
 import { ProductCardSkeleton } from "./product-card-skeleton";
 import { useEffect, useState } from "react";
-import { getProducts } from "../actions/get-products";
+import { getProducts } from "../api/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import "./ProductGrid.css";
 

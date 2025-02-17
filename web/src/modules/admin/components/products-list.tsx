@@ -12,6 +12,7 @@ interface ProductsListProps {
 }
 
 export function ProductsList({ products }: ProductsListProps) {
+  console.log("products list", products);
   return (
     <div className="prd-card">
       <div className="prd-header">
@@ -44,28 +45,34 @@ export function ProductsList({ products }: ProductsListProps) {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product._id} className="prd-tr">
-              <td className="prd-td prd-td-bold">#{product._id}</td>
-              <td className="prd-td">
-                <div className="prd-img-wrapper">
-                  <Image
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    className="prd-img"
-                  />
-                </div>
-              </td>
-              <td className="prd-td">{product.name}</td>
-              <td className="prd-td">${product.price}</td>
-              <td className="prd-td">{product.category}</td>
-              <td className="prd-td">{product.countInStock}</td>
-              <td className="prd-td prd-td-right">
-                <ProductsActions product={product} />
-              </td>
-            </tr>
-          ))}
+          {products.map((product) => {
+            console.log("Product ID:", product._id); // ლოგი თითოეული პროდუქტის ID-ს ამოწმებს
+            return (
+              <tr key={product._id} className="prd-tr">
+                <td className="prd-td prd-td-bold">
+                  {" "}
+                  #{product._id ? product._id : "No ID"}
+                </td>
+                <td className="prd-td">
+                  <div className="prd-img-wrapper">
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      className="prd-img"
+                    />
+                  </div>
+                </td>
+                <td className="prd-td">{product.name}</td>
+                <td className="prd-td">${product.price}</td>
+                <td className="prd-td">{product.category}</td>
+                <td className="prd-td">{product.countInStock}</td>
+                <td className="prd-td prd-td-right">
+                  <ProductsActions product={product} />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
