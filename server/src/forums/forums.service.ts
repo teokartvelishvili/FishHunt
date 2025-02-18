@@ -47,7 +47,18 @@ export class ForumsService {
     const {page, take} = queryParams
     const limit = Math.min(take, 5)
 
-    const forumData = await this.forumModel.find().skip((page-1)* limit).limit(limit)
+    const forumData = await this.forumModel
+      .find()
+      .skip((page-1)* limit)
+      .limit(limit)
+      .populate({
+        path:'comments',
+        select: '-_id -updatedAt',
+        populate: {
+          path: 'user',
+          select: 'name -_id'
+        }
+      })
 
     const forumDataWithImages = await Promise.all(
       forumData.map(async (forum) => {
@@ -85,18 +96,40 @@ export class ForumsService {
     const forum = await this.forumModel.findById(forumId)
     if(!forum) throw new BadRequestException('forum not found')
 
-    /* 
-      users liked forums needed for this logic
-    */
+    if(forum.likesArray.includes(userId)) {
+      throw new BadRequestException('User has already liked this post');
+    }
 
-    // const updatedForum = await this.
-    //   forumModel
-    //     .findByIdAndUpdate(
-    //       forumId,
-    //       { $inc: { likes: +1 } },
-    //       {new: true}
-    //     )
-    // return updatedForum
+    await this.forumModel.findByIdAndUpdate(
+      forumId,
+      {
+        $push: { likesArray: userId },
+        $inc: { likes: 1 }
+      }
+    );
+    
+    return {message: "forum liked"}
+    
+  }
+  async removeLikeForum(userId,forumId){
+    if(!isValidObjectId(forumId))throw new BadRequestException('invalid mongo id')
+    const forum = await this.forumModel.findById(forumId)
+    if(!forum) throw new BadRequestException('forum not found')
+
+    if(!forum.likesArray.includes(userId)) {
+      throw new BadRequestException('User has not liked this post');
+    }
+
+    await this.forumModel.findByIdAndUpdate(
+      forumId,
+      {
+        $pull: { likesArray: userId },
+        $inc: { likes: -1 }
+      }
+    );
+    
+    return {message: "forum disliked"}
+    
   }
 
   findOne(id: number) {
@@ -107,7 +140,10 @@ export class ForumsService {
     return `This action updates a #${id} forum`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} forum`;
+  async remove(forumId) {
+    const deletedForum = await this.forumModel.findByIdAndDelete(forumId)
+    if(!deletedForum) throw new BadRequestException('forum not found')
+    const fileId = deletedForum.imagePath
+    return await this.awsS3Service.deleteImageByFileId(fileId);
   }
 }
