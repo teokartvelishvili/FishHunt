@@ -118,7 +118,7 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req, @Res() res) {
     const token = await this.authService.singInWithGoogle(req.user);
-    res.redirect(`${process.env.ALLOWED_ORIGINS}/sign-in?token=${token}`);
+    res.redirect(`${process.env.ALLOWED_ORIGINS}/login?token=${token}`);
   }
 
   @Post('logout')
