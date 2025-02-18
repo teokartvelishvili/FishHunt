@@ -19,17 +19,16 @@ export class AuthService {
 
   async singInWithGoogle(user) {
     let existUser = await this.userModel.findOne({ email: user.email });
-    if (!existUser) existUser = await this.userModel.create(user);
+    if (!existUser) {
+      existUser = await this.userModel.create({
+        ...user,
+        role: Role.User,
+      });
+    }
 
-    const payLoad = {
-      userId: existUser._id,
-      role: existUser.role,
-    };
+    const { tokens, user: userData } = await this.login(existUser);
 
-    const accessToken = await this.jwtService.sign(payLoad, {
-      expiresIn: '1h',
-    });
-    return accessToken;
+    return { tokens, user: userData };
   }
 
   async validateUser(email: string, password: string): Promise<UserDocument> {

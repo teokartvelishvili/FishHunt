@@ -116,9 +116,33 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req, @Res() res) {
-    const token = await this.authService.singInWithGoogle(req.user);
-    res.redirect(`${process.env.ALLOWED_ORIGINS}/login?token=${token}`);
+  async googleAuthRedirect(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const { tokens, user } = await this.authService.singInWithGoogle(
+        req.user,
+      );
+
+      // დავაყენოთ ქუქიები
+      res.cookie(
+        'access_token',
+        tokens.accessToken,
+        cookieConfig.access.options,
+      );
+      res.cookie(
+        'refresh_token',
+        tokens.refreshToken,
+        cookieConfig.refresh.options,
+      );
+
+      // გადავამისამართოთ მთავარ გვერდზე
+      res.redirect(`${process.env.ALLOWED_ORIGINS}/`);
+    } catch (error) {
+      console.error('Google auth error:', error);
+      res.redirect(`${process.env.ALLOWED_ORIGINS}/login?error=auth_failed`);
+    }
   }
 
   @Post('logout')
