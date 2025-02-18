@@ -69,7 +69,11 @@ export function RegisterForm() {
   };
 
   const onSubmit = handleSubmit((data) => {
-    if (!isVerified) return;
+    if (!isVerified) {
+      setErrorMessage("Please verify your email before registering.");
+      return;
+    }
+    setErrorMessage(""); // წინა შეცდომების წაშლა
     register(data);
   });
 
@@ -148,6 +152,7 @@ export function RegisterForm() {
           )}
         </div>
 
+        {errorMessage && <p className="error-text">{errorMessage}</p>}
         <button
           type="submit"
           className="submit-btn"
