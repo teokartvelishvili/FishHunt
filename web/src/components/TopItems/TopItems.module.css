@@ -85,14 +85,8 @@
   color: #ec9843;
   text-align: center;
   overflow: hidden;
-  display: -webkit-box;
-  display: flex;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  box-orient: vertical;
-  line-height: 1.2;
-  word-break: break-word;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes scrollLoop {
