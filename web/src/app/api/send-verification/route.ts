@@ -47,7 +47,8 @@ export async function POST(req: Request) {
   // Never log your actual email password
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    // from: process.env.EMAIL_USER,
+    from: "FishHunt",
     to: email,
     subject: "Your Verification Code",
     text: `Your verification code is: ${verificationCode}`,
