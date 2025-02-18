@@ -30,26 +30,9 @@ export function LoginForm() {
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     login(data);
   };
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsPending(true);
-
-  //   const newErrors = { email: "", password: "" };
-
-  //   if (!email) newErrors.email = "Email is required";
-  //   if (!password) newErrors.password = "Password is required";
-
-  //   setErrors(newErrors);
-
-  //   if (!newErrors.email && !newErrors.password) {
-  //     setTimeout(() => {
-  //       setIsPending(false);
-  //       alert("Login successful!");
-  //     }, 2000);
-  //   } else {
-  //     setIsPending(false);
-  //   }
-  // };
+  const handleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
 
   return (
     <div className="login-container">
@@ -91,7 +74,7 @@ export function LoginForm() {
             <FaFacebook className="icon" />
             Facebook
           </button>
-          <button className="social-button">
+          <button onClick={handleGoogleAuth} className="social-button">
             <FaGoogle className="icon" />
             Google
           </button>

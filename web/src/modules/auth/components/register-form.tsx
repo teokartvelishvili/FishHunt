@@ -76,6 +76,9 @@ export function RegisterForm() {
     setErrorMessage(""); // წინა შეცდომების წაშლა
     register(data);
   });
+  const handleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
 
   return (
     <div className="form-container">
@@ -170,7 +173,11 @@ export function RegisterForm() {
             <FaGithub className="icon" />
             GitHub
           </button>
-          <button className="social-btn" disabled={isPending}>
+          <button
+            onClick={handleGoogleAuth}
+            className="social-btn"
+            disabled={isPending}
+          >
             <FaGoogle className="icon" />
             Google
           </button>
