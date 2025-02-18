@@ -13,27 +13,52 @@ import Image from "next/image";
 
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
 
-export function CreateProductForm() {
+interface CreateProductFormProps {
+  initialData?: ProductFormData & { _id?: string };
+}
+export function CreateProductForm({ initialData }: CreateProductFormProps) {
+  console.log("Initial Data in Form:", initialData);
   const router = useRouter();
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
-  const [formData, setFormData] = useState<ProductFormData>({
-    name: "",
-    price: 0,
-    description: "",
-    images: [],
-    brand: "",
-    category: "",
-    countInStock: 0,
-    brandLogo: undefined,
-  });
+  const [formData, setFormData] = useState<ProductFormData>(
+    initialData || {
+      name: "",
+      price: 0,
+      description: "",
+      images: [],
+      brand: "",
+      category: "",
+      countInStock: 0,
+      brandLogo: undefined,
+    }
+  );
 
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
     // Handle success or error response for product creation
   }, [formData]);
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev) => ({
+        ...prev,
+        name: initialData.name || "",
+        brand: initialData.brand || "",
+        // Check brandLogo type
+        brandLogo:
+          typeof initialData.brandLogo === "string"
+            ? initialData.brandLogo
+            : undefined,
+        category: initialData.category || "",
+        images: initialData.images || [],
+        description: initialData.description || "",
+        price: initialData.price || 0,
+        countInStock: initialData.countInStock || 0,
+      }));
+    }
+  }, [initialData]);
 
   const validateField = (field: keyof ProductFormData, value: unknown) => {
     try {
@@ -107,6 +132,7 @@ export function CreateProductForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form data on submit", formData);
+    console.log("Submitting form...");
     setPending(true);
 
     const result = productSchema.safeParse(formData);
@@ -137,28 +163,38 @@ export function CreateProductForm() {
     }
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`,
-        {
-          method: "POST",
-          headers: {
-            Cookie: `access_token=${
-              document.cookie
-                .split("; ")
-                .find((row) => row.startsWith("access_token="))
-                ?.split("=")[1] || ""
-            }`,
-          },
-          body: formDataToSend, // FormData, სადაც მხოლოდ ერთჯერ გაიგზავნება images
-        }
-      );
+      const method = initialData?._id ? "PUT" : "POST";
+      const url = initialData?._id
+        ? `${process.env.NEXT_PUBLIC_API_URL}/products/${initialData._id}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/products`;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Cookie: `access_token=${
+            document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("access_token="))
+              ?.split("=")[1] || ""
+          }`,
+        },
+        body: formDataToSend, // FormData, სადაც მხოლოდ ერთჯერ გაიგზავნება images
+      });
       if (!response.ok) {
-        throw new Error("Failed to create product");
+        throw new Error(
+          initialData?._id
+            ? "Failed to update product"
+            : "Failed to create product"
+        );
       }
 
       toast({
-        title: "Product created successfully",
-        description: "Your product has been added.",
+        title: initialData?._id
+          ? "Product updated successfully"
+          : "Product created successfully",
+        description: initialData?._id
+          ? "Your product has been updated."
+          : "Your product has been added.",
       });
 
       router.push("/admin/products");
@@ -253,26 +289,30 @@ export function CreateProductForm() {
             multiple
           />
           <div className="image-preview-container">
-            {formData.images.map((image, index) => (
-              <div key={index} className="image-preview">
-                <Image
-                  loader={({ src }) => src}
-                  src={URL.createObjectURL(image)}
-                  alt="Product preview"
-                  width={100}
-                  height={100}
-                  unoptimized
-                  className="preview-image"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="remove-image-button"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
+            {formData.images.map((image, index) => {
+              const imageUrl =
+                image instanceof File ? URL.createObjectURL(image) : image;
+              return (
+                <div key={index} className="image-preview">
+                  <Image
+                    loader={({ src }) => src}
+                    src={imageUrl}
+                    alt="Product preview"
+                    width={100}
+                    height={100}
+                    unoptimized
+                    className="preview-image"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="remove-image-button"
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {errors.images && (
@@ -318,6 +358,7 @@ export function CreateProductForm() {
             className="create-product-file"
             required
           />
+
           {errors.brandLogo && (
             <p className="create-product-error">{errors.brandLogo}</p>
           )}
@@ -326,10 +367,11 @@ export function CreateProductForm() {
         <button
           type="submit"
           className="create-product-button"
-          disabled={pending}
+          disabled={pending || !formData.name}
+          onClick={() => console.log("Button Clicked")}
         >
           {pending && <Loader2 className="loader" />}
-          Create Product
+          {initialData?._id ? "Update Product" : "Create Product"}
         </button>
       </form>
     </div>
