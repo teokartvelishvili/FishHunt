@@ -9,13 +9,13 @@
 }
 
 .fisher {
-  height: 50px; 
+  height: 50px;
   width: auto;
   align-self: flex-start;
 }
 
 .scroller {
-  border-top: 3px solid #0F1E11;
+  border-top: 3px solid #0f1e11;
   padding-top: 8px;
   display: flex;
   overflow: hidden;
@@ -37,8 +37,8 @@
   align-items: center;
   justify-content: center;
   min-width: 150px;
-  background-color: #0F1E11; 
-  border: 2px solid #0F1E11;
+  background-color: #0f1e11;
+  border: 2px solid #0f1e11;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -82,11 +82,11 @@
   width: 100%;
   font-size: 14px;
   font-weight: bold;
-  color: #EC9843;
+  color: #ec9843;
   text-align: center;
   overflow: hidden;
   display: -webkit-box;
-  display: box;
+  display: flex;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
