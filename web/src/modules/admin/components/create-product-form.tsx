@@ -8,6 +8,7 @@ import { productSchema } from "@/modules/products/validation/product";
 import { ZodError } from "zod";
 import { ProductFormData } from "@/modules/products/validation/product";
 import "./CreateProductForm.css";
+import Image from "next/image";
 // import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
@@ -66,14 +67,31 @@ export function CreateProductForm() {
     validateField("category", e.target.value);
   };
 
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, files } = e.target;
+  //   if (files) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: Array.from(files), // მხოლოდ სახელები გადავა FormData-ში
+  //     }));
+  //   }
+  // };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
+    const { files } = e.target;
     if (files) {
+      const newImages = Array.from(files);
       setFormData((prev) => ({
         ...prev,
-        [name]: Array.from(files), // მხოლოდ სახელები გადავა FormData-ში
+        images: [...prev.images, ...newImages],
       }));
     }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
   };
 
   const handleBrandLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,8 +251,30 @@ export function CreateProductForm() {
             onChange={handleFileChange}
             className="create-product-file"
             multiple
-            required
           />
+          <div className="image-preview-container">
+            {formData.images.map((image, index) => (
+              <div key={index} className="image-preview">
+                <Image
+                  loader={({ src }) => src}
+                  src={URL.createObjectURL(image)}
+                  alt="Product preview"
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="preview-image"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="remove-image-button"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+
           {errors.images && (
             <p className="create-product-error">{errors.images}</p>
           )}

@@ -1,65 +1,102 @@
 /* General form container */
 .create-product-form {
-  display: grid;
-  gap: 1.5rem;
-  max-width: 40rem;
+  max-width: 600px;
   margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #2a5530;
+}
+.create-product-form h1 {
+  text-align: center;
+}
+.create-product-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Input and textarea styling */
+.create-product-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #2a5530;
+}
+
 .create-product-input,
 .create-product-textarea,
+.create-product-select,
+.create-product-file {
+  width: 98%;
+  padding: 10px 5px;
+  border: 1px solid #2a5530;
+  border-radius: 5px;
+  font-size: 16px;
+
+  color: #2a5530;
+}
 .create-product-select {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
 }
 
 .create-product-textarea {
+  resize: vertical;
   min-height: 100px;
 }
 
-/* File input styling */
-.create-product-file {
-  display: block;
-}
-
-/* Error messages */
 .create-product-error {
   color: red;
-  font-size: 0.875rem;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
-/* Button styles */
-.create-product-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+  object-fit: cover;
+  border: 1px solid #2a5530;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
-.create-product-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.create-product-button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: linear-gradient(to left, #ec9843, #2a5530);
+  color: white;
+  transition: background 0.3s ease;
 }
 
-/* Loader inside button */
-.create-product-button .loader {
-  margin-right: 0.5rem;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.create-product-button:hover {
+  background: linear-gradient(to left, #2a5530, #ec9843);
 }
