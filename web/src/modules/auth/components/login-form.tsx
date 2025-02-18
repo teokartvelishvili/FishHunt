@@ -7,6 +7,7 @@ import { useLogin } from "../hooks/use-auth";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import "./login-form.css";
+import { useState } from "react";
 
 import type * as z from "zod";
 
@@ -14,10 +15,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const { mutate: login, isPending } = useLogin();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [errors, setErrors] = useState({ email: "", password: "" });
-  // const [isPending, setIsPending] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register,
@@ -27,9 +25,19 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    login(data);
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    setLoginError(null);
+    try {
+      await login(data, {
+        onError: (error) => {
+          setLoginError(error.response?.data?.message || "Login failed");
+        },
+      });
+    } catch (error) {
+      setLoginError(error.response?.data?.message || "Login failed");
+    }
   };
+
   const handleGoogleAuth = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
@@ -60,6 +68,12 @@ export function LoginForm() {
             <p className="error-text">{errors.password.message}</p>
           )}
         </div>
+
+        {loginError && (
+          <div className="error-message">
+            <p className="error-text">{loginError}</p>
+          </div>
+        )}
 
         <button type="submit" className="login-button">
           {isPending ? <span className="loading-spinner"></span> : "Sign in"}

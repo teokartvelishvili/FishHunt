@@ -1,7 +1,7 @@
 "use client";
 
 import { FaCheckCircle, FaGithub, FaGoogle } from "react-icons/fa";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../validation";
 import { useRegister } from "../hooks/use-auth";
@@ -14,6 +14,8 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const { mutate: register, isPending } = useRegister();
+  const [registerError, setRegisterError] = useState<string | null>(null);
+
   const {
     register: registerField,
     handleSubmit,
@@ -68,21 +70,33 @@ export function RegisterForm() {
     sendVerificationEmail();
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
+    setRegisterError(null);
     if (!isVerified) {
       setErrorMessage("Please verify your email before registering.");
       return;
     }
     setErrorMessage(""); // წინა შეცდომების წაშლა
-    register(data);
-  });
+    try {
+      await register(data, {
+        onError: (error) => {
+          setRegisterError(
+            error.response?.data?.message || "Registration failed"
+          );
+        },
+      });
+    } catch (error) {
+      setRegisterError(error.response?.data?.message || "Registration failed");
+    }
+  };
+
   const handleGoogleAuth = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
     <div className="form-container">
-      <form onSubmit={onSubmit} className="form">
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <label htmlFor="name">Name</label>
           <input
@@ -155,7 +169,12 @@ export function RegisterForm() {
           )}
         </div>
 
-        {errorMessage && <p className="error-text">{errorMessage}</p>}
+        {registerError && (
+          <div className="error-message">
+            <p className="error-text">{registerError}</p>
+          </div>
+        )}
+
         <button
           type="submit"
           className="submit-btn"
