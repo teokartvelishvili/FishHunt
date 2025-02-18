@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useLogout } from "@/modules/auth/hooks/use-auth";
@@ -13,6 +13,20 @@ export default function UserMenu() {
   const { user, isLoading } = useUser();
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   if (isLoading) {
     return <div className="loader"></div>;
@@ -30,7 +44,7 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="dropdown">
+    <div className="dropdown" ref={menuRef}>
       <button onClick={() => setIsOpen(!isOpen)} className="button">
         <span className="icon">
           <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />

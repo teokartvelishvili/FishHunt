@@ -77,3 +77,27 @@ export function useLogout() {
     },
   });
 }
+
+export function useSellerRegister() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: authApi.sellerRegister,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["user"], data.user);
+      router.push("/"); // ან სხვა გვერდზე, მაგალითად "/seller/dashboard"
+      toast({
+        title: "გილოცავთ!",
+        description: `მაღაზია წარმატებით დარეგისტრირდა`,
+      });
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      toast({
+        variant: "destructive",
+        title: "შეცდომა!",
+        description: error.response?.data?.message || "რეგისტრაცია ვერ მოხერხდა",
+      });
+    },
+  });
+}

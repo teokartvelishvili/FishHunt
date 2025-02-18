@@ -182,19 +182,30 @@ export class UsersService {
   }
 
   async createSeller(dto: SellerRegisterDto): Promise<UserDocument> {
-    const existingUser = await this.userModel.findOne({ email: dto.email });
-    if (existingUser) {
-      throw new ConflictException('User with this email already exists');
+    try {
+      const existingUser = await this.userModel.findOne({ email: dto.email });
+      if (existingUser) {
+        throw new ConflictException('User with this email already exists');
+      }
+
+      const sellerData = {
+        ...dto,
+        name: dto.storeName,
+        role: Role.Seller,
+        password: dto.password
+      };
+
+      return await this.create(sellerData);
+
+    } catch (error: any) {
+      this.logger.error(`Failed to create seller: ${error.message}`);
+      
+      if (error.code === 11000) {
+        throw new ConflictException('User with this email already exists');
+      }
+
+      throw error;
     }
-  
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const seller = new this.userModel({
-      ...dto,
-      password: hashedPassword,
-      role: Role.Seller,
-    });
-  
-    return seller.save();
   }
   
 }
