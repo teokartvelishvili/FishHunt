@@ -24,6 +24,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       avatar: profile.picture,
     };
 
-    done(null, profile);
+    done(null, user);
   }
 }
