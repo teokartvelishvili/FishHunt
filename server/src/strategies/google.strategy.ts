@@ -17,6 +17,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(accessToken, refreshToken, profile, done) {
     console.log(profile, 'profile');
+    const user = {
+      name: `${profile.given_name} ${profile.family_name}`, // 🔹 გადაყვანილია string-ად
+      email: profile.email,
+      googleId: profile.id,
+      avatar: profile.picture,
+    };
+
     done(null, profile);
   }
 }
