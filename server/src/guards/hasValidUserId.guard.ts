@@ -1,8 +1,8 @@
-import { BadRequestException, CanActivate, ExecutionContext } from "@nestjs/common";
+import { BadRequestException, CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { isValidObjectId } from "mongoose";
 import { Observable } from "rxjs";
 
-
+@Injectable()
 export class HasValidUserId implements CanActivate{
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest()

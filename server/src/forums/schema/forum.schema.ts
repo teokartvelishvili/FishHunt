@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
 
 
-@Schema()
+@Schema({timestamps: true})
 export class Comment{
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'user'})
+  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
   user: mongoose.Schema.Types.ObjectId
 
   @Prop({ type: String})
@@ -13,7 +13,7 @@ export class Comment{
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
 
-@Schema()
+@Schema({timestamps: true})
 export class Forum {
 
   @Prop({type: String})
@@ -38,6 +38,9 @@ export class Forum {
 
   @Prop({type: Number, default: 0})
   likes: number
+
+  @Prop({type: [mongoose.Schema.Types.ObjectId], default: []})
+  likesArray: mongoose.Schema.Types.ObjectId[]
 
   @Prop({type: String})
   imagePath: string

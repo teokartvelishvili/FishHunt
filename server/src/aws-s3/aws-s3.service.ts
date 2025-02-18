@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import * as im from 'imagemagick';
@@ -51,4 +51,15 @@ export class AwsS3Service {
     }
   }
 
+  async deleteImageByFileId(fileId: string){
+    if(!fileId) throw new BadRequestException('file id required')
+    const config = {
+      Key: fileId,
+      Bucket: this.bucketName,
+    }
+    const deleteCommand = new DeleteObjectCommand(config)
+    await this.s3.send(deleteCommand)
+    
+    return `image ${fileId} deleted`
+  }
 }
