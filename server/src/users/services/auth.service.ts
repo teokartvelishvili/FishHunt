@@ -17,6 +17,21 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
+  async singInWithGoogle(user) {
+    let existUser = await this.userModel.findOne({ email: user.email });
+    if (!existUser) existUser = await this.userModel.create(user);
+
+    const payLoad = {
+      userId: existUser._id,
+      role: existUser.role,
+    };
+
+    const accessToken = await this.jwtService.sign(payLoad, {
+      expiresIn: '1h',
+    });
+    return accessToken;
+  }
+
   async validateUser(email: string, password: string): Promise<UserDocument> {
     const user = await this.usersService.findOne(email);
     if (!user) {

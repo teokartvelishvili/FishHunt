@@ -30,6 +30,7 @@ import { NotAuthenticatedGuard } from '@/guards/not-authenticated.guard';
 import { Response, Request } from 'express';
 import { cookieConfig } from '@/cookie-config';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
+import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -108,6 +109,18 @@ export class AuthController {
 
     return { success: true };
   }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  async auth() {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(@Req() req, @Res() res) {
+    const token = await this.authService.singInWithGoogle(req.user);
+    res.redirect(`${process.env.ALLOWED_ORIGINS}/sign-in?token=${token}`);
+  }
+
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   async logout(
@@ -185,7 +198,7 @@ export class AuthController {
     try {
       const seller = await this.usersService.createSeller(sellerRegisterDto);
       const { tokens, user } = await this.authService.login(seller);
-      
+
       return { tokens, user };
     } catch (error) {
       if (error instanceof ConflictException) {

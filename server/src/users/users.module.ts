@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { UsersController } from './controller/users.controller';
+import { GoogleStrategy } from '@/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UsersController } from './controller/users.controller';
         schema: UserSchema,
       },
     ]),
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'google' }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_ACCESS_SECRET,
@@ -26,7 +27,14 @@ import { UsersController } from './controller/users.controller';
     }),
   ],
   controllers: [AuthController, UsersController],
-  providers: [UsersService, AuthService, LocalStrategy, JwtStrategy],
-  exports: [UsersService]
+  providers: [
+    UsersService,
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    AuthService,
+    GoogleStrategy,
+  ],
+  exports: [UsersService],
 })
 export class UsersModule {}
