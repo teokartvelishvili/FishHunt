@@ -48,3 +48,38 @@
   transform: translate(-50%, -50%);
   /* transition: all 0s ease;  */
 }
+
+@media screen and (max-width: 768px) {
+    .photo-container {
+        height: auto;
+        min-height: 50vh;
+        padding: 10px;
+    }
+
+    .photo-frame {
+        width: 100%;
+        border-width: 5px;
+    }
+
+    .map {
+        width: 120px;
+        bottom: 5px;
+        right: 5px;
+    }
+
+    .target {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .map {
+        width: 100px;
+    }
+
+    .target {
+        width: 60px;
+        height: 60px;
+    }
+}
