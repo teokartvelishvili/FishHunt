@@ -1,7 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
-import { deleteProduct } from "@/modules/admin/api/delete-product";
 import type { Product } from "@/types";
 import "./productActions.css";
 
@@ -23,19 +22,30 @@ export function ProductsActions({ product }: ProductsActionsProps) {
     }
 
     if (confirm("Are you sure you want to delete this product?")) {
-      const result = await deleteProduct(product._id);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`,
+          {
+            method: "DELETE",
+          }
+        );
 
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: result.message,
-        });
-        router.refresh();
-      } else {
+        if (response.ok) {
+          toast({
+            title: "Success",
+            description: "Product deleted successfully",
+          });
+
+          router.refresh(); // Refresh page or go back to the list
+        } else {
+          throw new Error("Failed to delete product");
+        }
+      } catch (error) {
+        console.log(error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: result.message,
+          description: "Failed to delete product",
         });
       }
     }

@@ -20,5 +20,10 @@ export default function EditProductPage() {
 
   if (!product || Object.keys(product).length === 0) return <p>Loading...</p>;
 
-  return <CreateProductForm initialData={product} />;
+  return (
+    <div className="editProduct">
+      <h1 style={{ textAlign: "center" }}> Update Product </h1>
+      <CreateProductForm initialData={product} />;
+    </div>
+  );
 }
