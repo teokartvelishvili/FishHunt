@@ -12,6 +12,14 @@ import { useState, useEffect } from "react";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export function RegisterForm() {
   const { mutate: register, isPending } = useRegister();
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -76,17 +84,21 @@ export function RegisterForm() {
       setErrorMessage("Please verify your email before registering.");
       return;
     }
-    setErrorMessage(""); // წინა შეცდომების წაშლა
+    setErrorMessage("");
     try {
       await register(data, {
-        onError: (error) => {
+        onError: (error: unknown) => {
+          const apiError = error as ApiError;
           setRegisterError(
-            error.response?.data?.message || "Registration failed"
+            apiError.response?.data?.message || "Registration failed"
           );
         },
       });
-    } catch (error) {
-      setRegisterError(error.response?.data?.message || "Registration failed");
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setRegisterError(
+        apiError.response?.data?.message || "Registration failed"
+      );
     }
   };
 

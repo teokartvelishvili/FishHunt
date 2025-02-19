@@ -13,6 +13,14 @@ import type * as z from "zod";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export function LoginForm() {
   const { mutate: login, isPending } = useLogin();
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -29,12 +37,14 @@ export function LoginForm() {
     setLoginError(null);
     try {
       await login(data, {
-        onError: (error) => {
-          setLoginError(error.response?.data?.message || "Login failed");
+        onError: (error: unknown) => {
+          const apiError = error as ApiError;
+          setLoginError(apiError.response?.data?.message || "Login failed");
         },
       });
-    } catch (error) {
-      setLoginError(error.response?.data?.message || "Login failed");
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setLoginError(apiError.response?.data?.message || "Login failed");
     }
   };
 
