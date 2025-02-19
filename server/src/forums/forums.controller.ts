@@ -68,18 +68,18 @@ export class ForumsController {
     @Body() addCommentDto: AddCommentDto,
     @Req() req: Request,
   ) {
-    return;
-    // const forumId = req.headers['forum-id'] as string;
-    // if (!forumId) throw new BadRequestException('Forum ID is required');
-    // return this.forumsService.addCommentForum(user._id, forumId, addCommentDto);
+    const forumId = req.headers['forum-id'] as string;
+    if (!forumId) throw new BadRequestException('Forum ID is required');
+    return this.forumsService.addCommentForum(user._id, forumId, addCommentDto);
   }
 
   @Post('add-like')
   @UseGuards(JwtAuthGuard)
   addLikeForum(@CurrentUser() user: User, @Req() req: Request) {
-    // const forumId = req.headers['forum-id'] as string;
-    // if (!forumId) throw new BadRequestException('Forum ID is required');
-    // return this.forumsService.addLikeForum(user._id, forumId);
+    return;
+    const forumId = req.headers['forum-id'] as string;
+    if (!forumId) throw new BadRequestException('Forum ID is required');
+    return this.forumsService.addLikeForum(user._id, forumId);
   }
 
   @Post('remove-like')
