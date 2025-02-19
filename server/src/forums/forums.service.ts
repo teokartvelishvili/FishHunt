@@ -47,7 +47,7 @@ export class ForumsService {
 
   async findAll(queryParams: queryParamsDto) {
     const { page, take } = queryParams;
-    const limit = Math.min(take, 5);
+    const limit = Math.min(take, 20);
 
     const forumData = await this.forumModel
       .find()
