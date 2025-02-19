@@ -1,27 +1,14 @@
-"use server";
-
-import { getAccessToken } from "@/modules/auth/api/get-access-token";
-
-interface FetchWithAuthConfig extends RequestInit {
-  revalidatePaths?: string[];
-}
-
-export async function fetchWithAuth(
-  url: string,
-  config: FetchWithAuthConfig = {}
-) {
+export async function fetchWithAuth(url: string, config: RequestInit = {}) {
   const { headers, ...rest } = config;
-  const accessToken = await getAccessToken();
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
     ...rest,
+    credentials: "include", // ✅ ქუქი ავტომატურად იგზავნება
     headers: {
       ...headers,
-      Cookie: `access_token=${accessToken}`,
+      "Content-Type": "application/json",
     },
   });
-  console.log("API Request URL:", `${process.env.NEXT_PUBLIC_API_URL}${url}`);
-  console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 
   if (!response.ok) {
     const error = await response.json();
