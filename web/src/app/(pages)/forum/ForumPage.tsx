@@ -77,7 +77,7 @@ const ForumPage = () => {
             text: comment.content,
             author: {
               name: comment.user.name,
-              avatar: "/images/default-avatar.jpg",
+              avatar: "/avatar.jpg",
             },
           }))}
           time={new Date(forum.createdAt).toLocaleDateString()}
