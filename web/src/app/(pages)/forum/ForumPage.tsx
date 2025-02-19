@@ -65,12 +65,12 @@ const ForumPage = () => {
         <ForumPost
           key={forum._id}
           id={forum._id}
-          image={forum.image || "/images/default.jpg"}
+          image={forum.image || "/avatar.jpg"}
           text={forum.content}
           category={forum.tags}
           author={{
             name: forum.user.name,
-            avatar: "/images/default-avatar.jpg",
+            avatar: "/avatar.jpg",
           }}
           comments={forum.comments.map((comment) => ({
             id: comment._id,

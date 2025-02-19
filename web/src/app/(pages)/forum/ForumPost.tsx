@@ -202,7 +202,11 @@ const ForumPost = ({
               <div key={comment.id} className="comment">
                 <div className="comment-header">
                   <Image
-                    src={comment.author.avatar}
+                    src={
+                      comment.author.avatar
+                        ? comment.author.avatar
+                        : "/avatar.jpg"
+                    }
                     alt={`${comment.author.name}'s avatar`}
                     width={32}
                     height={32}
