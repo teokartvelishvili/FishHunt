@@ -49,7 +49,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
 
         const formData = new FormData();
         formData.append("content", content);
-        formData.append("tags", JSON.stringify(validatedTags)); // Ensure tags are a valid array
+        formData.append("tags", JSON.stringify(validatedTags)); // Correctly append as JSON string if the backend expects it
         if (image) {
           formData.append("file", image);
         }

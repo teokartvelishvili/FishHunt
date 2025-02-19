@@ -53,10 +53,11 @@ const ForumPost = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "forum-id": id,
         },
         body: JSON.stringify({
           content: newComment,
-          forumId: id,
+          //
         }),
       });
       return response.json();
@@ -85,8 +86,9 @@ const ForumPost = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "forum-id": id,
         },
-        body: JSON.stringify({ forumId: id }),
+        body: JSON.stringify({}),
       });
       return response.json();
     },

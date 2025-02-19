@@ -22,13 +22,13 @@ async function bootstrap() {
   // }));
 
   app.enableCors({
-
     origin:
       process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id'],
+
     optionsSuccessStatus: 204,
   });
 
