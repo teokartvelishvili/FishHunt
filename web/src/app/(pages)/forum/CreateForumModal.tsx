@@ -40,25 +40,37 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
 
     return Array.from(uniqueTags); // Return unique tags as array
   };
-
   const createMutation = useMutation({
     mutationFn: async () => {
       try {
         // Validate tags before sending
         const validatedTags = validateTags(tags);
 
-        const formData = new FormData();
-        formData.append("content", content);
-        formData.append("tags", JSON.stringify(validatedTags)); // Correctly append as JSON string if the backend expects it
+        let body;
+        const headers: HeadersInit = {
+          "Content-Type": "application/json",
+        };
+
         if (image) {
+          // Use FormData when a file is included
+          const formData = new FormData();
+          formData.append("content", content);
+          validatedTags.forEach((tag) => formData.append("tags", tag)); // Append tags correctly
           formData.append("file", image);
+
+          body = formData;
+          delete headers["Content-Type"]; // Let browser set multipart headers
+        } else {
+          // Send as JSON when there's no file
+          body = JSON.stringify({ content, tags: validatedTags });
         }
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/forums`,
           {
             method: "POST",
-            body: formData,
+            headers,
+            body,
             credentials: "include",
           }
         );
@@ -70,7 +82,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
 
         return response.json();
       } catch (error) {
-        throw error; // Pass on validation error
+        throw error;
       }
     },
     onSuccess: () => {

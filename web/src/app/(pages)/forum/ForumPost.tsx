@@ -47,6 +47,9 @@ const ForumPost = ({
   const [newComment, setNewComment] = useState("");
   const queryClient = useQueryClient();
 
+  const [likesCount, setLikes] = useState(likes); // ლაიქების რაოდენობა
+  const [userLiked, setIsLiked] = useState(isLiked);
+
   const commentMutation = useMutation({
     mutationFn: async () => {
       const response = await fetchWithAuth(`/forums/add-comment`, {
@@ -57,7 +60,6 @@ const ForumPost = ({
         },
         body: JSON.stringify({
           content: newComment,
-          //
         }),
       });
       return response.json();
@@ -81,19 +83,33 @@ const ForumPost = ({
 
   const likeMutation = useMutation({
     mutationFn: async () => {
-      const endpoint = isLiked ? "remove-like" : "add-like";
-      const response = await fetchWithAuth(`/forums/${endpoint}`, {
+      const endpoint = userLiked ? "remove-like" : "add-like";
+      const response = await fetch(`/forums/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "forum-id": id,
         },
         body: JSON.stringify({}),
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to update like");
+      }
+
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+
+      if (data?.likes !== undefined) {
+        setLikes(data.likes); // განახლებული ლაიქების რაოდენობა ბექიდან
+        setIsLiked(!userLiked);
+      } else {
+        setLikes((prev) => (userLiked ? prev - 1 : prev + 1)); // თუ ბექი არ აბრუნებს ახალ რაოდენობას, ლოკალურად ვაახლებთ
+        setIsLiked(!userLiked);
+      }
     },
     onError: (error: Error) => {
       toast({
@@ -173,11 +189,11 @@ const ForumPost = ({
 
           <div className="forum-post-actions">
             <button
-              className={`like-button ${isLiked ? "liked" : ""}`}
+              className={`like-button ${userLiked ? "liked" : ""}`}
               onClick={handleLike}
               disabled={!isAuthorized || likeMutation.isPending}
             >
-              {likes} {isLiked ? "❤️" : "🤍"}
+              {likesCount} {userLiked ? "❤️" : "🤍"}
             </button>
           </div>
 

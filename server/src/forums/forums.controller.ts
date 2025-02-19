@@ -76,7 +76,6 @@ export class ForumsController {
   @Post('add-like')
   @UseGuards(JwtAuthGuard)
   addLikeForum(@CurrentUser() user: User, @Req() req: Request) {
-    return;
     const forumId = req.headers['forum-id'] as string;
     if (!forumId) throw new BadRequestException('Forum ID is required');
     return this.forumsService.addLikeForum(user._id, forumId);
