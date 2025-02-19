@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { OrderHistory } from "@/modules/profile/components/order-history";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Order } from "@/types/order";
