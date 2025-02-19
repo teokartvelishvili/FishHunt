@@ -19,5 +19,5 @@ export class queryParamsDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  take: number = 5
+  take: number = 15
 }
