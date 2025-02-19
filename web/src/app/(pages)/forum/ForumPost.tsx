@@ -84,7 +84,7 @@ const ForumPost = ({
   const likeMutation = useMutation({
     mutationFn: async () => {
       const endpoint = userLiked ? "remove-like" : "add-like";
-      const response = await fetch(`/forums/${endpoint}`, {
+      const response = await fetchWithAuth(`/forums/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
