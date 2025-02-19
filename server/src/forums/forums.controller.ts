@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, UseInterceptors, UploadedFile, BadRequestException, Headers, Put, NotFoundException } from '@nestjs/common';
 import { ForumsService } from './forums.service';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { UpdateForumDto } from './dto/update-forum.dto';
@@ -8,69 +8,110 @@ import { queryParamsDto } from './dto/queryParams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AddCommentDto } from './dto/addComment.dto';
 import { AuthGuard } from '@/guards/auth.guard';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiResponse, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { AddReplyDto } from './dto/addReply.dto';
+import { RolesGuard } from '@/guards/roles.guard';
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
+import { Roles } from '@/decorators/roles.decorator';
+import { Role } from '@/types/role.enum';
+import { CurrentUser } from '@/decorators/current-user.decorator';
+import { UserDocument } from '@/users/schemas/user.schema';
+import { IsString, IsArray, ArrayMinSize } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
 
 // @UseGuards(AuthGuard)
 @Controller('forums')
+@ApiTags('Forums')
 export class ForumsController {
   constructor(private readonly forumsService: ForumsService) {}
 
-  @Post()
-  @ApiHeader({
-    name: 'user-id',
-    required: true
-  })
-  @ApiCreatedResponse({
-    example: `{
-    "content": "content test",
-    "user": "67a8ee2f01b7e7462deb2a81",
-    "tags": [
-        "Fishing"
-    ],
-    "likes": 0,
-    "likesArray": [],
-    "imagePath": "images/1739880054710",
-    "_id": "67b47677840f828f0652d383",
-    "comments": [],
-    "createdAt": "2025-02-18T12:00:55.468Z",
-    "updatedAt": "2025-02-18T12:00:55.468Z",
-    "__v": 0
-    }`
-  })
-  @ApiResponse({status: 400,description: "user id not provided"})
-  @ApiBadRequestResponse({
-    example:{
-      message: `"content must be a string",
-        "content should not be empty",
-        "All tags's elements must be unique",
-        "tags should not be empty",
-        "tags must be an array"`,
-      error: 'Bad request'
-    }
-  })
-  @UseGuards(HasValidUserId)
-  @UseInterceptors(FileInterceptor('file'))
-  create(@UploadedFile()  file: Express.Multer.File, @UserId() userId,@Body() createForumDto: CreateForumDto) {
-    if (!file) return this.forumsService.create(createForumDto, userId);
-
-    const timestamp = Date.now();
-    const path = timestamp;
-    const filePath = `images/${path}`
-    const filesSizeInMb = Number((file.size/(1024 * 1024)).toFixed(1))
-    
-    if(filesSizeInMb > 5){
-      throw new BadRequestException('The file must be less than 5 MB.')
-    }
-    return this.forumsService.create(createForumDto, userId, filePath, file.buffer);
+  @Get()
+  @ApiOperation({ summary: 'Get all forums' })
+  @ApiResponse({ status: 200, description: 'Return all forums.' })
+  findAll(@Query() queryParams: queryParamsDto) {
+    return this.forumsService.findAll(queryParams);
   }
 
-  @ApiResponse({
-    status: 200,
-    description: 'A list of forums with pagination'
-  })
-  @Get()
-  findAll(@Query() queryParams: queryParamsDto ) {
-    return this.forumsService.findAll(queryParams);
+  @Get(':id')
+  @ApiOperation({ summary: 'Get forum by id' })
+  @ApiResponse({ status: 200, description: 'Return forum by id.' })
+  findOne(@Param('id') id: string) {
+    return this.forumsService.findOne(id);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create forum' })
+  @ApiResponse({ status: 201, description: 'Forum successfully created.' })
+  create(
+    @Body() createForumDto: CreateForumDto,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.create(createForumDto, user._id.toString());
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update forum' })
+  @ApiResponse({ status: 200, description: 'Forum successfully updated.' })
+  update(
+    @Param('id') id: string,
+    @Body() updateForumDto: UpdateForumDto,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.update(id, updateForumDto, user._id.toString());
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete forum' })
+  @ApiResponse({ status: 200, description: 'Forum successfully deleted.' })
+  remove(
+    @Param('id') id: string,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.remove(id, user._id.toString());
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Add comment to forum' })
+  @ApiResponse({ status: 201, description: 'Comment successfully added.' })
+  addComment(
+    @Param('id') id: string,
+    @Body() addCommentDto: AddCommentDto,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.addCommentForum(id, user._id.toString(), addCommentDto);
+  }
+
+  @Delete(':forumId/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete comment' })
+  deleteComment(
+    @Param('forumId') forumId: string,
+    @Param('commentId') commentId: string,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.deleteComment(forumId, commentId, user._id.toString());
+  }
+
+  @Patch(':forumId/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update comment' })
+  updateComment(
+    @Param('forumId') forumId: string,
+    @Param('commentId') commentId: string,
+    @Body() updateCommentDto: AddCommentDto,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.updateComment(
+      forumId,
+      commentId,
+      user._id.toString(),
+      updateCommentDto.content
+    );
   }
 
   @Post('add-comment')
@@ -183,22 +224,118 @@ export class ForumsController {
     return this.forumsService.removeLikeForum(userId, forumId)
   }
 
-  @Delete('')
-  deleteForum(@Req() req: Request) {
-    const forumId = req.headers['forum-id'] as string
-    if(!forumId) throw new BadRequestException('forum id id is required')
-
-    return this.forumsService.remove(forumId);
+  @Post('comments/:commentId/reply')
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Add reply to comment' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+  })
+  @ApiParam({
+    name: 'commentId',
+    required: true,
+    description: 'Comment ID'
+  })
+  addReplyToComment(
+    @UserId() userId: string,
+    @Param('commentId') commentId: string,
+    @Body() addReplyDto: AddReplyDto,
+    @Headers('forum-id') forumId: string,
+  ) {
+    return this.forumsService.addReplyToComment(userId, forumId, commentId, addReplyDto);
   }
-  
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.forumsService.findOne(+id);
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Patch('comments/:commentId/replies/:replyId')
+  @ApiOperation({ summary: 'Update reply' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+  })
+  @ApiParam({
+    name: 'commentId',
+    required: true,
+    description: 'Comment ID'
+  })
+  @ApiParam({
+    name: 'replyId',
+    required: true,
+    description: 'Reply ID'
+  })
+  updateReply(
+    @UserId() userId: string,
+    @Param('commentId') commentId: string,
+    @Param('replyId') replyId: string,
+    @Body() updateReplyDto: AddReplyDto,
+    @Headers('forum-id') forumId: string,
+  ) {
+    return this.forumsService.updateReply(userId, forumId, commentId, replyId, updateReplyDto.content);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateForumDto: UpdateForumDto) {
-    return this.forumsService.update(+id, updateForumDto);
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('comments/:commentId/replies/:replyId')
+  @ApiOperation({ summary: 'Delete reply' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+  })
+  @ApiParam({
+    name: 'commentId',
+    required: true,
+    description: 'Comment ID'
+  })
+  @ApiParam({
+    name: 'replyId',
+    required: true,
+    description: 'Reply ID'
+  })
+  deleteReply(
+    @UserId() userId: string,
+    @Param('commentId') commentId: string,
+    @Param('replyId') replyId: string,
+    @Headers('forum-id') forumId: string,
+  ) {
+    return this.forumsService.deleteReply(userId, forumId, commentId, replyId);
   }
 
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Like/unlike forum' })
+  @ApiResponse({ status: 200, description: 'Forum liked/unliked successfully.' })
+  likeForum(
+    @Param('id') id: string,
+    @CurrentUser() user: UserDocument
+  ) {
+    return this.forumsService.likeForum(id, user._id.toString());
+  }
+
+  @Get(':id/likes')
+  @ApiOperation({ summary: 'Get forum likes' })
+  @ApiResponse({ status: 200, description: 'Return forum likes.' })
+  getLikes(@Param('id') id: string) {
+    return this.forumsService.getLikes(id);
+  }
+
+  @Get(':forumId/comments')
+  @ApiOperation({ summary: 'Get forum comments' })
+  @ApiResponse({ status: 200, description: 'Return forum comments.' })
+  async getComments(@Param('forumId') forumId: string) {
+    const forum = await this.forumsService.findOne(forumId);
+    return forum.comments;
+  }
+
+  @Get(':forumId/comments/:commentId/replies')
+  @ApiOperation({ summary: 'Get comment replies' })
+  @ApiResponse({ status: 200, description: 'Return comment replies.' })
+  async getReplies(
+    @Param('forumId') forumId: string,
+    @Param('commentId') commentId: string
+  ) {
+    const forum = await this.forumsService.findOne(forumId);
+    const comment = forum.comments.find(c => c._id.toString() === commentId);
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+    return comment.replies;
+  }
 }
