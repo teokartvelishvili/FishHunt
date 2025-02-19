@@ -10,6 +10,7 @@ import { AddCommentDto } from './dto/addComment.dto';
 import { AddReplyDto } from './dto/addReply.dto';
 import { queryParamsDto } from './dto/queryParams.dto';
 import { Schema as MongooseSchema } from 'mongoose';
+import { UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class ForumsService {
@@ -107,7 +108,12 @@ export class ForumsService {
       throw new NotFoundException('Forum not found');
     }
 
-    if (forum.user.toString() !== userId) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (forum.user.toString() !== userId && user.role !== 'admin') {
       throw new ForbiddenException('Not authorized to update this forum');
     }
 
@@ -132,7 +138,12 @@ export class ForumsService {
       throw new NotFoundException('Forum not found');
     }
 
-    if (forum.user.toString() !== userId) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (forum.user.toString() !== userId && user.role !== 'admin') {
       throw new ForbiddenException('Not authorized to delete this forum');
     }
 
@@ -184,7 +195,12 @@ export class ForumsService {
       throw new NotFoundException('Comment not found');
     }
 
-    if (comment.user.toString() !== userId) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (comment.user.toString() !== userId && user.role !== 'admin') {
       throw new ForbiddenException('Not authorized to update this comment');
     }
 
@@ -209,17 +225,21 @@ export class ForumsService {
       throw new NotFoundException('Forum not found');
     }
 
-    const commentIndex = forum.comments.findIndex(c => c._id.toString() === commentId);
-    if (commentIndex === -1) {
+    const comment = forum.comments.find(c => c._id.toString() === commentId);
+    if (!comment) {
       throw new NotFoundException('Comment not found');
     }
 
-    const comment = forum.comments[commentIndex];
-    if (comment.user.toString() !== userId) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (comment.user.toString() !== userId && user.role !== 'admin') {
       throw new ForbiddenException('Not authorized to delete this comment');
     }
 
-    forum.comments.splice(commentIndex, 1);
+    forum.comments.splice(forum.comments.indexOf(comment), 1);
     await forum.save();
 
     return forum.populate([
