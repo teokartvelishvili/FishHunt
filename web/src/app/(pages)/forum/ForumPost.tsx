@@ -3,19 +3,21 @@
 import { useState } from "react";
 import "./ForumPost.css";
 import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 interface Comment {
-  id: number;
+  id: string;
   text: string;
   author: {
     name: string;
     avatar: string;
   };
-  replies?: Comment[];
 }
 
 interface PostProps {
-  id: number;
+  id: string;
   image: string;
   text: string;
   category: string[];
@@ -25,162 +27,197 @@ interface PostProps {
   };
   comments: Comment[];
   time: string;
+  likes: number;
+  isLiked: boolean;
+  isAuthorized: boolean;
 }
 
 const ForumPost = ({
-  // id,
+  id,
   image,
   text,
   category,
   author,
   comments,
   time,
+  likes,
+  isLiked,
+  isAuthorized,
 }: PostProps) => {
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [showFullText, setShowFullText] = useState(false);
-  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const queryClient = useQueryClient();
 
-  const [replyInputVisible, setReplyInputVisible] = useState<{
-    [key: number]: boolean;
-  }>({});
+  const [likesCount, setLikes] = useState(likes); // ლაიქების რაოდენობა
+  const [userLiked, setIsLiked] = useState(isLiked);
 
-  const [replyText, setReplyText] = useState<{ [key: number]: string }>({});
+  const commentMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetchWithAuth(`/forums/add-comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "forum-id": id,
+        },
+        body: JSON.stringify({
+          content: newComment,
+        }),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      setNewComment("");
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+      toast({
+        title: "Success",
+        description: "Comment added successfully",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
+  });
 
-  const toggleReplyInput = (commentId: number) => {
-    setReplyInputVisible((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }));
-  };
+  const likeMutation = useMutation({
+    mutationFn: async () => {
+      const endpoint = userLiked ? "remove-like" : "add-like";
+      const response = await fetchWithAuth(`/forums/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "forum-id": id,
+        },
+        body: JSON.stringify({}),
+        credentials: "include",
+      });
 
-  const handleReplyChange = (commentId: number, text: string) => {
-    setReplyText((prev) => ({ ...prev, [commentId]: text }));
+      if (!response.ok) {
+        throw new Error("Failed to update like");
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+
+      if (data?.likes !== undefined) {
+        setLikes(data.likes); // განახლებული ლაიქების რაოდენობა ბექიდან
+        setIsLiked(!userLiked);
+      } else {
+        setLikes((prev) => (userLiked ? prev - 1 : prev + 1)); // თუ ბექი არ აბრუნებს ახალ რაოდენობას, ლოკალურად ვაახლებთ
+        setIsLiked(!userLiked);
+      }
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
+  });
+
+  const handleLike = () => {
+    if (!isAuthorized) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please login to like posts",
+      });
+      return;
+    }
+    likeMutation.mutate();
   };
 
   return (
     <div className="forum-post">
-      <Image
-        src={image}
-        alt="post image"
-        width={150}
-        height={100}
-        className="forum-post-image"
-      />
-      <div className="forum-post-content">
+      <div className="forum-post-header">
         <div className="forum-post-author">
           <Image
             src={author.avatar}
-            alt={author.name}
-            width={30}
-            height={30}
-            className="forum-post-avatar"
+            alt={`${author.name}'s avatar`}
+            width={40}
+            height={40}
+            className="author-avatar"
           />
-          <span className="forum-post-author-name">{author.name}</span>
+          <span className="author-name">{author.name}</span>
         </div>
+        <span className="post-time">{time}</span>
+      </div>
+      <div className="forumSections">
+        {image && (
+          <Image
+            src={image}
+            alt="Forum post image"
+            width={600}
+            height={400}
+            className="forum-post-image"
+          />
+        )}
+        <div className="forumSection2">
+          <p className="forum-post-text">{text}</p>
 
-        <p className="forum-post-text">
-          {showFullText ? text : text.slice(0, 70)}
-          {text.length > 90 && (
-            <span
-              className="forum-post-more"
-              onClick={() => setShowFullText(!showFullText)}
-            >
-              {showFullText ? " Show less" : " ...Show more"}
-            </span>
-          )}
-        </p>
-
-        <div className="forum-post-footer">
-          <div className="forum-post-categories">
-            {category.map((cat, index) => (
-              <span key={index} className="forum-post-category">
-                {cat}
+          <div className="forum-post-tags">
+            {category.map((tag) => (
+              <span key={tag} className="tag">
+                {tag}
               </span>
             ))}
           </div>
-          <span className="forum-post-time">{time}</span>
-          <span
-            className="forum-post-comments"
-            onClick={() => setShowComments(!showComments)}
-          >
-            💬 {comments.length}
-          </span>
-          <button
-            className={`forum-post-favorite ${isFavorited ? "favorited" : ""}`}
-            onClick={() => setIsFavorited(!isFavorited)}
-          >
-            {isFavorited ? "👍 1" : "👍🏻"}
-          </button>
-        </div>
 
-        {showComments && (
-          <div className="forum-comments">
+          {isAuthorized && (
+            <div className="comment-input-container">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="comment-input"
+              />
+              <button
+                onClick={() => commentMutation.mutate()}
+                disabled={!newComment.trim() || commentMutation.isPending}
+                className="comment-button"
+              >
+                {commentMutation.isPending ? "Posting..." : "Post"}
+              </button>
+            </div>
+          )}
+
+          <div className="forum-post-actions">
+            <button
+              className={`like-button ${userLiked ? "liked" : ""}`}
+              onClick={handleLike}
+              disabled={!isAuthorized || likeMutation.isPending}
+            >
+              {likesCount} {userLiked ? "❤️" : "🤍"}
+            </button>
+          </div>
+
+          <div className="comments-section">
             {comments.map((comment) => (
-              <div key={comment.id} className="comment-item">
+              <div key={comment.id} className="comment">
                 <div className="comment-header">
                   <Image
-                    src={comment.author.avatar}
-                    alt={comment.author.name}
-                    width={25}
-                    height={25}
+                    src={
+                      comment.author.avatar
+                        ? comment.author.avatar
+                        : "/avatar.jpg"
+                    }
+                    alt={`${comment.author.name}'s avatar`}
+                    width={32}
+                    height={32}
                     className="comment-avatar"
                   />
                   <span className="comment-author">{comment.author.name}</span>
                 </div>
                 <p className="comment-text">{comment.text}</p>
-
-                {/* რეფლის ღილაკი */}
-                <button
-                  className="reply-button"
-                  onClick={() => toggleReplyInput(comment.id)}
-                >
-                  Reply
-                </button>
-
-                {/* თუ ღილაკი დაჭერილია, გამოჩნდეს რეფლის ინფუთი */}
-                {replyInputVisible[comment.id] && (
-                  <div className="reply-section">
-                    <input
-                      type="text"
-                      value={replyText[comment.id] || ""}
-                      onChange={(e) =>
-                        handleReplyChange(comment.id, e.target.value)
-                      }
-                      placeholder="Write a reply..."
-                    />
-                    <button>Send</button>
-                  </div>
-                )}
-
-                {/* კომენტარის რეფლები */}
-                {comment.replies?.map((reply) => (
-                  <div key={reply.id} className="reply-item">
-                    <div className="reply-header">
-                      <Image
-                        src={reply.author.avatar}
-                        alt={reply.author.name}
-                        width={20}
-                        height={20}
-                        className="reply-avatar"
-                      />
-                      <span className="reply-author">{reply.author.name}</span>
-                    </div>
-                    <p className="reply-text">{reply.text}</p>
-                  </div>
-                ))}
               </div>
             ))}
           </div>
-        )}
-
-        {/* მთავარი კომენტარის ინფუთი */}
-        <div className="main-comment-container">
-          <input
-            type="text"
-            className="main-comment-input"
-            placeholder="Write a comment..."
-          />
-          <button>Send</button>
         </div>
       </div>
     </div>

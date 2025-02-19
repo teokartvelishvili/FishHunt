@@ -1,244 +1,90 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState } from "react";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
-import noPhoto from "../../../assets/nophoto.webp";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "@/modules/auth/hooks/use-user";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import CreateForumModal from "./CreateForumModal";
 
-const ForumPage = ({ limit }: { limit?: number | null }) => {
-  const allPosts = useMemo(
-    () => [
-      {
-        id: 1,
-        image: noPhoto.src,
-        text: "ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება!",
-        category: ["Fishing", "Camping"],
-        author: { name: "ნიკა ჯაფარიძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 1,
-            text: "ძალიან საინტერესო პოსტია!",
-            author: { name: "გიორგი ცინცაძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 2,
-                text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-          {
-            id: 3,
-            text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
-            author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: [],
-          },
-        ],
-        time: "3 hours ago",
-      },
-      {
-        id: 2,
-        image: noPhoto.src,
-        text: "ნადირობის სეზონი უკვე დაიწყო!",
-        category: ["Hunting"],
-        author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 4,
-            text: "მშვენიერი დროა ნადირობისთვის!",
-            author: { name: "ლაშა კობახიძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 5,
-                text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-        ],
-        time: "5 hours ago",
-      },
-      {
-        id: 3,
-        image: noPhoto.src,
-        text: "ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება!",
-        category: ["Fishing", "Camping"],
-        author: { name: "ნიკა ჯაფარიძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 1,
-            text: "ძალიან საინტერესო პოსტია!",
-            author: { name: "გიორგი ცინცაძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 2,
-                text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-          {
-            id: 3,
-            text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
-            author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: [],
-          },
-        ],
-        time: "3 hours ago",
-      },
-      {
-        id: 4,
-        image: noPhoto.src,
-        text: "ნადირობის სეზონი უკვე დაიწყო!",
-        category: ["Hunting"],
-        author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 4,
-            text: "მშვენიერი დროა ნადირობისთვის!",
-            author: { name: "ლაშა კობახიძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 5,
-                text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-        ],
-        time: "5 hours ago",
-      },
-      {
-        id: 5,
-        image: noPhoto.src,
-        text: "ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება!",
-        category: ["Fishing"],
-        author: { name: "ნიკა ჯაფარიძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 1,
-            text: "ძალიან საინტერესო პოსტია!",
-            author: { name: "გიორგი ცინცაძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 2,
-                text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-          {
-            id: 3,
-            text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
-            author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: [],
-          },
-        ],
-        time: "3 hours ago",
-      },
-      {
-        id: 6,
-        image: noPhoto.src,
-        text: "ნადირობის სეზონი უკვე დაიწყო!",
-        category: ["Hunting", "Camping"],
-        author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 4,
-            text: "მშვენიერი დროა ნადირობისთვის!",
-            author: { name: "ლაშა კობახიძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 5,
-                text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-        ],
-        time: "5 hours ago",
-      },
-      {
-        id: 7,
-        image: noPhoto.src,
-        text: "ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება! ყველაზე თავგადასავლიანი სეზონი იწყება!",
-        category: ["Fishing"],
-        author: { name: "ნიკა ჯაფარიძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 1,
-            text: "ძალიან საინტერესო პოსტია!",
-            author: { name: "გიორგი ცინცაძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 2,
-                text: "მართალი ხარ, მეც ვეთანხმები!",
-                author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-          {
-            id: 3,
-            text: "რა ადგილებია საუკეთესო თევზაობისთვის?",
-            author: { name: "დავით ჩაჩანიძე", avatar: noPhoto.src },
-            replies: [],
-          },
-        ],
-        time: "3 hours ago",
-      },
-      {
-        id: 8,
-        image: noPhoto.src,
-        text: "ნადირობის სეზონი უკვე დაიწყო!",
-        category: ["Hunting"],
-        author: { name: "მარიამ კალანდაძე", avatar: noPhoto.src },
-        comments: [
-          {
-            id: 4,
-            text: "მშვენიერი დროა ნადირობისთვის!",
-            author: { name: "ლაშა კობახიძე", avatar: noPhoto.src },
-            replies: [
-              {
-                id: 5,
-                text: "აბსოლუტურად გეთანხმები!",
-                author: { name: "სანდრო ქურდაძე", avatar: noPhoto.src },
-              },
-            ],
-          },
-        ],
-        time: "5 hours ago",
-      },
-    ],
-    []
-  );
-
-  const [visiblePosts, setVisiblePosts] = useState(
-    limit ? allPosts.slice(0, limit) : allPosts.slice(0, 5)
-  );
-
-  useEffect(() => {
-    if (limit) return;
-
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 100
-      ) {
-        setVisiblePosts((prev) =>
-          allPosts.length > prev.length
-            ? allPosts.slice(0, prev.length + 2)
-            : prev
-        );
-      }
+interface Forum {
+  _id: string;
+  content: string;
+  user: {
+    name: string;
+    _id: string;
+  };
+  tags: string[];
+  comments: Array<{
+    _id: string;
+    content: string;
+    user: {
+      name: string;
     };
+    createdAt: string;
+  }>;
+  likes: number;
+  likesArray: string[];
+  image: string;
+  createdAt: string;
+}
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [visiblePosts, limit, allPosts]);
+const ForumPage = () => {
+  const [page] = useState(1);
+  const { user } = useUser();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { data: forums } = useQuery({
+    queryKey: ["forums", page],
+    queryFn: async () => {
+      const response = await fetchWithAuth(`/forums?page=${page}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      return response.json();
+    },
+  });
 
   return (
     <div className="forum-page">
-      {visiblePosts.map((post) => (
-        <ForumPost key={post.id} {...post} />
+      {user && (
+        <button
+          className="create-post-button"
+          onClick={() => setIsModalOpen(true)}
+        >
+          ➕ ახალი პოსტის დამატება
+        </button>
+      )}
+
+      <CreateForumModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
+      {forums?.map((forum: Forum) => (
+        <ForumPost
+          key={forum._id}
+          id={forum._id}
+          image={forum.image || "/avatar.jpg"}
+          text={forum.content}
+          category={forum.tags}
+          author={{
+            name: forum.user.name,
+            avatar: "/avatar.jpg",
+          }}
+          comments={forum.comments.map((comment) => ({
+            id: comment._id,
+            text: comment.content,
+            author: {
+              name: comment.user.name,
+              avatar: "/avatar.jpg",
+            },
+          }))}
+          time={new Date(forum.createdAt).toLocaleDateString()}
+          likes={forum.likes}
+          isLiked={forum.likesArray.includes(user?._id || "")}
+          isAuthorized={!!user}
+        />
       ))}
     </div>
   );
