@@ -48,13 +48,15 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
 
         let body;
         const headers: HeadersInit = {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         };
 
         if (image) {
           const formData = new FormData();
           formData.append("content", content);
-          formData.append("tags", JSON.stringify(validatedTags)); // ✅ აქ JSON.stringify სწორია
+          validatedTags.forEach((tag, index) => {
+            formData.append(`tags[${index}]`, tag); // Append each tag as a separate entry
+          }); // ✅ აქ JSON.stringify სწორია
           formData.append("file", image);
 
           // ✅ დამატებითი ლოგირება
