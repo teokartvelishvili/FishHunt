@@ -49,6 +49,9 @@ const ForumPost = ({
 
   const [likesCount, setLikes] = useState(likes); // ლაიქების რაოდენობა
   const [userLiked, setIsLiked] = useState(isLiked);
+  const [showComments, setShowComments] = useState(false);
+  const [replyInputVisible, setReplyInputVisible] = useState<{[key: string]: boolean}>({});
+  const [replyText, setReplyText] = useState<{[key: string]: string}>({});
 
   const commentMutation = useMutation({
     mutationFn: async () => {
@@ -132,93 +135,120 @@ const ForumPost = ({
     likeMutation.mutate();
   };
 
+  const toggleReplyInput = (commentId: string) => {
+    setReplyInputVisible((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+
+  const handleReplyChange = (commentId: string, text: string) => {
+    setReplyText((prev) => ({ ...prev, [commentId]: text }));
+  };
+
   return (
     <div className="forum-post">
-      <div className="forum-post-header">
+      <Image
+        src={image}
+        alt="post image"
+        width={150}
+        height={100}
+        className="forum-post-image"
+      />
+      <div className="forum-post-content">
         <div className="forum-post-author">
           <Image
             src={author.avatar}
             alt={`${author.name}'s avatar`}
-            width={40}
-            height={40}
-            className="author-avatar"
+            width={30}
+            height={30}
+            className="forum-post-avatar"
           />
-          <span className="author-name">{author.name}</span>
+          <span className="forum-post-author-name">{author.name}</span>
         </div>
-        <span className="post-time">{time}</span>
-      </div>
-      <div className="forumSections">
-        {image && (
-          <Image
-            src={image}
-            alt="Forum post image"
-            width={600}
-            height={400}
-            className="forum-post-image"
-          />
-        )}
-        <div className="forumSection2">
-          <p className="forum-post-text">{text}</p>
 
-          <div className="forum-post-tags">
-            {category.map((tag) => (
-              <span key={tag} className="tag">
-                {tag}
+        <p className="forum-post-text">{text}</p>
+
+        <div className="forum-post-footer">
+          <div className="forum-post-categories">
+            {category.map((cat, index) => (
+              <span key={index} className="forum-post-category">
+                {cat}
               </span>
             ))}
           </div>
+          <span className="forum-post-time">{time}</span>
+          <span
+            className="forum-post-comments"
+            onClick={() => setShowComments(!showComments)}
+          >
+            💬 {comments.length}
+          </span>
+          <button
+            className={`forum-post-favorite ${userLiked ? "favorited" : ""}`}
+            onClick={handleLike}
+            disabled={!isAuthorized || likeMutation.isPending}
+          >
+            {likesCount} {userLiked ? "👍" : "👍🏻"}
+          </button>
+        </div>
 
-          {isAuthorized && (
-            <div className="comment-input-container">
-              <input
-                type="text"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add a comment..."
-                className="comment-input"
-              />
-              <button
-                onClick={() => commentMutation.mutate()}
-                disabled={!newComment.trim() || commentMutation.isPending}
-                className="comment-button"
-              >
-                {commentMutation.isPending ? "Posting..." : "Post"}
-              </button>
-            </div>
-          )}
-
-          <div className="forum-post-actions">
-            <button
-              className={`like-button ${userLiked ? "liked" : ""}`}
-              onClick={handleLike}
-              disabled={!isAuthorized || likeMutation.isPending}
-            >
-              {likesCount} {userLiked ? "❤️" : "🤍"}
-            </button>
-          </div>
-
-          <div className="comments-section">
+        {showComments && (
+          <div className="forum-comments">
             {comments.map((comment) => (
-              <div key={comment.id} className="comment">
+              <div key={comment.id} className="comment-item">
                 <div className="comment-header">
                   <Image
-                    src={
-                      comment.author.avatar
-                        ? comment.author.avatar
-                        : "/avatar.jpg"
-                    }
-                    alt={`${comment.author.name}'s avatar`}
-                    width={32}
-                    height={32}
+                    src={comment.author.avatar}
+                    alt={comment.author.name}
+                    width={25}
+                    height={25}
                     className="comment-avatar"
                   />
                   <span className="comment-author">{comment.author.name}</span>
                 </div>
                 <p className="comment-text">{comment.text}</p>
+
+                <button
+                  className="reply-button"
+                  onClick={() => toggleReplyInput(comment.id)}
+                >
+                  Reply
+                </button>
+
+                {replyInputVisible[comment.id] && (
+                  <div className="reply-section">
+                    <input
+                      type="text"
+                      value={replyText[comment.id] || ""}
+                      onChange={(e) => handleReplyChange(comment.id, e.target.value)}
+                      placeholder="Write a reply..."
+                    />
+                    <button>Send</button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
-        </div>
+        )}
+
+        {isAuthorized && (
+          <div className="main-comment-container">
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="main-comment-input"
+              placeholder="Write a comment..."
+            />
+            <button
+              onClick={() => commentMutation.mutate()}
+              disabled={!newComment.trim() || commentMutation.isPending}
+            >
+              {commentMutation.isPending ? "Posting..." : "Send"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
