@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import CreateForumModal from "./CreateForumModal";
@@ -33,6 +33,7 @@ const ForumPage = () => {
   const [page] = useState(1);
   const { user } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: forums } = useQuery({
     queryKey: ["forums", page],
@@ -42,6 +43,28 @@ const ForumPage = () => {
         credentials: "include",
       });
       return response.json();
+    },
+  });
+
+  // 🗑️ **პოსტის წაშლის მუტაცია**
+  const deleteMutation = useMutation({
+    mutationFn: async (forumId: string) => {
+      const response = await fetchWithAuth(`/forums/${forumId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "file-id": "requiredFileId", // აქ უნდა იქნას შესაბამისი ID
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete forum post");
+      }
+    },
+    onSuccess: () => {
+      // 🔄 წაშლის შემდეგ, განვაახლებთ ფორუმის პოსტების სიას
+      queryClient.invalidateQueries({ queryKey: ["forums", page] });
     },
   });
 
@@ -61,31 +84,46 @@ const ForumPage = () => {
         onClose={() => setIsModalOpen(false)}
       />
 
-      {forums?.map((forum: Forum) => (
-        <ForumPost
-          key={forum._id}
-          id={forum._id}
-          image={forum.image || "/avatar.jpg"}
-          text={forum.content}
-          category={forum.tags}
-          author={{
-            name: forum.user.name,
-            avatar: "/avatar.jpg",
-          }}
-          comments={forum.comments.map((comment) => ({
-            id: comment._id,
-            text: comment.content,
-            author: {
-              name: comment.user.name,
+      {forums?.map((forum: Forum) => {
+        const isOwner = user?._id === forum.user._id;
+        const isAdmin = user?.role === "admin";
+
+        return (
+          <ForumPost
+            key={forum._id}
+            id={forum._id}
+            image={forum.image || "/avatar.jpg"}
+            text={forum.content}
+            category={forum.tags}
+            author={{
+              name: forum.user.name,
               avatar: "/avatar.jpg",
-            },
-          }))}
-          time={new Date(forum.createdAt).toLocaleDateString()}
-          likes={forum.likes}
-          isLiked={forum.likesArray.includes(user?._id || "")}
-          isAuthorized={!!user}
-        />
-      ))}
+            }}
+            comments={forum.comments.map((comment) => ({
+              id: comment._id,
+              text: comment.content,
+              author: {
+                name: comment.user.name,
+                avatar: "/avatar.jpg",
+              },
+            }))}
+            time={new Date(forum.createdAt).toLocaleDateString()}
+            likes={forum.likes}
+            isLiked={forum.likesArray.includes(user?._id || "")}
+            isAuthorized={!!user}
+            deleteButton={
+              isOwner || isAdmin ? (
+                <button
+                  className="delete-post-button"
+                  onClick={() => deleteMutation.mutate(forum._id)}
+                >
+                  🗑️ წაშლა
+                </button>
+              ) : null
+            }
+          />
+        );
+      })}
     </div>
   );
 };

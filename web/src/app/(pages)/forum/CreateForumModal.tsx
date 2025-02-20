@@ -52,11 +52,20 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
         };
 
         if (image) {
-          // Use FormData when a file is included
           const formData = new FormData();
           formData.append("content", content);
-          validatedTags.forEach((tag) => formData.append("tags", tag)); // Append tags correctly
+          formData.append("tags", JSON.stringify(validatedTags)); // ✅ აქ JSON.stringify სწორია
           formData.append("file", image);
+
+          // ✅ დამატებითი ლოგირება
+          console.log("✅ FormData before sending:");
+          formData.forEach((value, key) => {
+            console.log(`📦 ${key}:`, value);
+          });
+
+          for (const pair of formData.entries()) {
+            console.log("📦 FormData Entry:", pair[0], pair[1]);
+          }
 
           body = formData;
           delete headers["Content-Type"]; // Let browser set multipart headers
@@ -64,6 +73,8 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
           // Send as JSON when there's no file
           body = JSON.stringify({ content, tags: validatedTags });
         }
+        console.log("🚀 Sending request with body:", body);
+        console.log("🔍 Headers:", headers);
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/forums`,
@@ -74,14 +85,16 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
             credentials: "include",
           }
         );
-
+        console.log("🌍 Response status:", response.status);
         if (!response.ok) {
           const error = await response.json();
+          console.log("❌ API Error Response:", error);
           throw new Error(error.message || "Failed to create post");
         }
 
         return response.json();
       } catch (error) {
+        console.error("❌ Mutation Error:", error);
         throw error;
       }
     },

@@ -27,7 +27,7 @@ async function bootstrap() {
 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id'],
 
     optionsSuccessStatus: 204,
   });

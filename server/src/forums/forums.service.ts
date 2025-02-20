@@ -143,6 +143,14 @@ export class ForumsService {
     const deletedForum = await this.forumModel.findByIdAndDelete(forumId);
     if (!deletedForum) throw new BadRequestException('forum not found');
     const fileId = deletedForum.imagePath;
-    return await this.awsS3Service.deleteImageByFileId(fileId);
+    if (fileId) {
+      try {
+        await this.awsS3Service.deleteImageByFileId(fileId);
+      } catch (error) {
+        throw new BadRequestException('Failed to delete the image from S3');
+      }
+    }
+
+    return { message: 'Post successfully deleted' };
   }
 }

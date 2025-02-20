@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { JSX, useState } from "react";
 import "./ForumPost.css";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +30,7 @@ interface PostProps {
   likes: number;
   isLiked: boolean;
   isAuthorized: boolean;
+  deleteButton?: JSX.Element | null;
 }
 
 const ForumPost = ({
@@ -43,6 +44,7 @@ const ForumPost = ({
   likes,
   isLiked,
   isAuthorized,
+  deleteButton,
 }: PostProps) => {
   const [newComment, setNewComment] = useState("");
   const queryClient = useQueryClient();
@@ -50,8 +52,10 @@ const ForumPost = ({
   const [likesCount, setLikes] = useState(likes); // ლაიქების რაოდენობა
   const [userLiked, setIsLiked] = useState(isLiked);
   const [showComments, setShowComments] = useState(false);
-  const [replyInputVisible, setReplyInputVisible] = useState<{[key: string]: boolean}>({});
-  const [replyText, setReplyText] = useState<{[key: string]: string}>({});
+  const [replyInputVisible, setReplyInputVisible] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [replyText, setReplyText] = useState<{ [key: string]: string }>({});
 
   const commentMutation = useMutation({
     mutationFn: async () => {
@@ -221,7 +225,9 @@ const ForumPost = ({
                     <input
                       type="text"
                       value={replyText[comment.id] || ""}
-                      onChange={(e) => handleReplyChange(comment.id, e.target.value)}
+                      onChange={(e) =>
+                        handleReplyChange(comment.id, e.target.value)
+                      }
                       placeholder="Write a reply..."
                     />
                     <button>Send</button>
@@ -250,6 +256,7 @@ const ForumPost = ({
           </div>
         )}
       </div>
+      {deleteButton}
     </div>
   );
 };
