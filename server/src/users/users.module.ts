@@ -10,6 +10,7 @@ import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { UsersController } from './controller/users.controller';
 import { GoogleStrategy } from '@/strategies/google.strategy';
+import { EmailService } from '@/email/services/email.services';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { GoogleStrategy } from '@/strategies/google.strategy';
     JwtStrategy,
     AuthService,
     GoogleStrategy,
+    EmailService,
   ],
   exports: [UsersService],
 })

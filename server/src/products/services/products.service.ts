@@ -6,10 +6,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { UserDocument } from 'src/users/schemas/user.schema';
-import { sampleProduct } from '../../utils/data/product';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { PaginatedResponse } from '@/types';
 import { Order } from '../../orders/schemas/order.schema';
+import { sampleProduct } from '@/utils/data/product';
 
 @Injectable()
 export class ProductsService {
@@ -204,5 +204,4 @@ export class ProductsService {
 
     return product;
   }
-  
 }

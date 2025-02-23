@@ -1,21 +1,59 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthResponseDto, TokensDto, TokenPayload } from '../dtos/auth.dto';
-import { User, UserDocument } from '../schemas/user.schema';
+// import { User, UserDocument } from '../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { verifyPassword } from '@/utils/password';
 import { randomUUID } from 'crypto';
-import { Role } from '../../types/role.enum';
+import { Role } from '@/types/role.enum';
+import { EmailService } from '@/email/services/email.services';
+import { v4 as uuidv4 } from 'uuid';
+import { hashPassword } from '@/utils/password';
+import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailService: EmailService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.usersService.findOne(email);
+    if (!user) {
+      throw new BadRequestException('მომხმარებელი ვერ მოიძებნა');
+    }
+
+    const resetToken = uuidv4();
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = new Date(Date.now() + 3600000); // 1 საათი
+
+    await user.save();
+    await this.emailService.sendPasswordResetEmail(email, resetToken);
+  }
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const user = await this.userModel.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() }, // Ensure token is not expired
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+
+    user.password = await hashPassword(newPassword);
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+  }
 
   async singInWithGoogle(user) {
     let existUser = await this.userModel.findOne({ email: user.email });

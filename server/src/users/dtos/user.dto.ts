@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import { ObjectId } from 'mongoose';
-import { Role } from '../../types/role.enum';
+import { Role } from '@/types/role.enum';
 
 export class UserDto {
   @Expose()

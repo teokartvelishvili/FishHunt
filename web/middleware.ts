@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicPaths = ["/login", "/register", "/forgot-password"];
+const publicPaths = [
+  "/",
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/forum",
+];
 const protectedPaths = ["/profile", "/orders", "/admin"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasTokens =
     request.cookies.get("access_token") || request.cookies.get("refresh_token");
-  const isAuthenticated = hasTokens;
+  const isAuthenticated = Boolean(hasTokens); // ✅ Boolean() ვამატებთ, რომ სწორი იყოს
+
+  console.log("📌 Pathname:", pathname);
+  console.log("🔐 Is Authenticated:", isAuthenticated);
 
   // Skip middleware for non-relevant paths (like api, _next, static files)
   if (
@@ -16,12 +26,20 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/api") ||
     pathname.includes(".")
   ) {
+    console.log("➡️ Skipping middleware for:", pathname);
     return NextResponse.next();
   }
 
-  // Redirect authenticated users trying to access auth pages
+  // თუ მომხმარებელი ავტორიზებულია და publicPaths-ია, გავუშვათ
   if (isAuthenticated && publicPaths.includes(pathname)) {
-    return NextResponse.redirect(new URL("/", request.url));
+    console.log("✅ Authenticated user accessing public path:", pathname);
+    return NextResponse.next();
+  }
+
+  // თუ მომხმარებელი **არ არის** ავტორიზებული და სარეზერვო პაროლის გვერდზეა, უნდა შევუშვათ
+  if (!isAuthenticated && publicPaths.includes(pathname)) {
+    console.log("🛑 Unauthenticated user accessing public path:", pathname);
+    return NextResponse.next();
   }
 
   // Redirect unauthenticated users trying to access protected pages
@@ -29,6 +47,7 @@ export function middleware(request: NextRequest) {
     !isAuthenticated &&
     protectedPaths.some((path) => pathname.startsWith(path))
   ) {
+    console.log("🚨 Redirecting unauthenticated user to /login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -36,14 +55,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public folder)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
 };

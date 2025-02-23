@@ -31,6 +31,8 @@ import { Response, Request } from 'express';
 import { cookieConfig } from '@/cookie-config';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
 import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
+import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -230,5 +232,19 @@ export class AuthController {
       }
       throw new BadRequestException('Registration failed');
     }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() { email }: ForgotPasswordDto) {
+    await this.authService.requestPasswordReset(email);
+    return {
+      message:
+        'თუ თქვენი მეილი სისტემაში არსებობს, პაროლის აღდგენის ბმული გამოგეგზავნებათ.',
+    };
+  }
+  @Post('reset-password')
+  async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
+    await this.authService.resetPassword(token, newPassword);
+    return { message: 'Password reset successful. You can now log in.' };
   }
 }

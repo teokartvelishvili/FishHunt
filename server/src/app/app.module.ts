@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { connectDB } from '../utils/config';
+// import { connectDB } from '../utils/config';
 import { ProductsModule } from '../products/products.module';
 import { UsersModule } from 'src/users/users.module';
 import { CommandModule } from 'nestjs-command';
@@ -15,6 +15,7 @@ import { AiModule } from '@/ai/ai.module';
 import { AwsS3Module } from '@/aws-s3/aws-s3.module';
 import { ForumsModule } from '@/forums/forums.module';
 import { GoogleStrategy } from '@/strategies/google.strategy';
+import { connectDB } from '@/utils/config';
 
 @Module({
   imports: [

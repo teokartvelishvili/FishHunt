@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { motion } from "framer-motion";
 import "./ProfileForm.css";
+import { useEffect, useState } from "react";
 
 const formSchema = z
   .object({
@@ -36,8 +37,16 @@ const formSchema = z
 
 export function ProfileForm() {
   const { toast } = useToast();
-  const { user, isLoading } = useUser();
+
   const queryClient = useQueryClient();
+  const [shouldFetchUser, setShouldFetchUser] = useState(false);
+
+  useEffect(() => {
+    setShouldFetchUser(true);
+  }, []);
+
+  // ჰუკები ყოველთვის იძახე ერთი და იგივე თანმიმდევრობით
+  const { user, isLoading } = useUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,7 +102,7 @@ export function ProfileForm() {
     },
   });
 
-  if (isLoading) {
+  if (!shouldFetchUser || isLoading) {
     return <div className="loading-container">Loading profile...</div>;
   }
 

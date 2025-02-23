@@ -1,3 +1,4 @@
+import { Role } from '@/types/role.enum';
 import {
   IsEmail,
   IsString,
@@ -6,7 +7,6 @@ import {
   IsOptional,
   IsBoolean,
 } from 'class-validator';
-import { Role } from '../../types/role.enum';
 
 export class AdminProfileDto {
   @IsString()

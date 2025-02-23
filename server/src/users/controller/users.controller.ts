@@ -17,6 +17,8 @@ import { AdminProfileDto } from '../dtos/admin.profile.dto';
 import { UserDto } from '../dtos/user.dto';
 import { UsersService } from '../services/users.service';
 import { PaginatedUsersDto } from '../dtos/paginated-users.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 
 @Controller('users')
 @UseGuards(RolesGuard)
@@ -69,5 +71,14 @@ export class UsersController {
   @Roles(Role.Admin)
   async generateUsers() {
     return this.usersService.generateUsers(500);
+  }
+
+  @ApiTags('Users')
+  @ApiOperation({ summary: 'Find user by email' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin, Role.User, Role.Seller)
+  @Get('email/:email')
+  async getUserByEmail(@Param('email') email: string) {
+    return this.usersService.findOne(email);
   }
 }
