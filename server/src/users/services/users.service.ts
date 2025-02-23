@@ -7,9 +7,7 @@ import {
   Logger,
   NotFoundException,
   ConflictException,
-  
 } from '@nestjs/common';
-
 
 import { User, UserDocument } from '../schemas/user.schema';
 import { hashPassword } from '@/utils/password';
@@ -17,7 +15,6 @@ import { generateUsers } from '@/utils/seed-users';
 import { PaginatedResponse } from '@/types';
 import { Role } from '@/types/role.enum';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
-
 
 @Injectable()
 export class UsersService {
@@ -115,10 +112,23 @@ export class UsersService {
     id: string,
     attrs: Partial<User>,
     // isAdmin = false,
-    adminRole = false
+    adminRole = false,
   ): Promise<UserDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid user ID');
+    }
+    const user = await this.findById(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (attrs.password) {
+      const passwordMatch = await bcrypt.compare(attrs.password, user.password);
+      if (passwordMatch) {
+        throw new BadRequestException(
+          'New password must be different from the current password',
+        );
+      }
     }
 
     if (attrs.email) {
@@ -192,14 +202,13 @@ export class UsersService {
         ...dto,
         name: dto.storeName,
         role: Role.Seller,
-        password: dto.password
+        password: dto.password,
       };
 
       return await this.create(sellerData);
-
     } catch (error: any) {
       this.logger.error(`Failed to create seller: ${error.message}`);
-      
+
       if (error.code === 11000) {
         throw new ConflictException('User with this email already exists');
       }
@@ -207,5 +216,4 @@ export class UsersService {
       throw error;
     }
   }
-  
 }

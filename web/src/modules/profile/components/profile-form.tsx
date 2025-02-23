@@ -7,8 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
-
-// სტილის ფაილის იმპორტი
+import { motion } from "framer-motion";
 import "./ProfileForm.css";
 
 const formSchema = z
@@ -42,7 +41,7 @@ export function ProfileForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: {
+    defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
       password: "",
@@ -51,31 +50,51 @@ export function ProfileForm() {
   });
 
   const updateProfile = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) =>
-      apiClient.put("/auth/profile", {
-        name: values.name,
-        email: values.email,
-        ...(values.password ? { password: values.password } : {}),
-      }),
-    onSuccess: () => {
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      try {
+        const response = await apiClient.put("/auth/profile", {
+          name: values.name,
+          email: values.email,
+          ...(values.password ? { password: values.password } : {}),
+        });
+        return response.data;
+      } catch (error) {
+        if (error instanceof Error) {
+          throw { message: error.message };
+        }
+        throw { message: "Something went wrong" };
+      }
+    },
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       form.reset({ password: "", confirmPassword: "" });
+
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
       });
+
+      if (data.passwordChanged) {
+        toast({
+          title: "Password Updated",
+          description: "Your password has been successfully changed.",
+        });
+      }
     },
-    onError: () => {
+    onError: (error) => {
+      const errorMessage =
+        (error as { message?: string }).message ||
+        "Failed to update profile. Please try again.";
       toast({
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     },
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="loading-container">Loading profile...</div>;
   }
 
   return (
@@ -92,7 +111,7 @@ export function ProfileForm() {
           <input id="name" {...form.register("name")} className="input" />
           {form.formState.errors.name && (
             <span className="error-message">
-              {form.formState.errors.name?.message}
+              {form.formState.errors.name.message}
             </span>
           )}
         </div>
@@ -109,7 +128,7 @@ export function ProfileForm() {
           />
           {form.formState.errors.email && (
             <span className="error-message">
-              {form.formState.errors.email?.message}
+              {form.formState.errors.email.message}
             </span>
           )}
         </div>
@@ -124,10 +143,11 @@ export function ProfileForm() {
             {...form.register("password")}
             placeholder="Leave blank to keep current"
             className="input"
+            required
           />
           {form.formState.errors.password && (
             <span className="error-message">
-              {form.formState.errors.password?.message}
+              {form.formState.errors.password.message}
             </span>
           )}
         </div>
@@ -142,10 +162,11 @@ export function ProfileForm() {
             {...form.register("confirmPassword")}
             placeholder="Leave blank to keep current"
             className="input"
+            required
           />
           {form.formState.errors.confirmPassword && (
             <span className="error-message">
-              {form.formState.errors.confirmPassword?.message}
+              {form.formState.errors.confirmPassword.message}
             </span>
           )}
         </div>
@@ -158,6 +179,16 @@ export function ProfileForm() {
           {updateProfile.isPending ? "Updating..." : "Update Profile"}
         </button>
       </form>
+      {updateProfile.isSuccess && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="success-message"
+        >
+          🎉 Profile successfully updated!
+        </motion.div>
+      )}
     </div>
   );
 }
