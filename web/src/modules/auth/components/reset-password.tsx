@@ -27,7 +27,7 @@ export function ResetPasswordForm() {
   const onSubmit: SubmitHandler<ResetPasswordFormData> = async (data) => {
     try {
       await axios.post(`${API_BASE_URL}/auth/reset-password`, {
-        token,
+        resetToken: token,
         password: data.password,
       });
 

@@ -5,23 +5,30 @@ export const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true
+  withCredentials: true,
 });
 
 // საჯარო მარშრუტები, რომლებიც არ საჭიროებენ ავტორიზაციას
 const publicRoutes = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/sellers-register',
-  '/login',
-  '/register',
-  '/sellers-register'
+  "/auth/login",
+  "/auth/register",
+  "/auth/sellers-register",
+  "/login",
+  "/register",
+  "/sellers-register",
+  "/",
+  "forgot-password",
+  "reset-password",
+  "profile",
+  "logout",
+  "products",
+  "product/:id",
 ];
 
 // მარტივი რექვესთ ინტერცეპტორი
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -39,19 +46,19 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       // შევამოწმოთ არის თუ არა მიმდინარე მარშრუტი საჯარო
       const currentPath = window.location.pathname;
-      const isPublicRoute = publicRoutes.some(route => 
-        currentPath.includes(route) || 
-        error.config.url?.includes(route)
+      const isPublicRoute = publicRoutes.some(
+        (route) =>
+          currentPath.includes(route) || error.config.url?.includes(route)
       );
 
       if (!isPublicRoute) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
   }
 );
 
-export { axiosInstance as axios }; 
+export { axiosInstance as axios };

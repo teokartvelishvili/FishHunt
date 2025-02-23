@@ -27,16 +27,19 @@ export default function AdminLayout({
   }
 
   // თუ მომხმარებელი არაა ავტორიზებული ან API-ს შეცდომა აქვს, გადაამისამართე
-  if (!user || error) {
-    redirect("/login");
+  if (!isLoading && (!user || error)) {
+    return redirect("/login");
   }
-
+  if (!user) {
+    return null; // ან რაღაც 404/error კომპონენტი
+  }
   // თუ მიმდინარე გვერდი /admin/products-ია, Seller-საც შეიყვანე
-  const isSellerAllowed = pathname === "/admin/products" || pathname === "/admin/products/create"  && user.role === Role.Seller;
-
+  const isSellerAllowed =
+    (pathname === "/admin/products" || pathname === "/admin/products/create") &&
+    user.role === Role.Seller;
   // თუ Admin-ია ან Seller და /admin/products-ზეა, შევუშვათ, სხვა შემთხვევაში არა
-  if (!(user.role === Role.Admin || isSellerAllowed)) {
-    redirect("/login");
+  if (!isLoading && !(user.role === Role.Admin || isSellerAllowed)) {
+    return redirect("/login");
   }
 
   return children;
