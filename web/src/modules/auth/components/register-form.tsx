@@ -200,11 +200,12 @@ export function RegisterForm() {
         </div>
 
         <div className="social-buttons">
-          <button className="social-btn" disabled={isPending}>
+          <button type="button" className="social-btn" disabled={isPending}>
             <FaGithub className="icon" />
             GitHub
           </button>
           <button
+            type="button"
             onClick={handleGoogleAuth}
             className="social-btn"
             disabled={isPending}

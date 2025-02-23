@@ -94,16 +94,25 @@ export function LoginForm() {
         </div>
 
         <div className="social-buttons">
-          <button className="social-button">
+          <button type="button" className="social-button">
             <FaFacebook className="icon" />
             Facebook
           </button>
-          <button onClick={handleGoogleAuth} className="social-button">
+          <button
+            type="button"
+            onClick={handleGoogleAuth}
+            className="social-button"
+          >
             <FaGoogle className="icon" />
             Google
           </button>
         </div>
       </form>
+      <div className="forgot-password signup-text">
+        <Link href="/forgot-password" className="signup-link">
+          Forgot Password?
+        </Link>
+      </div>
 
       <div className="signup-text">
         Don&apos;t have an account?{" "}
