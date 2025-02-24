@@ -6,9 +6,9 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cart, CartDocument } from '../schemas/cart.schema';
-import { ProductsService } from '../../products/services/products.service';
+import { ProductsService } from '@/products/services/products.service';
 import { CartItem, ShippingDetails } from '../../interfaces';
-import { UserDocument } from '../../users/schemas/user.schema';
+import { UserDocument } from '@/users/schemas/user.schema';
 
 @Injectable()
 export class CartService {
@@ -51,7 +51,7 @@ export class CartService {
 
     const cart = await this.getCart(user);
     const existingItem = cart.items.find(
-      item => item.productId.toString() === productId,
+      (item) => item.productId.toString() === productId,
     );
 
     if (existingItem) {
@@ -78,7 +78,7 @@ export class CartService {
   ): Promise<CartDocument> {
     const cart = await this.getCart(user);
     cart.items = cart.items.filter(
-      item => item.productId.toString() !== productId,
+      (item) => item.productId.toString() !== productId,
     );
     this.calculatePrices(cart);
     return cart.save();
@@ -91,7 +91,7 @@ export class CartService {
   ): Promise<CartDocument> {
     const cart = await this.getCart(user);
     const item = cart.items.find(
-      item => item.productId.toString() === productId,
+      (item) => item.productId.toString() === productId,
     );
 
     if (!item) throw new NotFoundException('Item not found in cart');
