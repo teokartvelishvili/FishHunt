@@ -78,4 +78,12 @@ export class UsersController {
   async getUserByEmail(@Param('email') email: string) {
     return this.usersService.findOne(email);
   }
+
+  @Serialize(UserDto)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Post()
+  async createUser(@Body() createUserDto: AdminProfileDto) {
+    return this.usersService.create(createUserDto);
+  }
 }

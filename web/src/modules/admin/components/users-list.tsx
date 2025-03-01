@@ -1,6 +1,13 @@
 "use client";
 
-import { Pencil, Trash2, ShieldCheck, User as UserIcon } from "lucide-react";
+import { useState } from "react";
+import {
+  Pencil,
+  Trash2,
+  ShieldCheck,
+  User as UserIcon,
+  Plus,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { deleteUser } from "@/modules/admin/api/delete-user";
@@ -9,18 +16,18 @@ import { Role } from "@/types/role"; // Role enum იმპორტი
 import "./usersList.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUsers } from "../api/get-users";
+import { CreateUserModal } from "./create-user-modal";
+// import { CreateUserModal } from "./create-user-modal";
 
 export function UsersList() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getUsers(),
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["users", page],
+    queryFn: () => getUsers(page, 8),
     retry: false,
   });
 
@@ -52,6 +59,13 @@ export function UsersList() {
     <div className="usr-card">
       <div className="usr-header">
         <h1 className="usr-title">Users</h1>
+        <button
+          className="create-user-btn"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus className="usr-icon" />
+          Create User
+        </button>
       </div>
       <table className="usr-table">
         <thead>
@@ -65,7 +79,7 @@ export function UsersList() {
           </tr>
         </thead>
         <tbody>
-          {users?.items?.map((user) => (
+          {data?.items?.map((user) => (
             <tr className="usr-tr" key={user._id}>
               <td className="usr-td usr-td-bold">#{user._id}</td>
               <td className="usr-td">{user.name}</td>
@@ -111,6 +125,36 @@ export function UsersList() {
           ))}
         </tbody>
       </table>
+
+      <div className="pagination">
+        <button
+          className="pagination-btn"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <span className="pagination-info">
+          Page {page} of {data?.pages || 1}
+        </span>
+        <button
+          className="pagination-btn"
+          onClick={() => setPage((p) => Math.min(data?.pages || 1, p + 1))}
+          disabled={page === (data?.pages || 1)}
+        >
+          Next
+        </button>
+      </div>
+
+      {isModalOpen && (
+        <CreateUserModal
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

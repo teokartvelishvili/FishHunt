@@ -13,15 +13,17 @@ export class AdminProfileDto {
   @IsString()
   @MinLength(4, { message: 'Username is too short.' })
   @MaxLength(20, { message: 'Username is too long.' })
-  @IsOptional()
-  name?: string;
+  name: string;
 
   @IsEmail({}, { message: 'Email address is not valid.' })
-  @IsOptional()
-  email?: string;
+  email: string;
+
+  @IsString()
+  @MinLength(6, { message: 'Password is too short.' })
+  @MaxLength(20, { message: 'Password is too long.' })
+  password: string;
 
   @IsEnum(Role)
   @Transform(({ value }) => value as Role)
-  @IsOptional()
-  role?: Role;
+  role: Role;
 }

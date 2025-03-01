@@ -2,7 +2,7 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 export async function deleteUser(userId: string) {
   try {
-    const response = await fetchWithAuth(`/users/${userId}`, {
+    await fetchWithAuth(`/users/${userId}`, {
       method: "DELETE",
     });
 

@@ -37,6 +37,9 @@ export default function EditUserPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) return;
+
     try {
       const updateData = {
         name: user.name,
