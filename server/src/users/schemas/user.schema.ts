@@ -1,22 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Document } from 'mongoose';
 import { Role } from '@/types/role.enum';
 
-export type UserDocument = HydratedDocument<User>;
-
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (_, ret) => {
+      ret.id = ret._id;
+      delete ret.__v;
+      delete ret.password;
+    },
+  },
+})
 export class User {
-  @Prop({ required: false })
-  name!: string;
+  @Prop({ required: true })
+  name: string;
 
   @Prop({ required: true, unique: true })
-  email!: string;
+  email: string;
 
-  @Prop()
-  password?: string;
+  @Prop({ required: true })
+  password: string;
 
-  @Prop({ type: String, enum: Role, required: true, default: Role.User }) // აქ `role` დავამატე
-  role!: Role;
+  @Prop({ type: String, enum: Role, default: Role.User })
+  role: Role;
 
   @Prop({ type: String, default: null })
   refreshToken?: string | null;
@@ -50,4 +57,5 @@ export class User {
   passwordResetExpires?: Date;
 }
 
+export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -15,6 +15,7 @@ import { generateUsers } from '@/utils/seed-users';
 import { PaginatedResponse } from '@/types';
 import { Role } from '@/types/role.enum';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
+import { AdminProfileDto } from '../dtos/admin.profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -172,8 +173,24 @@ export class UsersService {
     }
   }
 
-  async adminUpdate(id: string, attrs: Partial<User>): Promise<UserDocument> {
-    return this.update(id, attrs, true);
+  async adminUpdate(id: string, updateDto: AdminProfileDto) {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // მხოლოდ განახლება იმ ველების, რომლებიც მოვიდა
+      if (updateDto.name) user.name = updateDto.name;
+      if (updateDto.email) user.email = updateDto.email;
+      if (updateDto.role) user.role = updateDto.role;
+
+      await user.save();
+      return user;
+    } catch (error) {
+      this.logger.error(`Failed to update user: ${error.message}`);
+      throw error;
+    }
   }
 
   async deleteMany(): Promise<void> {

@@ -5,8 +5,9 @@ import {
   MinLength,
   MaxLength,
   IsOptional,
-  IsBoolean,
+  IsEnum,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class AdminProfileDto {
   @IsString()
@@ -19,8 +20,8 @@ export class AdminProfileDto {
   @IsOptional()
   email?: string;
 
-  @IsBoolean()
+  @IsEnum(Role)
+  @Transform(({ value }) => value as Role)
   @IsOptional()
-  // isAdmin?: boolean;
-  role?: Role.Admin;
+  role?: Role;
 }

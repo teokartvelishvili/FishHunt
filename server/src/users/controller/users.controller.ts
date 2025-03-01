@@ -46,16 +46,16 @@ export class UsersController {
   }
 
   @Serialize(UserDto)
-  @UseGuards(RolesGuard)
-  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
   @Serialize(UserDto)
-  @UseGuards(RolesGuard)
-  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
