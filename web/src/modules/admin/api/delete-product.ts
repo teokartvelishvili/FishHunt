@@ -1,5 +1,3 @@
-"use server";
-
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { revalidatePath } from "next/cache";
 

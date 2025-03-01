@@ -22,5 +22,5 @@ export class AdminProfileDto {
   @IsBoolean()
   @IsOptional()
   // isAdmin?: boolean;
-  role?: Role;
+  role?: Role.Admin;
 }

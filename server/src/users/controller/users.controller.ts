@@ -21,13 +21,12 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 
 @Controller('users')
-@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Serialize(PaginatedUsersDto)
-  @UseGuards(RolesGuard)
-  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   async getUsers(
     @Query('page') page: string = '1',
@@ -39,7 +38,7 @@ export class UsersController {
     return this.usersService.findAll(pageNumber, limitNumber);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
@@ -75,8 +74,6 @@ export class UsersController {
 
   @ApiTags('Users')
   @ApiOperation({ summary: 'Find user by email' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.Admin, Role.User, Role.Seller)
   @Get('email/:email')
   async getUserByEmail(@Param('email') email: string) {
     return this.usersService.findOne(email);

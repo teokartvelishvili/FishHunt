@@ -4,22 +4,33 @@ import { Pencil, Trash2, ShieldCheck, User as UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { deleteUser } from "@/modules/admin/api/delete-user";
-import type { User } from "@/types";
+// import type { User } from "@/types";
 import { Role } from "@/types/role"; // Role enum იმპორტი
 import "./usersList.css";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUsers } from "../api/get-users";
 
-interface UsersListProps {
-  users: User[];
-}
-
-export function UsersList({ users }: UsersListProps) {
+export function UsersList() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const {
+    data: users,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getUsers(),
+    retry: false,
+  });
 
   const handleDelete = async (userId: string) => {
     if (confirm("Are you sure you want to delete this user?")) {
       const result = await deleteUser(userId);
 
       if (result.success) {
+        await queryClient.invalidateQueries({ queryKey: ["users"] });
+
         toast({
           title: "Success",
           description: result.message,
@@ -33,6 +44,9 @@ export function UsersList({ users }: UsersListProps) {
       }
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return null;
 
   return (
     <div className="usr-card">
@@ -51,7 +65,7 @@ export function UsersList({ users }: UsersListProps) {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users?.items?.map((user) => (
             <tr className="usr-tr" key={user._id}>
               <td className="usr-td usr-td-bold">#{user._id}</td>
               <td className="usr-td">{user.name}</td>

@@ -1,7 +1,4 @@
-"use server";
-
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { revalidatePath } from "next/cache";
 
 export async function deleteUser(userId: string) {
   try {
@@ -9,21 +6,15 @@ export async function deleteUser(userId: string) {
       method: "DELETE",
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to delete user");
-    }
-
-    revalidatePath("/admin/users");
-
     return {
       success: true,
       message: "User deleted successfully",
     };
   } catch (error) {
-    console.log(error);
+    console.error("Error deleting user:", error);
     return {
       success: false,
-      message: "Failed to delete user",
+      message: error instanceof Error ? error.message : "Failed to delete user",
     };
   }
 }
