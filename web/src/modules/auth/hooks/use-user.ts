@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { userQueryConfig } from "../user-config";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 export function useUser() {
   const queryClient = useQueryClient();
@@ -10,7 +10,13 @@ export function useUser() {
     isFetching,
     error,
   } = useQuery({
-    ...userQueryConfig,
+    queryKey: ["user"],
+    queryFn: async () => {
+      const response = await fetchWithAuth("/auth/profile", {
+        credentials: "include",
+      });
+      return response.json();
+    },
     placeholderData: () => queryClient.getQueryData(["user"]),
     retry: false,
   });

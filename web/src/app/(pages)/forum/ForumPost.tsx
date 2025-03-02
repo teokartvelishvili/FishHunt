@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, useState } from "react";
+import { useState } from "react";
 import "./ForumPost.css";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -33,13 +33,13 @@ interface PostProps {
   currentUser?: {
     _id: string;
     role: string;
+    name?: string;
   };
   comments: Comment[];
   time: string;
   likes: number;
   isLiked: boolean;
   isAuthorized: boolean;
-  deleteButton?: JSX.Element | null;
 }
 
 const ForumPost = ({
@@ -54,11 +54,12 @@ const ForumPost = ({
   likes,
   isLiked,
   isAuthorized,
-  deleteButton,
 }: PostProps) => {
   const [newComment, setNewComment] = useState("");
   const [editingComment, setEditingComment] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [editedPostText, setEditedPostText] = useState(text);
   const queryClient = useQueryClient();
 
   const [likesCount, setLikes] = useState(likes);
@@ -68,6 +69,18 @@ const ForumPost = ({
     [key: string]: boolean;
   }>({});
   const [replyText, setReplyText] = useState<{ [key: string]: string }>({});
+
+  console.log("Current User:", currentUser);
+  console.log("Author:", author);
+  console.log("Is Authorized:", isAuthorized);
+
+  const isPostAuthor = currentUser?._id === author._id;
+  const isAdmin = currentUser?.role === "admin";
+  const canModifyPost = isPostAuthor || isAdmin;
+
+  console.log("Is Post Author:", isPostAuthor);
+  console.log("Is Admin:", isAdmin);
+  console.log("Can Modify Post:", canModifyPost);
 
   const replyMutation = useMutation({
     mutationFn: async ({
@@ -83,6 +96,7 @@ const ForumPost = ({
           "Content-Type": "application/json",
           "forum-id": id,
         },
+        credentials: "include",
         body: JSON.stringify({
           commentId,
           content,
@@ -122,6 +136,7 @@ const ForumPost = ({
             "Content-Type": "application/json",
             "forum-id": id,
           },
+          credentials: "include",
         }
       );
       if (!response.ok) {
@@ -133,14 +148,14 @@ const ForumPost = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
       toast({
-        title: "Success",
-        description: "Comment deleted successfully",
+        title: "წარმატება",
+        description: "კომენტარი წარმატებით წაიშალა",
       });
     },
     onError: (error: Error) => {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "შეცდომა",
         description: error.message,
       });
     },
@@ -154,6 +169,13 @@ const ForumPost = ({
       commentId: string;
       content: string;
     }) => {
+      console.log("Editing comment with data:", {
+        commentId,
+        content,
+        currentUser,
+        forumId: id,
+      });
+
       const response = await fetchWithAuth(
         `/forums/edit-comment/${commentId}`,
         {
@@ -162,6 +184,7 @@ const ForumPost = ({
             "Content-Type": "application/json",
             "forum-id": id,
           },
+          credentials: "include",
           body: JSON.stringify({
             content,
           }),
@@ -178,14 +201,14 @@ const ForumPost = ({
       setEditText("");
       queryClient.invalidateQueries({ queryKey: ["forums"] });
       toast({
-        title: "Success",
-        description: "Comment edited successfully",
+        title: "წარმატება",
+        description: "კომენტარი წარმატებით განახლდა",
       });
     },
     onError: (error: Error) => {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "შეცდომა",
         description: error.message,
       });
     },
@@ -199,6 +222,7 @@ const ForumPost = ({
           "Content-Type": "application/json",
           "forum-id": id,
         },
+        credentials: "include",
         body: JSON.stringify({
           content: newComment,
         }),
@@ -261,6 +285,73 @@ const ForumPost = ({
     },
   });
 
+  const editPostMutation = useMutation({
+    mutationFn: async (newText: string) => {
+      const response = await fetchWithAuth(`/forums/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          content: newText,
+          tags: category,
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to edit post");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsEditingPost(false);
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+      toast({
+        title: "წარმატება",
+        description: "პოსტი წარმატებით განახლდა",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "შეცდომა",
+        description: error.message,
+      });
+    },
+  });
+
+  const deletePostMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetchWithAuth(`/forums/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to delete post");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+      toast({
+        title: "წარმატება",
+        description: "პოსტი წარმატებით წაიშალა",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "შეცდომა",
+        description: error.message,
+      });
+    },
+  });
+
   const handleLike = () => {
     if (!isAuthorized) {
       toast({
@@ -296,10 +387,27 @@ const ForumPost = ({
     editCommentMutation.mutate({ commentId, content: editText });
   };
 
+  const handlePostEdit = () => {
+    if (!editedPostText.trim()) return;
+    console.log("Editing post with data:", {
+      postId: id,
+      currentUser,
+      author,
+      isPostAuthor,
+      canModifyPost,
+      editedPostText,
+      category,
+    });
+    editPostMutation.mutate(editedPostText);
+  };
+
   const renderComment = (comment: Comment, level = 0) => {
-    const isAuthor = currentUser?._id === comment.author._id;
-    const isAdmin = currentUser?.role === "admin";
-    const canModify = isAuthor || isAdmin;
+    const isCommentAuthor = currentUser?._id === comment.author._id;
+    const canModifyComment = isCommentAuthor || isAdmin;
+
+    console.log("Comment:", comment);
+    console.log("Is Comment Author:", isCommentAuthor);
+    console.log("Can Modify Comment:", canModifyComment);
 
     return (
       <div
@@ -326,8 +434,10 @@ const ForumPost = ({
               onChange={(e) => setEditText(e.target.value)}
               className="edit-comment-input"
             />
-            <button onClick={() => handleEditSubmit(comment.id)}>Save</button>
-            <button onClick={() => setEditingComment(null)}>Cancel</button>
+            <button onClick={() => handleEditSubmit(comment.id)}>
+              შენახვა
+            </button>
+            <button onClick={() => setEditingComment(null)}>გაუქმება</button>
           </div>
         ) : (
           <>
@@ -339,10 +449,10 @@ const ForumPost = ({
                   className="reply-button"
                   onClick={() => toggleReplyInput(comment.id)}
                 >
-                  Reply
+                  პასუხი
                 </button>
               )}
-              {canModify && (
+              {canModifyComment && (
                 <>
                   <button
                     className="edit-button"
@@ -351,13 +461,13 @@ const ForumPost = ({
                       setEditText(comment.text);
                     }}
                   >
-                    Edit
+                    რედაქტირება
                   </button>
                   <button
                     className="delete-button"
                     onClick={() => deleteCommentMutation.mutate(comment.id)}
                   >
-                    Delete
+                    წაშლა
                   </button>
                 </>
               )}
@@ -371,13 +481,14 @@ const ForumPost = ({
               type="text"
               value={replyText[comment.id] || ""}
               onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-              placeholder="Write a reply..."
+              placeholder="დაწერეთ პასუხი..."
             />
-            <button onClick={() => handleReplySubmit(comment.id)}>Send</button>
+            <button onClick={() => handleReplySubmit(comment.id)}>
+              გაგზავნა
+            </button>
           </div>
         )}
 
-        {/* Render replies */}
         {comments
           .filter((reply) => reply.parentId === comment.id)
           .map((reply) => renderComment(reply, level + 1))}
@@ -404,9 +515,46 @@ const ForumPost = ({
             className="forum-post-avatar"
           />
           <span className="forum-post-author-name">{author.name}</span>
+          {canModifyPost && (
+            <div className="post-actions">
+              <button
+                className="edit-button"
+                onClick={() => setIsEditingPost(true)}
+              >
+                ✏️ რედაქტირება
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => deletePostMutation.mutate()}
+              >
+                🗑️ წაშლა
+              </button>
+            </div>
+          )}
         </div>
 
-        <p className="forum-post-text">{text}</p>
+        {isEditingPost ? (
+          <div className="edit-post-section">
+            <textarea
+              value={editedPostText}
+              onChange={(e) => setEditedPostText(e.target.value)}
+              className="edit-post-input"
+            />
+            <div className="edit-post-buttons">
+              <button onClick={handlePostEdit}>შენახვა</button>
+              <button
+                onClick={() => {
+                  setIsEditingPost(false);
+                  setEditedPostText(text);
+                }}
+              >
+                გაუქმება
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="forum-post-text">{text}</p>
+        )}
 
         <div className="forum-post-footer">
           <div className="forum-post-categories">
@@ -458,7 +606,6 @@ const ForumPost = ({
           </div>
         )}
       </div>
-      {deleteButton}
     </div>
   );
 };

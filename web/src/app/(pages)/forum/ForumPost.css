@@ -256,3 +256,51 @@
 .edit-comment-section button:hover {
   opacity: 0.9;
 }
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.edit-post-section {
+  margin: 15px 0;
+}
+
+.edit-post-input {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.edit-post-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-post-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-post-buttons button:first-child {
+  background-color: #2a5530;
+  color: white;
+}
+
+.edit-post-buttons button:last-child {
+  background-color: #666;
+  color: white;
+}
+
+.edit-post-buttons button:hover {
+  opacity: 0.9;
+}

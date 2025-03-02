@@ -60,12 +60,12 @@ export class ForumsService {
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
+      .populate('user', 'name _id role')
       .populate({
         path: 'comments',
-        select: '-_id -updatedAt',
         populate: {
           path: 'user',
-          select: 'name -_id',
+          select: 'name _id',
         },
       });
 
@@ -142,13 +142,48 @@ export class ForumsService {
     return `This action returns a #${id} forum`;
   }
 
-  update(id: string, updateForumDto: UpdateForumDto, userId: string) {
-    return `This action updates a #${id} forum`;
+  async update(id: string, updateForumDto: UpdateForumDto, userId: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid forum ID');
+    }
+
+    const forum = await this.forumModel.findById(id);
+    if (!forum) {
+      throw new NotFoundException('Forum not found');
+    }
+
+    console.log('Update method values:', {
+      forumUserId: forum.user.toString(),
+      receivedUserId: userId,
+      isMatch: forum.user.toString() === userId.toString(),
+    });
+
+    if (forum.user.toString() !== userId.toString()) {
+      throw new UnauthorizedException('You can only edit your own posts');
+    }
+
+    const updatedForum = await this.forumModel
+      .findByIdAndUpdate(id, { ...updateForumDto }, { new: true })
+      .populate('user', 'name _id role');
+
+    return updatedForum;
   }
 
   async remove(forumId, userId) {
+    const forum = await this.forumModel.findById(forumId);
+    if (!forum) throw new BadRequestException('forum not found');
+
+    console.log('Delete Post values:', {
+      forumUserId: forum.user.toString(),
+      receivedUserId: userId.toString(),
+      isMatch: forum.user.toString() === userId.toString(),
+    });
+
+    if (forum.user.toString() !== userId.toString()) {
+      throw new UnauthorizedException('You can only delete your own posts');
+    }
+
     const deletedForum = await this.forumModel.findByIdAndDelete(forumId);
-    if (!deletedForum) throw new BadRequestException('forum not found');
     const fileId = deletedForum.imagePath;
     if (fileId) {
       try {
@@ -254,7 +289,14 @@ export class ForumsService {
 
     const comment = forum.comments[commentIndex];
 
-    if (!isAdmin && comment.user.toString() !== userId) {
+    console.log('Delete Comment values:', {
+      commentUserId: comment.user.toString(),
+      receivedUserId: userId,
+      isAdmin,
+      isMatch: comment.user.toString() === userId.toString(),
+    });
+
+    if (!isAdmin && comment.user.toString() !== userId.toString()) {
       throw new UnauthorizedException('You can only delete your own comments');
     }
 
@@ -300,7 +342,14 @@ export class ForumsService {
       throw new NotFoundException('Comment not found');
     }
 
-    if (!isAdmin && comment.user.toString() !== userId) {
+    console.log('Edit Comment values:', {
+      commentUserId: comment.user.toString(),
+      receivedUserId: userId,
+      isAdmin,
+      isMatch: comment.user.toString() === userId.toString(),
+    });
+
+    if (!isAdmin && comment.user.toString() !== userId.toString()) {
       throw new UnauthorizedException('You can only edit your own comments');
     }
 
