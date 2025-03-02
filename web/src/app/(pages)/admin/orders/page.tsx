@@ -1,15 +1,12 @@
-import { fetchWithAuth } from "@/lib/fetch-with-auth";
+"use client";
+
 import { OrdersList } from "@/modules/admin/components/orders-list";
-import { Order } from "@/types/order";
 
-export default async function AdminOrdersPage() {
-  const orders = await fetchWithAuth("/orders");
-  const ordersData: Order[] = await orders.json();
-
+export default function AdminOrdersPage() {
   return (
-    <div>
-      <div className="py-10">
-        <OrdersList orders={ordersData} />
+    <div className="admin-orders-container">
+      <div className="orders-content">
+        <OrdersList />
       </div>
     </div>
   );

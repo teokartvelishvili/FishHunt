@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import type { PaginatedResponse, Product } from "@/types";

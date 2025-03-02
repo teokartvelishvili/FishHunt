@@ -1,37 +1,34 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./TopItems.module.css";
 import noPhoto from "../../assets/nophoto.webp";
 import fisher from "../../assets/fishing-rods-fly-fishing-clip-art-fishing-pole-70c32f173f79b4fbb4f724627b2f73b9.png";
 import needle from "../../assets/fish-hook-circle-hook-fishing-bait-hooks-cbc2947b1d4849fa29ae5d039fbc8297.png";
-import { getTopProducts } from "@/modules/products/api/get-top-products";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Product } from "@/types";
 
 const TopItems: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [topProducts, setTopProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTopProducts = async () => {
-      try {
-        setLoading(true);
-        const products = await getTopProducts();
-        if (products && products.length > 0) {
-          setTopProducts(products);
-        }
-      } catch (error) {
-        console.error("Error fetching top products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTopProducts();
-  }, []);
+  const { data: topProducts, isLoading } = useQuery({
+    queryKey: ["topProducts"],
+    queryFn: async () => {
+      const searchParams = new URLSearchParams({
+        page: "1",
+        limit: "20",
+        sort: "-rating",
+      });
+      const response = await fetchWithAuth(
+        `/products?${searchParams.toString()}`
+      );
+      const data = await response.json();
+      return data.items.slice(0, 7);
+    },
+  });
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -39,7 +36,7 @@ const TopItems: React.FC = () => {
     }
   }, [topProducts]);
 
-  if (loading) {
+  if (isLoading) {
     return <div className={styles.container}>Loading...</div>;
   }
 
@@ -49,9 +46,9 @@ const TopItems: React.FC = () => {
       <Image src={fisher} alt="Fisher Icon" className={styles.fisher} />
       <div className={styles.scroller} ref={scrollRef}>
         <div className={styles.inner}>
-          {topProducts.map((product) => (
-            <Link 
-              href={`/products/${product._id}`} 
+          {topProducts?.map((product: Product) => (
+            <Link
+              href={`/products/${product._id}`}
               key={product._id}
               className={styles.itemLink}
             >
@@ -60,12 +57,12 @@ const TopItems: React.FC = () => {
                   <Image src={needle} alt="Hook" className={styles.hook} />
                 </div>
                 <div className={styles.imageWrapper}>
-                  <Image 
+                  <Image
                     src={product.images[0] || noPhoto}
                     alt={product.name}
                     fill
                     className={styles.productImage}
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <div className={styles.productNameWrapper}>

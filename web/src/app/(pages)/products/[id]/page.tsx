@@ -1,20 +1,24 @@
+"use client";
+
 import { ProductDetails } from "@/modules/products/components/product-details";
-import { getProduct } from "@/modules/products/api/get-product";
-import { notFound } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useParams } from "next/navigation";
 
-interface ProductPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+export default function ProductPage() {
+  const params = useParams();
+  const id = params.id as string;
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params;
-  const product = await getProduct(id);
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      const response = await fetchWithAuth(`/products/${id}`);
+      return response.json();
+    },
+  });
 
-  if (!product) {
-    notFound();
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <div className="Container">
