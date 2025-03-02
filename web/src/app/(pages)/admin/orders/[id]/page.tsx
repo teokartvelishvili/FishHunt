@@ -1,21 +1,32 @@
+"use client";
 
-import { fetchWithAuth } from '@/lib/fetch-with-auth';
-import { AdminOrderDetails } from '@/modules/admin/components/admin-order-details';
-import { Order } from '@/types/order';
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useParams } from "next/navigation";
+import { AdminOrderDetails } from "@/modules/admin/components/admin-order-details";
 
-interface AdminOrderPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+export default function AdminOrderPage() {
+  const params = useParams();
+  const orderId = params.id as string;
 
-export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
-  const { id } = await params;
-  const response = await fetchWithAuth(`/orders/${id}`);
-  const order: Order = await response.json();
+  const { data: order, isLoading } = useQuery({
+    queryKey: ["order", orderId],
+    queryFn: async () => {
+      const response = await fetchWithAuth(`/orders/${orderId}`);
+      return response.json();
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!order) {
+    return <div>Order not found</div>;
+  }
 
   return (
-    <div className='orderPage'>
+    <div className="orderPage">
       <div className="max-w-7xl mx-auto py-10">
         <AdminOrderDetails order={order} />
       </div>

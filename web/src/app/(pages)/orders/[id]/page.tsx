@@ -1,20 +1,29 @@
-import { OrderDetails } from "@/modules/orders/components/order-details";
-// import { cookies } from 'next/headers';
-// import { redirect } from 'next/navigation';
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { Order } from "@/types/order";
+import { useParams } from "next/navigation";
+import { OrderDetails } from "@/modules/orders/components/order-details";
 
-interface OrderPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+export default function OrderPage() {
+  const params = useParams();
+  const orderId = params.id as string;
 
-export default async function OrderPage({ params }: OrderPageProps) {
-  const { id } = await params;
-  const response = await fetchWithAuth(`/orders/${id}`);
+  const { data: order, isLoading } = useQuery({
+    queryKey: ["order", orderId],
+    queryFn: async () => {
+      const response = await fetchWithAuth(`/orders/${orderId}`);
+      return response.json();
+    },
+  });
 
-  const order: Order = await response.json();
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!order) {
+    return <div>Order not found</div>;
+  }
 
   return (
     <div className="Container">
