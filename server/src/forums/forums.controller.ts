@@ -22,6 +22,8 @@ import { AddCommentDto } from './dto/addComment.dto';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { User } from '@/types';
+import { AddReplyDto } from './dto/addReply.dto';
+// import { AddReplyDto } from './dto/addReply.dto';
 
 @Controller('forums')
 export class ForumsController {
@@ -87,6 +89,59 @@ export class ForumsController {
     const forumId = req.headers['forum-id'] as string;
     if (!forumId) throw new BadRequestException('Forum ID is required');
     return this.forumsService.removeLikeForum(user._id, forumId);
+  }
+
+  @Post('add-reply')
+  @UseGuards(JwtAuthGuard)
+  async addReply(
+    @CurrentUser() user: User,
+    @Body() addReplyDto: AddReplyDto,
+    @Req() req: Request,
+  ) {
+    const forumId = req.headers['forum-id'] as string;
+    if (!forumId) throw new BadRequestException('Forum ID is required');
+    return this.forumsService.addReplyToComment(
+      forumId,
+      addReplyDto.commentId,
+      user._id,
+      addReplyDto.content,
+    );
+  }
+
+  @Delete('delete-comment/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async deleteComment(
+    @CurrentUser() user: User,
+    @Param('commentId') commentId: string,
+    @Req() req: Request,
+  ) {
+    const forumId = req.headers['forum-id'] as string;
+    if (!forumId) throw new BadRequestException('Forum ID is required');
+    return this.forumsService.deleteComment(
+      forumId,
+      commentId,
+      user._id,
+      user.role === 'admin',
+    );
+  }
+
+  @Put('edit-comment/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async editComment(
+    @CurrentUser() user: User,
+    @Param('commentId') commentId: string,
+    @Body() editCommentDto: { content: string },
+    @Req() req: Request,
+  ) {
+    const forumId = req.headers['forum-id'] as string;
+    if (!forumId) throw new BadRequestException('Forum ID is required');
+    return this.forumsService.editComment(
+      forumId,
+      commentId,
+      user._id,
+      editCommentDto.content,
+      user.role === 'admin',
+    );
   }
 
   @Get(':id')

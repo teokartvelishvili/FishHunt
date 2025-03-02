@@ -1,26 +1,36 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document } from 'mongoose';
 
+@Schema({ timestamps: true })
+export class Comment extends Document {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  _id: mongoose.Schema.Types.ObjectId;
 
-@Schema({timestamps: true})
-export class Comment{
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
-  user: mongoose.Schema.Types.ObjectId
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: String})
+  @Prop({ type: String })
   content: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, default: null })
+  parentId: mongoose.Schema.Types.ObjectId;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    default: [],
+  })
+  replies: mongoose.Schema.Types.ObjectId[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
 
-@Schema({timestamps: true})
-export class Forum {
+@Schema({ timestamps: true })
+export class Forum extends Document {
+  @Prop({ type: String })
+  content: string;
 
-  @Prop({type: String})
-  content: string
-
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'user'})
-  user: mongoose.Schema.Types.ObjectId
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: [String],
@@ -30,21 +40,19 @@ export class Forum {
     },
     required: true,
   })
-  tags: string[];  
-  
+  tags: string[];
 
-  @Prop({type: [CommentSchema], default: []})
-  comments: Comment[]
+  @Prop({ type: [{ type: CommentSchema }], default: [] })
+  comments: Comment[];
 
-  @Prop({type: Number, default: 0})
-  likes: number
+  @Prop({ type: Number, default: 0 })
+  likes: number;
 
-  @Prop({type: [mongoose.Schema.Types.ObjectId], default: []})
-  likesArray: mongoose.Schema.Types.ObjectId[]
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], default: [] })
+  likesArray: mongoose.Schema.Types.ObjectId[];
 
-  @Prop({type: String})
-  imagePath: string
-
+  @Prop({ type: String })
+  imagePath: string;
 }
 
-export const FourmSchema = SchemaFactory.createForClass(Forum)
+export const ForumSchema = SchemaFactory.createForClass(Forum);

@@ -1,18 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { UpdateForumDto } from './dto/update-forum.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Forum } from './schema/forum.schema';
-import { isValidObjectId, Model } from 'mongoose';
+import { Forum, Comment } from './schema/forum.schema';
+import { isValidObjectId, Model, Types } from 'mongoose';
 import { UsersService } from '@/users/services/users.service';
 import { queryParamsDto } from './dto/queryParams.dto';
 import { AwsS3Service } from '@/aws-s3/aws-s3.service';
 import { AddCommentDto } from './dto/addComment.dto';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class ForumsService {
   constructor(
     @InjectModel(Forum.name) private forumModel: Model<Forum>,
+    @InjectModel(Comment.name) private commentModel: Model<Comment>,
     private userService: UsersService,
     private awsS3Service: AwsS3Service,
   ) {}
@@ -152,5 +159,158 @@ export class ForumsService {
     }
 
     return { message: 'Post successfully deleted' };
+  }
+
+  async replyToComment(userId: string, commentId: string, content: string) {
+    if (!isValidObjectId(commentId)) {
+      throw new BadRequestException('Invalid comment ID');
+    }
+
+    const parentComment = await this.commentModel.findById(commentId);
+    if (!parentComment) {
+      throw new BadRequestException('Comment not found');
+    }
+
+    const newReply = await this.commentModel.create({
+      user: userId,
+      content,
+      parentComment: commentId,
+    });
+
+    // შვილობილი კომენტარის ბმული მშობელთან
+    await this.commentModel.findByIdAndUpdate(commentId, {
+      $push: { replies: newReply._id },
+    });
+
+    return newReply;
+  }
+
+  async addReplyToComment(
+    forumId: string,
+    commentId: string,
+    userId: string,
+    content: string,
+  ) {
+    if (!isValidObjectId(forumId) || !isValidObjectId(commentId)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+
+    const forum = await this.forumModel.findById(forumId);
+    if (!forum) {
+      throw new NotFoundException('Forum not found');
+    }
+
+    const newComment = await this.commentModel.create({
+      user: new Types.ObjectId(userId),
+      content,
+      parentId: new Types.ObjectId(commentId),
+      replies: [],
+    });
+
+    // ვამატებთ ახალ კომენტარს ფორუმში
+    await this.forumModel.findByIdAndUpdate(
+      forumId,
+      {
+        $push: { comments: newComment },
+      },
+      { new: true },
+    );
+
+    // ვამატებთ reply-ს მშობელ კომენტარში
+    await this.forumModel.updateOne(
+      {
+        _id: forumId,
+        'comments._id': commentId,
+      },
+      {
+        $push: { 'comments.$.replies': newComment._id },
+      },
+    );
+
+    return this.forumModel.findById(forumId).populate({
+      path: 'comments.user',
+      select: 'name _id',
+    });
+  }
+
+  async deleteComment(
+    forumId: string,
+    commentId: string,
+    userId: string,
+    isAdmin: boolean,
+  ) {
+    const forum = await this.forumModel.findById(forumId);
+    if (!forum) {
+      throw new NotFoundException('Forum not found');
+    }
+
+    const commentIndex = forum.comments.findIndex(
+      (comment) => comment._id.toString() === commentId,
+    );
+
+    if (commentIndex === -1) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    const comment = forum.comments[commentIndex];
+
+    if (!isAdmin && comment.user.toString() !== userId) {
+      throw new UnauthorizedException('You can only delete your own comments');
+    }
+
+    // რეკურსიულად წავშალოთ ყველა reply
+    const deleteReplies = (commentId: string) => {
+      forum.comments = forum.comments.filter((comment) => {
+        if (comment.parentId?.toString() === commentId) {
+          deleteReplies(comment._id.toString());
+          return false;
+        }
+        return true;
+      });
+    };
+
+    deleteReplies(comment._id.toString());
+    forum.comments.splice(commentIndex, 1);
+
+    await forum.save();
+
+    return this.forumModel.findById(forumId).populate({
+      path: 'comments.user',
+      select: 'name _id',
+    });
+  }
+
+  async editComment(
+    forumId: string,
+    commentId: string,
+    userId: string,
+    content: string,
+    isAdmin: boolean,
+  ) {
+    const forum = await this.forumModel.findById(forumId);
+    if (!forum) {
+      throw new NotFoundException('Forum not found');
+    }
+
+    const comment = forum.comments.find(
+      (comment) => comment._id.toString() === commentId,
+    );
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (!isAdmin && comment.user.toString() !== userId) {
+      throw new UnauthorizedException('You can only edit your own comments');
+    }
+
+    comment.content = content;
+
+    await forum.save();
+
+    return this.forumModel.findById(forumId).populate({
+      path: 'comments.user',
+      select: 'name _id',
+    });
   }
 }

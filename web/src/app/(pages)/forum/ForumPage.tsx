@@ -13,6 +13,7 @@ interface Forum {
   user: {
     name: string;
     _id: string;
+    role: string;
   };
   tags: string[];
   comments: Array<{
@@ -20,8 +21,11 @@ interface Forum {
     content: string;
     user: {
       name: string;
+      _id: string;
     };
     createdAt: string;
+    parentId?: string;
+    replies?: string[];
   }>;
   likes: number;
   likesArray: string[];
@@ -97,15 +101,28 @@ const ForumPage = () => {
             category={forum.tags}
             author={{
               name: forum.user.name,
+              _id: forum.user._id,
               avatar: "/avatar.jpg",
+              role: forum.user.role,
             }}
+            currentUser={
+              user
+                ? {
+                    _id: user._id,
+                    role: user.role,
+                  }
+                : undefined
+            }
             comments={forum.comments.map((comment) => ({
               id: comment._id,
               text: comment.content,
               author: {
                 name: comment.user.name,
+                _id: comment.user._id,
                 avatar: "/avatar.jpg",
               },
+              parentId: comment.parentId?.toString(),
+              replies: comment.replies?.map((r) => r.toString()),
             }))}
             time={new Date(forum.createdAt).toLocaleDateString()}
             likes={forum.likes}
