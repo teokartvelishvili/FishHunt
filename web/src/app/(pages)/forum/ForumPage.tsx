@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import CreateForumModal from "./CreateForumModal";
 import { useUser } from "@/modules/auth/hooks/use-user";
@@ -37,13 +37,13 @@ const ForumPage = () => {
   const [page] = useState(1);
   const { user, isLoading: isUserLoading } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // დავლოგოთ მომხმარებლის მონაცემები
   console.log("User from useUser:", user);
 
   const { data: forums, isLoading: isForumsLoading } = useQuery({
-    queryKey: ["forums", page],
+    queryKey: ["forums"],
     queryFn: async () => {
       const response = await fetchWithAuth(`/forums?page=${page}`, {
         method: "GET",
@@ -52,27 +52,6 @@ const ForumPage = () => {
       const data = await response.json();
       console.log("Raw forum data from API:", data);
       return data as Forum[];
-    },
-  });
-
-  // 🗑️ **პოსტის წაშლის მუტაცია**
-  const deleteMutation = useMutation({
-    mutationFn: async (forumId: string) => {
-      const response = await fetchWithAuth(`/forums/${forumId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "file-id": "requiredFileId",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete forum post");
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["forums", page] });
     },
   });
 
@@ -170,16 +149,6 @@ const ForumPage = () => {
                 likes={forum.likes}
                 isLiked={forum.likesArray.includes(user?._id || "")}
                 isAuthorized={!!user}
-                deleteButton={
-                  canModify ? (
-                    <button
-                      className="delete-post-button"
-                      onClick={() => deleteMutation.mutate(forum._id)}
-                    >
-                      🗑️ წაშლა
-                    </button>
-                  ) : null
-                }
               />
             );
           })}
