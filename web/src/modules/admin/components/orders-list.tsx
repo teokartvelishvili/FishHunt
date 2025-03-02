@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,13 +11,18 @@ import { apiClient } from "@/lib/api-client";
 import { Order } from "@/types/order";
 import "./orders-list.css";
 
-interface OrdersListProps {
-  orders: Order[];
-}
-
-export function OrdersList({ orders }: OrdersListProps) {
+export function OrdersList() {
+  const [page, setPage] = useState(1);
   const { toast } = useToast();
   const router = useRouter();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["orders", page],
+    queryFn: async () => {
+      const response = await fetchWithAuth(`/orders?page=${page}&limit=8`);
+      return response.json();
+    },
+  });
 
   const markAsDelivered = async (orderId: string) => {
     try {
@@ -34,6 +42,11 @@ export function OrdersList({ orders }: OrdersListProps) {
     }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+
+  const orders = data?.items || [];
+  const totalPages = data?.pages || 1;
+
   return (
     <div className="orders-container">
       <div className="orders-header">
@@ -52,7 +65,7 @@ export function OrdersList({ orders }: OrdersListProps) {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {orders.map((order: Order) => (
             <tr key={order._id}>
               <td className="order-id">#{order._id}</td>
               <td>{order.user.email}</td>
@@ -104,6 +117,28 @@ export function OrdersList({ orders }: OrdersListProps) {
           ))}
         </tbody>
       </table>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <span className="pagination-info">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
