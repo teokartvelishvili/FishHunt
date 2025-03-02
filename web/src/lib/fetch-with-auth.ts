@@ -19,6 +19,13 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
   let response = await makeRequest();
 
   if (response.status === 401) {
+    // ✅ გავარკვიოთ, არსებობს თუ არა refresh token (მაგ: localStorage-ში ან cookie-ში)
+    const hasRefreshToken = document.cookie.includes("refreshToken"); // ან შენი refresh token ლოგიკა
+
+    if (!hasRefreshToken) {
+      return response; // ❌ თუ refresh token არ არსებობს, უბრალოდ ვაბრუნებთ 401 response-ს
+    }
+
     try {
       const refreshResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
@@ -29,12 +36,13 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
       );
 
       if (refreshResponse.ok) {
-        response = await makeRequest();
-      } 
-      // ✅ აღარ გადავამისამართოთ login-ზე, უბრალოდ დავაბრუნოთ 401 სტატუსის პასუხი
+        response = await makeRequest(); // 🔄 ტოკენი განახლდა? თავიდან ვუშვებთ request-ს
+      } else {
+        return response; // ❌ თუ refresh ვერ მოხერხდა, ისევ ვაბრუნებთ 401-ს
+      }
     } catch (error) {
       console.error("Authentication refresh failed:", error);
-      return response; // ❌ არ გადავამისამართოთ login-ზე, უბრალოდ დავაბრუნოთ პასუხი
+      return response; // ❌ არ გადავამისამართოთ login-ზე
     }
   }
 
