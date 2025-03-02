@@ -30,20 +30,21 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
 
       if (refreshResponse.ok) {
         response = await makeRequest();
-      } else {
-        window.location.href = "/login";
-        throw new Error("Authentication failed");
-      }
+      } 
+      // ✅ აღარ გადავამისამართოთ login-ზე, უბრალოდ დავაბრუნოთ 401 სტატუსის პასუხი
     } catch (error) {
-      console.error("Authentication failed:", error);
-      window.location.href = "/login";
-      throw new Error("Authentication failed");
+      console.error("Authentication refresh failed:", error);
+      return response; // ❌ არ გადავამისამართოთ login-ზე, უბრალოდ დავაბრუნოთ პასუხი
     }
   }
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Request failed");
+    try {
+      const error = await response.json();
+      throw new Error(error.message || "Request failed");
+    } catch {
+      throw new Error("Request failed");
+    }
   }
 
   return response;
