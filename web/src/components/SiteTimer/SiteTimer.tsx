@@ -84,8 +84,8 @@ const SiteTimer = () => {
       <SmallAnimLogo />
       <p className="site-timer-text">
         ვებგვერდზე მიმდინარეობს ტექნიკური სამუშაო, დასრულებამდე დარჩა{" "}
-        {timeLeft.months > 0 && `${timeLeft.months.toString().padStart(2, "0")} თვე `}
-        {timeLeft.days > 0 && `${timeLeft.days.toString().padStart(2, "0")} დღე `}
+        {timeLeft.months > 0 && `${timeLeft.months.toString().padStart(2, "")} თვე `}
+        {timeLeft.days > 0 && `${timeLeft.days.toString().padStart(2, "")} დღე `}
         {timeLeft.hours.toString().padStart(2, "0")} :{" "}
         {timeLeft.minutes.toString().padStart(2, "0")} :{" "}
         {timeLeft.seconds.toString().padStart(2, "0")}
