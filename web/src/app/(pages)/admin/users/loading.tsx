@@ -3,7 +3,7 @@ import "./loading.css";
 
 export default function Loading() {
   return (
-    <div className="container">
+    <div className="loading-container">
       <div className="loading-wrapper">
         <div className="card">
           <div className="card-header">

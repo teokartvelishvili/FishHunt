@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import CreateForumModal from "./CreateForumModal";
 import { useUser } from "@/modules/auth/hooks/use-user";
+import Loading from "../admin/users/loading";
+import LoadingAnim from "@/components/loadingAnim/loadingAnim";
 
 interface Forum {
   _id: string;
@@ -65,7 +67,7 @@ const ForumPage = () => {
   });
 
   if (isUserLoading || isForumsLoading) {
-    return <div>იტვირთება...</div>;
+    return <div> <LoadingAnim/> </div>;
   }
 
   // დავლოგოთ ფორუმები დეტალურად
@@ -83,7 +85,8 @@ const ForumPage = () => {
   return (
     <div className="forum-page">
       {isUserLoading || isForumsLoading ? (
-        <div>იტვირთება...</div>
+        // <div>იტვირთება...</div>
+        <div> <Loading/> </div>
       ) : (
         <>
           {user && (

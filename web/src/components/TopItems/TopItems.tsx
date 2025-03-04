@@ -10,6 +10,7 @@ import needle from "../../assets/fish-hook-circle-hook-fishing-bait-hooks-cbc294
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Product } from "@/types";
+import LoadingAnim from "../loadingAnim/loadingAnim";
 
 const TopItems: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -37,12 +38,11 @@ const TopItems: React.FC = () => {
   }, [topProducts]);
 
   if (isLoading) {
-    return <div className={styles.container}>Loading...</div>;
+    return <div className={styles.container}> <LoadingAnim/> </div>;
   }
 
   return (
     <div className={styles.container}>
-      Top Items
       <Image src={fisher} alt="Fisher Icon" className={styles.fisher} />
       <div className={styles.scroller} ref={scrollRef}>
         <div className={styles.inner}>

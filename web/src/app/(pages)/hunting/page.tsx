@@ -1,4 +1,5 @@
 import HuntingPageMain from "./huntingPageMain";
+import "./huntingPageMain.css";
 
 
 
