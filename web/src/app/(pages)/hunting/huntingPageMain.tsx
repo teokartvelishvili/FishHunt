@@ -2,49 +2,65 @@ import Image from "next/image";
 import Link from "next/link";
 import "./huntingPageMain.css";
 import mapImage from "../../../assets/map.png";
-import noPhoto from "../../../assets/nophoto.webp";
 import AnserAnser from "../../../assets/birds/AnserAnser.jpg";
 import MarecaStrepera from "../../../assets/birds/MarecaStrepera.png";
 import AnasCrecca from "../../../assets/birds/Anas crecca.png";
+import AnasPlatyrhynchos from "../../../assets/birds/AnasPlatyrhynchos.jpg";
+import AnasQuerquedula from "../../../assets/birds/Anas querquedula.jpg";
+import AnasClypeata from "../../../assets/birds/Anas clypeata.jpeg";
+import FulicaAtra from "../../../assets/birds/Fulica atra.png";
+import AnasAcuta from "../../../assets/birds/Anas acuta.png";
+import MarecaPenelope from "../../../assets/birds/Mareca Penelope.jpg";
+import AnserAlbifrons from "../../../assets/birds/Anser albifrons.jpg";
+import AythyaFuligula from "../../../assets/birds/Aythya fuligula.jpeg";
+import ScolopaxRusticola from "../../../assets/birds/Scolopax rusticola.jpeg";
+import GallinagoGallinago from "../../../assets/birds/Gallinago gallinago.png";
+import Coturnix from "../../../assets/birds/Coturnix coturnix.png";
+import ColumbaPalumbus from "../../../assets/birds/Columba palumbus.jpeg";
+import ColumbaLivia from "../../../assets/birds/Columba livia.png";
+import ColumbaOenas from "../../../assets/birds/Columba oenas.jpeg";
+import StreptopeliaDecaocto from "../../../assets/birds/Streptopelia decaocto.png";
+import Crex from "../../../assets/birds/Crex crex.png";
+import LymnocryptesMinimus from "../../../assets/birds/Lymnocryptes minimus.jpeg";
 
 const category1 = [
   { name: "Anser anser", geo: "რუხი ბატი (Anser anser)", limit: 5, image: AnserAnser },
-  { name: "Mareca strepera", geo: "რუხი იხვი (Mareca strepera)", limit: 3, image: MarecaStrepera },
+  { name: "Mareca strepera", geo: "რუხი იხვი (Mareca strepera (Anas strepera))", limit: 3, image: MarecaStrepera },
   { name: "Anas crecca", geo: "ჭიკვარა (სტვენია იხვი) (Anas crecca)", limit: 5, image: AnasCrecca },
-  { name: "Anas platyrhynchos", geo: "გარეული იხვი (Anas platyrhynchos)", limit: 6, image: noPhoto },
-  { name: "Spatula clypeata", geo: "იხვინჯა (ჭახჭახა იხვი) (Spatula clypeata)", limit: 3, image: noPhoto },
-  { name: "Spatula clypeata", geo: "ფართოცხვირა (განიერნისკარტა) იხვი (Spatula clypeata)", limit: 3, image: noPhoto },
-  { name: "Fulica atra", geo: "მელოტა (Fulica atra)", limit: 6, image: noPhoto },
-  { name: "Anas acuta", geo: "კუდსადგისა (ბოლოსადგისა) იხვი (Anas acuta)", limit: 3, image: noPhoto },
-  { name: "Mareca Penelope", geo: "თეთრშუბლა იხვი (Mareca Penelope)", limit: 6, image: noPhoto },
-  { name: "Anser albifrons", geo: "დიდი თეთრშუბლა ბატი (Anser albifrons)", limit: 5, image: noPhoto },
-  { name: "Aythya fuligula", geo: "ქოჩორა ყვინთია (Aythya fuligula)", limit: 5, image: noPhoto }
+  { name: "Anas platyrhynchos", geo: "გარეული იხვი (Anas platyrhynchos)", limit: 6, image: AnasPlatyrhynchos },
+  { name: "Anas querquedula", geo: "იხვინჯა (ჭახჭახა იხვი) (Spatula clypeata (Anas querquedula))", limit: 3, image: AnasQuerquedula },
+  { name: "Anas clypeata", geo: "ფართოცხვირა (განიერნისკარტა) იხვი (Spatula clypeata (Anas clypeata))", limit: 3, image: AnasClypeata },
+  { name: "Fulica atra", geo: "მელოტა (Fulica atra)", limit: 6, image: FulicaAtra },
+  { name: "Anas acuta", geo: "კუდსადგისა (ბოლოსადგისა) იხვი (Anas acuta)", limit: 3, image: AnasAcuta },
+  { name: "Mareca Penelope", geo: "თეთრშუბლა იხვი (Mareca Penelope (Anas penelope))", limit: 6, image: MarecaPenelope },
+  { name: "Anser albifrons", geo: "დიდი თეთრშუბლა ბატი (Anser albifrons)", limit: 5, image: AnserAlbifrons},
+  { name: "Aythya fuligula", geo: "ქოჩორა ყვინთია (Aythya fuligula)", limit: 5, image: AythyaFuligula }
 ];
 
 const category2 = [
   { name: "Anser anser", geo: "რუხი ბატი (Anser anser)", limit: 3, image: AnserAnser },
-  { name: "Mareca strepera", geo: "რუხი იხვი (Mareca strepera)", limit: 2, image: MarecaStrepera },
+  { name: "Mareca strepera", geo: "რუხი იხვი (Mareca strepera (Anas strepera))", limit: 2, image: MarecaStrepera },
   { name: "Anas crecca", geo: "ჭიკვარა (სტვენია იხვი) (Anas crecca)", limit: 3, image: AnasCrecca },
-  { name: "Anas platyrhynchos", geo: "გარეული იხვი (Anas platyrhynchos)", limit: 5, image: noPhoto },
-  { name: "Spatula clypeata", geo: "იხვინჯა (ჭახჭახა იხვი) (Spatula clypeata)", limit: 2, image: noPhoto },
-  { name: "Spatula clypeata", geo: "ფართოცხვირა (განიერნისკარტა) იხვი (Spatula clypeata)", limit: 2, image: noPhoto },
-  { name: "Fulica atra", geo: "მელოტა (Fulica atra)", limit: 5, image: noPhoto },
-  { name: "Anas acuta", geo: "კუდსადგისა (ბოლოსადგისა) იხვი (Anas acuta)", limit: 2, image: noPhoto },
-  { name: "Mareca Penelope", geo: "თეთრშუბლა იხვი (Mareca Penelope)", limit: 3, image: noPhoto },
-  { name: "Anser albifrons", geo: "დიდი თეთრშუბლა ბატი (Anser albifrons)", limit: 3, image: noPhoto },
-  { name: "Aythya fuligula", geo: "ქოჩორა ყვინთია (Aythya fuligula)", limit: 3, image: noPhoto }
+  { name: "Anas platyrhynchos", geo: "გარეული იხვი (Anas platyrhynchos)", limit: 5, image: AnasPlatyrhynchos },
+  { name: "Anas querquedula", geo: "იხვინჯა (ჭახჭახა იხვი) (Spatula clypeata (Anas querquedula))", limit: 2, image: AnasQuerquedula },
+  { name: "Anas clypeata", geo: "ფართოცხვირა (განიერნისკარტა) იხვი (Spatula clypeata (Anas clypeata))", limit: 2, image: AnasClypeata },
+  { name: "Fulica atra", geo: "მელოტა (Fulica atra)", limit: 5, image: FulicaAtra },
+  { name: "Anas acuta", geo: "კუდსადგისა (ბოლოსადგისა) იხვი (Anas acuta)", limit: 2, image: AnasAcuta },
+  { name: "Mareca Penelope", geo: "თეთრშუბლა იხვი (Mareca Penelope (Anas penelope))", limit: 3, image: MarecaPenelope },
+  { name: "Anser albifrons", geo: "დიდი თეთრშუბლა ბატი (Anser albifrons)", limit: 3, image: AnserAlbifrons },
+  { name: "Aythya fuligula", geo: "ქოჩორა ყვინთია (Aythya fuligula)", limit: 3, image: AythyaFuligula }
 ];
 
 const category3 = [
-  { name: "Scolopax rusticola", geo: "ტყის ქათამი (Scolopax rusticola)", limit: 5, image: noPhoto },
-  { name: "Gallinago gallinago", geo: "ჩიბუხა (Gallinago gallinago)", limit: 5, image: noPhoto },
-  { name: "Coturnix coturnix", geo: "მწყერი (Coturnix coturnix)", limit: 20, image: noPhoto },
-  { name: "Columba palumbus", geo: "ქედანი (Columba palumbus)", limit: 10, image: noPhoto },
-  { name: "Columba livia", geo: "გარეული მტრედი (Columba livia)", limit: 10, image: noPhoto },
-  { name: "Columba oenas", geo: "გულიო (გვიძინი) (Columba oenas)", limit: 10, image: noPhoto },
-  { name: "Streptopelia decaocto", geo: "საყელოიანი გვრიტი (Streptopelia decaocto)", limit: 5, image: noPhoto },
-  { name: "Crex crex", geo: "ღალღა (Crex crex)", limit: 5, image: noPhoto },
-  { name: "Lymnocryptes minimus", geo: "ჩიბუხელა (გარშნეპი) (Lymnocryptes minimus)", limit: 5, image: noPhoto }
+  { name: "Scolopax rusticola", geo: "ტყის ქათამი (Scolopax rusticola)", limit: 5, image: ScolopaxRusticola },
+  { name: "Gallinago gallinago", geo: "ჩიბუხა (Gallinago)", limit: 5, image: GallinagoGallinago },
+  { name: "Coturnix coturnix", geo: "მწყერი (Coturnix)", limit: 20, image: Coturnix },
+  { name: "Columba palumbus", geo: "ქედანი (Columba palumbus)", limit: 10, image: ColumbaPalumbus },
+  { name: "Columba livia", geo: "გარეული მტრედი (Columba livia)", limit: 10, image: ColumbaLivia },
+  { name: "Columba oenas", geo: "გულიო (გვიძინი) (Columba oenas)", limit: 10, image: ColumbaOenas },
+  { name: "Streptopelia decaocto", geo: "საყელოიანი გვრიტი (Streptopelia decaocto)", limit: 5, image: StreptopeliaDecaocto },
+  { name: "Crex crex", geo: "ღალღა (Crex)", limit: 5, image: Crex },
+  { name: "Lymnocryptes minimus", geo: "ჩიბუხელა (გარშნეპი) (Lymnocryptes minimus)", limit: 5, image: LymnocryptesMinimus }
 ];
 
 
@@ -160,6 +176,33 @@ const HuntingPageMain = () => {
       <Link href="/hunting-permits" className="hunting-main-permit-link">
         იარაღის ნებართვა და საგამოცდო ბილეთები
       </Link>
+
+
+      <div>
+      ნადირობა აკრძალულია:
+
+ 
+
+• საქართველოს კანონმდებლობით დადგენილ ადგილებში, მათ შორის: საქართველოს ქალაქების ადმინისტრაციულ საზღვრებში, სახელმწიფო ნაკრძალებში, ეროვნულ პარკებში, ნუგზარ ზაზანაშვილის სახელობის სამუხის მრავალმხრივი გამოყენების ტერიტორიაზე, ასევე სახელმწიფო ნაკრძალების გარშემო 500-მეტრიან და ეროვნული პარკების გარშემო 250-მეტრიან ზონებში; სამინისტროს სსიპ ველური ბუნების ეროვნული სააგენტოს მართვაში/სარგებლობაში არსებული საშენი მეურნეობების ფართობებზე.
+
+ 
+
+• ყველა სხვა იარაღით, რომელიც მითითებული არ არის „იარაღის შესახებ” საქართველოს კანონის მე-7 მუხლში, კერძოდ: სანადირო გლუვლულიანი ცეცხლსასროლი იარაღი (თოფი), სანადირო ხრახნილლულიანი ცეცხლსასროლი იარაღი (კარაბინი ან შაშხანა), სანადირო კომბინირებული ცეცხლსასროლი იარაღი (ხრახნილლულიანი და გლუვლულიანი თოფი), სანადირო ცივი და ცივი სასროლი იარაღი; სანადირო პნევმატური იარაღი.
+
+ 
+
+ნადირობა შესაძლებელია გარემოდან გადამფრენი ფრინველების ამოღებაზე დაწესებული მოსაკრებლის (10 ლარი) გადახდის დამადასტურებელი ქვითრის გაცემის წლის აგვისტოს მეოთხე შაბათიდან მომდევნო წლის პირველ მარტამდე.
+
+ 
+
+მოსაკრებლის გადახდა შესაძლებელია საქართველოს ნებისმიერ ბანკში, მიმღების ბანკი: სახელმწიფო ხაზინა, ბანკის კოდი: 220 101 222, ანგარიშის ნომერი: №200122900, ბიუჯეტის შემოსულობების სახის განმსაზღვრელი სახაზინო კოდი: 3033.
+
+
+განმარტება მოსაკრებლის გადახდისათვის: ბიუჯეტის შემოსულობების სახის განმსაზღვრელი სახაზინო კოდი 3033 წარმოადგენს 9 ნიშნიანი კოდის ბოლო ოთხ ციფრს, რომელიც უცვლელია (ერთი და იგივეა ყველა თვითმმართველი ერთეულისათვის _  ქალაქი, რაიონი). 9 ნიშნიანი კოდის პირველი ციფრი არის 3, რომელიც ასევე უცვლელია და ნიშნავს ამკრეფის კოდს, ამ შემთხვევაში არასაგადასახადო შემოსულობებს. ხოლო, შუა 4 ციფრი სხვადასხვაა იმ თვითმმართველი ერთეულის შესაბამისად (ქალაქი, მუნიციპალიტეტი),  სადაც წარმოებს თანხის გადახდა. ზოგადად კოდი ასე გამოიყურება: 3 XXXX 3033. მაგალითად: თბილისისათვის ბიუჯეტის შემოსულობების სახის განმსაზღვრელი სახაზინო კოდია: 3 0077 3033; ახმეტისათვის 3 0054 3033; რუსთავისათვის 3 0006 3033; ქუთაისისთვის 3 0018 3033, ლენტეხისათვის 3 0031 3033 და ა.შ.
+      </div>
+
+
+
     </div>
   );
 };

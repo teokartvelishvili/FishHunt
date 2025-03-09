@@ -179,9 +179,9 @@ const questions = [
           ) : (
             <>
               <h2>გილოცავთ! თქვენ წარმატებით ჩააბარეთ გამოცდა 🎉</h2>
-              <a href="https://your-real-exam-link.com" target="_blank" rel="noopener noreferrer" className="real-exam-button">
+              {/* <a href="https://your-real-exam-link.com" target="_blank" rel="noopener noreferrer" className="real-exam-button">
                 ნამდვილ გამოცდაზე გადასვლა
-              </a>
+              </a> */}
             </>
           )}
         </div>

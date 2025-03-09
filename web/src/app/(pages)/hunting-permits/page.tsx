@@ -18,9 +18,9 @@ const HuntingPermitsPage = () => {
 
 </ul>
 მომსახურებით სარგებლობისთვის მიმართეთ სსიპ საქართველოს შინაგან საქმეთა სამინისტროს მომსახურების სააგენტოს. ცხელი ხაზი: +995 (032) 2 41 91 91
-   <a href="https://my.sa.gov.ge/auth" target="_blank" rel="noopener noreferrer" className="real-exam-button">
+   {/* <a href="https://my.sa.gov.ge/auth" target="_blank" rel="noopener noreferrer" className="real-exam-button">
           ნამდვილ გამოცდაზე გადასვლა
-        </a>
+        </a> */}
         
         </div>
 
