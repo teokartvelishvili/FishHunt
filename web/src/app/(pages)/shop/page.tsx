@@ -1,3 +1,4 @@
+"use client"
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
 import { getVisiblePages } from "@/lib/utils";
