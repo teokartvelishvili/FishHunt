@@ -1,31 +1,31 @@
-"use client"
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+"use client";
+
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
-import { Product } from "@/types";
+import { getVisiblePages } from "@/lib/utils";
 
 export default function Home() {
-  const searchParams = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [pages, setPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(() => {
-    return Number(searchParams.get('page')) || 1;
-  });
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    async function fetchProducts() {
-      const { items, pages } = await getProducts(currentPage, 10);
-      setProducts(items);
-      setPages(pages);
-    }
-    fetchProducts();
-  }, [currentPage]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["products", currentPage],
+    queryFn: async () => {
+      const response = await getProducts(currentPage, 10);
+      return response;
+    },
+  });
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
     window.history.pushState(null, '', `/shop/?page=${newPage}`);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+
+  const { items: products, pages } = data || { items: [], pages: 0 };
+  const visiblePages = getVisiblePages(currentPage, pages);
 
   return (
     <div className="container">
@@ -44,9 +44,25 @@ export default function Home() {
             >
               Previous
             </button>
-            <span className="pagination-info">
-              Page {currentPage} of {pages}
-            </span>
+
+            {visiblePages.map((pageNum, idx) =>
+              pageNum === null ? (
+                <span key={`ellipsis-${idx}`} className="pagination-ellipsis">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`pagination-btn ${
+                    currentPage === pageNum ? "active" : ""
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              )
+            )}
+
             <button
               className="pagination-btn"
               onClick={() => handlePageChange(Math.min(pages, currentPage + 1))}
