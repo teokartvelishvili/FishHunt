@@ -11,7 +11,7 @@
 }
 
 .site-timer-text {
-  white-space: nowrap;
+  white-space: wrap;
 }
 
 /* ანიმაციის სტილები */
