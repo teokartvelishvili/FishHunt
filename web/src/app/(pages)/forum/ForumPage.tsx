@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
 import { useQuery } from "@tanstack/react-query";
@@ -36,18 +36,20 @@ interface Forum {
 }
 
 const ForumPage = () => {
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
   const { user, isLoading: isUserLoading } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const queryClient = useQueryClient();
+  const [forums, setForums] = useState<Forum[]>([]);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   // დავლოგოთ მომხმარებლის მონაცემები
   console.log("User from useUser:", user);
 
-  const { data: forums, isLoading: isForumsLoading } = useQuery({
-    queryKey: ["forums"],
+  const { data: newForums, isLoading: isForumsLoading } = useQuery({
+    queryKey: ["forums", page],
     queryFn: async () => {
-      const response = await fetchWithAuth(`/forums?page=${page}`, {
+      const response = await fetchWithAuth(`/forums?page=${page}&take=20`, {
         method: "GET",
         credentials: "include",
       });
@@ -57,6 +59,16 @@ const ForumPage = () => {
     },
   });
 
+  useEffect(() => {
+    if (newForums) {
+      setForums((prevForums) => [...prevForums, ...newForums]);
+      setIsFetchingMore(false);
+      if (newForums.length < 20) {
+        setHasMore(false);
+      }
+    }
+  }, [newForums]);
+
   // დავლოგოთ მომხმარებლის მონაცემები დეტალურად
   console.log("User loading:", isUserLoading);
   console.log("Forums loading:", isForumsLoading);
@@ -65,6 +77,23 @@ const ForumPage = () => {
     role: user?.role,
     name: user?.name,
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop !==
+          document.documentElement.offsetHeight ||
+        isFetchingMore ||
+        !hasMore
+      )
+        return;
+      setIsFetchingMore(true);
+      setPage((prevPage) => prevPage + 1);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isFetchingMore, hasMore]);
 
   if (isUserLoading || isForumsLoading) {
     return <div> <LoadingAnim/> </div>;
