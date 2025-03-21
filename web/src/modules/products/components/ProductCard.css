@@ -140,20 +140,10 @@ gap: 40%;
   cursor: not-allowed;
 }
 
-@media (max-width: 1024px) {
-  .product-card {
-    width: calc(33% - 20px);
-  }
-}
 
-@media (max-width: 768px) {
-  .product-card {
-    width: calc(50% - 20px);
-  }
-}
 
 @media (max-width: 480px) {
   .product-card {
-    width: 100%;
+    width: 90%;
   }
 }

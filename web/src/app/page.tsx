@@ -3,8 +3,6 @@ import HomePagesHead from "@/components/homePagesHead/homePagesHead";
 import HomePageShop from "@/components/homePageShop/homePageShop";
 import TopItems from "@/components/TopItems/TopItems";
 const Home = () => {
-  
-
   return (
     <div>
       <HomePagesHead/>
