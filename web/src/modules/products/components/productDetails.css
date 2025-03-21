@@ -75,10 +75,16 @@
 }
 
 .brand-logo {
-  width: 24px;
-  height: 24px;
+  width: auto;
+  height: 30px;
   border-radius: 50%;
   overflow: hidden;
+}
+.brand-logo img {
+  position: static !important;
+  width: 100%;
+  height: auto !important;
+  object-fit: cover !important;
 }
 
 .product-title {
