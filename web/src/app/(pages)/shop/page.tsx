@@ -1,31 +1,59 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, useRef } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
-import { getVisiblePages } from "@/lib/utils";
+import { Product } from "@/types";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState<Product[]>([]);
+  const loader = useRef<HTMLDivElement | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products", currentPage],
-    queryFn: async () => {
-      const response = await getProducts(currentPage, 10);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["products"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await getProducts(pageParam, 10);
       return response;
     },
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.pages > allPages.length ? allPages.length + 1 : undefined;
+    },
+    initialPageParam: 1,
   });
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-    window.history.pushState(null, '', `/shop/?page=${newPage}`);
-  };
+  useEffect(() => {
+    if (data) {
+      const allProducts = data.pages.flatMap((page) => page.items);
+      setProducts(allProducts);
+    }
+  }, [data]);
 
-  if (isLoading) return <div>Loading...</div>;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage().then(() => {
+            const nextPage = data?.pages ? data.pages.length + 1 : 1;
+            window.history.pushState(null, '', `/shop/?page=${nextPage}`);
+          });
+        }
+      },
+      { threshold: 1.0 }
+    );
 
-  const { items: products, pages } = data || { items: [], pages: 0 };
-  const visiblePages = getVisiblePages(currentPage, pages);
+    if (loader.current) {
+      observer.observe(loader.current);
+    }
+
+    return () => {
+      if (loader.current) {
+        observer.unobserve(loader.current);
+      }
+    };
+  }, [hasNextPage, fetchNextPage, data]);
+
+  if (isLoading && !data) return <div>Loading...</div>;
 
   return (
     <div className="container">
@@ -34,44 +62,9 @@ export default function Home() {
 
         <ProductGrid products={products} />
 
-        {/* პაგინაცია */}
-        {pages > 1 && (
-          <div className="pagination">
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-
-            {visiblePages.map((pageNum, idx) =>
-              pageNum === null ? (
-                <span key={`ellipsis-${idx}`} className="pagination-ellipsis">
-                  ...
-                </span>
-              ) : (
-                <button
-                  key={pageNum}
-                  onClick={() => handlePageChange(pageNum)}
-                  className={`pagination-btn ${
-                    currentPage === pageNum ? "active" : ""
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              )
-            )}
-
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(Math.min(pages, currentPage + 1))}
-              disabled={currentPage === pages}
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <div ref={loader} className="loading">
+          {isFetchingNextPage && <div>Loading more products...</div>}
+        </div>
       </div>
     </div>
   );
