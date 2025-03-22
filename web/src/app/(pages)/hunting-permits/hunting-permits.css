@@ -5,6 +5,7 @@
     text-align: center;
     border-radius: 8px;
     background-color: #f9f9f9;
+    background: linear-gradient(to left, #2a553026, #ec97430f);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
@@ -17,7 +18,7 @@
     padding: 12px 24px;
     font-size: 18px;
     border: none;
-    background-color: #28a745;
+    background-color: #2A5530;
     color: white;
     cursor: pointer;
     border-radius: 5px;
@@ -26,7 +27,7 @@
   
   .start-button:hover,
   .retry-button:hover {
-    background-color: #218838;
+    background-color: #2A5530;
   }
   
   .timer {
@@ -60,7 +61,7 @@
   }
   
   .option.correct {
-    background-color: #28a745;
+    background-color: #2A5530;
     color: white;
   }
   
@@ -79,7 +80,8 @@
     padding: 10px 20px;
     font-size: 16px;
     border: none;
-    background-color: #007bff;
+    border-radius: 4px;
+    background-color: #b26b2d;
     color: white;
     cursor: pointer;
     transition: all 0.3s;
@@ -107,7 +109,7 @@ align-items: center;
     height: 40px;
     align-items: center;
     justify-content: center;
-    background-color: green;
+    background-color: #2A5530;
     color: white;
     text-decoration: none;
     align-self: center;

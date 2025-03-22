@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCart } from "@/modules/cart/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
-import cartIcon from "../../../assets/icons/fishing-net.png";
+import cartIcon from "../../../assets/cart2.png";
 import Image from "next/image";
 
 
@@ -68,8 +68,8 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
         onClick={handleAddToCart}
       >
         {/* <HiOutlineShoppingBag size={20} /> */}
-        <Image src={cartIcon} alt="Cart Icon" width={28} height={28} />
         {isOutOfStock ? "Out of Stock" : loading ? "Adding..." : "Add to Cart"}
+        <Image src={cartIcon} alt="Cart Icon" width={28} height={28} />
       </button>
     </div>
   );

@@ -6,20 +6,20 @@
 }
 .cartIcon {
   height: 50px;
-  width: 62px;
+  width: 90px;
 }
 
 .cartIconsSpan {
   position: relative;
   top: -36px; 
-  right: -30px; 
-  border-radius: 50%; 
-  background-color: green;
-  font-size: 22px; 
+  right: -52px; 
+  border-radius: 20%; 
+  /* background-color: white; */
+  font-size: 24px; 
   font-style: bold;
-  color: #EC9843;
+  color: #2A5530;
   padding: 2px 4px;
   
-  border: 1px solid #EC9843;
+  /* border: 2px solid green; */
 
 }

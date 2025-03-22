@@ -216,10 +216,10 @@ const questions = [
         </div>
         <div className="navigation">
           <button onClick={() => setCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
-            ⬅️ უკან
+            უკან
           </button>
           <button onClick={() => setCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === questions.length - 1}>
-            შემდეგი ➡️
+            შემდეგი 
           </button>
         </div>
       </div>

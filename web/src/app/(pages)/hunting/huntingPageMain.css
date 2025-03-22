@@ -1,9 +1,12 @@
 .hunting-main-container {
   background-color: #ffffff;
   color: #2a5530;
-  padding: 20px;
+  padding: 10px 0px;
   border-radius: 10px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hunting-main-title1 {
@@ -44,7 +47,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
-  margin-left: 50vh;
+  /* margin-left: 50vh; */
   margin-bottom: 80px;
 }
 
@@ -54,7 +57,7 @@
   align-items: center;
   gap: 10px;
   /* background-color: #f9f9f9; */
-  padding: 10px;
+  padding: 10px 0;
   border-radius: 5px;
   color: #2a5530;
   /* border-left: 5px solid #ec9843; */
@@ -131,4 +134,50 @@
   background-color: #34211d;
   color: #e9a562;
 }
+
+
+.hunting-rules-container {
+  color: #003049;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.hunting-rules-title {
+  color: #d62828;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.hunting-rules-subtitle {
+  color: #2A5530;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.hunting-rules-text {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hunting-rules-list {
+  list-style-type: none;
+  text-align: start;
+}
+
+.hunting-rules-list li {
+  margin-bottom: 10px;
+}
+
+.hunting-rules-list ul {
+  margin-top: 5px;
+  text-align: start;
+  /* padding-left: 20px; */
+  /* list-style-type: disc;
+  list-style-type: none; */
+}
+
 
