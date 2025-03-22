@@ -40,6 +40,7 @@ interface PostProps {
   likes: number;
   isLiked: boolean;
   isAuthorized: boolean;
+  canModify: boolean;
 }
 
 const ForumPost = ({
