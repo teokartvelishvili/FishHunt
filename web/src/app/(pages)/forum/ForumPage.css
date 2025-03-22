@@ -3,17 +3,24 @@
 }
 
 .create-post-button {
-  background: green;
+  background: linear-gradient(to left,  #2a5530, #ec9843);
+  background-size: 150% 100%; 
+  transition: background-position 1.7s ease-in-out; 
   border: none;
   border-radius: 5px;
   margin-bottom: 15px;
   padding: 15px 50px;
   color: white;
+  font-size: 24px;
+  width: 100%;
+  cursor: pointer;
 }
 
 .create-post-button:hover {
-  background: #17702b;
+  background-position: right;
 }
+
+
 .delete-post-button {
   background: red;
   border: none;
