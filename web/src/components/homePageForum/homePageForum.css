@@ -14,11 +14,13 @@
 }
 
 .forumPageLink {
-  width: 100%;
+  
   text-align: right;
   text-decoration: none;
-  color: #402000;
+  color: green;
   font-size: 20px;
+  font-weight: bolder;
+  float: right;
 }
 
 /* 768px-მდე ეკრანებისთვის */
