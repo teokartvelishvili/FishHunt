@@ -96,7 +96,7 @@ const ForumPage = () => {
               className="create-post-button"
               onClick={() => setIsModalOpen(true)}
             >
-              ➕ ახალი პოსტის დამატება
+               ახალი პოსტის დამატება
             </button>
           )}
 
