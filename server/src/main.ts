@@ -21,13 +21,15 @@ async function bootstrap() {
   //   allowedHeaders: ['Content-Type', 'Authorization'],
   // }));
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || 'https://soul-art.vercel.app';
+  console.log('Allowed Origins:', allowedOrigins);
   app.enableCors({
     origin:
       process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
 
     optionsSuccessStatus: 204,
   });
