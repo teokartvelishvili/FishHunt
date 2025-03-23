@@ -163,8 +163,21 @@ gap: 30%;
 
 
 
+@media (max-width: 1200px) {
+  .product-card {
+    max-width: 70vw;
+  }
+
+}
+@media (max-width: 770px) {
+  .product-card {
+    max-width: 40vw;
+  }
+
+}
 @media (max-width: 480px) {
   .product-card {
-    width: 90%;
+    max-width: 90vw;
   }
+
 }
