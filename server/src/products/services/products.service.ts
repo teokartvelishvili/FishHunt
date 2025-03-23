@@ -33,6 +33,7 @@ export class ProductsService {
     keyword?: string,
     page?: string,
     limit?: string,
+    user?: UserDocument,
   ): Promise<PaginatedResponse<Product>> {
     const pageSize = parseInt(limit ?? '10');
     const currentPage = parseInt(page ?? '1');
@@ -41,21 +42,26 @@ export class ProductsService {
 
     const searchPattern = decodedKeyword
       ? decodedKeyword
-          .split(' ')
-          .map((term) => `(?=.*${term})`)
-          .join('')
+      .split(' ')
+      .map((term) => `(?=.*${term})`)
+      .join('')
       : '';
 
     const searchQuery = decodedKeyword
       ? {
-          $or: [
-            { name: { $regex: searchPattern, $options: 'i' } },
-            { description: { $regex: searchPattern, $options: 'i' } },
-            { brand: { $regex: searchPattern, $options: 'i' } },
-            { category: { $regex: searchPattern, $options: 'i' } },
-          ],
-        }
-      : {};
+        $and: [
+          {
+            $or: [
+              { name: { $regex: searchPattern, $options: 'i' } },
+              { description: { $regex: searchPattern, $options: 'i' } },
+              { brand: { $regex: searchPattern, $options: 'i' } },
+              { category: { $regex: searchPattern, $options: 'i' } },
+            ],
+          },
+          user ? { user: user._id } : {}
+        ]
+      }
+      : user ? { user: user._id } : {};
 
     const count = await this.productModel.countDocuments(searchQuery);
     const products = await this.productModel

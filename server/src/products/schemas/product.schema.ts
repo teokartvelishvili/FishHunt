@@ -27,6 +27,15 @@ export class Review {
 
 @Schema({ timestamps: true })
 export class Product {
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+    default: null,
+  })
+  user!: User;
+
+
   @Prop({ required: true })
   name!: string;
 

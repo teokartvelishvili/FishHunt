@@ -9,6 +9,7 @@ import { ZodError } from "zod";
 import { ProductFormData } from "@/modules/products/validation/product";
 import "./CreateProductForm.css";
 import Image from "next/image";
+import { apiClient } from "@/lib/api-client";
 // import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
@@ -165,38 +166,42 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
     try {
       const method = initialData?._id ? "PUT" : "POST";
       const url = initialData?._id
-        ? `${process.env.NEXT_PUBLIC_API_URL}/products/${initialData._id}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/products`;
-
-      const response = await fetch(url, {
-        method,
+        ? `/products/${initialData._id}`
+        : "/products";
+    
+      console.log("Request Method:", method); // შესამოწმებლად
+    
+      const response = await apiClient({
+        method, 
+        url,
+        data: formDataToSend,
         headers: {
-          Cookie: `access_token=${
-            document.cookie
-              .split("; ")
-              .find((row) => row.startsWith("access_token="))
-              ?.split("=")[1] || ""
+          Cookie: `access_token=${document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("access_token="))
+            ?.split("=")[1] || ""
           }`,
-        },
-        body: formDataToSend, // FormData, სადაც მხოლოდ ერთჯერ გაიგზავნება images
+        }
       });
-      if (!response.ok) {
-        throw new Error(
-          initialData?._id
-            ? "Failed to update product"
-            : "Failed to create product"
-        );
-      }
-
-      toast({
-        title: initialData?._id
-          ? "Product updated successfully"
-          : "Product created successfully",
-        description: initialData?._id
-          ? "Your product has been updated."
-          : "Your product has been added.",
-      });
-
+    
+      console.log("Response:", response.data);
+    
+      if (response.status >= 300 || response.status < 200) {
+            throw new Error(
+              initialData?._id
+                ? "Failed to update product"
+                : "Failed to create product"
+            );
+          }
+    
+          toast({
+            title: initialData?._id
+              ? "Product updated successfully"
+              : "Product created successfully",
+            description: initialData?._id
+              ? "Your product has been updated."
+              : "Your product has been added.",
+          });
       router.push("/admin/products");
     } catch (error) {
       toast({
@@ -204,7 +209,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
         title: "Error",
         description:
           error instanceof Error ? error.message : "Something went wrong",
-      });
+      }); 
     } finally {
       setPending(false);
     }
