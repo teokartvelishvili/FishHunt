@@ -29,17 +29,18 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
       throw new Error("All tags' elements must be unique");
     }
 
-    // Ensure tags are valid (Fishing, Camping, or Hunting)
+    // Ensure tags are valid
     tags.forEach((tag) => {
       if (!validTags.includes(tag)) {
         throw new Error(
-          `Tag '${tag}' is not valid. Valid tags are: Fishing, Camping, Hunting`
+          `Tag '${tag}' is not valid. Valid tags are: პეიზაჟი,პორტრეტი,აბსტრაქცია,შავ-თეთრი,ანიმაციური,ციფრული ილუსტრაციები,სხვა`
         );
       }
     });
 
     return Array.from(uniqueTags); // Return unique tags as array
   };
+
   const createMutation = useMutation({
     mutationFn: async () => {
       try {
@@ -117,9 +118,10 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
     },
   });
 
-  const handleAddTag = () => {
-    if (selectedTag && !tags.includes(selectedTag)) {
-      setTags([...tags, selectedTag]);
+  const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTag = e.target.value;
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
       setSelectedTag(""); // Reset the selected tag after adding
     }
   };
@@ -146,7 +148,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
         <div className="tags-input">
           <select
             value={selectedTag}
-            onChange={(e) => setSelectedTag(e.target.value)}
+            onChange={handleTagChange}
             disabled={tags.length >= 3} // Disable if 3 tags are already selected
           >
             <option value="" disabled>
@@ -158,9 +160,6 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
               </option>
             ))}
           </select>
-          <button onClick={handleAddTag} disabled={!selectedTag}>
-            დამატება
-          </button>
         </div>
 
         <div className="tags-list">
