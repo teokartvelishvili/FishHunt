@@ -6,6 +6,9 @@ body {
   background-color: #f9f9f9;
   color: #333;
 }
+main{
+  min-height: 100vh;
+}
 
 .container {
   
