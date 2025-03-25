@@ -25,6 +25,12 @@ export class Review {
   comment!: string;
 }
 
+export enum ProductStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+
 @Schema({ timestamps: true })
 export class Product {
   @Prop({
@@ -34,7 +40,6 @@ export class Product {
     default: null,
   })
   user!: User;
-
 
   @Prop({ required: true })
   name!: string;
@@ -68,7 +73,12 @@ export class Product {
 
   @Prop({ required: true, default: 0 })
   countInStock!: number;
-  
+
+  @Prop({ required: true, default: ProductStatus.PENDING })
+  status!: ProductStatus;
+
+  @Prop({ type: String })
+  rejectionReason?: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

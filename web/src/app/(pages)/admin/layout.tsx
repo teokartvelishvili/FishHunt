@@ -11,7 +11,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoading, error } = useUser();
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   if (isLoading) {
     return (
@@ -26,10 +26,10 @@ export default function AdminLayout({
     );
   }
 
-  // თუ მომხმარებელი არაა ავტორიზებული ან API-ს შეცდომა აქვს, გადაამისამართე
   if (!isLoading && (!user || error)) {
     return redirect("/login");
   }
+
   const isProductRelatedPath = pathname?.includes('/products') ?? false;
   const hasAccess = 
     user?.role === Role.Admin || 
