@@ -15,4 +15,13 @@ export const productSchema = z.object({
   brandLogo: fileSchema.optional(),
 });
 
-export type ProductFormData = z.infer<typeof productSchema>;
+export interface ProductFormData {
+  name: string;
+  description: string;
+  brand: string;
+  category: string;
+  price: number;
+  countInStock: number;
+  images: (File | string)[];
+  brandLogo?: File | string;
+}
