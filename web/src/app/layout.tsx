@@ -13,7 +13,18 @@ import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
   title: "FishHunt",
-  description: "ECommerce platform",
+  description:
+    "FishHunt - Ecommerce platform for fishing equipment and accessories",
+  openGraph: {
+    type: 'website',
+    locale: 'ka_GE',
+    url: 'https://fishhunt.ge/',
+    siteName: 'FishHunt',
+    title: 'FishHunt',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
@@ -23,15 +34,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
-      >
+      <head>
+        {/* Facebook SDK */}
+        <script
+          async
+          defer
+          crossOrigin="anonymous"
+          src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
+        />
+      </head>
+      <body className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}>
         <Providers>
           <AuthProvider>
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  <SiteTimer/>
+                  <SiteTimer />
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />
