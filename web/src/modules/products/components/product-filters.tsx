@@ -22,11 +22,11 @@ export function ProductFilters({ products, onCategoryChange, onArtistChange }: F
 
   const categories = [
     'all',
-    'ნატურმორტი',
-    'პეიზაჟი',
-    'პორტრეტი',
-    'აბსტრაქცია',
-    'სხვა'
+    'Fishing',
+    'Camping',
+    'Hunting',
+    'Other'
+
   ];
 
   useEffect(() => {
