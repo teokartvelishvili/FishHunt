@@ -10,10 +10,16 @@ interface FilterProps {
   products: Product[];
   onCategoryChange: (category: string) => void;
   onArtistChange: (artist: string) => void;
+  selectedCategory?: string;
 }
 
-export function ProductFilters({ products, onCategoryChange, onArtistChange }: FilterProps) {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+export function ProductFilters({ 
+  products, 
+  onCategoryChange, 
+  onArtistChange,
+  selectedCategory: initialCategory = 'all' // Add default value
+}: FilterProps) {
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedArtist, setSelectedArtist] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -52,13 +58,27 @@ export function ProductFilters({ products, onCategoryChange, onArtistChange }: F
   };
 
   const handleCategoryChange = (category: string) => {
+    console.log('Changing category to:', category); // Debug log
+    const newCategory = category === 'all' ? '' : category;
     setSelectedCategory(category);
-    onCategoryChange(category === 'all' ? '' : category);
+    onCategoryChange(newCategory);
+
+    // Reset artist filter when changing category
+    if (selectedArtist !== 'all') {
+      handleArtistChange('all');
+    }
   };
 
   const handleArtistChange = (artist: string) => {
+    const newArtist = artist === 'all' ? '' : artist;
     setSelectedArtist(artist);
-    onArtistChange(artist === 'all' ? '' : artist);
+    onArtistChange(newArtist);
+
+    // Reset category filter when changing artist
+    if (selectedCategory !== 'all') {
+      setSelectedCategory('all');
+      onCategoryChange('');
+    }
   };
 
   const handleArtistClick = (brand: string) => {
@@ -66,6 +86,11 @@ export function ProductFilters({ products, onCategoryChange, onArtistChange }: F
     setSearchTerm('');
     setIsSearching(false);
   };
+  useEffect(() => {
+    if (initialCategory !== 'all') {
+      handleCategoryChange(initialCategory);
+    }
+  }, [initialCategory]);
 
   return (
     <div className="filters-container">
@@ -82,6 +107,16 @@ export function ProductFilters({ products, onCategoryChange, onArtistChange }: F
             </button>
           ))}
         </div>
+        {selectedCategory !== 'all' && (
+          <div className="selected-filter">
+            <button
+              className="clear-filter"
+              onClick={() => handleCategoryChange('all')}
+            >
+              × {selectedCategory}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="filter-section">
@@ -107,7 +142,9 @@ export function ProductFilters({ products, onCategoryChange, onArtistChange }: F
                   className={`filter-btn ${selectedArtist === brand ? 'active' : ''}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => handleArtistClick(brand)}
+                  onClick={() => {
+                    handleArtistClick(brand);
+                  }}
                 >
                   {brand}
                 </Link>

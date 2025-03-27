@@ -31,17 +31,18 @@ export default function HomePageShop() {
       });
     }
     
-    if (selectedArtist && selectedArtist !== 'all') {
-      filtered = filtered.filter((product) => {
-        return product.brand && product.brand.toLowerCase() === selectedArtist.toLowerCase();
-      });
+    if (selectedArtist) {
+      filtered = filtered.filter((product) => 
+        product.brand && product.brand.toLowerCase() === selectedArtist.toLowerCase()
+      );
     }
     
     console.log('Filtering products:', {
       total: products.length,
       filtered: filtered.length,
       category: selectedCategory,
-      artist: selectedArtist
+      artist: selectedArtist,
+      filteredProducts: filtered
     });
     
     setFilteredProducts(filtered);
