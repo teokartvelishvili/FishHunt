@@ -120,7 +120,7 @@ export function ProductFilters({
       </div>
 
       <div className="filter-section">
-        <h3 className="filter-title">მხატვრები</h3>
+        <h3 className="filter-title">მაღაზიები</h3>
         <div className="search-container">
           <Search className="search-icon" />
           <input

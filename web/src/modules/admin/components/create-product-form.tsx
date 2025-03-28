@@ -35,6 +35,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
   );
 
   const [pending, setPending] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -121,8 +122,24 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
     console.log("Form data on submit", formData);
     console.log("Initial Data:", initialData); // დავამატოთ ლოგი
     setPending(true);
+    setServerError(null);
 
     try {
+       // Validate image file type
+       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+       if (
+         formData.images.some(
+           (image) =>
+             image instanceof File && !allowedTypes.includes(image.type)
+         )
+       ) {
+         setErrors((prev) => ({
+           ...prev,
+           images: "მხოლოდ JPG, JPEG და PNG ფორმატის სურათებია დაშვებული",
+         }));
+         setPending(false);
+         return;
+       }
       const formDataToSend = new FormData();
       
       // ყველა ველის დამატება
@@ -164,7 +181,10 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "პროდუქტის დამატება ვერ მოხერხდა"
+        );
       }
 
       const data = await response.json();
@@ -191,6 +211,11 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
   return (
     <div className="create-product-form">
       <form onSubmit={handleSubmit} className="space-y-4">
+      {serverError && (
+          <div className="server-error">
+            <p className="create-product-error text-center">{serverError}</p>
+          </div>
+        )}
         <div>
           <label htmlFor="name">Product Name</label>
           <input
@@ -321,7 +346,35 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
             required
           />
           {errors.countInStock && (
-            <p className="text-red-500">{errors.countInStock}</p>
+            <p className="create-product-error">{errors.countInStock}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="brandLogo">Brand Logo</label>
+          <input
+            id="brandLogo"
+            name="brandLogo"
+            type="file"
+            accept="image/*"
+            onChange={handleBrandLogoChange}
+            className="create-product-file"
+          />
+          {formData.brandLogo && typeof formData.brandLogo === "string" && (
+            <div className="image-preview">
+              <Image
+                loader={({ src }) => src}
+                src={formData.brandLogo}
+                alt="Brand logo preview"
+                width={100}
+                height={100}
+                unoptimized
+                className="preview-image"
+              />
+            </div>
+          )}
+          {errors.brandLogo && (
+            <p className="create-product-error">{errors.brandLogo}</p>
           )}
         </div>
 

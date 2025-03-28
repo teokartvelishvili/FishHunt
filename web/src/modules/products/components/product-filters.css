@@ -1,4 +1,5 @@
 .filters-container {
+  width: 90vw;
   margin: 2rem 0;
   padding: 1rem;
   background: #f8f9fa;
@@ -18,7 +19,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #012645;
+  color: green;
 }
 
 .filter-options {
@@ -50,7 +51,7 @@
 }
 
 .filter-options.scrollable::-webkit-scrollbar-thumb {
-  background: #012645;
+  background: green;
   border-radius: 2px;
 }
 
@@ -63,10 +64,10 @@
 
 .filter-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid #012645;
+  border: 1px solid green;
   border-radius: 20px;
   background: white;
-  color: #012645;
+  color: green;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -76,12 +77,12 @@
 }
 
 .filter-btn:hover {
-  background: #012645;
+  background: green;
   color: white;
 }
 
 .filter-btn.active {
-  background: #012645;
+  background: green;
   color: white;
   font-weight: 500;
 }
@@ -123,7 +124,7 @@
 .clear-filter {
   display: inline-flex;
   align-items: center;
-  background: #012645;
+  background: green;
   color: white;
   padding: 0.3rem 0.8rem;
   border-radius: 1rem;
