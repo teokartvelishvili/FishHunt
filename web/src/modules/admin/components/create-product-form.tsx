@@ -60,6 +60,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
   );
 
   const [pending, setPending] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -133,8 +134,24 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPending(true);
+    setServerError(null);
 
     try {
+       // Validate image file type
+       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+       if (
+         formData.images.some(
+           (image) =>
+             image instanceof File && !allowedTypes.includes(image.type)
+         )
+       ) {
+         setErrors((prev) => ({
+           ...prev,
+           images: "მხოლოდ JPG, JPEG და PNG ფორმატის სურათებია დაშვებული",
+         }));
+         setPending(false);
+         return;
+       }
       const formDataToSend = new FormData();
       
       Object.entries(formData).forEach(([key, value]) => {
@@ -167,10 +184,13 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "პროდუქტის დამატება ვერ მოხერხდა"
+        );
       }
 
-      const data = await response.json();
+      // const data = await response.json();
 
       toast({
         title: initialData?._id ? "Product updated" : "Product created",
@@ -179,11 +199,10 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
 
       router.push("/admin/products");
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Something went wrong",
-      });
+      console.error("Error:", error);
+      setServerError(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
     } finally {
       setPending(false);
     }
@@ -192,6 +211,11 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
   return (
     <div className="create-product-form">
       <form onSubmit={handleSubmit} className="space-y-4">
+      {serverError && (
+          <div className="server-error">
+            <p className="create-product-error text-center">{serverError}</p>
+          </div>
+        )}
         <div>
           <label htmlFor="name">Product Name</label>
           <input
@@ -311,10 +335,12 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
             required
           />
           {errors.countInStock && (
-            <p className="text-red-500">{errors.countInStock}</p>
+            <p className="create-product-error">{errors.countInStock}</p>
           )}
         </div>
-
+   {serverError && (
+          <p className="create-product-error text-center">{serverError}</p>
+        )}
         <button
           type="submit"
           className="create-product-button"
