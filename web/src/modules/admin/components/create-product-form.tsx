@@ -10,52 +10,27 @@ import { ProductFormData } from "@/modules/products/validation/product";
 import "./CreateProductForm.css";
 import Image from "next/image";
 
+
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
 interface CreateProductFormProps {
   initialData?: ProductFormData & { _id?: string };
 }
 export function CreateProductForm({ initialData }: CreateProductFormProps) {
+  console.log("Initial Data in Form:", initialData);
   const router = useRouter();
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
-  const [store, setStore] = useState<{ storeName: string; storeLogo?: string } | null>(null);
-
-  // მაღაზიის ინფორმაციის წამოღება
-  useEffect(() => {
-    const fetchStore = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sellers/me`, {
-          credentials: 'include'
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setStore(data);
-          // მაღაზიის ინფორმაციის ჩასმა formData-ში
-          setFormData(prev => ({
-            ...prev,
-            brand: data.storeName,
-            brandLogo: data.storeLogo
-          }));
-        }
-      } catch (error) {
-        console.error('Failed to fetch store info:', error);
-      }
-    };
-    
-    fetchStore();
-  }, []);
-
   const [formData, setFormData] = useState<ProductFormData>(
     initialData || {
       name: "",
       price: 0,
       description: "",
       images: [],
-      brand: store?.storeName || "",
+      brand: "",
       category: "",
       countInStock: 0,
-      brandLogo: store?.storeLogo || undefined,
+      brandLogo: undefined,
     }
   );
 
@@ -67,6 +42,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
         ...prev,
         name: initialData.name || "",
         brand: initialData.brand || "",
+        // Check brandLogo type
         brandLogo:
           typeof initialData.brandLogo === "string"
             ? initialData.brandLogo
@@ -130,19 +106,33 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
     }));
   };
 
+  const handleBrandLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files && files[0]) {
+      setFormData((prev) => ({
+        ...prev,
+        brandLogo: files[0], // ბრენდის ლოგოს მხოლოდ სახელი
+      }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form data on submit", formData);
+    console.log("Initial Data:", initialData); // დავამატოთ ლოგი
     setPending(true);
 
     try {
       const formDataToSend = new FormData();
       
+      // ყველა ველის დამატება
       Object.entries(formData).forEach(([key, value]) => {
         if (key !== "images" && key !== "brandLogo") {
           formDataToSend.append(key, String(value));
         }
       });
 
+      // სურათების დამატება
       if (formData.images) {
         formData.images.forEach((image) => {
           if (image instanceof File) {
@@ -151,6 +141,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
         });
       }
 
+      // ბრენდის ლოგოს დამატება
       if (formData.brandLogo instanceof File) {
         formDataToSend.append('brandLogo', formData.brandLogo);
       }
@@ -159,6 +150,12 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
       const endpoint = initialData?._id
         ? `/products/${initialData._id}`
         : "/products";
+
+      console.log("Sending request:", {
+        method,
+        endpoint,
+        formData: Object.fromEntries(formDataToSend),
+      });
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
         method,
@@ -171,6 +168,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
       }
 
       const data = await response.json();
+      console.log("Server response:", data);
 
       toast({
         title: initialData?._id ? "Product updated" : "Product created",
@@ -179,6 +177,7 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
 
       router.push("/admin/products");
     } catch (error) {
+      console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -298,7 +297,18 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
             <p className="create-product-error">{errors.images}</p>
           )}
         </div>
-
+        <div>
+          <label htmlFor="brand">Brand</label>
+          <input
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            placeholder="Enter brand name"
+            required
+          />
+          {errors.brand && <p className="text-red-500">{errors.brand}</p>}
+        </div>
         <div>
           <label htmlFor="countInStock">Stock Count</label>
           <input
@@ -315,10 +325,39 @@ export function CreateProductForm({ initialData }: CreateProductFormProps) {
           )}
         </div>
 
+        <div>
+          <label htmlFor="brandLogo">Brand Logo</label>
+          <input
+            id="brandLogo"
+            name="brandLogo"
+            type="file"
+            accept="image/*"
+            onChange={handleBrandLogoChange}
+            className="create-product-file"
+          />
+          {formData.brandLogo && typeof formData.brandLogo === "string" && (
+            <div className="image-preview">
+              <Image
+                loader={({ src }) => src}
+                src={formData.brandLogo}
+                alt="Brand logo preview"
+                width={100}
+                height={100}
+                unoptimized
+                className="preview-image"
+              />
+            </div>
+          )}
+          {errors.brandLogo && (
+            <p className="create-product-error">{errors.brandLogo}</p>
+          )}
+        </div>
+
         <button
           type="submit"
           className="create-product-button"
           disabled={pending || !formData.name}
+          onClick={() => console.log("Button Clicked")}
         >
           {pending && <Loader2 className="loader" />}
           {initialData?._id ? "Update Product" : "Create Product"}
