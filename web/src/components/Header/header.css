@@ -51,19 +51,44 @@
 .search-box {
   flex: 1;
   max-width: 400px;
-  margin: 0 auto;
+  margin: 10px auto; /* Add margin for spacing */
+}
+
+.search-box.desktop-only {
+  display: block;
+}
+
+.search-box.mobile-only {
+  display: none;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px 0;
+}
+
+.search-box-below {
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px 0;
 }
 
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 20px; /* Adjust gap for better spacing */
 }
 
 .mobile-menu {
   display: none;
   border-top: 1px solid #e0e0e0;
   background: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.mobile-menu.open {
+  display: block;
+  max-height: 500px; /* Adjust based on content height */
 }
 
 .mobile-menu-content {
@@ -78,23 +103,56 @@
   border-top: 1px solid #e0e0e0;
 }
 
+.mobile-search {
+  display: none;
+  width: 90%;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
 /* Responsive Styles */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .menu-button {
     display: block;
   }
 
   .search-box {
-    max-width: 200px;
+    max-width: 90%; /* Adjust width for smaller screens */
+    margin: 10px auto;
+  }
+
+  .search-box.desktop-only {
+    display: none;
+  }
+
+  .search-box.mobile-only {
+    display: block;
+  }
+
+  .search-box-below {
+    width: 90%;
+    margin: 10px auto;
   }
 
   .nav-menu {
-    display: none;
+    display: flex; /* Ensure cart and sign-in are visible */
+    gap: 10px; /* Reduce gap for smaller screens */
+  }
+
+  .nav-menu svg {
+    width: 20px; /* Reduce icon size */
+    height: 20px; /* Reduce icon size */
+  }
+
+  .nav-menu .user-menu {
+    font-size: 14px; /* Reduce font size for sign-in */
   }
 
   .mobile-menu {
     display: block;
   }
+.search-input {
+  padding-left: 10%;
 }
 
 .header__actions {
@@ -104,6 +162,19 @@
 }
 
 .header__lang {
-  cursor: pointer;
-  border-radius: 3px;
+  display: none; /* Hide the language switch button */
+}
+
+  .mobile-search {
+    display: block;
+  }
+
+  .search-box.desktop-only {
+    display: none;
+  }
+  .cartIcon {
+    width: 50px;
+    height: auto;
+    margin: 0;
+  }
 }

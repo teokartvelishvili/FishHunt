@@ -125,7 +125,7 @@ export function ProductFilters({
           <Search className="search-icon" />
           <input
             type="text"
-            placeholder="მოძებნე მხატვარი..."
+            placeholder="მოძებნე მაღაზია..."
             value={searchTerm}
             onChange={(e) => filterArtists(e.target.value)}
             onFocus={() => setIsSearching(true)}
