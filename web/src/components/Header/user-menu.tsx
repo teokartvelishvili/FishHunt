@@ -10,7 +10,7 @@ import hunterIcon from "../../assets/icons/hunter.png";
 import Image from "next/image";
 
 export default function UserMenu() {
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -28,17 +28,11 @@ export default function UserMenu() {
     };
   }, []);
 
-  if (isLoading) {
-    return <div className="loader"></div>;
-  }
-
   if (!user) {
     return (
       <Link href="/login" className="button">
-        <span className="icon">
-          {/* 👤 */}
-          <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
-          </span> Sign In
+        <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
+        <span>Sign In</span>
       </Link>
     );
   }
@@ -46,12 +40,10 @@ export default function UserMenu() {
   return (
     <div className="dropdown" ref={menuRef}>
       <button onClick={() => setIsOpen(!isOpen)} className="button">
-        <span className="icon">
-          <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />
-          
-          {/* 👤 */}
-          </span> {user.name}
+        <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
+        <span>{user?.name || user?.email?.split('@')[0] || 'User'}</span>
       </button>
+
       {isOpen && (
         <div className="dropdown-menu">
           <div className="dropdown-label">My Account</div>
