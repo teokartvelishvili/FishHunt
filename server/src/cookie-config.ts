@@ -16,20 +16,20 @@ export const cookieConfig: Record<string, CookieConfig> = {
     name: 'access_token',
     options: {
       httpOnly: true,
-      secure: true, // Always use secure in all environments for iOS
-      sameSite: 'none', // Always use none for cross-origin
+      secure: true,
+      sameSite: 'none',
       path: '/',
-      maxAge: 10 * 60 * 1000, // 10 minutes
+      maxAge: 10 * 60 * 1000,
     },
   },
   refresh: {
     name: 'refresh_token',
     options: {
       httpOnly: true,
-      secure: true, // Always use secure in all environments for iOS
-      sameSite: 'none', // Always use none for cross-origin
+      secure: true,
+      sameSite: 'none',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   },
 } as const;

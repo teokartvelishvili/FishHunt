@@ -65,11 +65,20 @@ export class AuthController {
 
       const { tokens, user: userData } = await this.authService.login(user);
 
-      // Clear any existing cookies first
-      response.clearCookie('access_token');
-      response.clearCookie('refresh_token');
+      // Clear existing cookies
+      response.clearCookie('access_token', { 
+        path: '/',
+        secure: true,
+        sameSite: 'none'
+      });
+      response.clearCookie('refresh_token', {
+        path: '/',
+        secure: true,
+        sameSite: 'none'
+      });
 
-      // Set new cookies with explicit options
+      // Set new cookies with explicit headers
+      response.header('Access-Control-Allow-Credentials', 'true');
       response.cookie('access_token', tokens.accessToken, {
         ...cookieConfig.access.options,
         secure: true,
@@ -84,6 +93,7 @@ export class AuthController {
 
       return { user: userData };
     } catch (error) {
+      console.error('Login error:', error);
       throw new UnauthorizedException('Invalid credentials');
     }
   }
