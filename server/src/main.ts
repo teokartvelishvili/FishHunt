@@ -22,13 +22,11 @@ async function bootstrap() {
   // }));
 
   app.enableCors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://www.fishhunt.ge']
-      : ['http://localhost:3000'],
+    origin: true, // Allow all origins
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
-    exposedHeaders: ['Set-Cookie', 'Authorization'],
+    exposedHeaders: ['Set-Cookie'],
   });
 
   app.enableVersioning({
