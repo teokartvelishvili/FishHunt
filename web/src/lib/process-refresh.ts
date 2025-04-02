@@ -1,5 +1,5 @@
 import { refreshToken } from "@/modules/auth/api/refresh-token";
-import { apiClient } from "./api-client";
+import { axios } from "@/lib/axios";
 import { queryClient } from "@/app/providers";
 
 let isRefreshing = false;
@@ -25,7 +25,7 @@ const resetRefreshState = () => {
   failedQueue = [];
 };
 
-apiClient.interceptors.response.use(
+axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -56,7 +56,7 @@ apiClient.interceptors.response.use(
     try {
       await refreshToken();
       processQueue(null, "refreshed");
-      return apiClient(originalRequest);
+      return axios(originalRequest);
     } catch (error) {
       processQueue(error, null);
       throw error;

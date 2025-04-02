@@ -1,4 +1,5 @@
 import axios from "axios";
+import { refreshToken } from "@/modules/auth/api/refresh-token";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1",
@@ -25,7 +26,23 @@ const publicRoutes = [
   "product/:id",
 ];
 
-// მარტივი რექვესთ ინტერცეპტორი
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+  failedQueue = [];
+};
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
@@ -34,29 +51,48 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// მარტივი რესპონს ინტერცეპტორი
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // შევამოწმოთ არის თუ არა მიმდინარე მარშრუტი საჯარო
-      const currentPath = window.location.pathname;
-      const isPublicRoute = publicRoutes.some(
-        (route) =>
-          currentPath.includes(route) || error.config.url?.includes(route)
-      );
+  async (error) => {
+    const originalRequest = error.config;
 
-      if (!isPublicRoute) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await refreshToken();
+        processQueue(null, "refreshed");
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        
+        const currentPath = window.location.pathname;
+        const isPublicRoute = publicRoutes.some(
+          (route) => currentPath.includes(route) || originalRequest.url?.includes(route)
+        );
+
+        if (!isPublicRoute) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          window.location.href = "/login";
+        }
+        
+        throw error;
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   }
 );
