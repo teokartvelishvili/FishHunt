@@ -16,17 +16,13 @@ async function bootstrap() {
   app.use(cookieParser());
   
   app.enableCors({
-    origin: [
-      'https://www.fishhunt.ge', 
-      'https://fishhunt.ge',
-      'http://localhost:3000'
-    ],
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://www.fishhunt.ge', 'https://fishhunt.ge']
+      : ['http://localhost:3000'],
     credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
-    exposedHeaders: ['Set-Cookie'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
+    exposedHeaders: ['Set-Cookie', '*'],
   });
 
   app.enableVersioning({
