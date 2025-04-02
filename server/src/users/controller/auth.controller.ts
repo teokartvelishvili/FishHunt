@@ -57,36 +57,27 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    try {
-      const user = await this.authService.validateUser(
-        loginDto.email,
-        loginDto.password,
-      );
+    const user = await this.authService.validateUser(
+      loginDto.email,
+      loginDto.password,
+    );
 
-      const { tokens, user: userData } = await this.authService.login(user);
+    const { tokens, user: userData } = await this.authService.login(user);
 
-      // Clear any existing cookies first
-      response.clearCookie('access_token');
-      response.clearCookie('refresh_token');
+    response.cookie(
+      'access_token',
+      tokens.accessToken,
+      cookieConfig.access.options,
+    );
+    response.cookie(
+      'refresh_token',
+      tokens.refreshToken,
+      cookieConfig.refresh.options,
+    );
 
-      // Set new cookies with explicit options
-      response.cookie('access_token', tokens.accessToken, {
-        ...cookieConfig.access.options,
-        secure: true,
-        sameSite: 'none',
-      });
-
-      response.cookie('refresh_token', tokens.refreshToken, {
-        ...cookieConfig.refresh.options,
-        secure: true,
-        sameSite: 'none',
-      });
-
-      return { user: userData };
-    } catch (error) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    return { user: userData };
   }
+  //aqamde sworia
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
