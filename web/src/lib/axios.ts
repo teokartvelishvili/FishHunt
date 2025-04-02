@@ -1,29 +1,64 @@
-import Axios from 'axios';
+import axios from "axios";
 
-export const axios = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
+export const axiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-// Add response interceptor for 401 errors
-axios.interceptors.response.use(
+// საჯარო მარშრუტები, რომლებიც არ საჭიროებენ ავტორიზაციას
+const publicRoutes = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/sellers-register",
+  "/login",
+  "/register",
+  "/sellers-register",
+  "/",
+  "forgot-password",
+  "reset-password",
+  "profile",
+  "logout",
+  "products",
+  "product/:id",
+];
+
+// მარტივი რექვესთ ინტერცეპტორი
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// მარტივი რესპონს ინტერცეპტორი
+axiosInstance.interceptors.response.use(
   (response) => response,
-  async (error) => {
+  (error) => {
     if (error.response?.status === 401) {
-      // Try to refresh token
-      try {
-        await axios.post('/auth/refresh', {}, { withCredentials: true });
-        // If successful, retry the original request
-        return axios(error.config);
-      } catch (error) {
-        console.error('Refresh token failed:', error);
-        // If refresh fails, redirect to login
-        window.location.href = '/login';
+      // შევამოწმოთ არის თუ არა მიმდინარე მარშრუტი საჯარო
+      const currentPath = window.location.pathname;
+      const isPublicRoute = publicRoutes.some(
+        (route) =>
+          currentPath.includes(route) || error.config.url?.includes(route)
+      );
+
+      if (!isPublicRoute) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
   }
 );
+
+export { axiosInstance as axios };
