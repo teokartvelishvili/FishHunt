@@ -21,7 +21,7 @@ export const cookieConfig: Record<string, CookieConfig> = {
       sameSite: 'none',
       path: '/',
       domain: process.env.NODE_ENV === 'production' ? '.fishhunt.ge' : undefined,
-      maxAge: 10 * 60 * 1000, // 10 minutes
+      maxAge: 10 * 60 * 1000,
     },
   },
   refresh: {
@@ -32,7 +32,7 @@ export const cookieConfig: Record<string, CookieConfig> = {
       sameSite: 'none',
       path: '/',
       domain: process.env.NODE_ENV === 'production' ? '.fishhunt.ge' : undefined,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   },
 } as const;
