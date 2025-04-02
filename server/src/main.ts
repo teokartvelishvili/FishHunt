@@ -21,24 +21,17 @@ async function bootstrap() {
   //   allowedHeaders: ['Content-Type', 'Authorization'],
   // }));
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || 'https://soul-art.vercel.app';
+  console.log('Allowed Origins:', allowedOrigins);
   app.enableCors({
-    origin: [
-      'https://www.fishhunt.ge',
-      'https://fishhunt.ge',
-      'http://localhost:3000'
-    ],
+    origin:
+      process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
+
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: [
-      'Content-Type', 
-      'Accept', 
-      'Authorization', 
-      'Origin',
-      'X-Requested-With',
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Credentials',
-    ],
-    exposedHeaders: ['Set-Cookie'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
+
+    optionsSuccessStatus: 204,
   });
 
   app.enableVersioning({
