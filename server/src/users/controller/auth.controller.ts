@@ -57,27 +57,30 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const user = await this.authService.validateUser(
-      loginDto.email,
-      loginDto.password,
-    );
+    try {
+      const user = await this.authService.validateUser(
+        loginDto.email,
+        loginDto.password,
+      );
 
-    const { tokens, user: userData } = await this.authService.login(user);
+      const { tokens, user: userData } = await this.authService.login(user);
 
-    response.cookie(
-      'access_token',
-      tokens.accessToken,
-      cookieConfig.access.options,
-    );
-    response.cookie(
-      'refresh_token',
-      tokens.refreshToken,
-      cookieConfig.refresh.options,
-    );
+      // Set cookies
+      response.cookie('access_token', tokens.accessToken, {
+        ...cookieConfig.access.options,
+        expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
+      });
+      
+      response.cookie('refresh_token', tokens.refreshToken, {
+        ...cookieConfig.refresh.options,
+        expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
+      });
 
-    return { user: userData };
+      return { user: userData };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
   }
-  //aqamde sworia
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -100,9 +103,15 @@ export class AuthController {
 
       const tokens = await this.authService.refresh(refreshToken);
 
-      // Set new cookies with proper configuration
-      response.cookie('access_token', tokens.accessToken, cookieConfig.access.options);
-      response.cookie('refresh_token', tokens.refreshToken, cookieConfig.refresh.options);
+      response.cookie('access_token', tokens.accessToken, {
+        ...cookieConfig.access.options,
+        expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
+      });
+      
+      response.cookie('refresh_token', tokens.refreshToken, {
+        ...cookieConfig.refresh.options,
+        expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
+      });
 
       return { success: true };
     } catch (error) {
