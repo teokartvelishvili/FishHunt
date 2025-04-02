@@ -3,13 +3,13 @@ import { CookieOptions } from 'express';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Common options for all cookies
 const commonOptions: CookieOptions = {
   httpOnly: true,
-  secure: isProduction || isDevelopment, // Enable secure in both prod and dev
-  sameSite: 'none', // Required for cross-origin requests
+  secure: true,
+  sameSite: 'none',
   path: '/',
-  domain: undefined // Let the browser figure out the domain
+  domain: undefined,
+  maxAge: undefined // Using expires instead for better Safari support
 };
 
 export const cookieConfig = {
@@ -17,14 +17,14 @@ export const cookieConfig = {
     name: 'access_token',
     options: {
       ...commonOptions,
-      maxAge: 20 * 60 * 1000, // 20 minutes
+      expires: new Date(Date.now() + 20 * 60 * 1000), // 20 minutes
     }
   },
   refresh: {
-    name: 'refresh_token', 
+    name: 'refresh_token',
     options: {
       ...commonOptions,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     }
   }
 };

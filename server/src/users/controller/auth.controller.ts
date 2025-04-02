@@ -57,29 +57,31 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const user = await this.authService.validateUser(
-      loginDto.email,
-      loginDto.password,
-    );
+    try {
+      const user = await this.authService.validateUser(
+        loginDto.email,
+        loginDto.password,
+      );
 
-    const { tokens, user: userData } = await this.authService.login(user);
+      const { tokens, user: userData } = await this.authService.login(user);
 
-    // Set cookies with appropriate options for iOS/Safari
-    response.cookie('access_token', tokens.accessToken, {
-      ...cookieConfig.access.options,
-      // Explicitly set these for iOS compatibility
-      secure: true,
-      sameSite: 'none',
-    });
+      const accessExpires = new Date(Date.now() + 20 * 60 * 1000);
+      const refreshExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-    response.cookie('refresh_token', tokens.refreshToken, {
-      ...cookieConfig.refresh.options,
-      // Explicitly set these for iOS compatibility
-      secure: true,
-      sameSite: 'none',
-    });
+      response.cookie('access_token', tokens.accessToken, {
+        ...cookieConfig.access.options,
+        expires: accessExpires,
+      });
 
-    return { user: userData };
+      response.cookie('refresh_token', tokens.refreshToken, {
+        ...cookieConfig.refresh.options,
+        expires: refreshExpires,
+      });
+
+      return { user: userData, success: true };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
   }
 
   @Serialize(UserDto)
