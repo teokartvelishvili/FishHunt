@@ -92,37 +92,24 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    try {
-      const refreshToken = request.cookies['refresh_token'];
-      if (!refreshToken) {
-        throw new UnauthorizedException('No refresh token');
-      }
-
-      const tokens = await this.authService.refresh(refreshToken);
-
-      // Clear old cookies first
-      response.clearCookie('access_token');
-      response.clearCookie('refresh_token');
-
-      // Set new cookies
-      response.cookie(
-        cookieConfig.access.name,
-        tokens.accessToken,
-        cookieConfig.access.options
-      );
-      
-      response.cookie(
-        cookieConfig.refresh.name,
-        tokens.refreshToken,
-        cookieConfig.refresh.options
-      );
-
-      return { success: true };
-    } catch (error) {
-      response.clearCookie('access_token');
-      response.clearCookie('refresh_token');
-      throw error;
+    const refreshToken = request.cookies['refresh_token'];
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token');
     }
+
+    const tokens = await this.authService.refresh(refreshToken);
+
+    response.cookie('access_token', tokens.accessToken, {
+      ...cookieConfig.access.options,
+      expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
+    });
+
+    response.cookie('refresh_token', tokens.refreshToken, {
+      ...cookieConfig.refresh.options,
+      expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
+    });
+
+    return { success: true };
   }
 
   @Get('google')
