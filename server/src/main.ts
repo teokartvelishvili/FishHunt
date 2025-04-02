@@ -26,11 +26,10 @@ async function bootstrap() {
   app.enableCors({
     origin:
       process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
-
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
-
+    exposedHeaders: ['Set-Cookie'],
     optionsSuccessStatus: 204,
   });
 

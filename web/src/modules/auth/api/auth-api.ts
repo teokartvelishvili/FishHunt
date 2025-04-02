@@ -7,8 +7,6 @@ interface LoginCredentials {
 }
 
 interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
   user: User;
 }
 
@@ -26,21 +24,16 @@ interface SellerRegisterData {
 
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
-    const response = await axios.post<AuthResponse>("/auth/login", credentials);
-    
-    if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-    }
-    
+    const response = await axios.post<AuthResponse>("/auth/login", credentials, {
+      withCredentials: true
+    });
     return response.data;
   },
 
   register: async (data: LoginCredentials & { name: string }) => {
-    // რეგისტრაცია
-    await axios.post("/auth/register", data);
-    
-    // ავტომატური ავტორიზაცია
+    await axios.post("/auth/register", data, {
+      withCredentials: true
+    });
     return authApi.login({ 
       email: data.email, 
       password: data.password 
@@ -48,10 +41,9 @@ export const authApi = {
   },
 
   sellerRegister: async (data: SellerRegisterData) => {
-    // გამყიდველის რეგისტრაცია
-    await axios.post("/auth/sellers-register", data);
-    
-    // ავტომატური ავტორიზაცია
+    await axios.post("/auth/sellers-register", data, {
+      withCredentials: true
+    });
     return authApi.login({ 
       email: data.email, 
       password: data.password 
@@ -59,16 +51,15 @@ export const authApi = {
   },
 
   getProfile: async () => {
-    const response = await axios.get<User>("/auth/profile");
+    const response = await axios.get<User>("/auth/profile", {
+      withCredentials: true
+    });
     return response.data;
   },
 
   logout: async () => {
-    try {
-      await axios.post("/auth/logout");
-    } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-    }
+    await axios.post("/auth/logout", {}, {
+      withCredentials: true
+    });
   },
 };
