@@ -24,13 +24,10 @@ async function bootstrap() {
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || 'https://soul-art.vercel.app';
   console.log('Allowed Origins:', allowedOrigins);
   app.enableCors({
-    origin:
-      process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
-
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
+    credentials: true, // Required for cookies to work on iOS
     allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
-
     optionsSuccessStatus: 204,
   });
 
