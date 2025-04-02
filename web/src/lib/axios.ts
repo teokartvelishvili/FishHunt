@@ -1,11 +1,16 @@
 import Axios from 'axios';
 
+const baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://fishhunt1.onrender.com/v1'
+  : 'http://localhost:4000/v1';
+
 export const axios = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'Access-Control-Allow-Credentials': 'true',
   },
 });
 
