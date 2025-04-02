@@ -11,32 +11,16 @@ export const apiClient = axios.create({
   xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
-export const logout = async () => {
-  try {
-    await apiClient.post('/auth/logout');
-    window.location.href = '/login';
-  } catch (error) {
-    console.error('Logout failed:', error);
-    // Still redirect to login page even if logout fails
-    window.location.href = '/login';
-  }
-};
-
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      const originalRequest = error.config;
-      
-      if (originalRequest.url?.includes('/auth/refresh')) {
-        window.location.href = '/login';
-        return Promise.reject(error);
-      }
-
       try {
         await apiClient.post('/auth/refresh');
-        return apiClient(originalRequest);
+        return apiClient(error.config);
       } catch (e) {
+        console.error('Refresh token failed:', e);
+        // Handle refresh token failure
         window.location.href = '/login';
       }
     }

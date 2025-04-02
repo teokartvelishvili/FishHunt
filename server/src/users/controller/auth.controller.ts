@@ -158,27 +158,36 @@ export class AuthController {
     @CurrentUser() user: UserDocument,
     @Res({ passthrough: true }) response: Response,
   ) {
-    try {
-      await this.authService.logout(user._id.toString());
+    await this.authService.logout(user._id.toString());
 
-      const cookieOptions = {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none' as const,
-        path: '/',
-        expires: new Date(0),
-      };
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
 
-      response.cookie('access_token', '', cookieOptions);
-      response.cookie('refresh_token', '', cookieOptions);
+      maxAge: 0,
+    });
 
-      return { success: true };
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw new UnauthorizedException('Failed to logout');
-    }
+    response.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
+
+      maxAge: 0,
+    });
+
+    return { success: true };
   }
-
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({
     status: 201,

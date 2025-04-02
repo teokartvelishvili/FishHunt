@@ -24,16 +24,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Configure CORS with credentials
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
-  
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    },
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: [
@@ -46,6 +38,7 @@ async function bootstrap() {
     ],
     exposedHeaders: ['Set-Cookie'],
     maxAge: 86400,
+    optionsSuccessStatus: 200,
   });
 
   app.enableVersioning({
