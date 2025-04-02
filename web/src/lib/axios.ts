@@ -8,6 +8,13 @@ export const axios = Axios.create({
   },
 });
 
+// Add request interceptor
+axios.interceptors.request.use((config) => {
+  // Ensure credentials are always sent
+  config.withCredentials = true;
+  return config;
+});
+
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -17,8 +24,11 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
       
       try {
-        await axios.post('/auth/refresh', {}, { 
-          withCredentials: true
+        await axios.post('/auth/refresh', null, { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
         return axios(originalRequest);
       } catch (refreshError) {
