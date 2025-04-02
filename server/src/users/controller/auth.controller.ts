@@ -92,24 +92,24 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refreshToken = request.cookies['refresh_token'];
-    if (!refreshToken) {
-      throw new UnauthorizedException('No refresh token');
+    try {
+      const refreshToken = request.cookies['refresh_token'];
+      if (!refreshToken) {
+        throw new UnauthorizedException('No refresh token');
+      }
+
+      const tokens = await this.authService.refresh(refreshToken);
+
+      // Set new cookies with proper configuration
+      response.cookie('access_token', tokens.accessToken, cookieConfig.access.options);
+      response.cookie('refresh_token', tokens.refreshToken, cookieConfig.refresh.options);
+
+      return { success: true };
+    } catch (error) {
+      response.clearCookie('access_token', cookieConfig.access.options);
+      response.clearCookie('refresh_token', cookieConfig.refresh.options);
+      throw new UnauthorizedException('Invalid refresh token');
     }
-
-    const tokens = await this.authService.refresh(refreshToken);
-
-    response.cookie('access_token', tokens.accessToken, {
-      ...cookieConfig.access.options,
-      expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
-    });
-
-    response.cookie('refresh_token', tokens.refreshToken, {
-      ...cookieConfig.refresh.options,
-      expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
-    });
-
-    return { success: true };
   }
 
   @Get('google')
@@ -155,34 +155,21 @@ export class AuthController {
   ) {
     await this.authService.logout(user._id.toString());
 
-    response.clearCookie('access_token', {
+    const cookieOptions = {
       httpOnly: true,
-      secure:
-        process.env.NODE_ENV === 'production' ||
-        process.env.NODE_ENV === 'development'
-          ? true
-          : false,
-      sameSite: 'none',
-      path: '/', // Ensure the correct path
+      secure: true,
+      sameSite: 'none' as const,
+      path: '/',
+      domain: process.env.COOKIE_DOMAIN || undefined,
+      maxAge: 0
+    };
 
-      maxAge: 0,
-    });
-
-    response.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure:
-        process.env.NODE_ENV === 'production' ||
-        process.env.NODE_ENV === 'development'
-          ? true
-          : false,
-      sameSite: 'none',
-      path: '/', // Ensure the correct path
-
-      maxAge: 0,
-    });
+    response.clearCookie('access_token', cookieOptions);
+    response.clearCookie('refresh_token', cookieOptions);
 
     return { success: true };
   }
+
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({
     status: 201,

@@ -1,4 +1,6 @@
-import { axios } from "@/lib/axios";
+'use client';
+
+import { apiClient } from "@/lib/api-client";
 import { User } from "@/types";
 
 interface LoginCredentials {
@@ -7,9 +9,7 @@ interface LoginCredentials {
 }
 
 interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
+  user: User;  // წავშალეთ token-ები
 }
 
 interface SellerRegisterData {
@@ -26,49 +26,26 @@ interface SellerRegisterData {
 
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
-    const response = await axios.post<AuthResponse>("/auth/login", credentials);
-    
-    if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-    }
-    
+    const response = await apiClient.post<AuthResponse>("/auth/login", credentials);
     return response.data;
   },
 
   register: async (data: LoginCredentials & { name: string }) => {
-    // რეგისტრაცია
-    await axios.post("/auth/register", data);
-    
-    // ავტომატური ავტორიზაცია
-    return authApi.login({ 
-      email: data.email, 
-      password: data.password 
-    });
+    const response = await apiClient.post("/auth/register", data);
+    return response.data;
   },
 
   sellerRegister: async (data: SellerRegisterData) => {
-    // გამყიდველის რეგისტრაცია
-    await axios.post("/auth/sellers-register", data);
-    
-    // ავტომატური ავტორიზაცია
-    return authApi.login({ 
-      email: data.email, 
-      password: data.password 
-    });
+    const response = await apiClient.post("/auth/sellers-register", data);
+    return response.data;
   },
 
   getProfile: async () => {
-    const response = await axios.get<User>("/auth/profile");
+    const response = await apiClient.get<User>("/auth/profile");
     return response.data;
   },
 
   logout: async () => {
-    try {
-      await axios.post("/auth/logout");
-    } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-    }
+    await apiClient.post("/auth/logout");
   },
 };
