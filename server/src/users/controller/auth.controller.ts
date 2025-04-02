@@ -57,30 +57,27 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    try {
-      const user = await this.authService.validateUser(
-        loginDto.email,
-        loginDto.password,
-      );
+    const user = await this.authService.validateUser(
+      loginDto.email,
+      loginDto.password,
+    );
 
-      const { tokens, user: userData } = await this.authService.login(user);
+    const { tokens, user: userData } = await this.authService.login(user);
 
-      // Set cookies
-      response.cookie('access_token', tokens.accessToken, {
-        ...cookieConfig.access.options,
-        expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
-      });
-      
-      response.cookie('refresh_token', tokens.refreshToken, {
-        ...cookieConfig.refresh.options,
-        expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
-      });
+    response.cookie(
+      'access_token',
+      tokens.accessToken,
+      cookieConfig.access.options,
+    );
+    response.cookie(
+      'refresh_token',
+      tokens.refreshToken,
+      cookieConfig.refresh.options,
+    );
 
-      return { user: userData };
-    } catch (error) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    return { user: userData };
   }
+  //aqamde sworia
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -103,15 +100,9 @@ export class AuthController {
 
       const tokens = await this.authService.refresh(refreshToken);
 
-      response.cookie('access_token', tokens.accessToken, {
-        ...cookieConfig.access.options,
-        expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
-      });
-      
-      response.cookie('refresh_token', tokens.refreshToken, {
-        ...cookieConfig.refresh.options,
-        expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
-      });
+      // Set new cookies with proper configuration
+      response.cookie('access_token', tokens.accessToken, cookieConfig.access.options);
+      response.cookie('refresh_token', tokens.refreshToken, cookieConfig.refresh.options);
 
       return { success: true };
     } catch (error) {
