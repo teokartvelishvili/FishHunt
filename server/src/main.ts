@@ -15,23 +15,14 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
 
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean);
-  
   app.enableCors({
-    origin: (origin, callback) => {
-      // დეველოპმენტში ყველა origin-ის დაშვება
-      if (process.env.NODE_ENV === 'development') {
-        callback(null, true);
-        return;
-      }
-      
-      // პროდაქშენში მხოლოდ დაშვებული origin-ების გატარება
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    },
+    origin: [
+      'https://www.fishhunt.ge',
+      'https://fishhunt.ge',
+      'http://localhost:3000',
+      'capacitor://localhost',
+      'ionic://localhost'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -40,7 +31,10 @@ async function bootstrap() {
       'Content-Type',
       'Accept',
       'Authorization',
-      'Access-Control-Allow-Credentials'
+      'Access-Control-Allow-Credentials',
+      'Cache-Control',
+      'Pragma',
+      'Expires'
     ],
     exposedHeaders: ['Authorization'],
     maxAge: 86400,
