@@ -67,13 +67,13 @@ export class AuthController {
     response.cookie(
       'access_token',
       tokens.accessToken,
-      { ...cookieConfig.access.options }
+      { ...cookieConfig.access.options, maxAge: cookieConfig.access.options.maxAge },
     );
     response.cookie(
       'refresh_token',
       tokens.refreshToken,
-      { ...cookieConfig.refresh.options }
-    );
+      { ...cookieConfig.refresh.options, maxAge: cookieConfig.refresh.options.maxAge },
+    );;
 
     return { user: userData };
   }
@@ -156,19 +156,16 @@ export class AuthController {
   ) {
     await this.authService.logout(user._id.toString());
 
-    response.clearCookie('access_token', {
+    const cookieOptions = {
       httpOnly: true,
-      secure: true, // Ensure secure for iOS
-      sameSite: 'none', // Ensure compatibility with iOS
+      secure: true,
+      sameSite: 'none' as const,
       path: '/',
-    });
+      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined,
+    };
 
-    response.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: true, // Ensure secure for iOS
-      sameSite: 'none', // Ensure compatibility with iOS
-      path: '/',
-    });
+    response.clearCookie('access_token', cookieOptions);
+    response.clearCookie('refresh_token', cookieOptions);
 
     return { success: true };
   }

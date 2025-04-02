@@ -1,6 +1,3 @@
-// import { AuthLayout } from '@/modules/auth/layouts/auth-layout';
-// import { RegisterForm } from '@/modules/auth/components/register-form';
-
 import { RegisterForm } from "@/modules/auth/components/register-form";
 import { AuthLayout } from "@/modules/auth/layouts/auth-layout";
 
