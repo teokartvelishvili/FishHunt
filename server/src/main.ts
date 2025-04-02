@@ -25,7 +25,7 @@ async function bootstrap() {
 
   // Configure CORS with credentials
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: [
@@ -36,9 +36,7 @@ async function bootstrap() {
       'file-id',
       'product-id',
     ],
-    exposedHeaders: ['Set-Cookie'],
-    maxAge: 86400,
-    optionsSuccessStatus: 200,
+    optionsSuccessStatus: 204,
   });
 
   app.enableVersioning({
