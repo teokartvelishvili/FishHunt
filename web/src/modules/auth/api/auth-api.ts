@@ -70,18 +70,17 @@ export const authApi = {
     }
   },
 
-  logout: async () => {
-    try {
-      // First clear tokens
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      
-      // Then call logout endpoint
-      await axios.post("/auth/logout");
-    } catch (error) {
-      // If API call fails, tokens are already cleared
-      console.error('Logout API error:', error);
-      throw error;
-    }
+  logout: () => {
+    // პირველ რიგში წავშალოთ ტოკენები
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    
+    // გავაგზავნოთ რექვესთი ბექზე, მაგრამ არ დაველოდოთ
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    }).catch(() => {
+      // ignore errors
+    });
   }
 };
