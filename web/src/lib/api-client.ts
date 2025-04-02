@@ -1,6 +1,6 @@
 'use client';
 
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -12,7 +12,7 @@ export const apiClient = axios.create({
 });
 
 let isRefreshing = false;
-let refreshPromise: Promise<AxiosResponse<unknown, unknown>> | null = null;
+let refreshPromise: Promise<any> | null = null;
 
 apiClient.interceptors.response.use(
   (response) => response,
