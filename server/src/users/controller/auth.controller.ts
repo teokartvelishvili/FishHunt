@@ -67,16 +67,17 @@ export class AuthController {
     response.cookie(
       'access_token',
       tokens.accessToken,
-      { ...cookieConfig.access.options }
+      cookieConfig.access.options,
     );
     response.cookie(
       'refresh_token',
       tokens.refreshToken,
-      { ...cookieConfig.refresh.options }
+      cookieConfig.refresh.options,
     );
 
     return { user: userData };
   }
+  //aqamde sworia
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -98,17 +99,15 @@ export class AuthController {
 
     const tokens = await this.authService.refresh(refreshToken);
 
-    response.cookie(
-      'access_token',
-      tokens.accessToken,
-      { ...cookieConfig.access.options }
-    );
+    response.cookie('access_token', tokens.accessToken, {
+      ...cookieConfig.access.options,
+      expires: new Date(Date.now() + cookieConfig.access.options.maxAge),
+    });
 
-    response.cookie(
-      'refresh_token',
-      tokens.refreshToken,
-      { ...cookieConfig.refresh.options }
-    );
+    response.cookie('refresh_token', tokens.refreshToken, {
+      ...cookieConfig.refresh.options,
+      expires: new Date(Date.now() + cookieConfig.refresh.options.maxAge),
+    });
 
     return { success: true };
   }
@@ -158,16 +157,28 @@ export class AuthController {
 
     response.clearCookie('access_token', {
       httpOnly: true,
-      secure: true, // Ensure secure for iOS
-      sameSite: 'none', // Ensure compatibility with iOS
-      path: '/',
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
+
+      maxAge: 0,
     });
 
     response.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: true, // Ensure secure for iOS
-      sameSite: 'none', // Ensure compatibility with iOS
-      path: '/',
+      secure:
+        process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development'
+          ? true
+          : false,
+      sameSite: 'none',
+      path: '/', // Ensure the correct path
+
+      maxAge: 0,
     });
 
     return { success: true };
