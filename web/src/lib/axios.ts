@@ -5,12 +5,12 @@ export const axios = Axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
   },
-  maxRedirects: 0,
 });
 
+// Add request interceptor
 axios.interceptors.request.use((config) => {
+  // Ensure credentials are always sent
   config.withCredentials = true;
   return config;
 });
@@ -22,12 +22,17 @@ axios.interceptors.response.use(
     
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      
       try {
-        const response = await axios.post('/auth/refresh');
-        if (response.status === 200) {
-          return axios(originalRequest);
-        }
+        await axios.post('/auth/refresh', null, { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        return axios(originalRequest);
       } catch (refreshError) {
+        console.error('Refresh failed:', refreshError);
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
