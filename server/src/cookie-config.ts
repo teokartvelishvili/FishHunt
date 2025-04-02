@@ -4,7 +4,6 @@ export interface CookieOptions {
   sameSite: 'lax' | 'strict' | 'none';
   maxAge: number;
   path: string;
-  domain?: string;
 }
 
 export interface CookieConfig {
