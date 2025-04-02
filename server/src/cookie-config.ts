@@ -1,32 +1,30 @@
-export interface CookieOptions {
-  httpOnly: boolean;
-  secure: boolean;
-  sameSite: 'lax' | 'strict' | 'none';
-  maxAge: number;
-}
+import { CookieOptions } from 'express';
 
-export interface CookieConfig {
-  name: string;
-  options: CookieOptions;
-}
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isProduction = process.env.NODE_ENV === 'production';
 
-export const cookieConfig: Record<string, CookieConfig> = {
+// Common options for all cookies
+const commonOptions: CookieOptions = {
+  httpOnly: true,
+  secure: isProduction || isDevelopment, // Enable secure in both prod and dev
+  sameSite: 'none', // Required for cross-origin requests
+  path: '/',
+  domain: undefined // Let the browser figure out the domain
+};
+
+export const cookieConfig = {
   access: {
     name: 'access_token',
     options: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 10 * 60 * 1000, // 10 minutes
-    },
+      ...commonOptions,
+      maxAge: 20 * 60 * 1000, // 20 minutes
+    }
   },
   refresh: {
-    name: 'refresh_token',
+    name: 'refresh_token', 
     options: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      ...commonOptions,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    },
-  },
-} as const;
+    }
+  }
+};

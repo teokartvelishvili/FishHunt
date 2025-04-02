@@ -12,25 +12,30 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log', 'verbose'],
   });
 
-  app.use(helmet());
+  // Add security headers
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    }),
+  );
+
+  // Configure cookie parser
   app.use(cookieParser());
-  //   app.use(cors({
-  //   origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  //   credentials: true,
-  //   allowedHeaders: ['Content-Type', 'Authorization'],
-  // }));
 
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || 'https://soul-art.vercel.app';
-  console.log('Allowed Origins:', allowedOrigins);
+  // Configure CORS with credentials
   app.enableCors({
-    origin:
-      process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
-
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
-
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'forum-id',
+      'file-id',
+      'product-id',
+    ],
     optionsSuccessStatus: 204,
   });
 
@@ -51,7 +56,6 @@ async function bootstrap() {
   );
   app.use('/favicon.ico', (req, res) => res.status(204).send());
 
-  // if (process.env.NODE_ENV !== 'production') {
   const config = new DocumentBuilder()
     .setTitle('E-commerce API')
     .setDescription('FishHunt E-commerce REST API')
@@ -61,7 +65,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
-  // }
 
   app.enableShutdownHooks();
 

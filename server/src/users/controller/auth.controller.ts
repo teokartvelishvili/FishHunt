@@ -64,20 +64,23 @@ export class AuthController {
 
     const { tokens, user: userData } = await this.authService.login(user);
 
-    response.cookie(
-      'access_token',
-      tokens.accessToken,
-      cookieConfig.access.options,
-    );
-    response.cookie(
-      'refresh_token',
-      tokens.refreshToken,
-      cookieConfig.refresh.options,
-    );
+    // Set cookies with appropriate options for iOS/Safari
+    response.cookie('access_token', tokens.accessToken, {
+      ...cookieConfig.access.options,
+      // Explicitly set these for iOS compatibility
+      secure: true,
+      sameSite: 'none',
+    });
+
+    response.cookie('refresh_token', tokens.refreshToken, {
+      ...cookieConfig.refresh.options,
+      // Explicitly set these for iOS compatibility
+      secure: true,
+      sameSite: 'none',
+    });
 
     return { user: userData };
   }
-  //aqamde sworia
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
