@@ -8,20 +8,23 @@ export const axios = Axios.create({
   },
 });
 
-// Add response interceptor for 401 errors
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Try to refresh token
+    const originalRequest = error.config;
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
       try {
-        await axios.post('/auth/refresh', {}, { withCredentials: true });
-        // If successful, retry the original request
-        return axios(error.config);
-      } catch (error) {
-        console.error('Refresh token failed:', error);
-        // If refresh fails, redirect to login
+        await axios.post('/auth/refresh', {}, { 
+          withCredentials: true
+        });
+        return axios(originalRequest);
+      } catch (refreshError) {
+        console.error('Refresh failed:', refreshError);
         window.location.href = '/login';
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
