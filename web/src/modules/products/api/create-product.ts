@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { ProductFormData, productSchema } from "../validation/product";
 import { revalidatePath } from "next/cache";
