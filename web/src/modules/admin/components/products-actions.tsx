@@ -20,13 +20,10 @@ export function ProductsActions({ product, onStatusChange, onDelete }: ProductsA
   console.log("Current user from useUser:", user);
   
   // შევცვალოთ შემოწმების ლოგიკა lowercase-ზე
-  const isAdmin = user?.role?.toLowerCase() === Role.Admin.toLowerCase();
-  
+  const isAdmin = user?.role === Role.Admin;
   console.log("Role check:", {
     userRole: user?.role,
-    userRoleLower: user?.role?.toLowerCase(),
     adminRole: Role.Admin,
-    adminRoleLower: Role.Admin.toLowerCase(),
     isAdmin
   });
 
