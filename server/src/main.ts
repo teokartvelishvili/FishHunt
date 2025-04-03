@@ -19,22 +19,16 @@ async function bootstrap() {
     origin: [
       'https://www.fishhunt.ge',
       'https://fishhunt.ge',
-      'http://localhost:3000',
-      'capacitor://localhost',
-      'ionic://localhost'
+      'http://localhost:3000'
     ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
       'Origin',
       'X-Requested-With',
       'Content-Type',
       'Accept',
       'Authorization',
-      'Access-Control-Allow-Credentials',
-      'Cache-Control',
-      'Pragma',
-      'Expires'
     ],
     exposedHeaders: ['Authorization'],
     maxAge: 86400,
