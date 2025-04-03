@@ -15,13 +15,8 @@ export default function AdminLayout({
 
   if (isLoading) {
     return (
-      <div className="container">
-        <div className="h-[calc(100vh-5rem)] flex items-center justify-center space-y-6">
-          <div className="flex items-center justify-center gap-2">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <p className="text-lg">Loading users...</p>
-          </div>
-        </div>
+      <div className="h-screen flex items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -31,18 +26,28 @@ export default function AdminLayout({
   }
 
   const isProductRelatedPath = pathname?.includes('/products') ?? false;
+
+  // Make role comparison case-insensitive
+  const userRole = user?.role?.toLowerCase();
   const hasAccess = 
-    user?.role === Role.Admin || 
-    (user?.role === Role.Seller && isProductRelatedPath);
+    userRole === Role.Admin.toLowerCase() || 
+    (userRole === Role.Seller.toLowerCase() && isProductRelatedPath);
 
   if (!hasAccess) {
     console.log("Access denied:", {
       role: user?.role,
+      normalizedRole: userRole,
       path: pathname,
-      isProductPath: isProductRelatedPath
+      isProductPath: isProductRelatedPath,
+      adminRole: Role.Admin.toLowerCase(),
+      sellerRole: Role.Seller.toLowerCase()
     });
     return redirect("/login");
   }
 
-  return children;
+  return (
+    <div className="admin-layout">
+      {children}
+    </div>
+  );
 }
