@@ -60,21 +60,27 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => {
-      authApi.logout();
-      // Clear all query cache
+    mutationFn: async () => {
+      await authApi.logout();
+      // Clear all query cache after logout
       queryClient.clear();
-      queryClient.removeQueries();
-      
-      // გადავტვირთოთ გვერდი ყველა სთეითის გასასუფთავებლად
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 100);
-
-      return Promise.resolve();
+      // Force clear user data
+      queryClient.setQueryData(["user"], null);
+      // Force page refresh to clear any remaining state
+      window.location.href = "/";
     },
-    retry: 3,
-    retryDelay: 1000
+    onError: () => {
+      // Even if logout API fails, clear local state
+      queryClient.clear();
+      queryClient.setQueryData(["user"], null);
+      window.location.href = "/";
+      
+      toast({
+        variant: "destructive",
+        title: "Error during logout",
+        description: "You have been logged out locally",
+      });
+    },
   });
 }
 
