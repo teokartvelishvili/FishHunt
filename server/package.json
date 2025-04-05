@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "npx rimraf dist || true",
     "seed": "ts-node -r tsconfig-paths/register src/cli.ts",
-    "build": "npm install --no-save @types/multer @types/express && npx @nestjs/cli build",
+    "build": "npx @nestjs/cli build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
     "dev": "cross-env NODE_ENV=development npx @nestjs/cli start --watch",
