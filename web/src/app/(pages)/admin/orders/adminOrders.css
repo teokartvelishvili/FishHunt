@@ -1,0 +1,13 @@
+.admin-orders-container {
+  width: 100%;
+  padding: 20px;
+}
+
+.scrollable-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  width: 100%;
+}
+
+.orders-content {
+  min-width: 800px; /* Ensure content has a minimum width */
+}

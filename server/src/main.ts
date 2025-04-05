@@ -14,24 +14,21 @@ async function bootstrap() {
 
   app.use(helmet());
   app.use(cookieParser());
-  //   app.use(cors({
-  //   origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  //   credentials: true,
-  //   allowedHeaders: ['Content-Type', 'Authorization'],
-  // }));
 
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || 'https://soul-art.vercel.app';
-  console.log('Allowed Origins:', allowedOrigins);
+  // Configure CORS with more flexible origins
   app.enableCors({
-    origin:
-      process.env.ALLOWED_ORIGINS?.split(',') || 'https://fishhunt.vercel.app',
-
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: [
+      'https://fishhunt.ge',
+      'https://www.fishhunt.ge',
+      'http://localhost:3000',
+      'https://localhost:3000',  // Added HTTPS local frontend
+      'http://localhost:4000',   // Added HTTP local backend
+      'https://localhost:4000',  // Added HTTPS local backend
+      /localhost/               // Fallback pattern for any localhost
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'file-id', 'product-id'],
-
-    optionsSuccessStatus: 204,
+    allowedHeaders: ['Content-Type', 'Authorization', 'forum-id', 'Origin', 'Accept']
   });
 
   app.enableVersioning({
@@ -51,22 +48,20 @@ async function bootstrap() {
   );
   app.use('/favicon.ico', (req, res) => res.status(204).send());
 
-  // if (process.env.NODE_ENV !== 'production') {
   const config = new DocumentBuilder()
-    .setTitle('E-commerce API')
-    .setDescription('FishHunt E-commerce REST API')
+    .setTitle('OnlyGeorgian  API')
+    .setDescription('OnlyGeorgian E-commerce REST API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
-  // }
+  SwaggerModule.setup('docs', app, document); // დარწმუნდით, რომ როუტი არის '/docs'
 
   app.enableShutdownHooks();
 
   const port = process.env.PORT || 4000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0'); // ვერსელისთვის საჭიროა '0.0.0.0'
 
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

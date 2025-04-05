@@ -7,11 +7,18 @@ import { useSellerRegister } from "../hooks/use-auth";
 import Link from "next/link";
 import "./register-form.css";
 import type * as z from "zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 type SellerRegisterFormData = z.infer<typeof sellerRegisterSchema>;
 
 export function SellerRegisterForm() {
+  const router = useRouter();
   const { mutate: register, isPending } = useSellerRegister();
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  
   const {
     register: registerField,
     handleSubmit,
@@ -21,18 +28,57 @@ export function SellerRegisterForm() {
   });
 
   const onSubmit = handleSubmit((data) => {
-    register(data);
+    setRegistrationError(null);
+    
+    register(data, {
+      onSuccess: () => {
+        setIsSuccess(true);
+        toast({
+          title: "რეგისტრაცია წარმატებულია",
+          description: "თქვენი გამყიდველის ანგარიში წარმატებით შეიქმნა",
+          variant: "default",
+        });
+        
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      },
+      onError: (error) => {
+        // Display the error message directly from the backend
+        const errorMessage = error.message;
+        setRegistrationError(errorMessage);
+        
+        toast({
+          title: "რეგისტრაცია ვერ მოხერხდა",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+    });
   });
+
+  if (isSuccess) {
+    return (
+      <div className="form-container">
+        <div className="success-message">
+          <h3>რეგისტრაცია წარმატებულია!</h3>
+          <p>თქვენი გამყიდველის ანგარიში წარმატებით შეიქმნა.</p>
+          <p>გადამისამართება ავტორიზაციის გვერდზე...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="form-container">
       <form onSubmit={onSubmit} className="form">
         <div className="input-group">
-          <label htmlFor="storeName">მაღაზიის სახელი</label>
+          <label htmlFor="storeName">მხატვრის/კომპანიის სახელი</label>
           <input
             id="storeName"
             type="text"
-            placeholder="მაღაზიის სახელი"
+            placeholder="მხატვრის/კომპანიის სახელი"
             {...registerField("storeName")}
           />
           {errors.storeName && (
@@ -41,7 +87,7 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="storeLogo">მაღაზიის ლოგო (არასავალდებულო)</label>
+          <label htmlFor="storeLogo"> ლოგო (არასავალდებულო)</label>
           <input
             id="storeLogo"
             type="text"
@@ -142,6 +188,13 @@ export function SellerRegisterForm() {
           )}
         </div>
 
+        {/* Enhanced error message display */}
+        {registrationError && (
+          <div className="error-message">
+            <p className="error-text">{registrationError}</p>
+          </div>
+        )}
+
         <button type="submit" className="submit-btn" disabled={isPending}>
           {isPending ? "რეგისტრაცია..." : "დარეგისტრირება"}
         </button>
@@ -155,4 +208,4 @@ export function SellerRegisterForm() {
       </form>
     </div>
   );
-} 
+}

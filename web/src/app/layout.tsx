@@ -12,6 +12,7 @@ import Header from "@/components/Header/header";
 import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_CLIENT_URL || 'https://fishhunt.ge'),
   title: "FishHunt",
   description:
     "FishHunt - Ecommerce platform for fishing equipment and accessories",

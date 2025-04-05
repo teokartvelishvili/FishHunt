@@ -49,14 +49,19 @@ export const authApi = {
 
   sellerRegister: async (data: SellerRegisterData) => {
     // გამყიდველის რეგისტრაცია
-    await axios.post("/auth/sellers-register", data);
+     // Send seller registration data directly to the API
+     const response = await axios.post<AuthResponse>("/auth/sellers-register", data);
     
     // ავტომატური ავტორიზაცია
-    return authApi.login({ 
-      email: data.email, 
-      password: data.password 
-    });
-  },
+   // Store tokens and return the response
+   if (response.data.accessToken && response.data.refreshToken) {
+    const { accessToken, refreshToken } = response.data;
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+  
+  return response.data; 
+},
 
   getProfile: async () => {
     const response = await axios.get<User>("/auth/profile");

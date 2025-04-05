@@ -2,16 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useUser } from "@/modules/auth/hooks/use-user";
-import { useLogout } from "@/modules/auth/hooks/use-auth";
 import "./user-menu.css";
 import { Role } from "@/types/role";
 import hunterIcon from "../../assets/icons/hunter.png";
 import Image from "next/image";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function UserMenu() {
-  const { user, isLoading } = useUser();
-  const logout = useLogout();
+  const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -45,21 +43,25 @@ export default function UserMenu() {
 
   return (
     <div className="dropdown" ref={menuRef}>
-      <button onClick={() => setIsOpen(!isOpen)} className="button">
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="button"
+        aria-label="Toggle user menu"
+      >
         <span className="icon">
           <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />
           
           {/* 👤 */}
-          </span> {user.name}
+          </span>  {user.name || 'მომხმარებელი'}
       </button>
       {isOpen && (
         <div className="dropdown-menu">
           <div className="dropdown-label">My Account</div>
           <hr />
-          <Link href="/profile" className="dropdown-item">
+          <Link href="/profile" className="dropdown-item" onClick={() => setIsOpen(false)}>
             Profile
           </Link>
-          <Link href="/profile/orders" className="dropdown-item">
+          <Link href="/profile/orders" className="dropdown-item" onClick={() => setIsOpen(false)}>
             Orders
           </Link>
 
@@ -75,18 +77,24 @@ export default function UserMenu() {
 
           {user.role === Role.Admin && (
             <>
-              <Link href="/admin/users" className="dropdown-item">
+               <Link href="/admin/users" className="dropdown-item" onClick={() => setIsOpen(false)}>
                 Users
               </Link>
-              <Link href="/admin/orders" className="dropdown-item">
+              <Link href="/admin/orders" className="dropdown-item" onClick={() => setIsOpen(false)}>
                 Orders
               </Link>
             </>
           )}
 
           <hr />
-          <button onClick={() => logout.mutate()} className="dropdown-item">
-            Sign Out
+          <button 
+            onClick={() => {
+              setIsOpen(false);
+              logout();
+            }} 
+            className="dropdown-item logout-button"
+          >
+            გასვლა
           </button>
         </div>
       )}
