@@ -14,24 +14,20 @@ async function bootstrap() {
 
   app.use(helmet());
   app.use(cookieParser());
+  //   app.use(cors({
+  //   origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  //   credentials: true,
+  //   allowedHeaders: ['Content-Type', 'Authorization'],
+  // }));
 
   app.enableCors({
-    origin: [
-      'https://www.fishhunt.ge',
-      'https://fishhunt.ge',
-      'http://localhost:3000'
-    ],
-    credentials: true,
+    origin: ['http://localhost:3000', 'https://fishhunt.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'Accept',
-      'Authorization',
-    ],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Authorization'],
-    maxAge: 86400,
+    maxAge: 86400, // 24 საათი
   });
 
   app.enableVersioning({
@@ -51,6 +47,7 @@ async function bootstrap() {
   );
   app.use('/favicon.ico', (req, res) => res.status(204).send());
 
+  // if (process.env.NODE_ENV !== 'production') {
   const config = new DocumentBuilder()
     .setTitle('E-commerce API')
     .setDescription('FishHunt E-commerce REST API')
@@ -60,6 +57,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+  // }
 
   app.enableShutdownHooks();
 
