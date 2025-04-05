@@ -1,5 +1,3 @@
-'use client';
-
 import { axios } from "@/lib/axios";
 import { User } from "@/types";
 
