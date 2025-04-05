@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import type { Product } from "@/types";
