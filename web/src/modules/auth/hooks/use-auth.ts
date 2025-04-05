@@ -14,8 +14,6 @@ export function useLogin() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       queryClient.setQueryData(["user"], data.user);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      router.refresh(); // დავამატოთ ეს ხაზი
       router.push("/");
       toast({
         title: "Welcome back!",
@@ -61,24 +59,20 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      await authApi.logout();
-      // Clear all query cache after logout
-      queryClient.clear();
-      // Force clear user data
-      queryClient.setQueryData(["user"], null);
-      // Force page refresh to clear any remaining state
-      window.location.href = "/";
+      await authApi.logout(); // აქ სერვერის ლოგაუთ API-ს ეძახი
     },
-    onError: () => {
-      // Even if logout API fails, clear local state
-      queryClient.clear();
+    onSuccess: () => {
       queryClient.setQueryData(["user"], null);
-      window.location.href = "/";
-      
+      toast({
+        title: "Signed out",
+        description: "You have been signed out",
+      });
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
       toast({
         variant: "destructive",
-        title: "Error during logout",
-        description: "You have been logged out locally",
+        title: "Oops!",
+        description: error.response?.data?.message || "Logout failed",
       });
     },
   });
