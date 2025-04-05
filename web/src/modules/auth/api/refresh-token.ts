@@ -1,4 +1,4 @@
-import { axios } from "@/lib/axios";
+import { apiClient } from "@/lib/api-client";
 import { queryClient } from "@/app/providers";
 
 export async function refreshToken() {
@@ -6,7 +6,7 @@ export async function refreshToken() {
     console.log("Attempting refresh token...");
     const refreshToken = localStorage.getItem('refreshToken');
     
-    const response = await axios.post(
+    const response = await apiClient.post(
       "/auth/refresh",
       { refreshToken },
       {
