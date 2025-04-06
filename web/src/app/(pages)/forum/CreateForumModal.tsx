@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import "./CreateForumModal.css";
 import imageCompression from "browser-image-compression";
+import { apiClient } from "@/lib/api-client";
 
 const validTags = ["Fishing", "Camping", "Hunting"]; // Valid tags defined by the backend
 
@@ -49,8 +50,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
         // Validate tags before sending
         const validatedTags = validateTags(tags);
 
-        let body;
-        const headers: HeadersInit = {};
+       
 
         if (image) {
           // Compress the image before uploading
@@ -67,28 +67,23 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
           });
           formData.append("file", compressedImage);
 
-          body = formData;
+          const response = await apiClient.post("/forums", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data' // Override the default content type
+            }
+          });
+
+          return response.data;
         } else {
           // Send as JSON when there's no file
-          body = JSON.stringify({ content, tags: validatedTags });
-          headers["Content-Type"] = "application/json";
-        }
+          const response = await apiClient.post("/forums", { 
+            content, 
+            tags: validatedTags 
+          });
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/forums`,
-          {
-            method: "POST",
-            headers,
-            body,
-            credentials: "include",
-          }
-        );
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || "Failed to create post");
+    
+          return response.data;
         }
-
-        return response.json();
       } catch (error) {
         console.error("❌ Mutation Error:", error);
         throw error;
