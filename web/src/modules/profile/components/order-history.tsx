@@ -16,7 +16,7 @@ interface OrderType {
   orderItems: Array<{
     _id: string;
     product?: {
-      deliveryType?: 'SELLER' | 'SoulArt';
+      deliveryType?: 'SELLER' | 'FishHunt';
       minDeliveryDays?: number;
       maxDeliveryDays?: number;
     }
@@ -71,9 +71,9 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
                    მიწოდება ავტორისგან
                   </span>
                 ) : (
-                  <span className="badge delivery-badge soulart">
+                  <span className="badge delivery-badge FishHunt">
                     <Truck size={14} />
-                    SoulArt-ის კურიერი
+                    FishHunt-ის კურიერი
                   </span>
                 )}
               </td>
