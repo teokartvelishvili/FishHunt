@@ -15,6 +15,17 @@ export interface Product {
   reviews: Review[];
   createdAt: string;
   updatedAt: string;
+  status: ProductStatus;
+  rejectionReason?: string;
+  deliveryType?: 'SELLER' | 'FishHunt';  // Corrected from 'SOULART' to 'SoulArt'
+  minDeliveryDays?: number;
+  maxDeliveryDays?: number;
+ 
+}
+export enum ProductStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
 }
 
 export interface Review {
@@ -35,16 +46,26 @@ export interface User {
   _id: string;
   name: string;
   email: string;
+  phoneNumber: string;
   // isAdmin: boolean;
   role: Role;
+  seller?: {
+    storeName: string;
+    storeLogo?: string;
+    ownerFirstName: string;
+    ownerLastName: string;
+    phoneNumber: string;
+    email: string;
+    identificationNumber: string;
+    accountNumber: string;
+    createdAt: string;
+    updatedAt: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Seller extends User {
-  storeName: string;
-  products: Product[]; 
-}
+
 
 export interface ApiResponse<T> {
   success: boolean;

@@ -100,7 +100,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <h1 className="product-title">{product.name}</h1>
           <ShareButtons 
             url={typeof window !== 'undefined' ? window.location.href : ''}
-            title={`Check out ${product.name} by ${product.brand} on SoulArt`}
+            title={`Check out ${product.name} by ${product.brand} on FishHunt`}
           />
           <div className="rating-container">
             <div className="rating-stars">
@@ -119,7 +119,24 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
 
           <div className="price">${product.price}</div>
+         
 
+          {/* Delivery Information */}
+          <div className="delivery-info">
+            <h3 className="info-title">მიწოდების ინფორმაცია</h3>
+            <div className="delivery-details">
+              {product.deliveryType === 'SELLER' ? (
+                <div>
+                  <p>მიწოდება გამყიდველისგან</p>
+                  {product.minDeliveryDays && product.maxDeliveryDays && (
+                    <p className="delivery-time">მიწოდების ვადა: {product.minDeliveryDays}-{product.maxDeliveryDays} დღე</p>
+                  )}
+                </div>
+              ) : (
+                <p>მიწოდება FishHunt-ის კურიერით</p>
+              )}
+            </div>
+          </div>
           <div className="separator"></div>
 
           <div className="stock-info">

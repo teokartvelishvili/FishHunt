@@ -30,6 +30,10 @@ export enum ProductStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED'
 }
+export enum DeliveryType {
+  SELLER = 'SELLER',
+  FishHunt = 'FishHunt'  
+}
 
 @Schema({ timestamps: true })
 export class Product {
@@ -79,6 +83,14 @@ export class Product {
 
   @Prop({ type: String })
   rejectionReason?: string;
+  @Prop({ type: String, enum: DeliveryType, default: DeliveryType.FishHunt })  // Changed default value
+  deliveryType?: DeliveryType;
+
+  @Prop({ type: Number })
+  minDeliveryDays?: number;
+
+  @Prop({ type: Number })
+  maxDeliveryDays?: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -23,6 +23,14 @@ export class Order {
           required: true,
           ref: 'Product',
         },
+        product: {
+          type: {
+            deliveryType: { type: String }, // Use String type instead of enum
+            minDeliveryDays: { type: Number },
+            maxDeliveryDays: { type: Number },
+          
+          },
+        },
       },
     ],
   })

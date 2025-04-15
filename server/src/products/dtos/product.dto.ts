@@ -1,5 +1,5 @@
 import { IsString, IsNumber, IsArray, IsEnum, IsOptional } from 'class-validator';
-import { ProductStatus } from '../schemas/product.schema';
+import { ProductStatus,  DeliveryType  } from '../schemas/product.schema';
 
 export class ProductDto {
   @IsString()
@@ -33,4 +33,15 @@ export class ProductDto {
   @IsString()
   @IsOptional()
   rejectionReason?: string;
+  @IsEnum(DeliveryType)
+  @IsOptional()
+  deliveryType?: DeliveryType;
+  
+  @IsNumber()
+  @IsOptional()
+  minDeliveryDays?: number;
+  
+  @IsNumber()
+  @IsOptional()
+  maxDeliveryDays?: number;
 }

@@ -8,4 +8,7 @@ export const sampleProduct = {
   numReviews: 0,
   countInStock: 0,
   description: 'Sample description',
+  deliveryType: 'FishHunt',
+  minDeliveryDays: 3, // Adding minimum delivery days
+  maxDeliveryDays: 7, 
 };

@@ -18,6 +18,10 @@ export interface Product {
   updatedAt: string;
   status: ProductStatus;
   rejectionReason?: string;
+  deliveryType?: 'SELLER' | 'FishHunt';  // Corrected from 'SOULART' to 'SoulArt'
+  minDeliveryDays?: number;
+  maxDeliveryDays?: number;
+
 }
 
 export enum ProductStatus {

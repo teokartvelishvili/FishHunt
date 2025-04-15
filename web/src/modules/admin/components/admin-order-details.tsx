@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Store, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Order } from "@/types/order";
@@ -16,6 +16,14 @@ interface AdminOrderDetailsProps {
 export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const { toast } = useToast();
   const router = useRouter();
+
+  const sellerDeliveryItems = order.orderItems.filter(
+    (item) => item.product && String(item.product.deliveryType) === "SELLER"
+  );
+
+  const soulartDeliveryItems = order.orderItems.filter(
+    (item) => !item.product || String(item.product.deliveryType) !== "SELLER"
+  );
 
   const markAsDelivered = async () => {
     try {
@@ -92,29 +100,103 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
           {/* Order Items */}
           <div className="card">
             <h2>Order Items</h2>
-            {order.orderItems.map((item) => (
-              <div key={item.productId} className="order-item">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={80}
-                  height={80}
-                  className="item-image"
-                />
-                <div>
-                  <Link
-                    href={`/products/${item.productId}`}
-                    className="item-name"
-                  >
-                    {item.name}
-                  </Link>
-                  <p>
-                    {item.qty} x ${item.price.toFixed(2)} = $
-                    {(item.qty * item.price).toFixed(2)}
-                  </p>
+            {sellerDeliveryItems.length > 0 && (
+              <div className="delivery-group">
+                <div className="delivery-group-header">
+                  <Store size={18} />
+                  <h3>გამყიდველის მიტანა</h3>
+            
                 </div>
+                {sellerDeliveryItems.map((item) => (
+                  <div key={item.product?._id} className="order-item">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={80}
+                      height={80}
+                      className="item-image"
+                    />
+                    <div>
+                      <Link
+                        href={`/products/${item.product?._id}`}
+                        className="item-name"
+                      >
+                        {item.name}
+                      </Link>
+                      <p>
+                        {item.qty} x ${item.price.toFixed(2)} = $
+                        {(item.qty * item.price).toFixed(2)}
+                      </p>
+                      {item.product?.minDeliveryDays &&
+                        item.product?.maxDeliveryDays && (
+                          <p className="delivery-time">
+                            მიწოდების ვადა: {item.product.minDeliveryDays}-
+                            {item.product.maxDeliveryDays} დღე
+                          </p>
+                        )}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+              {soulartDeliveryItems.length > 0 && (
+              <div className="delivery-group">
+                <div className="delivery-group-header">
+                  <Truck size={18} />
+                  <h3>SoulArt-ის კურიერი</h3>
+                </div>
+                {soulartDeliveryItems.map((item) => (
+                  <div key={item.product?._id} className="order-item">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={80}
+                      height={80}
+                      className="item-image"
+                    />
+                    <div>
+                      <Link
+                        href={`/products/${item.product?._id}`}
+                        className="item-name"
+                      >
+                        {item.name}
+                      </Link>
+                      <p>
+                        {item.qty} x ${item.price.toFixed(2)} = $
+                        {(item.qty * item.price).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* If there are no delivery type groups, show items normally */}
+            {sellerDeliveryItems.length === 0 &&
+              soulartDeliveryItems.length === 0 &&
+              order.orderItems.map((item) => (
+                <div key={item.product?._id} className="order-item">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={80}
+                    height={80}
+                    className="item-image"
+                  />
+                  <div>
+                    <Link
+                      href={`/products/${item.product?._id}`}
+                      className="item-name"
+                    >
+                      {item.name}
+                    </Link>
+                    <p>
+                      {item.qty} x ${item.price.toFixed(2)} = $
+                      {(item.qty * item.price).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
 

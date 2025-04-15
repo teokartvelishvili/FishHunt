@@ -74,3 +74,22 @@
 .view-details:hover {
   text-decoration: underline;
 }
+.delivery-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.delivery-badge.seller {
+  background-color: #ffecb3;
+  color: #b7791f;
+}
+
+.delivery-badge.FishHunt {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}

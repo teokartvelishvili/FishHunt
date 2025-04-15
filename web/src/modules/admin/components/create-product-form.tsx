@@ -11,14 +11,13 @@ import "./CreateProductForm.css";
 import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
 
-
 const categories = ["Fishing", "Hunting", "Camping", "Other"];
+
 interface CreateProductFormProps {
   initialData?: ProductFormData & { _id?: string };
   onSuccess?: (data: { id: string; name: string; [key: string]: string | number | boolean | null | undefined }) => void;
   isEdit?: boolean;
 }
-
 export function CreateProductForm({ 
   initialData, 
   onSuccess,
@@ -42,18 +41,24 @@ export function CreateProductForm({
     }
   );
 
+  const [deliveryType, setDeliveryType] = useState<'SELLER' | 'FishHunt'>('FishHunt');
+  const [minDeliveryDays, setMinDeliveryDays] = useState("");
+  const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
+  
+
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
+      console.log("Initial Data in Form:", initialData);
+      
       setFormData((prev) => ({
         ...prev,
         _id: initialData._id,
         name: initialData.name || "",
         brand: initialData.brand || "",
-        // Check brandLogo type
         brandLogo:
           typeof initialData.brandLogo === "string"
             ? initialData.brandLogo
@@ -64,10 +69,19 @@ export function CreateProductForm({
         price: initialData.price || 0,
         countInStock: initialData.countInStock || 0,
       }));
+
+      if (initialData.deliveryType) {
+        setDeliveryType(initialData.deliveryType as 'SELLER' | 'FishHunt');
+      }
+      if (initialData.minDeliveryDays) {
+        setMinDeliveryDays(initialData.minDeliveryDays.toString());
+      }
+      if (initialData.maxDeliveryDays) {
+        setMaxDeliveryDays(initialData.maxDeliveryDays.toString());
+      }
     }
   }, [initialData]);
 
-  // Reset form function
   const resetForm = () => {
     setFormData({
       name: "",
@@ -82,6 +96,11 @@ export function CreateProductForm({
     setErrors({});
     setServerError(null);
     setSuccess(null);
+
+    setDeliveryType('FishHunt');
+    setMinDeliveryDays("");
+    setMaxDeliveryDays("");
+ 
   };
 
   const validateField = (field: keyof ProductFormData, value: unknown) => {
@@ -147,13 +166,12 @@ export function CreateProductForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form data on submit", formData);
-    console.log("Initial Data:", initialData); // Debug log
+    console.log("Initial Data:", initialData);
     setPending(true);
-    setServerError(null); // Clear previous server error
-    setSuccess(null); // Clear previous success message
+    setServerError(null);
+    setSuccess(null);
 
     try {
-      // Validate image file type
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (
         formData.images.some(
@@ -169,13 +187,17 @@ export function CreateProductForm({
         return;
       }
 
-      // Get auth token
+      if (deliveryType === 'SELLER' && (!minDeliveryDays || !maxDeliveryDays)) {
+        setServerError("გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას.");
+        setPending(false);
+        return;
+      }
+
       const token = getAccessToken();
       if (!token) {
         setServerError("ავტორიზაცია ვერ მოხერხდა. გთხოვთ, შეხვიდეთ თავიდან.");
         setPending(false);
         setTimeout(() => {
-          // Redirect to login
           window.location.href = '/login?redirect=/admin/products';
         }, 2000);
         return;
@@ -183,26 +205,49 @@ export function CreateProductForm({
 
       const formDataToSend = new FormData();
 
-      // Add all text fields
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key !== "images" && key !== "brandLogo" && key !== "newImages" && value !== undefined) {
-          formDataToSend.append(key, String(value));
+      // Add basic form fields
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("price", String(formData.price));
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("brand", formData.brand);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("countInStock", String(formData.countInStock));
+
+      // Add delivery type
+      formDataToSend.append("deliveryType", deliveryType);
+      
+      // Add delivery days if SELLER type
+      if (deliveryType === 'SELLER') {
+        formDataToSend.append("minDeliveryDays", minDeliveryDays);
+        formDataToSend.append("maxDeliveryDays", maxDeliveryDays);
+      }
+
+      // Add dimensions if provided
+     
+
+      // Handle images - separate existing images from new ones
+      const existingImages: string[] = [];
+      const newFiles: File[] = [];
+
+      formData.images.forEach(image => {
+        if (typeof image === 'string') {
+          existingImages.push(image);
+        } else if (image instanceof File) {
+          newFiles.push(image);
         }
       });
 
-      // Add images - handle both File objects and strings
-      if (formData.images) {
-        formData.images.forEach((image, index) => {
-          if (image instanceof File) {
-            formDataToSend.append("images", image);
-          } else if (typeof image === 'string') {
-            // For existing images, pass URLs separately
-            formDataToSend.append(`existingImages[${index}]`, image);
-          }
-        });
+      // Add existing images as JSON array
+      if (existingImages.length > 0) {
+        formDataToSend.append("existingImages", JSON.stringify(existingImages));
       }
 
-      // Add brand logo
+      // Add new image files
+      newFiles.forEach(file => {
+        formDataToSend.append("images", file);
+      });
+
+      // Handle brand logo
       if (formData.brandLogo instanceof File) {
         formDataToSend.append("brandLogo", formData.brandLogo);
       } else if (typeof formData.brandLogo === 'string') {
@@ -232,12 +277,11 @@ export function CreateProductForm({
       );
 
       if (!response.ok) {
-        let errorMessage = "პროდუქტის დამატება/განახლება ვერ მოხერხდა";
+        let errorMessage = "ნამუშევრის დამატება/განახლება ვერ მოხერხდა";
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } catch {
-          // If parsing fails, use status text
           errorMessage = `Error: ${response.status} ${response.statusText}`;
         }
         throw new Error(errorMessage);
@@ -245,26 +289,21 @@ export function CreateProductForm({
 
       const data = await response.json();
       console.log("Server response:", data);
-
-      // Show success message
-      const successMessage = isEdit ? "პროდუქტი წარმატებით განახლდა!" : "პროდუქტი წარმატებით დაემატა!";
+      const successMessage = isEdit ? "ნამუშევარი წარმატებით განახლდა!" : "ნამუშევარი წარმატებით დაემატა!";
       setSuccess(successMessage);
-      
+
       toast({
-        title: isEdit ? "პროდუქტი განახლდა" : "პროდუქტი დაემატა",
+        title: isEdit ? "ნამუშევარი განახლდა" : "ნამუშევარი დაემატა",
         description: "წარმატებით!",
       });
 
       if (!isEdit) {
-        // For new product, reset form
         resetForm();
       } 
       
       if (onSuccess) {
-        // Call success callback
         onSuccess(data);
       } else {
-        // Navigate back to products list after a short delay
         setTimeout(() => {
           router.push("/admin/products");
         }, 1500);
@@ -281,21 +320,19 @@ export function CreateProductForm({
 
   return (
     <div className="create-product-form">
-      {success && (
+          {success && (
         <div className="success-message">
           <p className="text-center">{success}</p>
         </div>
       )}
-      
       <form onSubmit={handleSubmit} className="space-y-4">
         {serverError && (
           <div className="server-error">
             <p className="create-product-error text-center">{serverError}</p>
           </div>
         )}
-        
         <div>
-          <label htmlFor="name">პროდუქტის სახელი</label>
+          <label htmlFor="name">ნამუშევარის სახელი</label>
           <input
             id="name"
             name="name"
@@ -308,7 +345,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="description">აღწერა</label>
+          <label htmlFor="description">Description</label>
           <textarea
             id="description"
             name="description"
@@ -323,7 +360,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="price">ფასი</label>
+          <label htmlFor="price">Price</label>
           <input
             id="price"
             name="price"
@@ -339,14 +376,14 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="category">კატეგორია</label>
+          <label htmlFor="category">Category</label>
           <select
             name="category"
             value={formData.category}
             onChange={handleCategoryChange}
             className="create-product-select"
           >
-            <option value="">აირჩიეთ კატეგორია</option>
+            <option value="">Select a category</option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -357,9 +394,68 @@ export function CreateProductForm({
             <p className="create-product-error">{errors.category}</p>
           )}
         </div>
+        
+       
+        
+        <div>
+          <label>მიტანის ტიპი</label>
+          <div className="delivery-options">
+            <div className="delivery-type-selector">
+              <div className="delivery-type-option">
+                <input
+                  type="radio"
+                  id="FishHunt-delivery"
+                  name="deliveryType"
+                  checked={deliveryType === 'FishHunt'}
+                  onChange={() => setDeliveryType('FishHunt')}
+                />
+                <label htmlFor="FishHunt-delivery">FishHunt-ის კურიერი</label>
+              </div>
+              <div className="delivery-type-option">
+                <input
+                  type="radio"
+                  id="seller-delivery"
+                  name="deliveryType"
+                  checked={deliveryType === 'SELLER'}
+                  onChange={() => setDeliveryType('SELLER')}
+                />
+                <label htmlFor="seller-delivery">გამყიდველი</label>
+              </div>
+            </div>
+            
+            {deliveryType === 'SELLER' && (
+              <div className="delivery-days">
+                <div>
+                  <label htmlFor="minDeliveryDays">მინიმალური ვადა (დღეები)</label>
+                  <input
+                    id="minDeliveryDays"
+                    type="number"
+                    min="1"
+                    value={minDeliveryDays}
+                    onChange={(e) => setMinDeliveryDays(e.target.value)}
+                    className="create-product-input"
+                    required={deliveryType === 'SELLER'}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="maxDeliveryDays">მაქსიმალური ვადა (დღეები)</label>
+                  <input
+                    id="maxDeliveryDays"
+                    type="number"
+                    min="1"
+                    value={maxDeliveryDays}
+                    onChange={(e) => setMaxDeliveryDays(e.target.value)}
+                    className="create-product-input"
+                    required={deliveryType === 'SELLER'}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div>
-          <label htmlFor="images">პროდუქტის სურათები</label>
+          <label htmlFor="images">Product Images</label>
           <input
             id="images"
             name="images"
@@ -400,19 +496,19 @@ export function CreateProductForm({
           )}
         </div>
         <div>
-          <label htmlFor="brand">ბრენდი</label>
+          <label htmlFor="brand">Brand</label>
           <input
             id="brand"
             name="brand"
             value={formData.brand}
             onChange={handleChange}
-            placeholder="შეიყვანეთ ბრენდის სახელი"
+            placeholder="Enter brand name"
             required
           />
           {errors.brand && <p className="create-product-error">{errors.brand}</p>}
         </div>
         <div>
-          <label htmlFor="countInStock">მარაგის რაოდენობა</label>
+          <label htmlFor="countInStock">Stock Count</label>
           <input
             id="countInStock"
             name="countInStock"
@@ -428,7 +524,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="brandLogo">ბრენდის ლოგო</label>
+          <label htmlFor="brandLogo">Brand Logo</label>
           <input
             id="brandLogo"
             name="brandLogo"
@@ -461,7 +557,7 @@ export function CreateProductForm({
           disabled={pending || !formData.name}
         >
           {pending && <Loader2 className="loader" />}
-          {isEdit ? "პროდუქტის განახლება" : "პროდუქტის დამატება"}
+          {isEdit ? "ნამუშევარის განახლება" : "ნამუშევარის დამატება"}
         </button>
       </form>
     </div>

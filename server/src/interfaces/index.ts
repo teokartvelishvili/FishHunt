@@ -12,7 +12,13 @@ export interface OrderItem {
   qty: number;
   image: string;
   price: number;
-  productId: Product;
+  productId: string;
+  product?: {
+    deliveryType?: string;  // Use string type to avoid enum conversion issues
+    minDeliveryDays?: number;
+    maxDeliveryDays?: number;
+   
+  };
 }
 
 export interface PaymentResult {
