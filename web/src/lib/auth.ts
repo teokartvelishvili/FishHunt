@@ -3,9 +3,9 @@
 import { User } from "@/types";
 
 // Token storage keys
-const ACCESS_TOKEN_KEY = 'onlygeorgian_access_token';
-const REFRESH_TOKEN_KEY = 'onlygeorgian_refresh_token';
-const USER_DATA_KEY = 'onlygeorgian_user_data';
+const ACCESS_TOKEN_KEY = 'FishHunt access_token';
+const REFRESH_TOKEN_KEY = 'FishHunt refresh_token';
+const USER_DATA_KEY = 'FishHunt user_data';
 
 // Store tokens in localStorage (access token) and memory (refresh token)
 // We avoid storing refresh token in localStorage for better security

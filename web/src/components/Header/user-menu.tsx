@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+
 import "./user-menu.css";
 import { Role } from "@/types/role";
 import hunterIcon from "../../assets/icons/hunter.png";
@@ -12,6 +13,16 @@ export default function UserMenu() {
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user?.profileImage) {
+      setProfileImage(user.profileImage);
+    } else {
+      setProfileImage("/avatar.jpg");
+    }
+    console.log("User profile updated:", user);
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -20,9 +31,9 @@ export default function UserMenu() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -36,32 +47,51 @@ export default function UserMenu() {
         <span className="icon">
           {/* 👤 */}
           <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
-          </span> Sign In
+        </span>{" "}
+        Sign In
       </Link>
     );
   }
 
   return (
     <div className="dropdown" ref={menuRef}>
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
+      <button
+        onClick={() => setIsOpen(!isOpen)}
         className="button"
         aria-label="Toggle user menu"
       >
+        <div className="user-avatar">
+          <Image
+            src={profileImage || "/avatar.jpg"}
+            alt={user.name}
+            width={32}
+            height={32}
+            className="avatar-image"
+          />
+        </div>
+        {user.name || "მომხმარებელი"}
         <span className="icon">
           <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />
-          
+
           {/* 👤 */}
-          </span>  {user.name || 'მომხმარებელი'}
+        </span>
       </button>
       {isOpen && (
         <div className="dropdown-menu">
           <div className="dropdown-label">My Account</div>
           <hr />
-          <Link href="/profile" className="dropdown-item" onClick={() => setIsOpen(false)}>
+          <Link
+            href="/profile"
+            className="dropdown-item"
+            onClick={() => setIsOpen(false)}
+          >
             Profile
           </Link>
-          <Link href="/profile/orders" className="dropdown-item" onClick={() => setIsOpen(false)}>
+          <Link
+            href="/profile/orders"
+            className="dropdown-item"
+            onClick={() => setIsOpen(false)}
+          >
             Orders
           </Link>
 
@@ -69,7 +99,7 @@ export default function UserMenu() {
             <>
               <hr />
               <div className="dropdown-label">Admin Dashboard</div>
-              <Link href="/admin/products" className="dropdown-item">
+              <Link href="/admin/products" className="dropdown-item" onClick={() => setIsOpen(false)}>
                 Products
               </Link>
             </>
@@ -77,21 +107,29 @@ export default function UserMenu() {
 
           {user.role === Role.Admin && (
             <>
-               <Link href="/admin/users" className="dropdown-item" onClick={() => setIsOpen(false)}>
+              <Link
+                href="/admin/users"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
                 Users
               </Link>
-              <Link href="/admin/orders" className="dropdown-item" onClick={() => setIsOpen(false)}>
+              <Link
+                href="/admin/orders"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
                 Orders
               </Link>
             </>
           )}
 
           <hr />
-          <button 
+          <button
             onClick={() => {
               setIsOpen(false);
               logout();
-            }} 
+            }}
             className="dropdown-item logout-button"
           >
             გასვლა

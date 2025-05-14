@@ -35,10 +35,49 @@ export class CartService {
       (acc, item) => acc + item.price * item.qty,
       0,
     );
-    cart.taxPrice = Number((0.15 * cart.itemsPrice).toFixed(2));
+    cart.taxPrice = Number((0.02 * cart.itemsPrice).toFixed(2));
     cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 10;
     cart.totalPrice = cart.itemsPrice + cart.taxPrice + cart.shippingPrice;
     return cart;
+  }
+
+  async addItemToCart(
+    userId: string,
+    productId: string,
+    qty: number,
+  ): Promise<CartDocument> {
+    const product = await this.productsService.findById(productId);
+    if (!product) throw new NotFoundException('Product not found');
+
+    let cart = await this.cartModel.findOne({ user: userId });
+
+    if (!cart) {
+      cart = await this.cartModel.create({
+        user: userId,
+        items: [],
+      });
+    }
+
+    const existingItem = cart.items.find(
+      (item) => item.productId.toString() === productId,
+    );
+
+    if (existingItem) {
+      existingItem.qty = qty;
+    } else {
+      cart.items.push({
+        productId,
+        name: product.name,
+        nameEn: product.nameEn, // Include nameEn
+        image: product.images[0],
+        price: product.price,
+        countInStock: product.countInStock,
+        qty,
+      });
+    }
+
+    this.calculatePrices(cart);
+    return await cart.save();
   }
 
   async addCartItem(
@@ -60,6 +99,7 @@ export class CartService {
       const cartItem: CartItem = {
         productId: product._id.toString(),
         name: product.name,
+        nameEn: product.nameEn, // Add nameEn field
         image: product.images[0],
         price: product.price,
         countInStock: product.countInStock,

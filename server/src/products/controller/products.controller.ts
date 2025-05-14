@@ -30,12 +30,12 @@ import {
 } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
 import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
-// import { ChatRequest } from '@/types/agents';
 import { Response } from 'express';
 import { ChatRequest } from '@/types/agents';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/types/role.enum';
 import { ProductStatus } from '../schemas/product.schema';
+import { MainCategory } from '@/types';
 
 @Controller('products')
 export class ProductsController {
@@ -43,7 +43,7 @@ export class ProductsController {
     private productsService: ProductsService,
     private appService: AppService,
     private productExpertAgent: ProductExpertAgent,
-  ) { }
+  ) {}
 
   @Get()
   getProducts(
@@ -51,9 +51,24 @@ export class ProductsController {
     @Query('page') page: string,
     @Query('limit') limit: string,
     @Query('brand') brand: string,
+    @Query('mainCategory') mainCategory: string,
+    @Query('subCategory') subCategory: string,
+    @Query('sortBy') sortBy: string,
+    @Query('sortDirection') sortDirection: 'asc' | 'desc',
   ) {
-    // მხოლოდ დადასტურებული პროდუქტების გამოტანა
-    return this.productsService.findMany(keyword, page, limit, undefined, ProductStatus.APPROVED, brand);
+    console.log('Getting products with mainCategory:', mainCategory);
+    return this.productsService.findMany(
+      keyword,
+      page,
+      limit,
+      undefined,
+      ProductStatus.APPROVED,
+      brand,
+      mainCategory,
+      subCategory,
+      sortBy,
+      sortDirection,
+    );
   }
 
   @Get('user')
@@ -63,9 +78,22 @@ export class ProductsController {
     @CurrentUser() user: UserDocument,
     @Query('keyword') keyword: string,
     @Query('page') page: string,
-    @Query('limit') limit: string
+    @Query('limit') limit: string,
   ) {
-    return this.productsService.findMany(keyword, page, limit, user.role === Role.Admin ? undefined : user);
+    return this.productsService.findMany(
+      keyword,
+      page,
+      limit,
+      user.role === Role.Admin ? undefined : user,
+    );
+  }
+
+  @Get('pending')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getPendingProducts() {
+    console.log('Getting pending products');
+    return this.productsService.findByStatus(ProductStatus.PENDING);
   }
 
   @Get('topRated')
@@ -101,7 +129,12 @@ export class ProductsController {
       ],
       {
         fileFilter: (req, file, cb) => {
-          const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+          const allowedMimeTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/jpg',
+            'image/gif',
+          ];
           if (!allowedMimeTypes.includes(file.mimetype)) {
             return cb(new Error('Only image files are allowed!'), false);
           }
@@ -116,12 +149,15 @@ export class ProductsController {
     @UploadedFiles()
     allFiles: {
       images: Express.Multer.File[];
-      brandLogo: Express.Multer.File[];
+      brandLogo?: Express.Multer.File[];
     },
   ) {
     const files = allFiles.images;
     const { brandLogo } = allFiles;
-    console.log('Received files:', files, brandLogo);
+    console.log('Received files:', files);
+    console.log('Received brand logo:', brandLogo);
+    console.log('Received product data:', productData);
+
     if (!files || files.length === 0) {
       throw new BadRequestException('At least one image is required');
     }
@@ -130,18 +166,39 @@ export class ProductsController {
       const imageUrls = await Promise.all(
         files.map((file) => this.appService.uploadImageToCloudinary(file)),
       );
-      const brandLogoUrl = await this.appService.uploadImageToCloudinary(
-        brandLogo[0],
-      );
 
-      console.log('success');
-      return this.productsService.create({
+      let brandLogoUrl = null;
+
+      if (brandLogo && brandLogo.length > 0) {
+        console.log('Processing brand logo file upload');
+        brandLogoUrl = await this.appService.uploadImageToCloudinary(
+          brandLogo[0],
+        );
+      } else if (productData.brandLogoUrl) {
+        console.log('Using provided brand logo URL:', productData.brandLogoUrl);
+        brandLogoUrl = productData.brandLogoUrl;
+      }
+
+      console.log('Final brand logo URL:', brandLogoUrl);
+      console.log('Creating product with data:', {
         ...productData,
         user,
         images: imageUrls,
         brandLogo: brandLogoUrl,
       });
+
+      return this.productsService.create({
+        ...productData,
+        categoryStructure:
+          typeof productData.categoryStructure === 'string'
+            ? JSON.parse(productData.categoryStructure)
+            : productData.categoryStructure,
+        user,
+        images: imageUrls,
+        brandLogo: brandLogoUrl,
+      });
     } catch (error: any) {
+      console.error('Error creating product:', error);
       throw new InternalServerErrorException(
         'Failed to process images or create product ',
         error.message,
@@ -156,19 +213,25 @@ export class ProductsController {
     FileFieldsInterceptor([
       { name: 'images', maxCount: 10 },
       { name: 'brandLogo', maxCount: 1 },
-    ])
+    ]),
   )
   async updateProduct(
     @Param('id') id: string,
     @CurrentUser() user: UserDocument,
     @Body() productData: Omit<ProductDto, 'images'>,
-    @UploadedFiles() files: { images?: Express.Multer.File[], brandLogo?: Express.Multer.File[] }
+    @UploadedFiles()
+    files: {
+      images?: Express.Multer.File[];
+      brandLogo?: Express.Multer.File[];
+    },
   ) {
     console.log('Update request received:', { id, productData, files });
 
-    // Check if user is admin or the owner of the product
     const product = await this.productsService.findById(id);
-    if (user.role !== Role.Admin && product.user.toString() !== user._id.toString()) {
+    if (
+      user.role !== Role.Admin &&
+      product.user.toString() !== user._id.toString()
+    ) {
       throw new UnauthorizedException('You can only edit your own products');
     }
 
@@ -178,21 +241,45 @@ export class ProductsController {
 
       if (files?.images?.length) {
         imageUrls = await Promise.all(
-          files.images.map(file => this.appService.uploadImageToCloudinary(file))
+          files.images.map((file) =>
+            this.appService.uploadImageToCloudinary(file),
+          ),
         );
       }
 
       if (files?.brandLogo?.length) {
-        brandLogoUrl = await this.appService.uploadImageToCloudinary(files.brandLogo[0]);
+        brandLogoUrl = await this.appService.uploadImageToCloudinary(
+          files.brandLogo[0],
+        );
+      } else if (productData.brandLogoUrl) {
+        brandLogoUrl = productData.brandLogoUrl;
       }
 
-      const updatedProduct = await this.productsService.update(id, {
+      // Handle category structure if it exists in the request
+      let categoryStructure;
+      if (productData.categoryStructure) {
+        try {
+          // If it's a string (from form data), parse it
+          if (typeof productData.categoryStructure === 'string') {
+            categoryStructure = JSON.parse(productData.categoryStructure);
+          } else {
+            categoryStructure = productData.categoryStructure;
+          }
+        } catch (error) {
+          console.error('Error parsing category structure:', error);
+        }
+      }
+
+      const updateData = {
         ...productData,
         ...(imageUrls && { images: imageUrls }),
         ...(brandLogoUrl && { brandLogo: brandLogoUrl }),
-        // თუ სელერია, სტატუსი PENDING-ზე დავაყენოთ
+        ...(categoryStructure && { categoryStructure }),
         ...(user.role === Role.Seller && { status: ProductStatus.PENDING }),
-      });
+      };
+
+      console.log('Updating product with data:', updateData);
+      const updatedProduct = await this.productsService.update(id, updateData);
 
       console.log('Product updated successfully:', updatedProduct);
       return updatedProduct;
@@ -200,7 +287,7 @@ export class ProductsController {
       console.error('Update error:', error);
       throw new InternalServerErrorException(
         'Failed to update product',
-        error.message
+        error.message,
       );
     }
   }
@@ -215,7 +302,7 @@ export class ProductsController {
     return this.productsService.createReview(id, user, rating, comment);
   }
 
-  @Post('agent/chat') //TODO: add admin guard
+  @Post('agent/chat')
   async chat(@Body() body: ChatRequest, @Res() res: Response) {
     const { messages } = body;
 
@@ -229,15 +316,12 @@ export class ProductsController {
   @Roles(Role.Admin)
   async updateProductStatus(
     @Param('id') id: string,
-    @Body() { status, rejectionReason }: { status: ProductStatus; rejectionReason?: string }
+    @Body()
+    {
+      status,
+      rejectionReason,
+    }: { status: ProductStatus; rejectionReason?: string },
   ) {
     return this.productsService.updateStatus(id, status, rejectionReason);
-  }
-
-  @Get('pending')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async getPendingProducts() {
-    return this.productsService.findByStatus(ProductStatus.PENDING);
   }
 }

@@ -12,17 +12,19 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { StatusBadge } from "./status-badge";
 import { Role } from "@/types/role";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 export function ProductsList() {
   const [page, setPage] = useState(1);
   const { user } = useUser();
-  
+  const { language } = useLanguage();
+
   const isAdmin = user?.role === Role.Admin;
-  
+
   console.log("ProductsList user check:", {
     user,
     role: user?.role,
-    isAdmin
+    isAdmin,
   });
 
   const queryClient = useQueryClient();
@@ -30,19 +32,25 @@ export function ProductsList() {
   const { data, isLoading } = useQuery({
     queryKey: ["products", page],
     queryFn: async () => {
-      const response = await fetchWithAuth(`/products/user?page=${page}&limit=8`);
+      const response = await fetchWithAuth(
+        `/products/user?page=${page}&limit=8`
+      );
       return response.json();
     },
   });
 
+  const fetchPendingProducts = async () => {
+    console.log("Fetching pending products...");
+    const response = await fetchWithAuth("/products/pending");
+    const data = await response.json();
+    console.log("Pending products data:", data);
+    return data;
+  };
+
   const { data: pendingProducts } = useQuery({
-    queryKey: ['pendingProducts'],
-    queryFn: async () => {
-      const response = await fetchWithAuth('/products/pending');
-      const data = await response.json();
-      return data;
-    },
-    enabled: isAdmin
+    queryKey: ["pendingProducts"],
+    queryFn: fetchPendingProducts,
+    enabled: isAdmin,
   });
 
   const handleProductDeleted = () => {
@@ -57,6 +65,12 @@ export function ProductsList() {
   function handleStatusChange(): void {
     queryClient.invalidateQueries({ queryKey: ["products"] });
     queryClient.invalidateQueries({ queryKey: ["pendingProducts"] });
+  }
+
+  function getDisplayName(product: Product): string {
+    return language === "en" && product.nameEn
+      ? product.nameEn
+      : product.name;
   }
 
   return (
@@ -76,21 +90,21 @@ export function ProductsList() {
                     <div className="prd-img-wrapper">
                       <Image
                         src={product.images[0]}
-                        alt={product.name}
+                        alt={getDisplayName(product)}
                         fill
                         className="prd-img"
                       />
                     </div>
                   </td>
-                  <td className="prd-td">{product.name}</td>
-                  <td className="prd-td">${product.price}</td>
+                  <td className="prd-td">{getDisplayName(product)}</td>
+                  <td className="prd-td">{product.price} ₾ </td>
                   <td className="prd-td">{product.category}</td>
                   <td className="prd-td">{product.countInStock}</td>
                   <td className="prd-td">
                     <StatusBadge status={product.status} />
                   </td>
                   <td className="prd-td prd-td-right">
-                    <ProductsActions 
+                    <ProductsActions
                       product={product}
                       onStatusChange={handleStatusChange}
                       onDelete={handleProductDeleted}
@@ -145,14 +159,14 @@ export function ProductsList() {
                 <div className="prd-img-wrapper">
                   <Image
                     src={product.images[0]}
-                    alt={product.name}
+                    alt={getDisplayName(product)}
                     fill
                     className="prd-img"
                   />
                 </div>
               </td>
-              <td className="prd-td">{product.name}</td>
-              <td className="prd-td">${product.price}</td>
+              <td className="prd-td">{getDisplayName(product)}</td>
+              <td className="prd-td">{product.price} ₾ </td>
               <td className="prd-td">{product.category}</td>
               <td className="prd-td">{product.countInStock}</td>
               <td className="prd-td">
@@ -160,24 +174,31 @@ export function ProductsList() {
               </td>
               <td className="prd-td">
                 <div className="delivery-info">
-                  <span>{product.deliveryType || 'SOULART'}</span>
-                  {product.deliveryType === 'SELLER' && product.minDeliveryDays && product.maxDeliveryDays && (
-                    <p className="text-sm text-gray-500">{product.minDeliveryDays}-{product.maxDeliveryDays} დღე</p>
-                  )}
+                  <span>{product.deliveryType || "FISHHUNT"}</span>
+                  {product.deliveryType === "SELLER" &&
+                    product.minDeliveryDays &&
+                    product.maxDeliveryDays && (
+                      <p className="text-sm text-gray-500">
+                        {product.minDeliveryDays}-{product.maxDeliveryDays} დღე
+                      </p>
+                    )}
                 </div>
-                
               </td>
               <td className="prd-td">
                 <div className="seller-info">
-                  <p className="font-medium">{product.user?.name || 'N/A'}</p>
-                  <p className="text-sm text-gray-500">{product.user?.email || 'N/A'}</p>
-                  <p className="text-sm text-gray-500">{product.user?.phoneNumber || 'N/A'}</p>
+                  <p className="font-medium">{product.user?.name || "N/A"}</p>
+                  <p className="text-sm text-gray-500">
+                    {product.user?.email || "N/A"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {product.user?.phoneNumber || "N/A"}
+                  </p>
                 </div>
               </td>
               <td className="prd-td prd-td-right">
-                <ProductsActions 
+                <ProductsActions
                   product={product}
-                  onStatusChange={handleStatusChange} 
+                  onStatusChange={handleStatusChange}
                   onDelete={handleProductDeleted}
                 />
               </td>

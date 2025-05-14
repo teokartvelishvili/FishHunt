@@ -13,7 +13,7 @@ import { ProductsModule } from '@/products/products.module';
         schema: OrderSchema,
       },
     ]),
-    ProductsModule,
+    ProductsModule, // This will make the Product model available in the OrdersService
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/types";
+import { MainCategory, Product } from "@/types";
 import { ProductCard } from "./product-card";
 import { ProductCardSkeleton } from "./product-card-skeleton";
 import { useEffect, useState } from "react";
@@ -8,16 +8,58 @@ import { getProducts } from "../api/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import "./ProductGrid.css";
 
+const paginationStyles = `
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .pagination-button {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #212529;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  
+  .pagination-button:hover {
+    background: #e9ecef;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-info {
+    margin: 0 1rem;
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+  }
+`;
+
 interface ProductGridProps {
   products?: Product[];
   searchKeyword?: string;
   currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  isShopPage?: boolean;
 }
 
 export function ProductGrid({
   products: initialProducts,
   searchKeyword,
   currentPage = 1,
+  totalPages = 1,
+  onPageChange,
+  isShopPage = false,
 }: ProductGridProps) {
   const [products, setProducts] = useState(initialProducts);
   const [pages, setPages] = useState(1);
@@ -33,7 +75,25 @@ export function ProductGrid({
             10,
             searchKeyword
           );
-          setProducts(items);
+
+          const processedItems = items.map((item) => {
+            if (!item.categoryStructure) {
+              // Assign a default category structure based on the item's category
+              const mainCategory =
+                item.category && ["Fishing", "Camping"].includes(item.category)
+                  ? MainCategory.HANDMADE
+                  : MainCategory.PAINTINGS;
+              return {
+                ...item,
+                categoryStructure: {
+                  main: mainCategory,
+                  sub: item.category,
+                },
+              };
+            }
+            return item;
+          });
+          setProducts(processedItems);
           setPages(totalPages);
         } catch (error) {
           console.error("Failed to search products:", error);
@@ -44,9 +104,59 @@ export function ProductGrid({
 
       fetchSearchResults();
     } else {
-      setProducts(initialProducts);
+      const processedProducts = initialProducts?.map((item) => {
+        if (!item.categoryStructure) {
+          // Assign a default category structure based on the item's category
+          const handmadeCategories = ["Fishing", "Camping"];
+          const isHandmade = handmadeCategories.includes(item.category);
+
+          return {
+            ...item,
+            categoryStructure: {
+              main: isHandmade ? MainCategory.HANDMADE : MainCategory.PAINTINGS,
+              sub: item.category,
+            },
+          };
+        }
+        return item;
+      });
+
+      setProducts(processedProducts);
+
+      if (totalPages > 1) {
+        setPages(totalPages);
+      }
     }
-  }, [searchKeyword, currentPage, initialProducts]);
+  }, [searchKeyword, currentPage, initialProducts, totalPages]);
+
+  const renderPagination = () => {
+    // Only show pagination if we have more than 1 page and we're on the shop page
+    if (totalPages <= 1 || !isShopPage || !onPageChange) return null;
+
+    return (
+      <div className="pagination-container">
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+        >
+          &larr; წინა
+        </button>
+
+        <span className="pagination-info">
+          {currentPage} / {totalPages}
+        </span>
+
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+        >
+          შემდეგი &rarr;
+        </button>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -72,21 +182,24 @@ export function ProductGrid({
 
   return (
     <div className="product-grid">
+      <style jsx>{paginationStyles}</style>
       <div className="grid-container">
         {products.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}
       </div>
 
-      {pages > 1 && (
+      {renderPagination()}
+
+      {pages > 1 && !isShopPage && searchKeyword && (
         <div className="pagination-container">
           <button
             className="pagination-btn"
             disabled={currentPage <= 1}
             onClick={() =>
-              (window.location.href = searchKeyword
-                ? `/search/${searchKeyword}?page=${currentPage - 1}`
-                : `/?page=${currentPage - 1}`)
+              (window.location.href = `/search/${searchKeyword}?page=${
+                currentPage - 1
+              }`)
             }
           >
             Previous
@@ -104,9 +217,7 @@ export function ProductGrid({
                   currentPage === pageNum ? "active" : ""
                 }`}
                 onClick={() =>
-                  (window.location.href = searchKeyword
-                    ? `/search/${searchKeyword}?page=${pageNum}`
-                    : `/?page=${pageNum}`)
+                  (window.location.href = `/search/${searchKeyword}?page=${pageNum}`)
                 }
               >
                 {pageNum}
@@ -118,9 +229,9 @@ export function ProductGrid({
             className="pagination-btn"
             disabled={currentPage >= pages}
             onClick={() =>
-              (window.location.href = searchKeyword
-                ? `/search/${searchKeyword}?page=${currentPage + 1}`
-                : `/?page=${currentPage + 1}`)
+              (window.location.href = `/search/${searchKeyword}?page=${
+                currentPage + 1
+              }`)
             }
           >
             Next

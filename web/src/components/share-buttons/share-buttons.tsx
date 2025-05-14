@@ -57,7 +57,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
       props: {
         url: url,
         quote: title,
-        hashtag: '#SoulArt',
+        hashtag: '#FishHunt',
         appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '',
       }
     },
@@ -80,7 +80,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
       props: {
         url: url,
         title: title,
-        hashtags: ['SoulArt', 'Art']
+        hashtags: ['FishHunt', 'Fishing']
       }
     },
   ];

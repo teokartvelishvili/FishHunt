@@ -15,6 +15,7 @@ export class Order {
     type: [
       {
         name: { required: true, type: String },
+        nameEn: { required: false, type: String },
         qty: { required: true, type: Number },
         image: { required: true, type: String },
         price: { required: true, type: Number },
@@ -28,7 +29,13 @@ export class Order {
             deliveryType: { type: String }, // Use String type instead of enum
             minDeliveryDays: { type: Number },
             maxDeliveryDays: { type: Number },
-          
+            dimensions: {
+              type: {
+                width: { type: Number },
+                height: { type: Number },
+                depth: { type: Number },
+              },
+            },
           },
         },
       },

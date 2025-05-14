@@ -28,11 +28,22 @@ export class Review {
 export enum ProductStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
+  REJECTED = 'REJECTED',
 }
+
 export enum DeliveryType {
   SELLER = 'SELLER',
-  FishHunt = 'FishHunt'  
+  FishHunt = 'FishHunt',
+}
+
+export enum MainCategory {
+  PAINTINGS = 'PAINTINGS',
+  HANDMADE = 'HANDMADE',
+}
+
+export interface CategoryStructure {
+  main: MainCategory;
+  sub: string;
 }
 
 @Schema({ timestamps: true })
@@ -48,20 +59,29 @@ export class Product {
   @Prop({ required: true })
   name!: string;
 
+  @Prop({ required: false })
+  nameEn?: string;
+
   @Prop({ required: true })
   brand!: string;
 
-  @Prop({ required: true })
-  brandLogo!: string;
+  @Prop({})
+  brandLogo?: string;
 
   @Prop({ required: true })
   category!: string;
+
+  @Prop({ type: Object })
+  categoryStructure?: CategoryStructure;
 
   @Prop({ required: true, type: [String], default: [] })
   images!: string[];
 
   @Prop({ required: true })
   description!: string;
+
+  @Prop({ required: false })
+  descriptionEn?: string;
 
   @Prop({ required: true })
   reviews!: Review[];
@@ -83,7 +103,8 @@ export class Product {
 
   @Prop({ type: String })
   rejectionReason?: string;
-  @Prop({ type: String, enum: DeliveryType, default: DeliveryType.FishHunt })  // Changed default value
+
+  @Prop({ type: String, enum: DeliveryType, default: DeliveryType.FishHunt })
   deliveryType?: DeliveryType;
 
   @Prop({ type: Number })
@@ -91,6 +112,13 @@ export class Product {
 
   @Prop({ type: Number })
   maxDeliveryDays?: number;
+
+  @Prop({ type: Object })
+  dimensions?: {
+    width?: number;
+    height?: number;
+    depth?: number;
+  };
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

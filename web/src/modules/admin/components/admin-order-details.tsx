@@ -3,10 +3,11 @@
 import { CheckCircle2, XCircle, Store, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Order } from "@/types/order";
+import { Order, OrderItem } from "@/types/order";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./AdminOrderDetails.css";
 
 interface AdminOrderDetailsProps {
@@ -16,12 +17,19 @@ interface AdminOrderDetailsProps {
 export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const { language } = useLanguage();
 
+  // Helper function to get display name based on language
+  const getDisplayName = (item: OrderItem) => {
+    return language === "en" && item.nameEn ? item.nameEn : item.name;
+  };
+
+  // Group order items by delivery type with fixed logic for string comparison
   const sellerDeliveryItems = order.orderItems.filter(
     (item) => item.product && String(item.product.deliveryType) === "SELLER"
   );
 
-  const soulartDeliveryItems = order.orderItems.filter(
+  const fishHuntDeliveryItems = order.orderItems.filter(
     (item) => !item.product || String(item.product.deliveryType) !== "SELLER"
   );
 
@@ -97,31 +105,31 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
             </div>
           </div>
 
-          {/* Order Items */}
+          {/* Order Items - Now grouped by delivery type with fixed logic */}
           <div className="card">
             <h2>Order Items</h2>
+
             {sellerDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
                   <Store size={18} />
-                  <h3>გამყიდველის მიტანა</h3>
-            
+                  <h3>აგზავნის ავტორი</h3>
                 </div>
                 {sellerDeliveryItems.map((item) => (
-                  <div key={item.product?._id} className="order-item">
+                  <div key={item.productId} className="order-item">
                     <Image
                       src={item.image}
-                      alt={item.name}
+                      alt={getDisplayName(item)}
                       width={80}
                       height={80}
                       className="item-image"
                     />
                     <div>
                       <Link
-                        href={`/products/${item.product?._id}`}
+                        href={`/products/${item.productId}`}
                         className="item-name"
                       >
-                        {item.name}
+                        {getDisplayName(item)}
                       </Link>
                       <p>
                         {item.qty} x ${item.price.toFixed(2)} = $
@@ -139,27 +147,28 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 ))}
               </div>
             )}
-              {soulartDeliveryItems.length > 0 && (
+
+            {fishHuntDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
                   <Truck size={18} />
-                  <h3>SoulArt-ის კურიერი</h3>
+                  <h3>FishHunt-ის კურიერი</h3>
                 </div>
-                {soulartDeliveryItems.map((item) => (
-                  <div key={item.product?._id} className="order-item">
+                {fishHuntDeliveryItems.map((item) => (
+                  <div key={item.productId} className="order-item">
                     <Image
                       src={item.image}
-                      alt={item.name}
+                      alt={getDisplayName(item)}
                       width={80}
                       height={80}
                       className="item-image"
                     />
                     <div>
                       <Link
-                        href={`/products/${item.product?._id}`}
+                        href={`/products/${item.productId}`}
                         className="item-name"
                       >
-                        {item.name}
+                        {getDisplayName(item)}
                       </Link>
                       <p>
                         {item.qty} x ${item.price.toFixed(2)} = $
@@ -173,22 +182,22 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
 
             {/* If there are no delivery type groups, show items normally */}
             {sellerDeliveryItems.length === 0 &&
-              soulartDeliveryItems.length === 0 &&
+              fishHuntDeliveryItems.length === 0 &&
               order.orderItems.map((item) => (
-                <div key={item.product?._id} className="order-item">
+                <div key={item.productId} className="order-item">
                   <Image
                     src={item.image}
-                    alt={item.name}
+                    alt={getDisplayName(item)}
                     width={80}
                     height={80}
                     className="item-image"
                   />
                   <div>
                     <Link
-                      href={`/products/${item.product?._id}`}
+                      href={`/products/${item.productId}`}
                       className="item-name"
                     >
-                      {item.name}
+                      {getDisplayName(item)}
                     </Link>
                     <p>
                       {item.qty} x ${item.price.toFixed(2)} = $
@@ -206,24 +215,24 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
             <h2>Order Summary</h2>
             <div className="summary-item">
               <span>Items</span>
-              <span>${order.itemsPrice.toFixed(2)}</span>
+              <span>₾{order.itemsPrice.toFixed(2)}</span>
             </div>
             <div className="summary-item">
               <span>Shipping</span>
               <span>
                 {order.shippingPrice === 0
                   ? "Free"
-                  : `$${order.shippingPrice.toFixed(2)}`}
+                  : `₾${order.shippingPrice.toFixed(2)}`}
               </span>
             </div>
             <div className="summary-item">
               <span>Tax</span>
-              <span>${order.taxPrice.toFixed(2)}</span>
+              <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
             <hr />
             <div className="summary-total">
               <span>Total</span>
-              <span>${order.totalPrice.toFixed(2)}</span>
+              <span>₾{order.totalPrice.toFixed(2)}</span>
             </div>
           </div>
         </div>

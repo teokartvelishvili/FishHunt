@@ -6,58 +6,107 @@ import { toast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { productSchema } from "@/modules/products/validation/product";
 import { ZodError } from "zod";
-import { ProductFormData } from "@/modules/products/validation/product";
+import { ProductFormData as BaseProductFormData } from "@/modules/products/validation/product";
+import { useLanguage } from "@/hooks/LanguageContext";
+
+// Extended ProductFormData to include categoryStructure
+interface ProductFormData extends BaseProductFormData {
+  categoryStructure?: {
+    main: MainCategory;
+    sub: string;
+  };
+  nameEn?: string;
+  descriptionEn?: string;
+}
 import "./CreateProductForm.css";
 import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
+import { useUser } from "@/modules/auth/hooks/use-user";
 
-const categories = ["Fishing", "Hunting", "Camping", "Other"];
+// Ensure enum values are the same as what we expect from the database
+enum MainCategory {
+  PAINTINGS = "PAINTINGS",
+  HANDMADE = "HANDMADE",
+}
+
+// Make sure this object uses the same keys as in the MainCategory enum
+const categoryStructure = {
+  [MainCategory.PAINTINGS]: ["Hunting", "Other"],
+  [MainCategory.HANDMADE]: ["Fishing", "Camping"],
+};
 
 interface CreateProductFormProps {
   initialData?: ProductFormData & { _id?: string };
-  onSuccess?: (data: { id: string; name: string; [key: string]: string | number | boolean | null | undefined }) => void;
+  onSuccess?: (data: {
+    id: string;
+    name: string;
+    [key: string]: string | number | boolean | null | undefined;
+  }) => void;
   isEdit?: boolean;
 }
-export function CreateProductForm({ 
-  initialData, 
+export function CreateProductForm({
+  initialData,
   onSuccess,
-  isEdit = !!initialData?._id
+  isEdit = !!initialData?._id,
 }: CreateProductFormProps) {
-  console.log("Initial Data in Form:", initialData);
+  const { t } = useLanguage();
   const router = useRouter();
+  const { user } = useUser();
+  const isSeller = user?.role?.toLowerCase() === "seller";
+
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
   const [formData, setFormData] = useState<ProductFormData & { _id?: string }>(
     initialData || {
       name: "",
+      nameEn: "",
       price: 0,
       description: "",
+      descriptionEn: "",
       images: [],
       brand: "",
       category: "",
+      subcategory: "", // Add the required subcategory field
       countInStock: 0,
       brandLogo: undefined,
     }
   );
 
-  const [deliveryType, setDeliveryType] = useState<'SELLER' | 'FishHunt'>('FishHunt');
+  const [selectedMainCategory, setSelectedMainCategory] =
+    useState<MainCategory>(
+      initialData?.categoryStructure?.main || MainCategory.PAINTINGS
+    );
+  const [deliveryType, setDeliveryType] = useState<"SELLER" | "FishHunt">(
+    "FishHunt"
+  );
   const [minDeliveryDays, setMinDeliveryDays] = useState("");
   const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
-  
 
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Auto-fill seller info when user data loads
+  useEffect(() => {
+    if (user && isSeller && !isEdit) {
+      setFormData((prevData) => ({
+        ...prevData,
+        brand: user.name || user.storeName || "",
+        brandLogo: user.storeLogo || undefined,
+      }));
+    }
+  }, [user, isSeller, isEdit]);
+
   useEffect(() => {
     if (initialData) {
       console.log("Initial Data in Form:", initialData);
-      
+
       setFormData((prev) => ({
         ...prev,
         _id: initialData._id,
         name: initialData.name || "",
+        nameEn: initialData.nameEn || "",
         brand: initialData.brand || "",
         brandLogo:
           typeof initialData.brandLogo === "string"
@@ -66,12 +115,13 @@ export function CreateProductForm({
         category: initialData.category || "",
         images: initialData.images || [],
         description: initialData.description || "",
+        descriptionEn: initialData.descriptionEn || "",
         price: initialData.price || 0,
         countInStock: initialData.countInStock || 0,
       }));
 
       if (initialData.deliveryType) {
-        setDeliveryType(initialData.deliveryType as 'SELLER' | 'FishHunt');
+        setDeliveryType(initialData.deliveryType as "SELLER" | "FishHunt");
       }
       if (initialData.minDeliveryDays) {
         setMinDeliveryDays(initialData.minDeliveryDays.toString());
@@ -79,17 +129,50 @@ export function CreateProductForm({
       if (initialData.maxDeliveryDays) {
         setMaxDeliveryDays(initialData.maxDeliveryDays.toString());
       }
+
+      // Handle category structure if available
+      if (initialData.categoryStructure) {
+        // Check if the value from the API matches our enum values
+        const mainCat = initialData.categoryStructure.main;
+        // Make sure we use a valid value that exists in our enum
+        if (
+          mainCat &&
+          Object.values(MainCategory).includes(mainCat as MainCategory)
+        ) {
+          setSelectedMainCategory(mainCat as MainCategory);
+        } else {
+          // Default to PAINTINGS if the value doesn't match
+          setSelectedMainCategory(MainCategory.PAINTINGS);
+        }
+      } else {
+        // Default for legacy products without category structure
+        setSelectedMainCategory(MainCategory.PAINTINGS);
+      }
     }
   }, [initialData]);
 
+  useEffect(() => {
+    if (
+      !formData.category &&
+      categoryStructure[selectedMainCategory]?.length > 0
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        category: categoryStructure[selectedMainCategory][0],
+      }));
+    }
+  }, [selectedMainCategory, formData.category]);
   const resetForm = () => {
     setFormData({
       name: "",
+      nameEn: "",
       price: 0,
       description: "",
+      descriptionEn: "",
       images: [],
       brand: "",
       category: "",
+      subcategory: "", // Add the required subcategory field
       countInStock: 0,
       brandLogo: undefined,
     });
@@ -97,15 +180,22 @@ export function CreateProductForm({
     setServerError(null);
     setSuccess(null);
 
-    setDeliveryType('FishHunt');
+    setDeliveryType("FishHunt");
+    setDeliveryType("FishHunt");
     setMinDeliveryDays("");
     setMaxDeliveryDays("");
- 
   };
 
   const validateField = (field: keyof ProductFormData, value: unknown) => {
     try {
-      productSchema.shape[field].parse(value);
+      // Check if the field exists in productSchema before validating
+      if (field in productSchema.shape) {
+        const shape = productSchema.shape as Record<
+          string,
+          { parse(value: unknown): unknown }
+        >;
+        shape[field].parse(value);
+      }
       setErrors((prev) => ({ ...prev, [field]: undefined }));
       return true;
     } catch (error) {
@@ -124,6 +214,20 @@ export function CreateProductForm({
       ...prev,
       [name]:
         name === "price" || name === "countInStock" ? Number(value) : value,
+    }));
+  };
+
+  const handleMainCategoryChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newMainCategory = e.target.value as MainCategory;
+    setSelectedMainCategory(newMainCategory);
+
+    // Automatically select the first subcategory when changing the main category
+    const firstSubcategory = categoryStructure[newMainCategory]?.[0] || "";
+    setFormData((prev) => ({
+      ...prev,
+      category: firstSubcategory,
     }));
   };
 
@@ -175,8 +279,7 @@ export function CreateProductForm({
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (
         formData.images.some(
-          (image) =>
-            image instanceof File && !allowedTypes.includes(image.type)
+          (image) => image instanceof File && !allowedTypes.includes(image.type)
         )
       ) {
         setErrors((prev) => ({
@@ -187,8 +290,20 @@ export function CreateProductForm({
         return;
       }
 
-      if (deliveryType === 'SELLER' && (!minDeliveryDays || !maxDeliveryDays)) {
-        setServerError("გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას.");
+      // Verify we have at least one image
+      if (formData.images.length === 0) {
+        setErrors((prev) => ({
+          ...prev,
+          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+        }));
+        setPending(false);
+        return;
+      }
+
+      if (deliveryType === "SELLER" && (!minDeliveryDays || !maxDeliveryDays)) {
+        setServerError(
+          "გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას."
+        );
         setPending(false);
         return;
       }
@@ -198,7 +313,7 @@ export function CreateProductForm({
         setServerError("ავტორიზაცია ვერ მოხერხდა. გთხოვთ, შეხვიდეთ თავიდან.");
         setPending(false);
         setTimeout(() => {
-          window.location.href = '/login?redirect=/admin/products';
+          window.location.href = "/login?redirect=/admin/products";
         }, 2000);
         return;
       }
@@ -207,30 +322,64 @@ export function CreateProductForm({
 
       // Add basic form fields
       formDataToSend.append("name", formData.name);
+      formDataToSend.append("nameEn", formData.nameEn || "");
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("description", formData.description);
-      formDataToSend.append("brand", formData.brand);
+      formDataToSend.append("descriptionEn", formData.descriptionEn || "");
       formDataToSend.append("category", formData.category);
       formDataToSend.append("countInStock", String(formData.countInStock));
 
+      // Handle brand name
+      if (isSeller) {
+        formDataToSend.append(
+          "brand",
+          user?.name || user?.storeName || formData.brand
+        );
+      } else {
+        formDataToSend.append("brand", formData.brand);
+      }
+
+      // SIMPLIFIED logo handling - THIS IS THE FIX
+      // For new uploads (File objects)
+      if (formData.brandLogo instanceof File) {
+        console.log("Sending brand logo file", formData.brandLogo.name);
+        formDataToSend.append("brandLogo", formData.brandLogo);
+      }
+      // For existing logo URLs - just pass the URL as a string
+      else if (typeof formData.brandLogo === "string" && formData.brandLogo) {
+        console.log("Sending brand logo URL", formData.brandLogo);
+        formDataToSend.append("brandLogoUrl", formData.brandLogo);
+      }
+      // For sellers with profiles - use their store logo
+      else if (isSeller && user?.storeLogo) {
+        console.log("Using seller store logo from profile", user.storeLogo);
+        formDataToSend.append("brandLogoUrl", user.storeLogo);
+      }
+
       // Add delivery type
       formDataToSend.append("deliveryType", deliveryType);
-      
+
       // Add delivery days if SELLER type
-      if (deliveryType === 'SELLER') {
+      if (deliveryType === "SELLER") {
         formDataToSend.append("minDeliveryDays", minDeliveryDays);
         formDataToSend.append("maxDeliveryDays", maxDeliveryDays);
       }
 
-      // Add dimensions if provided
-     
+      // Add category structure to form data
+      formDataToSend.append(
+        "categoryStructure",
+        JSON.stringify({
+          main: selectedMainCategory,
+          sub: formData.category,
+        })
+      );
 
       // Handle images - separate existing images from new ones
       const existingImages: string[] = [];
       const newFiles: File[] = [];
 
-      formData.images.forEach(image => {
-        if (typeof image === 'string') {
+      formData.images.forEach((image) => {
+        if (typeof image === "string") {
           existingImages.push(image);
         } else if (image instanceof File) {
           newFiles.push(image);
@@ -243,26 +392,52 @@ export function CreateProductForm({
       }
 
       // Add new image files
-      newFiles.forEach(file => {
-        formDataToSend.append("images", file);
-      });
-
-      // Handle brand logo
-      if (formData.brandLogo instanceof File) {
-        formDataToSend.append("brandLogo", formData.brandLogo);
-      } else if (typeof formData.brandLogo === 'string') {
-        formDataToSend.append("existingBrandLogo", formData.brandLogo);
+      if (newFiles.length > 0) {
+        newFiles.forEach((file) => {
+          formDataToSend.append("images", file);
+        });
+      } else if (existingImages.length === 0) {
+        // If no images are provided at all, throw an error
+        setErrors((prev) => ({
+          ...prev,
+          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+        }));
+        setPending(false);
+        return;
       }
 
+      // Double check that we're sending either existingImages or new images
+      const hasImages =
+        (formDataToSend.has("existingImages") &&
+          JSON.parse(formDataToSend.get("existingImages") as string).length >
+            0) ||
+        formDataToSend.getAll("images").length > 0;
+
+      if (!hasImages) {
+        setErrors((prev) => ({
+          ...prev,
+          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+        }));
+        setPending(false);
+        return;
+      }
+
+      console.log("===== Form Data Contents =====");
+      for (const [key, value] of formDataToSend.entries()) {
+        if (key === "images") {
+          console.log(`${key}: [File object]`);
+        } else {
+          console.log(`${key}: ${value}`);
+        }
+      }
+      console.log("=============================");
+
       const method = isEdit ? "PUT" : "POST";
-      const endpoint = isEdit
-        ? `/products/${formData._id}`
-        : "/products";
+      const endpoint = isEdit ? `/products/${formData._id}` : "/products";
 
       console.log("Sending request:", {
         method,
         endpoint,
-        formData: "FormData object (not shown)"
       });
 
       const response = await fetch(
@@ -271,8 +446,8 @@ export function CreateProductForm({
           method,
           body: formDataToSend,
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -289,7 +464,9 @@ export function CreateProductForm({
 
       const data = await response.json();
       console.log("Server response:", data);
-      const successMessage = isEdit ? "ნამუშევარი წარმატებით განახლდა!" : "ნამუშევარი წარმატებით დაემატა!";
+      const successMessage = isEdit
+        ? "ნამუშევარი წარმატებით განახლდა!"
+        : "ნამუშევარი წარმატებით დაემატა!";
       setSuccess(successMessage);
 
       toast({
@@ -299,8 +476,8 @@ export function CreateProductForm({
 
       if (!isEdit) {
         resetForm();
-      } 
-      
+      }
+
       if (onSuccess) {
         onSuccess(data);
       } else {
@@ -318,9 +495,20 @@ export function CreateProductForm({
     }
   };
 
+  // Helper function to translate category names for display
+  const translateCategory = (category: string) => {
+    return t(`productCategories.${category}`);
+  };
+
+  // Add main category translations
+  const mainCategoryLabels = {
+    [MainCategory.PAINTINGS]: t("categories.paintings"),
+    [MainCategory.HANDMADE]: t("categories.handmade"),
+  };
+
   return (
     <div className="create-product-form">
-          {success && (
+      {success && (
         <div className="success-message">
           <p className="text-center">{success}</p>
         </div>
@@ -332,7 +520,7 @@ export function CreateProductForm({
           </div>
         )}
         <div>
-          <label htmlFor="name">ნამუშევარის სახელი</label>
+          <label htmlFor="name">ნამუშევარის სახელი (ქართულად)</label>
           <input
             id="name"
             name="name"
@@ -345,7 +533,22 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="description">Description</label>
+          <label htmlFor="nameEn">ნამუშევარის სახელი (ინგლისურად)</label>
+          <input
+            id="nameEn"
+            name="nameEn"
+            value={formData.nameEn}
+            onChange={handleChange}
+            className="create-product-input"
+            placeholder="Product name in English (optional)"
+          />
+          {errors.nameEn && (
+            <p className="create-product-error">{errors.nameEn}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="description">აღწერა (ქართულად)</label>
           <textarea
             id="description"
             name="description"
@@ -356,6 +559,21 @@ export function CreateProductForm({
           />
           {errors.description && (
             <p className="create-product-error">{errors.description}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="descriptionEn">აღწერა (ინგლისურად)</label>
+          <textarea
+            id="descriptionEn"
+            name="descriptionEn"
+            value={formData.descriptionEn}
+            onChange={handleChange}
+            className="create-product-textarea"
+            placeholder="Product description in English (optional)"
+          />
+          {errors.descriptionEn && (
+            <p className="create-product-error">{errors.descriptionEn}</p>
           )}
         </div>
 
@@ -376,27 +594,41 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="category">Category</label>
+          <label htmlFor="mainCategory">მთავარი კატეგორია</label>
+          <select
+            name="mainCategory"
+            value={selectedMainCategory}
+            onChange={handleMainCategoryChange}
+            className="create-product-select"
+          >
+            {Object.entries(mainCategoryLabels).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="category">ქვეკატეგორია</label>
           <select
             name="category"
             value={formData.category}
             onChange={handleCategoryChange}
             className="create-product-select"
           >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
+            {categoryStructure[selectedMainCategory] &&
+              categoryStructure[selectedMainCategory].map((category) => (
+                <option key={category} value={category}>
+                  {translateCategory(category)}
+                </option>
+              ))}
           </select>
           {errors.category && (
             <p className="create-product-error">{errors.category}</p>
           )}
         </div>
-        
-       
-        
+
         <div>
           <label>მიტანის ტიპი</label>
           <div className="delivery-options">
@@ -406,8 +638,8 @@ export function CreateProductForm({
                   type="radio"
                   id="FishHunt-delivery"
                   name="deliveryType"
-                  checked={deliveryType === 'FishHunt'}
-                  onChange={() => setDeliveryType('FishHunt')}
+                  checked={deliveryType === "FishHunt"}
+                  onChange={() => setDeliveryType("FishHunt")}
                 />
                 <label htmlFor="FishHunt-delivery">FishHunt-ის კურიერი</label>
               </div>
@@ -416,17 +648,19 @@ export function CreateProductForm({
                   type="radio"
                   id="seller-delivery"
                   name="deliveryType"
-                  checked={deliveryType === 'SELLER'}
-                  onChange={() => setDeliveryType('SELLER')}
+                  checked={deliveryType === "SELLER"}
+                  onChange={() => setDeliveryType("SELLER")}
                 />
                 <label htmlFor="seller-delivery">გამყიდველი</label>
               </div>
             </div>
-            
-            {deliveryType === 'SELLER' && (
+
+            {deliveryType === "SELLER" && (
               <div className="delivery-days">
                 <div>
-                  <label htmlFor="minDeliveryDays">მინიმალური ვადა (დღეები)</label>
+                  <label htmlFor="minDeliveryDays">
+                    მინიმალური ვადა (დღეები)
+                  </label>
                   <input
                     id="minDeliveryDays"
                     type="number"
@@ -434,11 +668,13 @@ export function CreateProductForm({
                     value={minDeliveryDays}
                     onChange={(e) => setMinDeliveryDays(e.target.value)}
                     className="create-product-input"
-                    required={deliveryType === 'SELLER'}
+                    required={deliveryType === "SELLER"}
                   />
                 </div>
                 <div>
-                  <label htmlFor="maxDeliveryDays">მაქსიმალური ვადა (დღეები)</label>
+                  <label htmlFor="maxDeliveryDays">
+                    მაქსიმალური ვადა (დღეები)
+                  </label>
                   <input
                     id="maxDeliveryDays"
                     type="number"
@@ -446,7 +682,7 @@ export function CreateProductForm({
                     value={maxDeliveryDays}
                     onChange={(e) => setMaxDeliveryDays(e.target.value)}
                     className="create-product-input"
-                    required={deliveryType === 'SELLER'}
+                    required={deliveryType === "SELLER"}
                   />
                 </div>
               </div>
@@ -465,6 +701,11 @@ export function CreateProductForm({
             className="create-product-file"
             multiple
           />
+          {formData.images.length === 0 && (
+            <p className="upload-reminder">
+              გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი
+            </p>
+          )}
           <div className="image-preview-container">
             {formData.images.map((image, index) => {
               const imageUrl =
@@ -496,16 +737,33 @@ export function CreateProductForm({
           )}
         </div>
         <div>
-          <label htmlFor="brand">Brand</label>
+          <label htmlFor="brand">მხატვრის/კომპანიის სახელი</label>
           <input
             id="brand"
             name="brand"
-            value={formData.brand}
-            onChange={handleChange}
+            value={
+              isSeller
+                ? user?.name || user?.storeName || formData.brand
+                : formData.brand
+            }
+            onChange={isSeller ? undefined : handleChange}
             placeholder="Enter brand name"
+            disabled={isSeller}
+            className={
+              isSeller
+                ? "create-product-input disabled"
+                : "create-product-input"
+            }
             required
           />
-          {errors.brand && <p className="create-product-error">{errors.brand}</p>}
+          {errors.brand && (
+            <p className="create-product-error">{errors.brand}</p>
+          )}
+          {isSeller && (
+            <p className="brand-notice">
+              მხატვრის/კომპანიის სახელი ავტომატურად ივსება თქვენი პროფილიდან
+            </p>
+          )}
         </div>
         <div>
           <label htmlFor="countInStock">Stock Count</label>
@@ -524,26 +782,68 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="brandLogo">Brand Logo</label>
-          <input
-            id="brandLogo"
-            name="brandLogo"
-            type="file"
-            accept="image/*"
-            onChange={handleBrandLogoChange}
-            className="create-product-file"
-          />
-          {formData.brandLogo && typeof formData.brandLogo === "string" && (
-            <div className="image-preview">
-              <Image
-                loader={({ src }) => src}
-                src={formData.brandLogo}
-                alt="Brand logo preview"
-                width={100}
-                height={100}
-                unoptimized
-                className="preview-image"
+          <label htmlFor="brandLogo">
+            მხატვრის/კომპანიის ლოგო (არასავალდებულო)
+          </label>
+          {/* For seller accounts, show their existing logo */}
+          {isSeller &&
+          (user?.storeLogo ||
+            (typeof formData.brandLogo === "string" && formData.brandLogo)) ? (
+            <div className="brand-logo-container">
+              <div className="image-preview">
+                <Image
+                  loader={({ src }) => src}
+                  src={
+                    user?.storeLogo ||
+                    (typeof formData.brandLogo === "string"
+                      ? formData.brandLogo
+                      : "")
+                  }
+                  alt="Brand logo preview"
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="preview-image"
+                />
+              </div>
+              <p className="brand-notice">
+                ლოგო ავტომატურად მოიტანება თქვენი პროფილიდან
+              </p>
+            </div>
+          ) : !isSeller ? (
+            <>
+              <input
+                id="brandLogo"
+                name="brandLogo"
+                type="file"
+                accept="image/*"
+                onChange={handleBrandLogoChange}
+                className="create-product-file"
               />
+              {formData.brandLogo && typeof formData.brandLogo === "string" && (
+                <div className="image-preview">
+                  <Image
+                    loader={({ src }) => src}
+                    src={formData.brandLogo}
+                    alt="Brand logo preview"
+                    width={100}
+                    height={100}
+                    unoptimized
+                    className="preview-image"
+                  />
+                </div>
+              )}
+              <p className="logo-optional-note">
+                ლოგოს დამატება არასავალდებულოა
+              </p>
+            </>
+          ) : (
+            <div className="no-logo-message">
+              <p>
+                ლოგო არ არის მითითებული თქვენს პროფილში. პროდუქტი შეიქმნება
+                ლოგოს გარეშე, ან შეგიძლიათ{" "}
+                <a href="/profile">პროფილის გვერდზე</a> დაამატოთ ლოგო.
+              </p>
             </div>
           )}
           {errors.brandLogo && (

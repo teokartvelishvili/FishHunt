@@ -1,5 +1,5 @@
 import { ProductStatus } from '@/types';
-import { Badge } from './badge'
+import { Badge } from './badge';
 
 interface StatusBadgeProps {
   status: ProductStatus;

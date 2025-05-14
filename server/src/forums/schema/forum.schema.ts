@@ -20,6 +20,12 @@ export class Comment extends Document {
     default: [],
   })
   replies: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: Number, default: 0 })
+  likes: number;
+
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], default: [] })
+  likesArray: mongoose.Schema.Types.ObjectId[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
@@ -35,8 +41,13 @@ export class Forum extends Document {
   @Prop({
     type: [String],
     enum: {
-      values: ['Fishing', 'Camping', 'Hunting'],
-      message: 'Tags must be one of: Fishing, Camping, Hunting',
+      values: [
+      'ხელნაკეთი ნივთები',
+      'ნახატები',
+      'სხვა'
+      ],
+      message:
+        'Tags must be one of: ხელნაკეთი ნივთები, ნახატები, სხვა',
     },
     required: true,
   })

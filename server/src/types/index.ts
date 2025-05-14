@@ -1,13 +1,25 @@
 import { Role } from './role.enum';
 
+export enum MainCategory {
+  PAINTINGS = 'PAINTINGS',
+  HANDMADE = 'HANDMADE',
+}
+
+export interface CategoryStructure {
+  main: MainCategory;
+  sub: string;
+}
 export interface Product {
   _id: string;
+  user: User;
   name: string;
+  nameEn?: string;
   images: string[];
   description: string;
+  descriptionEn?: string;
   brand: string;
   brandLogo: string;
-  category: string;
+  category: string; // Make sure this exists
   price: number;
   countInStock: number;
   rating: number;
@@ -17,15 +29,19 @@ export interface Product {
   updatedAt: string;
   status: ProductStatus;
   rejectionReason?: string;
-  deliveryType?: 'SELLER' | 'FishHunt';  // Corrected from 'SOULART' to 'SoulArt'
+  deliveryType?: 'SELLER' | 'FishHunt'; 
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
- 
+  dimensions?: {
+    width?: number;
+    height?: number;
+    depth?: number;
+  };
 }
 export enum ProductStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
+  REJECTED = 'REJECTED',
 }
 
 export interface Review {
@@ -47,7 +63,6 @@ export interface User {
   name: string;
   email: string;
   phoneNumber: string;
-  // isAdmin: boolean;
   role: Role;
   seller?: {
     storeName: string;
@@ -65,8 +80,6 @@ export interface User {
   updatedAt: string;
 }
 
-
-
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -78,4 +91,4 @@ export interface PaginatedResponse<T> {
   total: number;
   page: number;
   pages: number;
-} 
+}
