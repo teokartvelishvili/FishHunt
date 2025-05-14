@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Copy, Share2, X } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { Copy, Share2, X } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import {
   FacebookShareButton,
   // FacebookMessengerShareButton, // Commented out messenger
@@ -18,8 +18,8 @@ import {
   WhatsappIcon,
   LinkedinIcon,
   EmailIcon,
-} from 'react-share';
-import './share-buttons.css';
+} from "react-share";
+import "./share-buttons.css";
 
 interface ShareButtonsProps {
   url: string;
@@ -40,7 +40,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-        console.log(error)
+      console.log(error);
       toast({
         variant: "destructive",
         title: "შეცდომა",
@@ -53,13 +53,12 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
     {
       Button: FacebookShareButton,
       Icon: FacebookIcon,
-      label: 'Facebook',
+      label: "Facebook",
       props: {
         url: url,
         quote: title,
-        hashtag: '#FishHunt',
-        appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '',
-      }
+        hashtag: "#FishHunt",
+      },
     },
     /* Removed Messenger button
     {
@@ -76,12 +75,12 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
     {
       Button: TwitterShareButton,
       Icon: TwitterIcon,
-      label: 'Twitter',
+      label: "Twitter",
       props: {
         url: url,
         title: title,
-        hashtags: ['FishHunt', 'Fishing']
-      }
+        hashtags: ["FishHunt", "Fishing"],
+      },
     },
   ];
 
@@ -89,54 +88,54 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
     {
       Button: TelegramShareButton,
       Icon: TelegramIcon,
-      label: 'Telegram',
+      label: "Telegram",
       props: {
         url: url,
-        title: title
-      }
+        title: title,
+      },
     },
     {
       Button: WhatsappShareButton,
       Icon: WhatsappIcon,
-      label: 'WhatsApp',
+      label: "WhatsApp",
       props: {
         url: url,
-        title: title
-      }
+        title: title,
+      },
     },
     {
       Button: LinkedinShareButton,
       Icon: LinkedinIcon,
-      label: 'LinkedIn',
+      label: "LinkedIn",
       props: {
         url: url,
-        title: title
-      }
+        title: title,
+      },
     },
     {
       Button: EmailShareButton,
       Icon: EmailIcon,
-      label: 'Email',
+      label: "Email",
       props: {
         url: url,
-        subject: title
-      }
+        subject: title,
+      },
     },
     {
       Button: ViberShareButton,
       Icon: ViberIcon,
-      label: 'Viber',
+      label: "Viber",
       props: {
         url: url,
-        title: title
-      }
+        title: title,
+      },
     },
   ];
 
   return (
     <div className="share-container">
       <div className="share-buttons">
-        <button 
+        <button
           onClick={handleCopy}
           className="share-button copy"
           title="Copy Link"
@@ -147,10 +146,18 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
             <Copy size={20} />
           )}
         </button>
-        
 
         {mainButtons.map(({ Button, Icon, label, props }) => (
-          <Button key={label} {...props} className="share-button">
+          <Button
+            key={label}
+            {...props}
+            className="share-button"
+            {...(label === "Facebook"
+              ? {
+                  appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
+                }
+              : {})}
+          >
             <Icon size={36} round />
           </Button>
         ))}

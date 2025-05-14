@@ -12,19 +12,21 @@ import Header from "@/components/Header/header";
 import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_CLIENT_URL || 'https://fishhunt.ge'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_CLIENT_URL || "https://fishhunt.ge"
+  ),
   title: "FishHunt",
   description:
     "FishHunt - Ecommerce platform for fishing equipment and accessories",
   openGraph: {
-    type: 'website',
-    locale: 'ka_GE',
-    url: 'https://fishhunt.ge/',
-    siteName: 'FishHunt',
-    title: 'FishHunt',
+    type: "website",
+    locale: "ka_GE",
+    url: "https://fishhunt.ge/",
+    siteName: "FishHunt",
+    title: "FishHunt",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
   },
 };
 
@@ -41,11 +43,12 @@ export default function RootLayout({
           async
           defer
           crossOrigin="anonymous"
-          src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
+          src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appid=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
         />
-        
       </head>
-      <body className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}>
+      <body
+        className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
+      >
         <Providers>
           <AuthProvider>
             <CartProvider>
