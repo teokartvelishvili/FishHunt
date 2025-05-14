@@ -23,7 +23,7 @@ export function ProductFilters({
   onArtistChange,
   onSortChange,
   selectedCategory: initialCategory = "all",
-  selectedMainCategory: initialMainCategory = MainCategory.PAINTINGS,
+  selectedMainCategory: initialMainCategory = MainCategory.FISHING,
   onMainCategoryChange,
 }: FilterProps) {
   const { t } = useLanguage();
@@ -38,20 +38,20 @@ export function ProductFilters({
     useState(initialMainCategory);
 
   const categoriesByType = {
-    [MainCategory.PAINTINGS]: ["Hunting", "Other"],
-    [MainCategory.HANDMADE]: ["Fishing", "Camping"],
+    [MainCategory.FISHING]: ["Fishing", "Camping"],
+    [MainCategory.HUNTING]: ["Hunting", "Other"],
   };
 
   // Helper function to translate category names
   const translateCategory = (category: string) => {
-    if (category === "all") return t("shop.allArtworks");
+    if (category === "all") return "All products";
     return t(`productCategories.${category}`);
   };
 
   // Main category translation mapping
   const mainCategoryLabels = {
-    [MainCategory.PAINTINGS]: t("categories.paintings"),
-    [MainCategory.HANDMADE]: t("categories.handmade"),
+    [MainCategory.FISHING]: t("categories.FISHING"),
+    [MainCategory.HUNTING]: t("categories.HUNTING"),
   };
 
   const categories = ["all", ...categoriesByType[selectedMainCategory]];
@@ -141,18 +141,18 @@ export function ProductFilters({
 
   // Determine the theme class based on the selected main category
   const themeClass =
-    selectedMainCategory === MainCategory.HANDMADE ? "handmade-theme" : "";
+    selectedMainCategory === MainCategory.HUNTING ? "HUNTING-theme" : "";
 
   // Get the appropriate search label based on the selected main category
   const getSearchLabel = () => {
-    return selectedMainCategory === MainCategory.PAINTINGS
+    return selectedMainCategory === MainCategory.FISHING
       ? t("shop.painters")
       : t("shop.authorCompany");
   };
 
   // Get placeholder text for search input
   const getSearchPlaceholder = () => {
-    return selectedMainCategory === MainCategory.PAINTINGS
+    return selectedMainCategory === MainCategory.FISHING
       ? t("shop.searchPainter")
       : t("shop.searchAuthorCompany");
   };
@@ -163,20 +163,20 @@ export function ProductFilters({
         <h3 className="filter-title">{t("shop.mainCategory")}</h3>
         <div className="main-category-buttons">
           <button
-            className={`main-category-btn paintings ${
-              selectedMainCategory === MainCategory.PAINTINGS ? "active" : ""
+            className={`main-category-btn FISHING ${
+              selectedMainCategory === MainCategory.FISHING ? "active" : ""
             }`}
-            onClick={() => handleMainCategoryChange(MainCategory.PAINTINGS)}
+            onClick={() => handleMainCategoryChange(MainCategory.FISHING)}
           >
-            {mainCategoryLabels[MainCategory.PAINTINGS]}
+            {mainCategoryLabels[MainCategory.FISHING]}
           </button>
           <button
-            className={`main-category-btn handmade ${
-              selectedMainCategory === MainCategory.HANDMADE ? "active" : ""
+            className={`main-category-btn HUNTING ${
+              selectedMainCategory === MainCategory.HUNTING ? "active" : ""
             }`}
-            onClick={() => handleMainCategoryChange(MainCategory.HANDMADE)}
+            onClick={() => handleMainCategoryChange(MainCategory.HUNTING)}
           >
-            {mainCategoryLabels[MainCategory.HANDMADE]}
+            {mainCategoryLabels[MainCategory.HUNTING]}
           </button>
         </div>
       </div>

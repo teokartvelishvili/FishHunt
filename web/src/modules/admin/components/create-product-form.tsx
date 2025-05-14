@@ -25,14 +25,14 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 
 // Ensure enum values are the same as what we expect from the database
 enum MainCategory {
-  PAINTINGS = "PAINTINGS",
-  HANDMADE = "HANDMADE",
+  FISHING = "FISHING",
+  HUNTING = "HUNTING",
 }
 
 // Make sure this object uses the same keys as in the MainCategory enum
 const categoryStructure = {
-  [MainCategory.PAINTINGS]: ["Hunting", "Other"],
-  [MainCategory.HANDMADE]: ["Fishing", "Camping"],
+  [MainCategory.FISHING]: ["Hunting", "Other"],
+  [MainCategory.HUNTING]: ["Fishing", "Camping"],
 };
 
 interface CreateProductFormProps {
@@ -75,7 +75,7 @@ export function CreateProductForm({
 
   const [selectedMainCategory, setSelectedMainCategory] =
     useState<MainCategory>(
-      initialData?.categoryStructure?.main || MainCategory.PAINTINGS
+      initialData?.categoryStructure?.main || MainCategory.FISHING
     );
   const [deliveryType, setDeliveryType] = useState<"SELLER" | "FishHunt">(
     "FishHunt"
@@ -141,12 +141,12 @@ export function CreateProductForm({
         ) {
           setSelectedMainCategory(mainCat as MainCategory);
         } else {
-          // Default to PAINTINGS if the value doesn't match
-          setSelectedMainCategory(MainCategory.PAINTINGS);
+          // Default to FISHING if the value doesn't match
+          setSelectedMainCategory(MainCategory.FISHING);
         }
       } else {
         // Default for legacy products without category structure
-        setSelectedMainCategory(MainCategory.PAINTINGS);
+        setSelectedMainCategory(MainCategory.FISHING);
       }
     }
   }, [initialData]);
@@ -502,8 +502,8 @@ export function CreateProductForm({
 
   // Add main category translations
   const mainCategoryLabels = {
-    [MainCategory.PAINTINGS]: t("categories.paintings"),
-    [MainCategory.HANDMADE]: t("categories.handmade"),
+    [MainCategory.FISHING]: t("categories.FISHING"),
+    [MainCategory.HUNTING]: t("categories.HUNTING"),
   };
 
   return (

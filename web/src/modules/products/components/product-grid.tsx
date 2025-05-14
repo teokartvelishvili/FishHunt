@@ -81,8 +81,8 @@ export function ProductGrid({
               // Assign a default category structure based on the item's category
               const mainCategory =
                 item.category && ["Fishing", "Camping"].includes(item.category)
-                  ? MainCategory.HANDMADE
-                  : MainCategory.PAINTINGS;
+                  ? MainCategory.HUNTING
+                  : MainCategory.FISHING;
               return {
                 ...item,
                 categoryStructure: {
@@ -107,13 +107,13 @@ export function ProductGrid({
       const processedProducts = initialProducts?.map((item) => {
         if (!item.categoryStructure) {
           // Assign a default category structure based on the item's category
-          const handmadeCategories = ["Fishing", "Camping"];
-          const isHandmade = handmadeCategories.includes(item.category);
+          const fishingCategories = ["Fishing", "Camping"];
+          const isFishing = fishingCategories.includes(item.category);
 
           return {
             ...item,
             categoryStructure: {
-              main: isHandmade ? MainCategory.HANDMADE : MainCategory.PAINTINGS,
+              main: isFishing ? MainCategory.HUNTING : MainCategory.FISHING,
               sub: item.category,
             },
           };

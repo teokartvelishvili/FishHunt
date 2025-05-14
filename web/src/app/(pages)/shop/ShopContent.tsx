@@ -41,9 +41,9 @@ const ShopContent = () => {
   const [sortOption, setSortOption] = useState<"asc" | "desc" | "">("");
   const [selectedMainCategory, setSelectedMainCategory] =
     useState<MainCategory>(
-      mainCategoryParam === MainCategory.HANDMADE.toString()
-        ? MainCategory.HANDMADE
-        : MainCategory.PAINTINGS
+      mainCategoryParam === MainCategory.HUNTING.toString()
+        ? MainCategory.HUNTING
+        : MainCategory.FISHING
     );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,9 +64,9 @@ const ShopContent = () => {
     setCurrentPage(pageParam);
 
     const mainCat =
-      mainCategoryParam === MainCategory.HANDMADE.toString()
-        ? MainCategory.HANDMADE
-        : MainCategory.PAINTINGS;
+      mainCategoryParam === MainCategory.HUNTING.toString()
+        ? MainCategory.HUNTING
+        : MainCategory.FISHING;
     setSelectedMainCategory(mainCat);
   }, [pageParam, mainCategoryParam]);
 
@@ -195,15 +195,15 @@ const ShopContent = () => {
   };
 
   const getTheme = () => {
-    return selectedMainCategory === MainCategory.HANDMADE
-      ? "handmade-theme"
+    return selectedMainCategory === MainCategory.HUNTING
+      ? "HUNTING-theme"
       : "default";
   };
 
   const renderAnimatedIcons = () => {
-    if (selectedMainCategory === MainCategory.HANDMADE) {
+    if (selectedMainCategory === MainCategory.HUNTING) {
       return (
-        <div className="shop-animated-icons handmade-theme">
+        <div className="shop-animated-icons HUNTING-theme">
           <div className="icon pottery-icon">
             <CakeSlice />
           </div>
@@ -245,7 +245,7 @@ const ShopContent = () => {
       {renderAnimatedIcons()}
 
       <h1 className="text-2xl font-bold mb-4 relative z-10">
-        {brand ? `${brand}${t("shop.artistWorks")}` : t("shop.allArtworks")}
+        {brand ? `${brand}${"brands"}` : "all products"}
       </h1>
       <ProductFilters
         products={products}

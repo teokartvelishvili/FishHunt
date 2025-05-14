@@ -7,18 +7,25 @@ import { useSellerRegister } from "../hooks/use-auth";
 import Link from "next/link";
 import "./register-form.css";
 import type * as z from "zod";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import Image from "next/image";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 type SellerRegisterFormData = z.infer<typeof sellerRegisterSchema>;
 
 export function SellerRegisterForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const { mutate: register, isPending } = useSellerRegister();
-  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const [registrationError, setRegistrationError] = useState<string | null>(
+    null
+  );
   const [isSuccess, setIsSuccess] = useState(false);
-  
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const {
     register: registerField,
     handleSubmit,
@@ -27,58 +34,92 @@ export function SellerRegisterForm() {
     resolver: zodResolver(sellerRegisterSchema),
   });
 
+  const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        if (e.target?.result) {
+          setLogoPreview(e.target.result as string);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = handleSubmit((data) => {
     setRegistrationError(null);
-    
-    register(data, {
+
+    // Create FormData to handle file uploads
+    const formData = new FormData();
+
+    // Add all form fields to FormData
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        formData.append(key, value as string);
+      }
+    });
+
+    // Add the logo file if it exists
+    if (fileInputRef.current?.files?.length) {
+      formData.append("logoFile", fileInputRef.current.files[0]);
+    }
+
+    register(formData, {
       onSuccess: () => {
         setIsSuccess(true);
         toast({
-          title: "რეგისტრაცია წარმატებულია",
-          description: "თქვენი გამყიდველის ანგარიში წარმატებით შეიქმნა",
+          title: t("auth.registrationSuccessful"),
+          description: t("auth.sellerAccountCreatedSuccessfully"),
           variant: "default",
         });
-        
+
         // Redirect to login page after 2 seconds
         setTimeout(() => {
-          router.push('/login');
+          router.push("/login");
         }, 2000);
       },
       onError: (error) => {
         // Display the error message directly from the backend
         const errorMessage = error.message;
         setRegistrationError(errorMessage);
-        
+
         toast({
-          title: "რეგისტრაცია ვერ მოხერხდა",
+          title: t("auth.registrationFailed"),
           description: errorMessage,
           variant: "destructive",
         });
-      }
+      },
     });
   });
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   if (isSuccess) {
     return (
       <div className="form-container">
         <div className="success-message">
-          <h3>რეგისტრაცია წარმატებულია!</h3>
-          <p>თქვენი გამყიდველის ანგარიში წარმატებით შეიქმნა.</p>
-          <p>გადამისამართება ავტორიზაციის გვერდზე...</p>
+          <h3>{t("auth.registrationSuccessful")}</h3>
+          <p>{t("auth.sellerAccountCreatedSuccessfully")}</p>
+          <p>{t("auth.redirectingToLogin")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container" id="seller-register-form">
       <form onSubmit={onSubmit} className="form">
         <div className="input-group">
-          <label htmlFor="storeName">მხატვრის/კომპანიის სახელი</label>
+          <label htmlFor="storeName">{t("auth.companyName")}</label>
           <input
             id="storeName"
             type="text"
-            placeholder="მხატვრის/კომპანიის სახელი"
+            placeholder={t("auth.enterCompanyName")}
             {...registerField("storeName")}
           />
           {errors.storeName && (
@@ -87,24 +128,44 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="storeLogo"> ლოგო (არასავალდებულო)</label>
-          <input
-            id="storeLogo"
-            type="text"
-            placeholder="ლოგოს URL"
-            {...registerField("storeLogo")}
-          />
-          {errors.storeLogo && (
-            <p className="error-text">{errors.storeLogo.message}</p>
-          )}
+          <label htmlFor="logoFile">{t("auth.uploadLogo")}</label>
+          <div className="logo-upload-container">
+            {logoPreview && (
+              <div className="logo-preview">
+                <Image
+                  src={logoPreview}
+                  alt={t("auth.logoPreview")}
+                  width={100}
+                  height={100}
+                  className="logo-preview-image"
+                />
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              id="logoFile"
+              type="file"
+              accept="image/*"
+              onChange={handleLogoChange}
+              className="file-input"
+              style={{ display: "none" }}
+            />
+            <button
+              type="button"
+              onClick={triggerFileInput}
+              className="logo-upload-button"
+            >
+              {logoPreview ? t("auth.changeLogo") : t("auth.uploadLogo")}
+            </button>
+          </div>
         </div>
 
         <div className="input-group">
-          <label htmlFor="ownerFirstName">მფლობელის სახელი</label>
+          <label htmlFor="ownerFirstName">{t("auth.firstName")}</label>
           <input
             id="ownerFirstName"
             type="text"
-            placeholder="სახელი"
+            placeholder={t("auth.enterFirstName")}
             {...registerField("ownerFirstName")}
           />
           {errors.ownerFirstName && (
@@ -113,11 +174,11 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="ownerLastName">მფლობელის გვარი</label>
+          <label htmlFor="ownerLastName">{t("auth.lastName")}</label>
           <input
             id="ownerLastName"
             type="text"
-            placeholder="გვარი"
+            placeholder={t("auth.enterLastName")}
             {...registerField("ownerLastName")}
           />
           {errors.ownerLastName && (
@@ -126,7 +187,7 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="phoneNumber">ტელეფონის ნომერი</label>
+          <label htmlFor="phoneNumber">{t("auth.phoneNumber")}</label>
           <input
             id="phoneNumber"
             type="tel"
@@ -139,7 +200,7 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="email">ელ-ფოსტა</label>
+          <label htmlFor="email">{t("auth.email")}</label>
           <input
             id="email"
             type="email"
@@ -150,7 +211,7 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="password">პაროლი</label>
+          <label htmlFor="password">{t("auth.password")}</label>
           <input
             id="password"
             type="password"
@@ -163,11 +224,11 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="identificationNumber">პირადი ნომერი</label>
+          <label htmlFor="identificationNumber">{t("auth.idNumber")}</label>
           <input
             id="identificationNumber"
             type="text"
-            placeholder="11-ნიშნა პირადი ნომერი"
+            placeholder={t("auth.enterIdNumber")}
             {...registerField("identificationNumber")}
           />
           {errors.identificationNumber && (
@@ -176,7 +237,7 @@ export function SellerRegisterForm() {
         </div>
 
         <div className="input-group">
-          <label htmlFor="accountNumber">საბანკო ანგარიშის ნომერი (IBAN)</label>
+          <label htmlFor="accountNumber">{t("auth.accountNumber")}</label>
           <input
             id="accountNumber"
             type="text"
@@ -196,13 +257,13 @@ export function SellerRegisterForm() {
         )}
 
         <button type="submit" className="submit-btn" disabled={isPending}>
-          {isPending ? "რეგისტრაცია..." : "დარეგისტრირება"}
+          {isPending ? t("auth.registering") : t("auth.register")}
         </button>
 
         <div className="text-center">
-          უკვე გაქვთ ანგარიში?{" "}
+          {t("auth.alreadyHaveAccount")}{" "}
           <Link href="/login" className="login-link">
-            შესვლა
+            {t("auth.login")}
           </Link>
         </div>
       </form>

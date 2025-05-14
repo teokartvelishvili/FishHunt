@@ -12,6 +12,7 @@ interface AuthResponse {
   user: User;
 }
 
+// Update to match the SellerRegisterDto from the backend
 interface SellerRegisterData {
   storeName: string;
   storeLogo?: string;
@@ -48,20 +49,18 @@ export const authApi = {
   },
 
   sellerRegister: async (data: SellerRegisterData) => {
-    // გამყიდველის რეგისტრაცია
-     // Send seller registration data directly to the API
-     const response = await axios.post<AuthResponse>("/auth/sellers-register", data);
+    // Send seller registration data directly to the API
+    const response = await axios.post<AuthResponse>("/auth/sellers-register", data);
     
-    // ავტომატური ავტორიზაცია
-   // Store tokens and return the response
-   if (response.data.accessToken && response.data.refreshToken) {
-    const { accessToken, refreshToken } = response.data;
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-  }
-  
-  return response.data; 
-},
+    // Store tokens and return the response
+    if (response.data.accessToken && response.data.refreshToken) {
+      const { accessToken, refreshToken } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+    }
+    
+    return response.data;
+  },
 
   getProfile: async () => {
     const response = await axios.get<User>("/auth/profile");

@@ -9,14 +9,14 @@ import {
 
 export class CreateForumDto {
   @ApiProperty({
-    example: 'some painting and artists content',
+    example: 'some fishing and hunting content',
   })
   @IsNotEmpty()
   @IsString()
   content: string;
 
   @ApiProperty({
-    example: ['ხელნაკეთი ნივთები', 'ნახატები', 'სხვა'],
+    example: ['Fishing', 'Hunting', 'other'],
   })
   @IsArray()
   @ArrayNotEmpty()

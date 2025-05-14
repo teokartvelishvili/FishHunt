@@ -1,8 +1,8 @@
 import { Role } from './role.enum';
 
 export enum MainCategory {
-  PAINTINGS = 'PAINTINGS',
-  HANDMADE = 'HANDMADE',
+  FISHING = 'FISHING',
+  HUNTING = 'HUNTING',
 }
 
 export interface CategoryStructure {

@@ -2,8 +2,8 @@ import { Role } from "./role";
 
 // Adding category types for better organization
 export enum MainCategory {
-  PAINTINGS = "PAINTINGS",
-  HANDMADE = "HANDMADE",
+  FISHING = "FISHING",
+  HUNTING = "HUNTING",
 }
 
 export interface CategoryStructure {

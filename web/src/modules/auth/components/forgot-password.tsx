@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
+import "./reset-password.css";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -12,6 +14,7 @@ interface ForgotPasswordFormData {
 }
 
 export function ForgotPasswordForm() {
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -28,14 +31,15 @@ export function ForgotPasswordForm() {
       });
 
       toast({
-        title: "Success",
-        description: "Check your email for the reset link.",
+        title: t("auth.success"),
+        description: t("auth.checkEmailForResetLink"),
       });
     } catch (error: unknown) {
       const err = error as AxiosError<{ message: string }>;
       toast({
-        title: "Error",
-        description: err.response?.data?.message || "Something went wrong",
+        title: t("auth.error"),
+        description:
+          err.response?.data?.message || t("auth.somethingWentWrong"),
         variant: "destructive",
       });
     } finally {
@@ -44,15 +48,19 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input
-        type="email"
-        placeholder="Enter your email"
-        {...register("email", { required: "Email is required" })}
-      />
-      {errors.email && <span>{String(errors.email.message)}</span>}
-      <button type="submit" disabled={loading}>
-        {loading ? "Sending..." : "Send Reset Link"}
+    <form className="forPass" onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-2">
+        <input
+          type="email"
+          placeholder={t("auth.enterYourEmail")}
+          {...register("email", { required: t("auth.emailRequired") })}
+        />
+        {errors.email && (
+          <span style={{ color: "red" }}>{errors.email.message}</span>
+        )}
+      </div>
+      <button type="submit" disabled={loading} className="w-full">
+        {loading ? t("auth.sending") : t("auth.sendResetLink")}
       </button>
     </form>
   );

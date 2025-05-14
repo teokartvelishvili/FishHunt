@@ -15,10 +15,11 @@ import { MainCategory, PaginatedResponse } from '@/types';
 import { Order } from '../../orders/schemas/order.schema';
 import { sampleProduct } from '@/utils/data/product';
 import { Role } from '@/types/role.enum';
-import {
-  HANDMADE_CATEGORIES,
-  PAINTING_CATEGORIES,
-} from '@/utils/subcategories';
+import { FISHING_CATEGORIES, HUNTING_CATEGORIES } from '@/utils/subcategories';
+// import {
+//   HUNTING_CATEGORIES,
+//   FISHING_CATEGORIES,
+// } from '@/utils/subcategories';
 // import { MainCategory } from '@/types/main-category.enum';
 
 @Injectable()
@@ -70,22 +71,22 @@ export class ProductsService {
         $or: [
           { 'categoryStructure.main': mainCategory },
           // For legacy products without categoryStructure but with category field
-          ...(mainCategory === MainCategory.HANDMADE
+          ...(mainCategory === MainCategory.HUNTING
             ? [
                 {
                   categoryStructure: { $exists: false },
                   category: {
-                    $in: HANDMADE_CATEGORIES,
+                    $in: HUNTING_CATEGORIES,
                   },
                 },
               ]
             : []),
-          ...(mainCategory === MainCategory.PAINTINGS
+          ...(mainCategory === MainCategory.FISHING
             ? [
                 {
                   categoryStructure: { $exists: false },
                   category: {
-                    $in: PAINTING_CATEGORIES,
+                    $in: FISHING_CATEGORIES,
                   },
                 },
               ]
@@ -141,13 +142,13 @@ export class ProductsService {
       const doc = product.toObject();
 
       if (!doc.categoryStructure) {
-        // Check if category is a handmade category
-        const isHandmadeCategory = HANDMADE_CATEGORIES.includes(doc.category);
+        // Check if category is a Hunting category
+        const isHuntingCategory = HUNTING_CATEGORIES.includes(doc.category);
 
         doc.categoryStructure = {
-          main: isHandmadeCategory
-            ? MainCategory.HANDMADE
-            : MainCategory.PAINTINGS,
+          main: isHuntingCategory
+            ? MainCategory.HUNTING
+            : MainCategory.FISHING,
           sub: doc.category,
         };
       }
@@ -176,21 +177,11 @@ export class ProductsService {
 
     // Make sure the product has a category structure even if it's a legacy product
     if (!product.categoryStructure) {
-      // Check if category is a handmade category
-      const isHandmadeCategory = [
-        'კერამიკა',
-        'ხის ნაკეთობები',
-        'სამკაულები',
-        'ტექსტილი',
-        'მინანქარი',
-        'სკულპტურები',
-        'სხვა',
-      ].includes(product.category);
+      // Check if category is a Hunting category
+      const isHuntingCategory = ['hunting', 'other'].includes(product.category);
 
       product.categoryStructure = {
-        main: isHandmadeCategory
-          ? MainCategory.HANDMADE
-          : MainCategory.PAINTINGS,
+        main: isHuntingCategory ? MainCategory.HUNTING : MainCategory.FISHING,
         sub: product.category,
       };
     }
@@ -352,21 +343,14 @@ export class ProductsService {
         : ProductStatus.PENDING;
 
     if (!productData.categoryStructure) {
-      // Check if category is a handmade category
-      const isHandmadeCategory = [
-        'კერამიკა',
-        'ხის ნაკეთობები',
-        'სამკაულები',
-        'ტექსტილი',
-        'მინანქარი',
-        'სკულპტურები',
-        'სხვა',
+      // Check if category is a Hunting category
+      const isHuntingCategory = [
+     'hunting',
+        'other',
       ].includes(productData.category);
 
       productData.categoryStructure = {
-        main: isHandmadeCategory
-          ? MainCategory.HANDMADE
-          : MainCategory.PAINTINGS,
+        main: isHuntingCategory ? MainCategory.HUNTING : MainCategory.FISHING,
         sub: productData.category,
       };
     }

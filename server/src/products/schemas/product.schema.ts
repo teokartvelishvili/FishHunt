@@ -37,8 +37,8 @@ export enum DeliveryType {
 }
 
 export enum MainCategory {
-  PAINTINGS = 'PAINTINGS',
-  HANDMADE = 'HANDMADE',
+  FISHING = 'FISHING',
+  HUNTING = 'HUNTING',
 }
 
 export interface CategoryStructure {

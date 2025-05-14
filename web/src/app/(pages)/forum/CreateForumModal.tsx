@@ -36,7 +36,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
     tags.forEach((tag) => {
       if (!validTags.includes(tag)) {
         throw new Error(
-          `Tag '${tag}' is not valid. Valid tags are: პეიზაჟი,პორტრეტი,აბსტრაქცია,შავ-თეთრი,ანიმაციური,ციფრული ილუსტრაციები,სხვა`
+          `Tag '${tag}' is not valid. Valid tags are: fishing, camping, hunting`
         );
       }
     });
