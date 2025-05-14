@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./ForumPost.css";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,9 +17,12 @@ interface Comment {
     name: string;
     _id: string;
     avatar: string;
+    profileImage?: string;
   };
   parentId?: string;
   replies?: string[];
+  likes?: number;
+  likesArray?: string[];
 }
 
 interface PostProps {
@@ -31,11 +35,13 @@ interface PostProps {
     _id: string;
     avatar: string;
     role: string;
+    profileImage?: string;
   };
   currentUser?: {
     _id: string;
     role: string;
     name?: string;
+    profileImage?: string;
   };
   comments: Comment[];
   time: string;
@@ -58,6 +64,7 @@ const ForumPost = ({
   isLiked,
   isAuthorized,
 }: PostProps) => {
+  const { t } = useLanguage();
   const [newComment, setNewComment] = useState("");
   const [editingComment, setEditingComment] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -74,20 +81,59 @@ const ForumPost = ({
     [key: string]: boolean;
   }>({});
   const [replyText, setReplyText] = useState<{ [key: string]: string }>({});
+  const [commentLikes, setCommentLikes] = useState<Record<string, number>>({});
+  const [likedComments, setLikedComments] = useState<Record<string, boolean>>(
+    {}
+  );
 
   const [error, setError] = useState<string | null>(null);
-
-  console.log("Current User:", currentUser);
-  console.log("Author:", author);
-  console.log("Is Authorized:", isAuthorized);
 
   const isPostAuthor = currentUser?._id === author._id;
   const isAdmin = currentUser?.role === "admin";
   const canModifyPost = isPostAuthor || isAdmin;
 
-  console.log("Is Post Author:", isPostAuthor);
-  console.log("Is Admin:", isAdmin);
-  console.log("Can Modify Post:", canModifyPost);
+  useEffect(() => {
+    if (currentUser) {
+      console.log("Post permissions:", {
+        postId: id,
+        currentUserId: currentUser._id,
+        authorId: author._id,
+        currentUserRole: currentUser.role,
+        isAdmin,
+        isPostAuthor,
+        canModifyPost,
+      });
+    }
+  }, [currentUser, author._id, id, isAdmin, isPostAuthor, canModifyPost]);
+
+  useEffect(() => {
+    if (comments) {
+      const likesMap: Record<string, number> = {};
+      const likedMap: Record<string, boolean> = {};
+
+      comments.forEach((comment) => {
+        likesMap[comment.id] = comment.likes || 0;
+        const hasLiked =
+          comment.likesArray?.some((userId) => userId === currentUser?._id) ||
+          false;
+        likedMap[comment.id] = hasLiked;
+      });
+
+      setCommentLikes(likesMap);
+      setLikedComments(likedMap);
+
+      console.log("Comment likes initialized:", {
+        likesMap,
+        likedMap,
+        currentUserId: currentUser?._id,
+        comments: comments.map((c) => ({
+          id: c.id,
+          likesArray: c.likesArray,
+          hasCurrentUserLike: c.likesArray?.includes(currentUser?._id || ""),
+        })),
+      });
+    }
+  }, [comments, currentUser]);
 
   const replyMutation = useMutation({
     mutationFn: async ({
@@ -135,6 +181,13 @@ const ForumPost = ({
 
   const deleteCommentMutation = useMutation({
     mutationFn: async (commentId: string) => {
+      const isConfirmed = window.confirm(
+        "დარწმუნებული ხართ რომ გსურთ კომენტარის წაშლა?"
+      );
+      if (!isConfirmed) {
+        throw new Error("Operation canceled by user");
+      }
+
       const response = await fetchWithAuth(
         `/forums/delete-comment/${commentId}`,
         {
@@ -292,11 +345,126 @@ const ForumPost = ({
     },
   });
 
-  const validTags = ["Fishing", "Camping", "Hunting"];
+  const likeCommentMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+      const isLiked = likedComments[commentId];
+      const endpoint = isLiked ? "remove-comment-like" : "add-comment-like";
+
+      console.log("Like mutation starting:", {
+        commentId,
+        action: isLiked ? "unlike" : "like",
+        endpoint,
+      });
+
+      const response = await fetchWithAuth(`/forums/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "forum-id": id,
+        },
+        body: JSON.stringify({
+          commentId: commentId,
+        }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Like mutation error:", errorData);
+        throw new Error(errorData.message || "Failed to update comment like");
+      }
+
+      return response.json();
+    },
+    onSuccess: (data, commentId) => {
+      console.log("Like mutation success:", data);
+
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+
+      setCommentLikes((prev) => ({
+        ...prev,
+        [commentId]: data.likes,
+      }));
+
+      setLikedComments((prev) => ({
+        ...prev,
+        [commentId]: !prev[commentId],
+      }));
+    },
+    onError: (error: Error) => {
+      console.error("Like mutation error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
+  });
+
+  const handleLike = () => {
+    if (!isAuthorized) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please login to like posts",
+      });
+      return;
+    }
+    likeMutation.mutate();
+  };
+
+  const handleCommentLike = (commentId: string) => {
+    if (!isAuthorized) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "გთხოვთ გაიაროთ ავტორიზაცია",
+      });
+      return;
+    }
+
+    console.log("Comment like clicked:", {
+      commentId,
+      currentStatus: likedComments[commentId] ? "liked" : "not liked",
+    });
+
+    likeCommentMutation.mutate(commentId);
+  };
+
+  const validTags = ["fishing", "hunting", "other"];
+
+  // Helper function to translate backend tags to current language
+  const translateTag = (backendTag: string) => {
+    // Map from backend tag values to translation keys
+    const tagToKeyMap: Record<string, string> = {
+      hunting: "forum.tags.hunting",
+      fishing: "forum.tags.fishing",
+      other: "forum.tags.other",
+    };
+
+    // If we have a mapping for this tag, translate it; otherwise show as is
+    const translationKey = tagToKeyMap[backendTag];
+    return translationKey ? t(translationKey) : backendTag;
+  };
 
   const editPostMutation = useMutation({
-    mutationFn: async ({ text, tags, image }: { text: string; tags: string[]; image: File | null }) => {
+    mutationFn: async ({
+      text,
+      tags,
+      image,
+    }: {
+      text: string;
+      tags: string[];
+      image: File | null;
+    }) => {
       try {
+        console.log("Attempting to edit post:", {
+          postId: id,
+          currentUserRole: currentUser?.role,
+          isAdmin,
+          isPostAuthor,
+        });
+
         const formData = new FormData();
         formData.append("content", text);
         tags.forEach((tag, index) => {
@@ -307,19 +475,18 @@ const ForumPost = ({
         }
 
         console.log("FormData before sending:", Array.from(formData.entries()));
+
         const response = await apiClient.put(`/forums/${id}`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+            "Content-Type": "multipart/form-data",
+          },
         });
 
         return response.data;
       } catch (error) {
-    
-        console.error("Edit post error:", error); // Log error response
+        console.error("Edit post error:", error);
         throw error;
       }
-
     },
     onSuccess: () => {
       setIsEditingPost(false);
@@ -343,14 +510,26 @@ const ForumPost = ({
   const deletePostMutation = useMutation({
     mutationFn: async () => {
       try {
-        // Also use apiClient for deletion
+        const isConfirmed = window.confirm(
+          "დარწმუნებული ხართ რომ გსურთ პოსტის წაშლა?"
+        );
+        if (!isConfirmed) {
+          throw new Error("Operation canceled by user");
+        }
+
+        console.log("Attempting to delete post:", {
+          postId: id,
+          currentUserRole: currentUser?.role,
+          isAdmin,
+          isPostAuthor,
+        });
+
         const response = await apiClient.delete(`/forums/${id}`);
         return response.data;
       } catch (error) {
         console.error("Delete post error:", error);
         throw error;
       }
-      
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
@@ -367,18 +546,6 @@ const ForumPost = ({
       });
     },
   });
-
-  const handleLike = () => {
-    if (!isAuthorized) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please login to like posts",
-      });
-      return;
-    }
-    likeMutation.mutate();
-  };
 
   const toggleReplyInput = (commentId: string) => {
     setReplyInputVisible((prev) => ({
@@ -415,7 +582,11 @@ const ForumPost = ({
       editedPostTags,
       editedPostImage,
     });
-    editPostMutation.mutate({ text: editedPostText, tags: editedPostTags, image: editedPostImage });
+    editPostMutation.mutate({
+      text: editedPostText,
+      tags: editedPostTags,
+      image: editedPostImage,
+    });
   };
 
   const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -429,52 +600,89 @@ const ForumPost = ({
     setEditedPostTags(editedPostTags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleEditedFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditedFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0] || null;
-    if (file && file.size > 5 * 1024 * 1024) { // Check if file size is greater than 5MB
+    if (!file) {
+      setEditedPostImage(null);
+      return;
+    }
+
+    console.log("Selected file for edit:", {
+      name: file.name,
+      type: file.type,
+      size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+    });
+
+    const supportedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image.heic",
+      "image.heif",
+    ];
+    if (
+      !supportedTypes.includes(file.type.toLowerCase()) &&
+      !file.type.toLowerCase().startsWith("image/")
+    ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "File size should not exceed 5MB",
+        description: "Unsupported file type. Please upload an image file.",
       });
       return;
     }
-    if (file) {
-      try {
-        const compressedFile = await imageCompression(file, {
-          maxSizeMB: 0.5, // Reduce max size to 0.5MB
-          maxWidthOrHeight: 1280, // Reduce max dimensions to 1280px
-          useWebWorker: true,
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "File size should not exceed 10MB",
+      });
+      return;
+    }
+
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: "image/jpeg",
+        alwaysKeepResolution: true,
+        initialQuality: 0.8,
+      });
+
+      console.log("Compressed file for edit:", {
+        type: compressedFile.type,
+        size: `${(compressedFile.size / (1024 * 1024)).toFixed(2)} MB`,
+      });
+
+      setEditedPostImage(compressedFile);
+    } catch (error) {
+      console.error("Image compression error:", error);
+      if (file.size <= 2 * 1024 * 1024) {
+        setEditedPostImage(file);
+        toast({
+          title: "Information",
+          description: "Using original image as compression failed",
         });
-        if (compressedFile.size > 5 * 1024 * 1024) { // Check if compressed file size is greater than 5MB
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Compressed file size should not exceed 5MB",
-          });
-          return;
-        }
-        setEditedPostImage(compressedFile);
-      } catch (error) {
-      console.log(error)
+      } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to compress image",
+          description: "Failed to process the image. Please try another image.",
         });
       }
-    } else {
-      setEditedPostImage(null);
     }
   };
 
   const renderComment = (comment: Comment, level = 0) => {
     const isCommentAuthor = currentUser?._id === comment.author._id;
     const canModifyComment = isCommentAuthor || isAdmin;
-
-    console.log("Comment:", comment);
-    console.log("Is Comment Author:", isCommentAuthor);
-    console.log("Can Modify Comment:", canModifyComment);
+    const commentLikeCount = commentLikes[comment.id] || 0;
+    const isCommentLiked = likedComments[comment.id] || false;
 
     return (
       <div
@@ -484,7 +692,7 @@ const ForumPost = ({
       >
         <div className="comment-header">
           <Image
-            src={comment.author.avatar}
+            src={comment.author.profileImage || comment.author.avatar}
             alt={comment.author.name}
             width={25}
             height={25}
@@ -502,9 +710,11 @@ const ForumPost = ({
               className="edit-comment-input"
             />
             <button onClick={() => handleEditSubmit(comment.id)}>
-              შენახვა
+              {t("forum.save")}
             </button>
-            <button onClick={() => setEditingComment(null)}>გაუქმება</button>
+            <button onClick={() => setEditingComment(null)}>
+              {t("forum.cancel")}
+            </button>
           </div>
         ) : (
           <>
@@ -512,12 +722,29 @@ const ForumPost = ({
 
             <div className="comment-actions">
               {isAuthorized && (
-                <button
-                  className="reply-button"
-                  onClick={() => toggleReplyInput(comment.id)}
-                >
-                  პასუხი
-                </button>
+                <>
+                  <button
+                    className="reply-button"
+                    onClick={() => toggleReplyInput(comment.id)}
+                  >
+                    {t("forum.reply")}
+                  </button>
+                  <button
+                    className={`comment-like-button ${
+                      isCommentLiked ? "liked" : ""
+                    }`}
+                    onClick={() => handleCommentLike(comment.id)}
+                    disabled={likeCommentMutation.isPending}
+                    aria-label={
+                      isCommentLiked ? t("forum.unlike") : t("forum.like")
+                    }
+                  >
+                    <span>{commentLikeCount}</span>
+                    <span className="art-like-icon">
+                      {isCommentLiked ? "💫" : "⭐"}
+                    </span>
+                  </button>
+                </>
               )}
               {canModifyComment && (
                 <>
@@ -527,14 +754,16 @@ const ForumPost = ({
                       setEditingComment(comment.id);
                       setEditText(comment.text);
                     }}
+                    aria-label={t("forum.edit")}
                   >
-                    რედაქტირება
+                    <span className="button-text">{t("forum.edit")}</span>
                   </button>
                   <button
                     className="delete-button"
                     onClick={() => deleteCommentMutation.mutate(comment.id)}
+                    aria-label={t("forum.delete")}
                   >
-                    წაშლა
+                    <span className="button-text">{t("forum.delete")}</span>
                   </button>
                 </>
               )}
@@ -548,10 +777,10 @@ const ForumPost = ({
               type="text"
               value={replyText[comment.id] || ""}
               onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-              placeholder="დაწერეთ პასუხი..."
+              placeholder={t("forum.writeReply")}
             />
             <button onClick={() => handleReplySubmit(comment.id)}>
-              გაგზავნა
+              {t("forum.send")}
             </button>
           </div>
         )}
@@ -575,26 +804,40 @@ const ForumPost = ({
       <div className="forum-post-content">
         <div className="forum-post-author">
           <Image
-            src={author.avatar}
+            src={author.profileImage || "/avatar.jpg"}
             alt={`${author.name}'s avatar`}
             width={30}
             height={30}
             className="forum-post-avatar"
           />
           <span className="forum-post-author-name">{author.name}</span>
-          {canModifyPost && (
+          {isAuthorized && canModifyPost && (
             <div className="post-actions">
               <button
                 className="edit-button"
-                onClick={() => setIsEditingPost(true)}
+                onClick={() => {
+                  console.log(
+                    "Edit button clicked, canModifyPost:",
+                    canModifyPost
+                  );
+                  setIsEditingPost(true);
+                }}
+                aria-label={t("forum.edit")}
               >
-                ✏️ რედაქტირება
+                <span className="button-text">{t("forum.edit")}</span>
               </button>
               <button
                 className="delete-button"
-                onClick={() => deletePostMutation.mutate()}
+                onClick={() => {
+                  console.log(
+                    "Delete button clicked, canModifyPost:",
+                    canModifyPost
+                  );
+                  deletePostMutation.mutate();
+                }}
+                aria-label={t("forum.delete")}
               >
-                🗑️ წაშლა
+                <span className="button-text">{t("forum.delete")}</span>
               </button>
             </div>
           )}
@@ -614,7 +857,7 @@ const ForumPost = ({
                 disabled={editedPostTags.length >= 3}
               >
                 <option value="" disabled>
-                  Select a tag
+                  {t("forum.selectTag")}
                 </option>
                 {validTags.map((tag) => (
                   <option key={tag} value={tag}>
@@ -658,7 +901,7 @@ const ForumPost = ({
             />
             {error && <div className="error-message">{error}</div>}
             <div className="edit-post-buttons">
-              <button onClick={handlePostEdit}>შენახვა</button>
+              <button onClick={handlePostEdit}>{t("forum.save")}</button>
               <button
                 onClick={() => {
                   setIsEditingPost(false);
@@ -667,7 +910,7 @@ const ForumPost = ({
                   setEditedPostImage(null);
                 }}
               >
-                გაუქმება
+                {t("forum.cancel")}
               </button>
             </div>
           </div>
@@ -679,7 +922,7 @@ const ForumPost = ({
           <div className="forum-post-categories">
             {category.map((cat, index) => (
               <span key={index} className="forum-post-category">
-                {cat}
+                {translateTag(cat)}
               </span>
             ))}
           </div>
@@ -695,7 +938,7 @@ const ForumPost = ({
             onClick={handleLike}
             disabled={!isAuthorized || likeMutation.isPending}
           >
-            {likesCount} {userLiked ? "👍" : "👍🏻"}
+            {likesCount} {userLiked ? "💫" : "⭐"}
           </button>
         </div>
 
@@ -714,13 +957,13 @@ const ForumPost = ({
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               className="main-comment-input"
-              placeholder="Write a comment..."
+              placeholder={t("forum.writeComment")}
             />
             <button
               onClick={() => commentMutation.mutate()}
               disabled={!newComment.trim() || commentMutation.isPending}
             >
-              {commentMutation.isPending ? "Posting..." : "Send"}
+              {commentMutation.isPending ? t("forum.posting") : t("forum.send")}
             </button>
           </div>
         )}

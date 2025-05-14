@@ -42,12 +42,12 @@ export class Forum extends Document {
     type: [String],
     enum: {
       values: [
-      'ხელნაკეთი ნივთები',
-      'ნახატები',
-      'სხვა'
+      'fishing',
+      'hunting',
+      'other'
       ],
       message:
-        'Tags must be one of: ხელნაკეთი ნივთები, ნახატები, სხვა',
+        'Tags must be one of: fishing, hunting, other',
     },
     required: true,
   })

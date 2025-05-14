@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ForumPost from "./ForumPost";
 import "./ForumPage.css";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -8,6 +9,7 @@ import CreateForumModal from "./CreateForumModal";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import Loading from "../admin/users/loading";
 import LoadingAnim from "@/components/loadingAnim/loadingAnim";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 interface Forum {
   _id: string;
@@ -16,6 +18,7 @@ interface Forum {
     name: string;
     _id: string;
     role: string;
+    profileImage?: string;
   };
   tags: string[];
   comments: Array<{
@@ -24,10 +27,13 @@ interface Forum {
     user: {
       name: string;
       _id: string;
+      profileImage?: string;
     };
     createdAt: string;
     parentId?: string;
     replies?: string[];
+    likes?: number;
+    likesArray?: string[];
   }>;
   likes: number;
   likesArray: string[];
@@ -36,8 +42,10 @@ interface Forum {
 }
 
 const ForumPage = () => {
+  const { t } = useLanguage();
   const { user, isLoading: isUserLoading } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   const {
     data,
@@ -81,24 +89,36 @@ const ForumPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const handleAddPostClick = () => {
+    if (!user) {
+      const currentPath = window.location.pathname;
+      router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
   if (isUserLoading || isForumsLoading) {
-    return <div> <LoadingAnim/> </div>;
+    return (
+      <div>
+        {" "}
+        <LoadingAnim />{" "}
+      </div>
+    );
   }
 
   return (
     <div className="forum-page">
       {isUserLoading || isForumsLoading ? (
-        <div> <Loading/> </div>
+        <div>
+          {" "}
+          <Loading />{" "}
+        </div>
       ) : (
         <>
-          {user && (
-            <button
-              className="create-post-button"
-              onClick={() => setIsModalOpen(true)}
-            >
-               ახალი პოსტის დამატება
-            </button>
-          )}
+          <button className="create-post-button" onClick={handleAddPostClick}>
+            {t("forum.addNewPost")}
+          </button>
 
           <CreateForumModal
             isOpen={isModalOpen}
@@ -122,6 +142,7 @@ const ForumPage = () => {
                     name: forum.user.name,
                     _id: forum.user._id,
                     avatar: "/avatar.jpg",
+                    profileImage: forum.user.profileImage,
                     role: forum.user.role,
                   }}
                   currentUser={
@@ -129,6 +150,8 @@ const ForumPage = () => {
                       ? {
                           _id: user._id,
                           role: user.role,
+                          name: user.name,
+                          profileImage: user.profileImage,
                         }
                       : undefined
                   }
@@ -139,9 +162,12 @@ const ForumPage = () => {
                       name: comment.user.name,
                       _id: comment.user._id,
                       avatar: "/avatar.jpg",
+                      profileImage: comment.user.profileImage || undefined,
                     },
                     parentId: comment.parentId?.toString(),
                     replies: comment.replies?.map((r) => r.toString()),
+                    likes: comment.likes || 0,
+                    likesArray: comment.likesArray || [],
                   }))}
                   time={new Date(forum.createdAt).toLocaleDateString()}
                   likes={forum.likes}
@@ -153,7 +179,7 @@ const ForumPage = () => {
             })
           )}
 
-          {isFetchingNextPage && <div>Loading more...</div>}
+          {isFetchingNextPage && <div>{t("forum.loadingMore")}</div>}
         </>
       )}
     </div>
