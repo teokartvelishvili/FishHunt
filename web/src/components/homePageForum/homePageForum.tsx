@@ -4,6 +4,7 @@ import "./homePageForum.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ForumPost from "@/app/(pages)/forum/ForumPost";
+import Pattern from "@/components/pattern/pattern";
 
 const HomePageForum = () => {
   interface Post {
@@ -50,6 +51,7 @@ const HomePageForum = () => {
 
   return (
     <div className="homePageForum">
+      <Pattern imageSize={350}  />
       <h1 className="homePageForumH1">ფორუმი </h1>
       {posts.map((post) => (
         <ForumPost

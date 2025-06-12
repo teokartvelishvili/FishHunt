@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-
 interface GoogleMapWithKMLProps {
   river: string;
+}
+
+// ვაცხადებთ, რომ `window.initMap` არსებობს TypeScript-ისთვის
+declare global {
+  interface Window {
+    initMap: () => void;
+  }
 }
 
 const GoogleMapWithKML: React.FC<GoogleMapWithKMLProps> = ({ river }) => {
@@ -20,11 +26,14 @@ const GoogleMapWithKML: React.FC<GoogleMapWithKMLProps> = ({ river }) => {
       script.defer = true;
       script.onload = () => {
         setIsScriptLoaded(true);
-        initMap();
       };
       document.body.appendChild(script);
+      window.initMap = initMap; // აქ ვამატებთ `initMap`-ს როგორც გლობალურ ფუნქციას
     } else {
       setIsScriptLoaded(true);
+      if (window.google) {
+        initMap();
+      }
     }
   }, [isScriptLoaded]);
 
@@ -41,14 +50,15 @@ const GoogleMapWithKML: React.FC<GoogleMapWithKMLProps> = ({ river }) => {
 
   useEffect(() => {
     if (map && river) {
-      const kmlUrl = `/kml-files/${river}.kml`; // KML URL
+      const kmlUrl = `${window.location.origin}/kml-files/${river}.kml`;
 
+      console.log("Loading KML:", kmlUrl); // Debugging
       const kmlLayer = new google.maps.KmlLayer({
         url: kmlUrl,
         map: map,
       });
 
-      return () => kmlLayer.setMap(null); // Clean up the KML layer
+      return () => kmlLayer.setMap(null);
     }
   }, [map, river]);
 

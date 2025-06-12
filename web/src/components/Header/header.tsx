@@ -6,12 +6,14 @@ import logo from "../../assets/logo.png";
 import SearchBox from "../SearchBox/search-box";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
 import UserMenu from "./user-menu";
+// import Pattern from "../pattern/pattern"; 
 import "./header.css";
 
 export default function Header() {
   return (
     <header className="header">
-      <div className="container">
+      {/* <Pattern imageSize={140}  /> */}
+      <div className="container relative z-10">
         <div className="header-content">
           <div className="left-section">
             <Link href="/" className="logo">

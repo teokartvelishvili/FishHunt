@@ -10,6 +10,7 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import Loading from "../admin/users/loading";
 import LoadingAnim from "@/components/loadingAnim/loadingAnim";
 import { useLanguage } from "@/hooks/LanguageContext";
+import Pattern from "@/components/pattern/pattern";
 
 interface Forum {
   _id: string;
@@ -109,6 +110,7 @@ const ForumPage = () => {
 
   return (
     <div className="forum-page">
+      <Pattern imageSize={350}  />
       {isUserLoading || isForumsLoading ? (
         <div>
           {" "}

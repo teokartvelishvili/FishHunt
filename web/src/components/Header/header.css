@@ -3,10 +3,10 @@
   top: 0;
   z-index: 50;
   width: 100%;
-  /* border-bottom: 1px solid #e0e0e0; */
+  height: auto;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  /* margin-bottom: 1%; */
+  overflow: hidden; /* დავამატეთ */
 }
 
 .container {

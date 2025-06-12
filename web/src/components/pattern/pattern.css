@@ -1,0 +1,36 @@
+.pattern-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pattern-image {
+  transition: all 0.5s ease;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.pattern-image.default {
+  filter: none;
+}
+
+.pattern-image.color-2E5730 {
+  filter: brightness(0) saturate(100%) invert(32%) sepia(19%) 
+          saturate(1013%) hue-rotate(93deg) brightness(97%) contrast(89%);
+}
+
+.pattern-image.color-787039 {
+  filter: brightness(0) saturate(100%) invert(40%) sepia(15%) 
+          saturate(1088%) hue-rotate(38deg) brightness(94%) contrast(86%);
+}
+
+.pattern-image.color-E1D798 {
+  filter: brightness(0) saturate(100%) invert(89%) sepia(18%) 
+          saturate(435%) hue-rotate(358deg) brightness(92%) contrast(87%);
+}
+
+.pattern-image.color-555D50 {
+  filter: brightness(0) saturate(100%) invert(35%) sepia(8%) 
+          saturate(1042%) hue-rotate(77deg) brightness(94%) contrast(86%);
+}

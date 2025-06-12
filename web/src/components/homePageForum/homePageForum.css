@@ -1,10 +1,27 @@
 .homePageForum {
+  position: relative;
+  width: 90%;
+  overflow: hidden;
   padding: 10px 5%;
-  /* background-color: #e9ebf8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px; */
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.forum-container {
+  margin: 0 auto;
+  padding: 0 5%;
+  max-width: 1200px;
+}
+
+.forum-pattern-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.forum-content {
+  position: relative;
+  z-index: 1;
 }
 
 .homePageForumH1 {

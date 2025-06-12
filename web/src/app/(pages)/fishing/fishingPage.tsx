@@ -1,6 +1,6 @@
 import "./fishingPage.css";
-// import GoogleMap from "./GoogleMap";
-// import NearestBeachButton from "./NearestBeachButton";
+import GoogleMap from "./GoogleMap";
+import NearestBeachButton from "./NearestBeachButton";
 import RiverList from "./RiverList";
 
 const FishingPage = () => {
@@ -17,15 +17,15 @@ const FishingPage = () => {
       <br />
       <br />
       <br />
-      {/* <NearestBeachButton /> */}
+      <NearestBeachButton />
       <br />
       <br />
       <br />
       <br />
-      {/* <GoogleMap /> */}
+      <GoogleMap />
       <br/>
 
-      <RiverList/>
+      {/* <RiverList/> */}
     </div>
   );
 };
