@@ -6,6 +6,8 @@ interface RiverData {
   basin: string;
   searchQuery: string;
   speciesCount: number;
+  buttonColor?: string;
+  buttonText?: string;
   fish: {
     family: string;
     species: string[];

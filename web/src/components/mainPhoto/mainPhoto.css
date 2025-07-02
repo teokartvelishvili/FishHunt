@@ -12,14 +12,17 @@
   border: 7px solid #264d2b;
   border-radius: 10px;
   overflow: hidden;
-  width: 80%;
+  width: 100%;
+  max-height: 70vh;
   /* max-width: 900px; */
 }
 
 .main-photo {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: cover;
+  object-position: center; /* ფოტოს შუა ნაწილი ჩანს */
 }
 
 .map {

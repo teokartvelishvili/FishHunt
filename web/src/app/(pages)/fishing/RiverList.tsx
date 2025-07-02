@@ -2,7 +2,7 @@
 
 import './RiverList.css';
 import { GEORGIAN_RIVERS } from './rivers';
-import { FaRuler, FaWater, FaLocationArrow, FaChevronDown } from 'react-icons/fa';
+import { FaRuler, FaWater, FaChevronDown } from 'react-icons/fa';
 import { useState } from 'react';
 
 const RiverList = () => {

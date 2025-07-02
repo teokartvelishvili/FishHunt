@@ -1,0 +1,17 @@
+/* Pattern-ის viewport/container */
+.pattern-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    /* Pattern-ს შეზღუდვა მხოლოდ ამ კონტეინერში */
+    clip: rect(0, auto, 400px, 0); /* განვაახლოთ clip 200px-დან 400px-მდე */
+    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0);
+    /* მთავარი trick - transform ქმნის ახალ containing block-ს */
+    transform: translateZ(0);
+    will-change: transform;
+}

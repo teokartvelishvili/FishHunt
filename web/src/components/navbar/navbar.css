@@ -1,19 +1,21 @@
 .UlCont {
   display: flex;
-  flex-direction: column;
-  gap: 30px; 
+  /* flex-direction: column; */
+  /* gap: 30px;  */
+  justify-content: space-around;
+  /* padding-top: 1%; */
   list-style: none;
   z-index: 2;
 }
 
 .UlCont li {
   display: flex;
-  align-items: center;
 }
 
 .UlCont li a {
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* ელემენტები ქვედა მხარეს */
+  justify-content: center;
   text-decoration: none;
   color: #37241E;
   padding-bottom: 5px;
@@ -21,6 +23,7 @@
   gap: 10px;
   position: relative;
   overflow: hidden;
+  height: 100%;
 }
 
 .UlCont li a:hover {

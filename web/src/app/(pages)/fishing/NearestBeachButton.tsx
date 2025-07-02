@@ -25,9 +25,9 @@ const NearestBeachButton = () => {
         <button
           key={river.id}
           onClick={() => getUserLocation(river.searchQuery)}
-          className={`px-4 py-2 text-white rounded transition-colors ${river.buttonColor}`}
+          className={`px-4 py-2 text-white rounded transition-colors ${river.buttonColor || 'bg-blue-600 hover:bg-blue-700'}`}
         >
-          {river.buttonText}
+          {river.buttonText || `${river.name} - სანაპირო`}
         </button>
       ))}
     </div>

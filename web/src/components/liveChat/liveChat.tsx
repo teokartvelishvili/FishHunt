@@ -8,7 +8,6 @@ import "./liveChat.css";
 
 const LiveChat = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const toggleChat = () => {
@@ -18,7 +17,6 @@ const LiveChat = () => {
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            setSelectedFile(file);
             // Here you can handle the file upload
             console.log('Selected file:', file.name);
         }

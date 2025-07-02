@@ -1,0 +1,374 @@
+/* Welcome Message Styling */
+.welcome-message {
+    /* position: relative; */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 1%;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    z-index: 10;
+    text-align: center;
+    /* padding: 30px; */
+    background: rgba(0, 0, 0, 0.3); /* მუქი გამჭვირვალე ფონი */
+    /* border-radius: 20px; */
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); */
+    backdrop-filter: blur(15px); /* ძლიერი blur ეფექტი */
+    -webkit-backdrop-filter: blur(15px);
+    /* border: 1px solid rgba(255, 255, 255, 0.2); */
+    /* max-width: 90%; */
+}
+
+.main-welcome-text {
+    color: #e6f3ff; /* კიდევ უფრო ღია ცისფერი */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.welcome-button {
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInButton 1s ease-in-out 6.5s forwards; /* 6.5 წამის შემდეგ ჩნდება - ტექსტის დაწერის შემდეგ */
+}
+
+.plan-adventure-btn {
+    background: linear-gradient(45deg, #2E5730, #4CAF50);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 87, 48, 0.4);
+    text-transform: none;
+}
+
+.plan-adventure-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 87, 48, 0.6);
+    background: linear-gradient(45deg, #4CAF50, #66BB6A);
+}
+
+.plan-adventure-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeInButton {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Question Steps Styling */
+.question-container {
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.question-text {
+    color: #e6f3ff;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.options-container {
+    display: flex;
+    flex-direction: row; /* გვერდიგვერდ */
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* ვიწრო ეკრანზე გადავა ახალ ხაზზე */
+}
+
+.option-btn {
+    background: linear-gradient(45deg, #2E5730, #4CAF50);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 87, 48, 0.4);
+    min-width: 200px;
+}
+
+.option-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 87, 48, 0.6);
+    background: linear-gradient(45deg, #4CAF50, #66BB6A);
+}
+
+/* Date Selection Styling */
+.date-container {
+    display: flex;
+    flex-direction: row; /* გვერდიგვერდ */
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* ვიწრო ეკრანზე გადავა ახალ ხაზზე */
+}
+
+.date-input {
+    padding: 12px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e6f3ff;
+    font-size: 1.1rem;
+    backdrop-filter: blur(5px);
+    text-align: center;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+.confirm-btn {
+    background: linear-gradient(45deg, #2E5730, #4CAF50);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 87, 48, 0.4);
+}
+
+.confirm-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 87, 48, 0.6);
+}
+
+.confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Planning Step Styling */
+.planning-message {
+    text-align: center;
+}
+
+.planning-text {
+    color: #e6f3ff;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Location Step Styling */
+.location-input-container {
+    display: flex;
+    flex-direction: row; /* გვერდიგვერდ */
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* ვიწრო ეკრანზე გადავა ახალ ხაზზე */
+}
+
+.location-input {
+    padding: 12px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e6f3ff;
+    font-size: 1.1rem;
+    backdrop-filter: blur(5px);
+    text-align: center;
+    min-width: 250px;
+}
+
+.location-input::placeholder {
+    color: rgba(230, 243, 255, 0.7);
+}
+
+.location-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+.location-share-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.location-info {
+    color: #e6f3ff;
+    font-size: 1rem;
+    text-align: center;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.skip-btn {
+    background: linear-gradient(45deg, #666, #888) !important;
+}
+
+.skip-btn:hover {
+    background: linear-gradient(45deg, #777, #999) !important;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .welcome-message {
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 95%;
+    }
+
+    .main-welcome-text {
+        font-size: 1.8rem !important;
+    }
+
+    .plan-adventure-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+
+    .question-text {
+        font-size: 1.5rem;
+    }
+
+    .options-container {
+        flex-direction: row; /* გვერდიგვერდ ტაბლეტზეც */
+    }
+
+    .option-btn {
+        padding: 12px 20px;
+        font-size: 1rem;
+        min-width: 180px;
+    }
+
+    .date-input {
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .planning-text {
+        font-size: 1.4rem;
+    }
+
+    .location-input {
+        padding: 10px 12px;
+        font-size: 1rem;
+        min-width: 200px;
+    }
+
+    .location-info {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .welcome-message {
+        padding: 15px;
+        border-radius: 12px;
+        max-width: 95%;
+    }
+
+    .main-welcome-text {
+        font-size: 1.3rem !important;
+    }
+
+    .plan-adventure-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+    }
+
+    .options-container {
+        flex-direction: column; /* მობილურზე ერთმანეთის ქვეშ */
+    }
+
+    .option-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        min-width: 160px;
+    }
+
+    .date-input {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .date-container {
+        flex-direction: column; /* მობილურზე ერთმანეთის ქვეშ */
+    }
+
+    .location-input-container {
+        flex-direction: column; /* მობილურზე ერთმანეთის ქვეშ */
+    }
+
+    .planning-text {
+        font-size: 1.1rem;
+    }
+
+    .spinner {
+        width: 30px;
+        height: 30px;
+    }
+
+    .location-input {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+        min-width: 180px;
+    }
+
+    .location-info {
+        font-size: 0.8rem;
+    }
+}

@@ -1,13 +1,9 @@
 "use client";
 import Link from "next/link";
-import Beep from "../../../components/beep/beep";
 import Pattern from "../../../components/pattern/pattern";
 import React from "react";
 
 export default function AboutPage() {
-  const soundPath = "_button-beep-2.wav";
-  const soundPath2 = "beep.wav";
-
   return (
     <div className="container"> {/* დავამატეთ relative და overflow-hidden */}
       <Pattern imageSize={250}/>
@@ -36,9 +32,7 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        {/* <Beep soundSrc={soundPath} /> */}
-        <Beep soundSrc={soundPath} shape="heart" />
-        <Beep soundSrc={soundPath2} shape="star" />
+    
       </div>
     </div>
   );

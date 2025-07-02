@@ -1,12 +1,32 @@
 .HomePageshead {
-    padding: 1% 8%;
+    height: 50vh;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     position: relative;
+    overflow: hidden;
+    isolation: isolate;
 }
 
+.main-photo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+}   
+
+.discount-cards-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: -80px;
+    z-index: 2;
+}
+
+/* Responsive Design */
 @media screen and (max-width: 768px) {
     .HomePageshead {
+        height: 350px;
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -20,16 +40,16 @@
 
     /* ნავბარის კონტეინერი */
     .HomePageshead > div:first-child {
-        width: 25%; /* შევამცირეთ სიგანე */
+        width: 25%;
         position: absolute;
-        left: 0; /* სრულიად მარცხენა კუთხეში */
-        top: 0; /* სრულიად ზედა კუთხეში */
+        left: 0;
+        top: 0;
         z-index: 10;
     }
 
     /* მეინფოტოს კონტეინერი */
     .HomePageshead > div:nth-child(2) {
-        width: 85%; /* შევამცირეთ სიგანე */
+        width: 85%;
         margin-left: auto;
         z-index: 1;
     }
@@ -46,6 +66,7 @@
 
 @media screen and (max-width: 480px) {
     .HomePageshead {
+        height: 300px;
         padding: 0;
     }
 

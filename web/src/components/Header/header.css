@@ -1,16 +1,29 @@
-.header {
-  position: sticky;
+.main-header {
+  position: sticky; /* sticky-ზე დაბრუნება */
   top: 0;
   z-index: 50;
   width: 100%;
-  height: auto;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  overflow: hidden; /* დავამატეთ */
+  overflow: hidden;
+}
+
+.header1 {
+  position: relative;
+  width: 100%;
+  background-color: inherit;
+   border-bottom: 1px solid rgba(165, 189, 165, 0.2);
+   box-shadow: 0 2px 8px rgba(165, 189, 165, 0.15);
+}
+
+.header2 {
+  position: relative;
+  width: 100%;
+  /* border-top: 1px solid rgba(165, 189, 165, 0.2); */
+  
 }
 
 .container {
-
   margin: 0 auto;
   padding: 0 8%;
 }
@@ -19,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 50px;
 }
 
 .left-section {
@@ -38,10 +51,12 @@
 
 .logo {
   font-size: 20px;
-  /* font-weight: bold; */
   text-decoration: none;
-  color: #2B5531;
+  color: #2b5531;
+  display: flex;
+  align-items: center;
 }
+
 .logoImage {
   height: 38px;
   width: 38px;
@@ -51,7 +66,7 @@
 .search-box {
   flex: 1;
   max-width: 400px;
-  margin: 10px auto; /* Add margin for spacing */
+  margin: 10px auto;
 }
 
 .search-box.desktop-only {
@@ -74,7 +89,7 @@
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 20px; /* Adjust gap for better spacing */
+  gap: 20px;
 }
 
 .mobile-menu {
@@ -88,7 +103,7 @@
 
 .mobile-menu.open {
   display: block;
-  max-height: 500px; /* Adjust based on content height */
+  max-height: 500px;
 }
 
 .mobile-menu-content {
@@ -117,7 +132,7 @@
   }
 
   .search-box {
-    max-width: 90%; /* Adjust width for smaller screens */
+    max-width: 90%;
     margin: 10px auto;
   }
 
@@ -135,35 +150,36 @@
   }
 
   .nav-menu {
-    display: flex; /* Ensure cart and sign-in are visible */
-    gap: 10px; /* Reduce gap for smaller screens */
+    display: flex;
+    gap: 10px;
   }
 
   .nav-menu svg {
-    width: 20px; /* Reduce icon size */
-    height: 20px; /* Reduce icon size */
+    width: 20px;
+    height: 20px;
   }
 
   .nav-menu .user-menu {
-    font-size: 14px; /* Reduce font size for sign-in */
+    font-size: 14px;
   }
 
   .mobile-menu {
     display: block;
   }
-.search-input {
-  padding-left: 10%;
-}
 
-.header__actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+  .search-input {
+    padding-left: 10%;
+  }
 
-.header__lang {
-  display: none; /* Hide the language switch button */
-}
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .header__lang {
+    display: none;
+  }
 
   .mobile-search {
     display: block;
@@ -172,12 +188,14 @@
   .search-box.desktop-only {
     display: none;
   }
+  
   .cartIcon {
     width: 50px;
     height: auto;
     margin: 0;
   }
-  .cartIconsSpan{
+  
+  .cartIconsSpan {
     bottom: 10px;
     left: 32px;
   }
