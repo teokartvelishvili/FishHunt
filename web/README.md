@@ -34,3 +34,50 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Environment Setup
+
+### Required API Keys
+
+#### 1. Google Gemini AI API Key
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Create a new API key
+3. Add it to your `.env.local` file:
+```
+GOOGLE_AI_API_KEY=your_gemini_api_key_here
+```
+
+#### 2. OpenWeatherMap API Key (for real weather data)
+1. Go to [OpenWeatherMap](https://openweathermap.org/api)
+2. Sign up for a free account
+3. Create an API key
+4. Add it to your `.env.local` file:
+```
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+```
+
+### .env.local Example
+```bash
+# Google Gemini AI Configuration
+GOOGLE_AI_API_KEY=your_gemini_api_key_here
+
+# OpenWeatherMap API Configuration
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# Next.js Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+## Features
+
+### AI-Powered Adventure Planning
+- **Google Gemini Integration**: Generates personalized adventure plans
+- **Real Weather Data**: Uses OpenWeatherMap API for accurate weather information
+- **Georgian Language Support**: Fully localized in Georgian
+- **FishHunt Branding**: Always promotes FishHunt products and services
+
+### Weather Integration
+- **Current Weather**: Real-time weather data for Georgian cities
+- **5-Day Forecast**: Extended weather forecast
+- **Activity Recommendations**: Suggests best days for outdoor activities
+- **Georgian Locations**: Optimized for Georgian cities and locations
