@@ -31,8 +31,8 @@ const SmallAnimLogo = () => {
 };
 
 // 📅 დროის გამოთვლა
-const startDate = new Date("2025-03-01T00:00:00"); //დაწყების თარიღი
-const durationInDays = 60; //დასრულების დრო
+const startDate = new Date("2025-07-10T00:00:00"); //დაწყების თარიღი
+const durationInDays = 39; //დასრულების დრო (18 აგვისტო 2025)
 const endDate = new Date(startDate);
 endDate.setDate(startDate.getDate() + durationInDays);
 
