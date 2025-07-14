@@ -28,13 +28,12 @@ export class User {
 
   @Prop({ type: String, enum: Role, default: Role.User })
   role: Role;
-
   @Prop()
   createdAt?: Date;
 
   @Prop()
   updatedAt?: Date;
-  
+
   @Prop({ type: String, default: null })
   refreshToken?: string | null;
 
@@ -65,7 +64,17 @@ export class User {
 
   @Prop()
   passwordResetExpires?: Date;
+
+  @Prop({ type: String, default: null })
+  profileImagePath: string;
 }
 
 export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', function (next) {
+  if (this.email) {
+    this.email = this.email.toLowerCase();
+  }
+  next();
+});

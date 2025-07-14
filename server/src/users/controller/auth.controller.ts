@@ -10,6 +10,8 @@ import {
   UnauthorizedException,
   ConflictException,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/types/role.enum';
@@ -24,15 +26,23 @@ import { UserDto } from '../dtos/user.dto';
 import { UserDocument } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../services/users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { AuthResponseDto, LoginDto } from '../dtos/auth.dto';
 import { NotAuthenticatedGuard } from '@/guards/not-authenticated.guard';
 import { Response, Request } from 'express';
 import { cookieConfig } from '@/cookie-config';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
-import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -59,17 +69,30 @@ export class AuthController {
       loginDto.password,
     );
 
+    let profileImage = null;
+    if (user.profileImagePath) {
+      profileImage = await this.usersService.getProfileImageUrl(
+        user.profileImagePath,
+      );
+    }
+
     const { tokens, user: userData } = await this.authService.login(user);
 
-    return { tokens, user: userData };
+    return {
+      tokens,
+      user: {
+        ...userData,
+        profileImage,
+      },
+    };
   }
 
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.User, Role.Seller)
   @Get('profile')
-  getProfile(@CurrentUser() user: UserDocument) {
-    return user;
+  async getProfile(@CurrentUser() user: UserDocument) {
+    return this.usersService.getProfileData(user._id.toString());
   }
 
   @Post('refresh')
@@ -95,14 +118,13 @@ export class AuthController {
         name: req.user.name || 'Google User',
         id: req.user.id,
       });
-      
       console.log('✅ Google auth successful, redirecting with tokens');
-      
-      // Include user data in the URL fragment (encoded)
+
       const encodedUserData = encodeURIComponent(JSON.stringify(user));
-      
-      // Instead of setting cookies, redirect with token in URL fragment (safer than query params)
-      res.redirect(`${process.env.ALLOWED_ORIGINS}/auth-callback#accessToken=${tokens.accessToken}&refreshToken=${tokens.refreshToken}&userData=${encodedUserData}`);
+
+      res.redirect(
+        `${process.env.ALLOWED_ORIGINS}/auth-callback#accessToken=${tokens.accessToken}&refreshToken=${tokens.refreshToken}&userData=${encodedUserData}`,
+      );
     } catch (error) {
       console.error('Google auth error:', error);
       res.redirect(`${process.env.ALLOWED_ORIGINS}/login?error=auth_failed`);
@@ -113,9 +135,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async logout(@CurrentUser() user: UserDocument) {
     await this.authService.logout(user._id.toString());
+
     return { success: true };
   }
-
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({
     status: 201,
@@ -130,16 +152,6 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     const user = await this.usersService.create(registerDto);
     return this.authService.login(user);
-  }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.User, Role.Seller)
-  @Put('profile')
-  async updateProfile(
-    @CurrentUser() user: UserDocument,
-    @Body() updateDto: ProfileDto,
-  ) {
-    return this.usersService.update(user._id.toString(), updateDto);
   }
 
   @ApiOperation({ summary: 'Register a new seller' })
@@ -165,6 +177,24 @@ export class AuthController {
       }
       throw new BadRequestException('Registration failed');
     }
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User, Role.Seller)
+  @Put('profile')
+  async updateProfile(
+    @CurrentUser() user: UserDocument,
+    @Body() updateDto: ProfileDto,
+  ) {
+    // Filter out undefined fields to make all fields truly optional
+    const filteredDto = Object.entries(updateDto)
+      .filter(([_, value]) => value !== undefined)
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+
+    return this.usersService.update(user._id.toString(), filteredDto);
   }
 
   @Post('forgot-password')

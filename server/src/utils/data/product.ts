@@ -10,5 +10,10 @@ export const sampleProduct = {
   description: 'Sample description',
   deliveryType: 'FishHunt',
   minDeliveryDays: 3, // Adding minimum delivery days
-  maxDeliveryDays: 7, 
+  maxDeliveryDays: 7, // Adding maximum delivery days
+  dimensions: {
+    width: 0,
+    height: 0,
+    depth: 0
+  }
 };
