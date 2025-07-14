@@ -15,6 +15,7 @@ export class SellerRegisterDto {
     example: 'ციფრული სამყარო',
     description: 'მაღაზიის სახელი',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   storeName: string;
@@ -41,6 +42,7 @@ export class SellerRegisterDto {
     example: 'გიორგი',
     description: 'მფლობელის სახელი',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   ownerFirstName: string;
@@ -49,6 +51,7 @@ export class SellerRegisterDto {
     example: 'გიორგაძე',
     description: 'მფლობელის გვარი',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   ownerLastName: string;
@@ -57,6 +60,7 @@ export class SellerRegisterDto {
     example: '+995555123456',
     description: 'ტელეფონის ნომერი საერთაშორისო ფორმატში',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsPhoneNumber()
   phoneNumber: string;
 
@@ -64,7 +68,9 @@ export class SellerRegisterDto {
     example: 'example@mail.com',
     description: 'ელ-ფოსტის მისამართი',
   })
-  @Transform(({ value }) => value.toLowerCase())
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.toLowerCase().trim() : value,
+  )
   @IsEmail()
   email: string;
 
@@ -72,6 +78,7 @@ export class SellerRegisterDto {
     example: 'Password123!',
     description: 'პაროლი (მინიმუმ 6 და მაქსიმუმ 20 სიმბოლო)',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   @MinLength(6, { message: 'პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს' })
@@ -82,6 +89,7 @@ export class SellerRegisterDto {
     example: '01024085800',
     description: 'პირადი ნომერი',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   identificationNumber: string;
@@ -90,6 +98,7 @@ export class SellerRegisterDto {
     example: 'GE29TB7777777777777777',
     description: 'საბანკო ანგარიშის ნომერი IBAN ფორმატში',
   })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsNotEmpty()
   @IsString()
   accountNumber: string;

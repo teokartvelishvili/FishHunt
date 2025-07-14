@@ -67,11 +67,28 @@ export class UsersService {
     }
   }
 
-  async createSeller(dto: SellerRegisterDto): Promise<UserDocument> {
+  async createSeller(
+    dto: SellerRegisterDto,
+    logoFile?: Express.Multer.File,
+  ): Promise<UserDocument> {
     try {
       const existingUser = await this.userModel.findOne({ email: dto.email });
       if (existingUser) {
         throw new ConflictException('User with this email already exists');
+      }
+
+      let logoPath: string | undefined;
+      if (logoFile) {
+        // Upload logo to AWS S3
+        try {
+          logoPath = await this.awsS3Service.uploadImage(
+            logoFile.originalname,
+            logoFile.buffer,
+          );
+        } catch (error) {
+          this.logger.error('Failed to upload logo:', error);
+          // Continue without logo if upload fails
+        }
       }
 
       const sellerData = {
@@ -79,6 +96,7 @@ export class UsersService {
         name: dto.storeName,
         role: Role.Seller,
         password: dto.password,
+        storeLogo: logoPath, // Add logo path to seller data
       };
 
       return await this.create(sellerData);

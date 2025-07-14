@@ -40,7 +40,6 @@ import { SellerRegisterDto } from '../dtos/seller-register.dto';
 import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 
@@ -164,10 +163,18 @@ export class AuthController {
     status: 400,
     description: 'Bad request - validation error',
   })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('logoFile'))
   @Post('sellers-register')
-  async registerSeller(@Body() sellerRegisterDto: SellerRegisterDto) {
+  async registerSeller(
+    @Body() sellerRegisterDto: SellerRegisterDto,
+    @UploadedFile() logoFile?: Express.Multer.File,
+  ) {
     try {
-      const seller = await this.usersService.createSeller(sellerRegisterDto);
+      const seller = await this.usersService.createSeller(
+        sellerRegisterDto,
+        logoFile,
+      );
       const { tokens, user } = await this.authService.login(seller);
 
       return { tokens, user };
