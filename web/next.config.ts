@@ -5,11 +5,10 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "50mb",
     },
-    // Removed the deprecated option 'serverComponentsExternalPackages'
   },
-  // Added the new location for server external packages
   serverExternalPackages: [],
   images: {
+    domains: ["res.cloudinary.com", "fish-hunt.s3.eu-north-1.amazonaws.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -17,15 +16,38 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "fish-hunt.s3.eu-north-1.amazonaws.com",
+        port: "",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "**",
+      },
     ],
-    // Add unoptimized option for local development
-    unoptimized: process.env.NODE_ENV !== 'production',
+    // Disable image optimization completely in development
+    unoptimized: true,
+    // Add a larger deviceSizes array for better responsive images
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  // Add these settings to fix the prerendering issues
   reactStrictMode: true,
   poweredByHeader: false,
-  output: 'standalone',
-  distDir: '.next',
+  output: "standalone",
+  distDir: ".next",
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

@@ -9,10 +9,14 @@ const publicPaths = [
   "/reset-password",
   "/forum",
 ];
-const protectedPaths = ["/profile", "/orders", "/admin", "/admin/products",
+const protectedPaths = [
+  "/profile",
+  "/orders",
+  "/admin",
+  "/admin/products",
   "/admin/products/create",
-  "/admin/products/[id]/edit",];
-
+  "/admin/products/[id]/edit", // დავამატოთ პროდუქტის რედაქტირების გზა
+];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
