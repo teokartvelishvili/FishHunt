@@ -32,6 +32,8 @@ async function bootstrap() {
         'https://fishhunt.vercel.app/home',
         'https://fishhunt-web.vercel.app',
         'https://www.fishhunt-web.vercel.app',
+        'fishhunt-git-master-teokartvelishvilis-projects.vercel.app',
+        'fishhunt-muj5s8qno-teokartvelishvilis-projects.vercel.app',
         'https://fishhunt-git-main-aberoshvilis-projects.vercel.app',
         'https://fishhunt-aberoshvilis-projects.vercel.app',
         'http://localhost:3000',
