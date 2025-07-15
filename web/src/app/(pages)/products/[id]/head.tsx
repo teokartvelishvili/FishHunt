@@ -24,7 +24,7 @@ export async function generateMetadata({
 
     const product = await response.json();
 
-    const title = `${product.name} - ${product.brand} | FishHunt",`;
+    const title = `${product.name} - ${product.brand} | FishHunt`;
 
     let description =
       product.description?.slice(0, 160) ||
@@ -86,7 +86,7 @@ export async function generateMetadata({
         images: product.images?.length > 0 ? [product.images[0]] : [],
       },
       alternates: {
-        canonical: `https://FishHunt",.ge/products/${params.id}`,
+        canonical: `https://FishHunt.ge/products/${params.id}`,
       },
     };
   } catch (error) {
