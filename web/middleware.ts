@@ -16,6 +16,8 @@ const protectedPaths = [
   "/admin/products",
   "/admin/products/create",
   "/admin/products/[id]/edit", // დავამატოთ პროდუქტის რედაქტირების გზა
+
+  
 ];
 
 export function middleware(request: NextRequest) {
