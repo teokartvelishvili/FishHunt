@@ -15,6 +15,7 @@ export interface ImageGenerationOptions {
   imageStrength?: number;
   sourceImage?: string;
   seed?: number;
+  
 }
 
 export interface ImageGenerationResponse {
