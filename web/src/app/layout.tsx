@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./fonts.css";
 import { Providers } from "./providers";
 // import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/auth-provider";
 import { CartProvider } from "@/modules/cart/context/cart-context";
 import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
-import { satoshi } from "./(pages)/fonts";
+import { satoshi } from "./fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
@@ -48,6 +49,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
+        style={{ fontFamily: 'var(--font-satoshi)' }}
       >
         <Providers>
           <AuthProvider>
