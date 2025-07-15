@@ -5,10 +5,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "50mb",
     },
-    // Removed the deprecated option 'serverComponentsExternalPackages'
   },
-  // Added the new location for server external packages
-  serverExternalPackages: [],
   images: {
     remotePatterns: [
       {
@@ -18,14 +15,15 @@ const nextConfig: NextConfig = {
         pathname: "**",
       },
     ],
-    // Add unoptimized option for local development
-    unoptimized: process.env.NODE_ENV !== 'production',
+    // Only use unoptimized for development
+    unoptimized: process.env.NODE_ENV === "development",
   },
-  // Add these settings to fix the prerendering issues
+  // Optimizations for Vercel deployment
   reactStrictMode: true,
   poweredByHeader: false,
-  output: 'standalone',
-  distDir: '.next',
+  compress: true,
+  // Remove output: 'standalone' for Vercel deployment
+  swcMinify: true,
 };
 
 export default nextConfig;
