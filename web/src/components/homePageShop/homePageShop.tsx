@@ -53,7 +53,7 @@ export default function HomePageShop() {
 
         // First fetch all products
         const response = await getProducts(1, 50); // Fetch more to have enough for each category
-        const allProducts = response.items || [];
+        const allProducts = response.items || response.products || [];
 
         if (!categories || categories.length === 0) {
           setIsLoading(false);
@@ -209,6 +209,7 @@ export default function HomePageShop() {
                   </div>
                   <ProductGrid
                     products={categoryData.products.slice(0, 3)} // Only take first 3 products
+                    theme="default"
                     isShopPage={false}
                   />
                   <div className="see-more-mobile see-more">
