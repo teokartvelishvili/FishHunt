@@ -1,11 +1,11 @@
 .main-header {
   position: sticky; /* sticky-ზე დაბრუნება */
   top: 0;
-  z-index: 50;
+  z-index: 9000;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  overflow: hidden;
+  overflow: visible; /* dropdown-ისთვის visible გავხადოთ */
 }
 
 .header1 {
@@ -126,6 +126,15 @@
   padding: 10px 0;
 }
 
+.cart-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+  position: relative;
+  z-index: 99990;
+}
+
 /* Responsive Styles */
 @media (max-width: 1000px) {
   .menu-button {
@@ -199,5 +208,25 @@
   .cartIconsSpan {
     bottom: 10px;
     left: 32px;
+  }
+  
+  /* Mobile responsive styles */
+  .cart-user-menu {
+    gap: 10px;
+  }
+  
+  .cart-icon-container,
+  .button {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  
+  .shopping-cart-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .cart-text {
+    font-size: 14px;
   }
 }

@@ -2,8 +2,8 @@
 .welcome-message {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 90vh; /* მინიმუმ 90% viewport-ის - გაზრდილია follow-up-ისთვის */
+    /* height: 100%; */
+    min-height: 67vh; /* მინიმუმ 67% viewport-ის - გაზრდილია follow-up-ისთვის */
     width: 100%;
     padding: 1%;
     z-index: 10;

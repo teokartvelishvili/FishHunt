@@ -18,6 +18,13 @@
     font-weight: bold;
     float: right;
 }
+.section-title {
+    margin: 20px auto;
+    padding: 10px 20px;
+    color: #2A5530;
+    font-size: 22px;
+    transition: background-color 0.3s ease;
+}
 
 @media screen and (max-width: 1200px) {
     .productGrid {

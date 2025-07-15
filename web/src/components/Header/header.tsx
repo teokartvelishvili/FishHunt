@@ -31,11 +31,13 @@ export default function Header() {
               <SearchBox />
             </div>
 
-            {/* Cart and User Menu */}
-            <nav className="nav-menu">
+            <div className="cart-user-menu">
               <CartIcon />
               <UserMenu />
-            </nav>
+            </div>
+            {/* Cart and User Menu */}
+            {/* <nav className="nav-menu">
+            </nav> */}
           </div>
         </div>
 

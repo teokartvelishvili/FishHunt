@@ -59,6 +59,7 @@
   height: 32px;
   margin-bottom: 6px;
   position: relative;
+  display: none; /* Hidden until actual icons are available */
 }
 
 .icon {
