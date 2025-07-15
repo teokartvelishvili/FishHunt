@@ -8,7 +8,7 @@ const publicPaths = [
   "/forgot-password",
   "/reset-password",
   "/forum",
-  
+ 
 ];
 
 const protectedPaths = ["/profile", "/orders", "/admin"];
