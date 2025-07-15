@@ -93,7 +93,7 @@ export async function generateMetadata({
     console.error("Error generating metadata:", error);
     return {
       title: "Product | FishHunt",
-      description: "Discover products on FishHunt",",
+      description: "Discover products on FishHunt",
     };
   }
 }
