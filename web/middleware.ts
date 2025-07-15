@@ -13,6 +13,7 @@ const protectedPaths = ["/profile", "/orders", "/admin", "/admin/products",
   "/admin/products/create",
   "/admin/products/[id]/edit",];
 
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasTokens =
