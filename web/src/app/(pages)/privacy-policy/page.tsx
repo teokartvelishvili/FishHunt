@@ -115,7 +115,7 @@ export default function PrivacyPolicy() {
               : "თუ გაქვთ რაიმე კითხვა ამ კონფიდენციალურობის პოლიტიკასთან დაკავშირებით, გთხოვთ დაგვიკავშირდეთ:"}
           </p>
           <div className="contact-info">
-            <p>Email: info@myhunter.ge</p>
+            <p>Email: info@FishHunt.ge</p>
             <p>
               {language === "en"
                 ? "Phone: +995 555 123 456"

@@ -507,7 +507,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on Myhunter`}
+            title={`Check out ${displayName} by ${product.brand} on FishHunt`}
           />
           {!isOutOfStock && (
             <div className="product-options-container">

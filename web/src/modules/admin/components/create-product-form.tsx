@@ -71,7 +71,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "MyHunter", // Set default brand here
+      brand: "FishHunt", // Set default brand here
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -216,7 +216,7 @@ export function CreateProductForm({
     if (user && isSeller && !isEdit) {
       setFormData((prevData) => ({
         ...prevData,
-        brand: user.name || user.storeName || "MyHunter",
+        brand: user.name || user.storeName || "FishHunt",
         brandLogo: user.storeLogo || undefined,
       }));
     }
@@ -234,7 +234,7 @@ export function CreateProductForm({
         _id: initialData._id,
         name: initialData.name || "",
         nameEn: initialData.nameEn || "",
-        brand: initialData.brand || "MyHunter",
+        brand: initialData.brand || "FishHunt",
         brandLogo:
           typeof initialData.brandLogo === "string"
             ? initialData.brandLogo
@@ -334,7 +334,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "MyHunter", // Set default brand here too
+      brand: "FishHunt", // Set default brand here too
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -668,14 +668,14 @@ export function CreateProductForm({
         formDataToSend.append("variants", JSON.stringify(stocks));
       }
 
-      // Handle brand name - ensure it's always set to MyHunter if empty
+      // Handle brand name - ensure it's always set to FishHunt if empty
       if (isSeller) {
         formDataToSend.append(
           "brand",
-          user?.name || user?.storeName || formData.brand || "MyHunter"
+          user?.name || user?.storeName || formData.brand || "FishHunt"
         );
       } else {
-        formDataToSend.append("brand", formData.brand || "MyHunter");
+        formDataToSend.append("brand", formData.brand || "FishHunt");
       }
 
       // SIMPLIFIED logo handling - THIS IS THE FIX

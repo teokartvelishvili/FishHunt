@@ -2,7 +2,7 @@ import { Product } from "@/types";
 
 export function generateProductSchema(product: Product, productId: string) {
   const baseUrl =
-    process.env.NEXT_PUBLIC_PRODUCTION_URL || "https://myhunter.ge";
+    process.env.NEXT_PUBLIC_PRODUCTION_URL || "https://FishHunt.ge";
 
   // ჰეშთეგების მომზადება SEO-სთვის
   const hashtagKeywords =
@@ -43,7 +43,7 @@ export function generateProductSchema(product: Product, productId: string) {
           : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
-        name: "MyHunter",
+        name: "FishHunt",
         url: baseUrl,
       },
     },
@@ -66,7 +66,7 @@ export function generateProductSchema(product: Product, productId: string) {
       "სანადირო",
       "სათევზაო",
       "აღჭურვილობა",
-      "MyHunter",
+      "FishHunt",
       "მაიჰანტერი",
     ].join(", "),
     additionalProperty: [
@@ -98,7 +98,7 @@ export function generateProductSchema(product: Product, productId: string) {
 
 export function generateBreadcrumbSchema(product: Product, productId: string) {
   const baseUrl =
-    process.env.NEXT_PUBLIC_PRODUCTION_URL || "https://myhunter.ge";
+    process.env.NEXT_PUBLIC_PRODUCTION_URL || "https://FishHunt.ge";
 
   const items = [
     {

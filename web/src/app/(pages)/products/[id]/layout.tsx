@@ -21,14 +21,14 @@ export async function generateMetadata({
 
     if (!response.ok) {
       return {
-        title: "Product Not Found | MyHunter",
+        title: "Product Not Found | FishHunt",
         description: "The requested product could not be found.",
       };
     }
 
     const product = await response.json();
 
-    const title = `${product.name} - ${product.brand} | MyHunter`;
+    const title = `${product.name} - ${product.brand} | FishHunt`;
 
     let description =
       product.description?.slice(0, 160) ||
@@ -60,7 +60,7 @@ export async function generateMetadata({
       "სათევზაო",
       "აღჭურვილობა",
       "მაღაზია",
-      "MyHunter",
+      "FishHunt",
       "მაიჰანტერი",
       "საქართველო",
       "hunting",
@@ -76,9 +76,9 @@ export async function generateMetadata({
       title,
       description,
       keywords,
-      authors: [{ name: "MyHunter" }],
-      creator: "MyHunter",
-      publisher: "MyHunter",
+      authors: [{ name: "FishHunt" }],
+      creator: "FishHunt",
+      publisher: "FishHunt",
       robots: {
         index: true,
         follow: true,
@@ -107,13 +107,13 @@ export async function generateMetadata({
                   url: "/logo.png",
                   width: 1200,
                   height: 630,
-                  alt: "MyHunter",
+                  alt: "FishHunt",
                 },
               ],
         type: "website",
         locale: "ka_GE",
-        siteName: "MyHunter",
-        url: `https://myhunter.ge/products/${id}`,
+        siteName: "FishHunt",
+        url: `https://FishHunt.ge/products/${id}`,
       },
       twitter: {
         card: "summary_large_image",
@@ -123,7 +123,7 @@ export async function generateMetadata({
           product.images?.length > 0 ? [product.images[0]] : ["/logo.png"],
       },
       alternates: {
-        canonical: `https://myhunter.ge/products/${id}`,
+        canonical: `https://FishHunt.ge/products/${id}`,
       },
       other: {
         "product:price:amount": product.price,
@@ -138,8 +138,8 @@ export async function generateMetadata({
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
-      title: "Product | MyHunter",
-      description: "Discover products on MyHunter",
+      title: "Product | FishHunt",
+      description: "Discover products on FishHunt",
     };
   }
 }

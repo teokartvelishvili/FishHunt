@@ -3,15 +3,15 @@ import ShopContent from "./ShopContent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | MyHunter",
+  title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | FishHunt",
   description:
-    "დაათვალიერეთ სანადირო და სათევზაო აღჭურვილობის ფართო არჩევანი მაიჰანტერის მაღაზიაში. ხარისხიანი პროდუქტები, საუკეთესო ფასები საქართველოში. Shop hunting and fishing equipment at MyHunter.",
+    "დაათვალიერეთ სანადირო და სათევზაო აღჭურვილობის ფართო არჩევანი მაიჰანტერის მაღაზიაში. ხარისხიანი პროდუქტები, საუკეთესო ფასები საქართველოში. Shop hunting and fishing equipment at FishHunt.",
   keywords: [
     "მაღაზია",
     "სანადირო აღჭურვილობა",
     "სათევზაო აღჭურვილობა",
     "პროდუქტები",
-    "MyHunter",
+    "FishHunt",
     "მაიჰანტერი",
     "shop",
     "hunting equipment",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     "Georgia",
     "outdoor gear",
   ],
-  authors: [{ name: "MyHunter" }],
-  creator: "MyHunter",
-  publisher: "MyHunter",
+  authors: [{ name: "FishHunt" }],
+  creator: "FishHunt",
+  publisher: "FishHunt",
   robots: {
     index: true,
     follow: true,
@@ -34,17 +34,17 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | MyHunter",
+    title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | FishHunt",
     description:
       "დაათვალიერეთ სანადირო და სათევზაო აღჭურვილობის ფართო არჩევანი მაიჰანტერის მაღაზიაში. ხარისხიანი პროდუქტები, საუკეთესო ფასები საქართველოში.",
-    url: "https://myhunter.ge/shop",
-    siteName: "MyHunter",
+    url: "https://FishHunt.ge/shop",
+    siteName: "FishHunt",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "MyHunter მაღაზია",
+        alt: "FishHunt მაღაზია",
       },
     ],
     locale: "ka_GE",
@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | MyHunter",
+    title: "მაღაზია - სანადირო და სათევზაო აღჭურვილობა | FishHunt",
     description:
       "დაათვალიერეთ სანადირო და სათევზაო აღჭურვილობის ფართო არჩევანი მაიჰანტერის მაღაზიაში.",
     images: ["/logo.png"],
   },
   alternates: {
-    canonical: "https://myhunter.ge/shop",
+    canonical: "https://FishHunt.ge/shop",
   },
 };
 

@@ -15,8 +15,8 @@ export async function generateMetadata({
   const decodedKeyword = decodeURIComponent(keyword || "");
 
   return {
-    title: `ძიება: ${decodedKeyword} - MyHunter | Search: ${decodedKeyword}`,
-    description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა MyHunter-ში. Search results for "${decodedKeyword}" - hunting and fishing equipment at MyHunter.`,
+    title: `ძიება: ${decodedKeyword} - FishHunt | Search: ${decodedKeyword}`,
+    description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა FishHunt-ში. Search results for "${decodedKeyword}" - hunting and fishing equipment at FishHunt.`,
     keywords: [
       decodedKeyword,
       "ძიება",
@@ -24,7 +24,7 @@ export async function generateMetadata({
       "სათევზაო",
       "აღჭურვილობა",
       "პროდუქტები",
-      "MyHunter",
+      "FishHunt",
       "მაიჰანტერი",
       "search",
       "hunting",
@@ -34,9 +34,9 @@ export async function generateMetadata({
       "find",
       "results",
     ],
-    authors: [{ name: "MyHunter" }],
-    creator: "MyHunter",
-    publisher: "MyHunter",
+    authors: [{ name: "FishHunt" }],
+    creator: "FishHunt",
+    publisher: "FishHunt",
     robots: {
       index: true,
       follow: true,
@@ -48,16 +48,16 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `ძიება: ${decodedKeyword} - MyHunter`,
-      description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა MyHunter-ში.`,
-      url: `https://myhunter.ge/search/${encodeURIComponent(decodedKeyword)}`,
-      siteName: "MyHunter",
+      title: `ძიება: ${decodedKeyword} - FishHunt`,
+      description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა FishHunt-ში.`,
+      url: `https://FishHunt.ge/search/${encodeURIComponent(decodedKeyword)}`,
+      siteName: "FishHunt",
       images: [
         {
           url: "/logo.png",
           width: 1200,
           height: 630,
-          alt: `MyHunter ძიება - ${decodedKeyword}`,
+          alt: `FishHunt ძიება - ${decodedKeyword}`,
         },
       ],
       locale: "ka_GE",
@@ -65,12 +65,12 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `ძიება: ${decodedKeyword} - MyHunter`,
-      description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა MyHunter-ში.`,
+      title: `ძიება: ${decodedKeyword} - FishHunt`,
+      description: `ძიების შედეგები "${decodedKeyword}" - სანადირო და სათევზაო აღჭურვილობა FishHunt-ში.`,
       images: ["/logo.png"],
     },
     alternates: {
-      canonical: `https://myhunter.ge/search/${encodeURIComponent(
+      canonical: `https://FishHunt.ge/search/${encodeURIComponent(
         decodedKeyword
       )}`,
     },

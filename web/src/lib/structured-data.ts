@@ -1,10 +1,10 @@
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "MyHunter",
+  name: "FishHunt",
   alternateName: "მაიჰანტერი",
-  url: "https://myhunter.ge",
-  logo: "https://myhunter.ge/logo.png",
+  url: "https://FishHunt.ge",
+  logo: "https://FishHunt.ge/logo.png",
   description: "საუკეთესო სანადირო და სათევზაო აღჭურვილობა საქართველოში",
   address: {
     "@type": "PostalAddress",
@@ -20,24 +20,24 @@ export const organizationSchema = {
     availableLanguage: ["Georgian", "English"],
   },
   sameAs: [
-    "https://www.facebook.com/myhunter.ge", // შეცვალეთ რეალური სოციალური ქსელებით
-    "https://www.instagram.com/myhunter.ge",
+    "https://www.facebook.com/FishHunt.ge", // შეცვალეთ რეალური სოციალური ქსელებით
+    "https://www.instagram.com/FishHunt.ge",
   ],
 };
 
 export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "MyHunter",
+  name: "FishHunt",
   alternateName: "მაიჰანტერი",
-  url: "https://myhunter.ge",
+  url: "https://FishHunt.ge",
   description: "სანადირო და სათევზაო აღჭურვილობის ონლაინ მაღაზია",
   inLanguage: ["ka", "en"],
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: "https://myhunter.ge/search/{search_term_string}",
+      urlTemplate: "https://FishHunt.ge/search/{search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },
@@ -46,9 +46,9 @@ export const websiteSchema = {
 export const storeSchema = {
   "@context": "https://schema.org",
   "@type": "Store",
-  name: "MyHunter",
+  name: "FishHunt",
   description: "სანადირო და სათევზაო აღჭურვილობის მაღაზია",
-  url: "https://myhunter.ge",
+  url: "https://FishHunt.ge",
   telephone: "+995-XXX-XXX-XXX", // შეცვალეთ რეალური ნომრით
   address: {
     "@type": "PostalAddress",

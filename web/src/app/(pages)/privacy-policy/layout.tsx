@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy",
+  title: "კონფიდენციალურობის პოლიტიკა - FishHunt | Privacy Policy",
   description:
-    "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას. GDPR შესაბამისი მონაცემთა დაცვის პოლიტიკა. Privacy Policy - MyHunter data protection.",
+    "გაეცანით FishHunt-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას. GDPR შესაბამისი მონაცემთა დაცვის პოლიტიკა. Privacy Policy - FishHunt data protection.",
   keywords: [
     "კონფიდენციალურობის პოლიტიკა",
     "მონაცემთა დაცვა",
     "პირადი ინფორმაცია",
     "უსაფრთხოება",
     "GDPR",
-    "MyHunter",
+    "FishHunt",
     "მაიჰანტერი",
     "privacy policy",
     "data protection",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     "terms",
     "conditions",
   ],
-  authors: [{ name: "MyHunter" }],
-  creator: "MyHunter",
-  publisher: "MyHunter",
+  authors: [{ name: "FishHunt" }],
+  creator: "FishHunt",
+  publisher: "FishHunt",
   robots: {
     index: true,
     follow: true,
@@ -34,17 +34,17 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy",
+    title: "კონფიდენციალურობის პოლიტიკა - FishHunt | Privacy Policy",
     description:
-      "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
-    url: "https://myhunter.ge/privacy-policy",
-    siteName: "MyHunter",
+      "გაეცანით FishHunt-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
+    url: "https://FishHunt.ge/privacy-policy",
+    siteName: "FishHunt",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "MyHunter კონფიდენციალურობის პოლიტიკა",
+        alt: "FishHunt კონფიდენციალურობის პოლიტიკა",
       },
     ],
     locale: "ka_GE",
@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "კონფიდენციალურობის პოლიტიკა - MyHunter",
+    title: "კონფიდენციალურობის პოლიტიკა - FishHunt",
     description:
-      "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
+      "გაეცანით FishHunt-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
     images: ["/logo.png"],
   },
   alternates: {
-    canonical: "https://myhunter.ge/privacy-policy",
+    canonical: "https://FishHunt.ge/privacy-policy",
   },
 };
 

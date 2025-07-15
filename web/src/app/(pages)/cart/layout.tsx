@@ -1,15 +1,15 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "კალათა - MyHunter | Shopping Cart",
+  title: "კალათა - FishHunt | Shopping Cart",
   description:
-    "თქვენი საყიდლების კალათა MyHunter-ში. დაათვალიერეთ შერჩეული პროდუქტები და განაგრძეთ შეძენა. Your shopping cart at MyHunter. Review selected products and proceed to checkout.",
+    "თქვენი საყიდლების კალათა Fishhunt-ში. დაათვალიერეთ შერჩეული პროდუქტები და განაგრძეთ შეძენა. Your shopping cart at FishHunt. Review selected products and proceed to checkout.",
   keywords: [
     "კალათა",
     "საყიდლები",
     "შეძენა",
     "შეკვეთა",
-    "MyHunter",
+    "FishHunt",
     "მაიჰანტერი",
     "shopping cart",
     "cart",
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     "buy",
     "selected items",
   ],
-  authors: [{ name: "MyHunter" }],
-  creator: "MyHunter",
-  publisher: "MyHunter",
+  authors: [{ name: "FishHunt" }],
+  creator: "FishHunt",
+  publisher: "FishHunt",
   robots: {
     index: false, // კალათა private page-ია
     follow: false,
@@ -31,17 +31,17 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "კალათა - MyHunter | Shopping Cart",
+    title: "კალათა - FishHunt | Shopping Cart",
     description:
-      "თქვენი საყიდლების კალათა MyHunter-ში. დაათვალიერეთ შერჩეული პროდუქტები და განაგრძეთ შეძენა.",
-    url: "https://myhunter.ge/cart",
-    siteName: "MyHunter",
+      "თქვენი საყიდლების კალათა FishHunt-ში. დაათვალიერეთ შერჩეული პროდუქტები და განაგრძეთ შეძენა.",
+    url: "https://FishHunt.ge/cart",
+    siteName: "FishHunt",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "MyHunter კალათა",
+        alt: "FishHunt კალათა",
       },
     ],
     locale: "ka_GE",
@@ -49,12 +49,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "კალათა - MyHunter",
-    description: "თქვენი საყიდლების კალათა MyHunter-ში.",
+    title: "კალათა - FishHunt",
+    description: "თქვენი საყიდლების კალათა FishHunt-ში.",
     images: ["/logo.png"],
   },
   alternates: {
-    canonical: "https://myhunter.ge/cart",
+    canonical: "https://FishHunt.ge/cart",
   },
 };
 
