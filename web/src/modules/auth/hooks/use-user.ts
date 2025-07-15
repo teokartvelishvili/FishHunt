@@ -9,5 +9,6 @@ export function useUser() {
     isLoading, 
     error,
     isError: !!error
+    
   };
 }
