@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { OrdersClient } from "./orders-client";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Order History | Soul Art",

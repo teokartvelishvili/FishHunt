@@ -28,23 +28,23 @@ interface SellerRegisterData {
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
     const response = await axios.post<AuthResponse>("/auth/login", credentials);
-    
+
     if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
     }
-    
+
     return response.data;
   },
 
   register: async (data: LoginCredentials & { name: string }) => {
     // რეგისტრაცია
     await axios.post("/auth/register", data);
-    
+
     // ავტომატური ავტორიზაცია
-    return authApi.login({ 
-      email: data.email, 
-      password: data.password 
+    return authApi.login({
+      email: data.email,
+      password: data.password,
     });
   },
 
@@ -71,8 +71,8 @@ export const authApi = {
     try {
       await axios.post("/auth/logout");
     } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     }
   },
 };

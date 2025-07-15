@@ -12,8 +12,9 @@ export const products = [
     rating: 4.5,
     numReviews: 12,
     categoryStructure: {
-      main: "FISHING",
+      main: "paintings",
       sub: "Electronics",
+      
     },
     reviews: [
       {
@@ -103,7 +104,7 @@ export const products = [
     rating: 4.0,
     numReviews: 8,
     categoryStructure: {
-      main: "FISHING",
+      main: "paintings",
       sub: "Electronics",
     },
     reviews: [],

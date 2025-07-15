@@ -4,45 +4,57 @@ const fileSchema = z.custom<File>((file) => {
   return file instanceof File;
 }, "Must be a file");
 
+export interface ProductFormData {
+  name: string;
+  nameEn?: string;
+  description: string;
+  descriptionEn?: string;
+  brand: string;
+  category: string;
+  subcategory: string;
+  categoryId?: string;
+  ageGroups?: string[];
+  sizes?: string[];
+  colors?: string[];
+  price: number;
+  countInStock: number;
+  images: Array<File | string>;
+  brandLogo?: File | string;
+  deliveryType?: "SELLER" | "FishHunt";
+  minDeliveryDays?: number | string;
+  maxDeliveryDays?: number | string;
+  variants?: {
+    ageGroup?: string;
+    size?: string;
+    color?: string;
+    stock: number;
+  }[];
+}
+
 export const productSchema = z.object({
-  name: z.string().min(1, "პროდუქტის სახელი სავალდებულოა"),
+  name: z.string().min(1),
   nameEn: z.string().optional(),
-  description: z.string().min(5, "აღწერა უნდა იყოს მინიმუმ 5 სიმბოლო"),
+  description: z.string().min(5),
   descriptionEn: z.string().optional(),
-  brand: z.string().min(1, "ბრენდის სახელი სავალდებულოა"),
-  category: z.string().min(1, "კატეგორია სავალდებულოა"),
+  brand: z.string().min(1),
+  category: z.string().min(1),
   subcategory: z
     .string()
     .refine(
-      (value) => value !== "" && value !== "default" && value !== undefined,
-      {
-        message: "გთხოვთ აირჩიოთ ქვეკატეგორია",
-      }
+      (value) => value !== "" && value !== "default" && value !== undefined
     ),
-  price: z.coerce.number().positive("ფასი უნდა იყოს დადებითი რიცხვი"),
-  countInStock: z.coerce
-    .number()
-    .min(0, "მარაგის რაოდენობა არ შეიძლება იყოს უარყოფითი"),
-  images: z.array(fileSchema).min(1, "მინიმუმ ერთი სურათი სავალდებულოა"),
+  categoryId: z.string().optional(),
+  ageGroups: z.array(z.string()).optional(),
+  sizes: z.array(z.string()).optional(),
+  colors: z.array(z.string()).optional(),
+  price: z.coerce.number().positive(),
+  countInStock: z.coerce.number().min(0),
+  images: z.array(fileSchema).min(1),
   brandLogo: fileSchema.optional().nullable().or(z.literal("")),
-  deliveryType: z
-    .enum(["SELLER", "FishHunt"], {
-      errorMap: () => ({ message: "მიწოდების ტიპი სავალდებულოა" }),
-    })
-    .optional()
-    .nullable(),
+  deliveryType: z.enum(["SELLER", "FishHunt"]).optional().nullable(),
   minDeliveryDays: z.number().optional().nullable(),
   maxDeliveryDays: z.number().optional().nullable(),
-  dimensions: z
-    .object({
-      width: z.number().optional().nullable(),
-      height: z.number().optional().nullable(),
-      depth: z.number().optional().nullable(),
-    })
-    .optional(),
 });
-
-export type ProductFormData = z.infer<typeof productSchema>;
 
 // Helper function to validate the form before submission
 export const validateProductForm = (data: unknown) => {

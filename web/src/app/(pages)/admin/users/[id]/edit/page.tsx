@@ -13,11 +13,14 @@ export default function EditUserPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [password, setPassword] = useState("");
+  const [showPasswordField, setShowPasswordField] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetchWithAuth(`/users/${params.id}`);
+        const userId = params?.id ? (params.id as string) : "";
+        const response = await fetchWithAuth(`/users/${userId}`);
         const data = await response.json();
         setUser(data);
       } catch (error) {
@@ -33,7 +36,7 @@ export default function EditUserPage() {
     };
 
     fetchUser();
-  }, [params.id]);
+  }, [params]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,13 +44,16 @@ export default function EditUserPage() {
     if (!user) return;
 
     try {
+      // Only include password if it was provided
       const updateData = {
         name: user.name,
         email: user.email,
         role: user.role,
+        ...(password && { password }),
       };
 
-      await fetchWithAuth(`/users/${params.id}`, {
+      const userId = params?.id as string;
+      await fetchWithAuth(`/users/${userId}`, {
         method: "PUT",
         body: JSON.stringify(updateData),
       });
@@ -104,6 +110,38 @@ export default function EditUserPage() {
             <option value={Role.Seller}>Seller</option>
           </select>
         </div>
+
+        {!showPasswordField ? (
+          <div className="form-action">
+            <button
+              type="button"
+              onClick={() => setShowPasswordField(true)}
+              className="password-button"
+            >
+              Change Password
+            </button>
+          </div>
+        ) : (
+          <div className="form-group">
+            <label>New Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter new password"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setShowPasswordField(false);
+                setPassword("");
+              }}
+              className="cancel-password-button"
+            >
+              Cancel Password Change
+            </button>
+          </div>
+        )}
 
         <div className="form-actions">
           <button type="submit" className="save-button">

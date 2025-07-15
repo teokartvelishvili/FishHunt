@@ -1,72 +1,217 @@
 .review-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 24px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(1, 38, 69, 0.1);
+  border: 1px solid #e6cd9f;
+  margin-top: 24px;
 }
 
 .review-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 12px;
 }
 
 .review-label {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  color: #012645;
+  margin-bottom: 8px;
 }
 
 .review-stars {
   display: flex;
-  gap: 0.25rem;
+  gap: 8px;
+  align-items: center;
 }
 
 .review-star-button {
   background: none;
   border: none;
-  padding: 0.25rem;
+  padding: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.review-star-button:hover {
+  background: rgba(230, 205, 159, 0.2);
 }
 
 .review-star {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+  transition: all 0.2s ease;
+}
+
+.review-star-button:hover .review-star {
+  transform: scale(1.1);
 }
 
 .filled-star {
-  color: #facc15;
-  fill: #facc15;
+  color: #e6cd9f;
+  fill: #e6cd9f;
+  filter: drop-shadow(0 2px 4px rgba(230, 205, 159, 0.4));
 }
 
 .empty-star {
   color: #d1d5db;
+  transition: all 0.2s ease;
+}
+
+.review-star-button:hover .empty-star {
+  color: #e6cd9f;
+  filter: drop-shadow(0 1px 2px rgba(230, 205, 159, 0.3));
 }
 
 .review-textarea {
-  height: 6rem;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 1rem;
+  height: 8rem;
+  padding: 16px;
+  border: 2px solid #e6cd9f;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #012645;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: #012645;
+  box-shadow: 0 0 0 3px rgba(1, 38, 69, 0.1);
+}
+
+.review-textarea::placeholder {
+  color: #6b5c35;
 }
 
 .review-submit {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: 500;
-  background-color: #3b82f6;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #2a5530, #ec9843);
   color: white;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(1, 38, 69, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .review-submit:disabled {
-  background-color: #9ca3af;
+  background: #a0a0a0;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .review-submit:hover:not(:disabled) {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #093d67, #012645);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(1, 38, 69, 0.4);
+}
+
+/* Review info section */
+.review-info {
+  background: linear-gradient(135deg, #e6cd9f, #f4e7c1);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #6b5c35;
+}
+
+.review-info-text {
+  color: #012645;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Error popup styling improvements */
+.error-popup-overlay {
+  backdrop-filter: blur(4px);
+}
+
+.error-popup {
+  border: 2px solid #e6cd9f !important;
+  box-shadow: 0 20px 40px rgba(1, 38, 69, 0.3) !important;
+}
+
+.error-popup-header {
+  background: linear-gradient(135deg, #012645, #093d67);
+  color: #e6cd9f;
+  padding: 16px 20px;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.error-popup-close {
+  background: none;
+  border: none;
+  color: #e6cd9f;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.error-popup-close:hover {
+  background: rgba(230, 205, 159, 0.2);
+}
+
+.error-popup-body {
+  padding: 20px;
+  background: #ffffff;
+  color: #012645;
+  line-height: 1.6;
+}
+
+.error-popup-footer {
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-radius: 0 0 10px 10px;
+  text-align: center;
+}
+
+.error-popup-button {
+  background: linear-gradient(135deg, #012645, #093d67);
+  color: #e6cd9f;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.error-popup-button:hover {
+  background: linear-gradient(135deg, #093d67, #012645);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 38, 69, 0.3);
 }

@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Image from "next/image";
+import { Search } from "lucide-react";
 import "./SearchBox.css";
-import searchIcon from "../../assets/icons/search.png"
 
 export default function SearchBox() {
   const router = useRouter();
@@ -19,19 +18,18 @@ export default function SearchBox() {
 
   return (
     <form onSubmit={onSubmit} className="search-form">
-      <Image src={searchIcon} alt="search icon" className="searchIcon" />
       <input
         type="text"
-        placeholder="ძიება FishHunt-ზე"
+        placeholder="ძიება..."
         value={keyword}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setKeyword(e.target.value)
         }
         className="search-input"
       />
-      {/* <button type="submit" className="search-button">
-        <Image src={searchIcon} alt="search icon" className="searchIcon" />
-      </button> */}
+      <button type="submit" className="search-button">
+        <Search size={18} />
+      </button>
     </form>
   );
 }

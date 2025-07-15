@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, XCircle, Truck, Store } from "lucide-react";
+import { CheckCircle2, Store, Truck, XCircle } from "lucide-react";
 import Link from "next/link";
 import "./history.css";
 
@@ -50,7 +50,7 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
             <th>ID</th>
             <th>DATE</th>
             <th>TOTAL</th>
-            <th>DELIVERY</th>
+            {/* <th>DELIVERY</th> */}
             <th>PAID</th>
             <th>DELIVERED</th>
             <th className="actions">ACTIONS</th>
@@ -73,7 +73,7 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
                     მიწოდება ავტორისგან
                   </span>
                 ) : (
-                  <span className="badge delivery-badge FishHunt">
+                  <span className="badge delivery-badge fishhunt">
                     <Truck size={14} />
                     FishHunt-ის კურიერი
                   </span>

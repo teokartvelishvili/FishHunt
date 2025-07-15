@@ -30,6 +30,7 @@ input {
   font-size: 14px;
   transition: border 0.3s ease-in-out;
   outline: none;
+  width: 95%;
 }
 
 input:focus {

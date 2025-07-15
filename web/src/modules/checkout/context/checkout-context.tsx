@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react';
 
 interface CheckoutContextType {
   shippingAddress: ShippingAddress | null;
@@ -47,7 +47,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
 export function useCheckout() {
   const context = useContext(CheckoutContext);
   if (!context) {
-    throw new Error("useCheckout must be used within a CheckoutProvider");
+    throw new Error('useCheckout must be used within a CheckoutProvider');
   }
   return context;
 }

@@ -154,7 +154,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
             className="share-button"
             {...(label === "Facebook"
               ? {
-                  appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
+                  appid: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
                 }
               : {})}
           >

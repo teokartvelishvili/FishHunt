@@ -398,6 +398,18 @@ export class ProductsService {
     console.log('Updating product with hashtags:', updateFields.hashtags);
 
     if (data.variants) {
+      // Parse variants if it's a string (same as create method)
+      if (typeof data.variants === 'string') {
+        try {
+          data.variants = JSON.parse(data.variants);
+        } catch (error) {
+          console.error('Error parsing variants string to JSON:', error);
+          throw new BadRequestException(
+            'Invalid variants format. Expected a valid JSON array.',
+          );
+        }
+      }
+
       // Ensure variants is an array
       if (Array.isArray(data.variants)) {
         // Validate each variant object

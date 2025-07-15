@@ -1,11 +1,14 @@
 "use client";
 
-import { MainCategory, Product } from "@/types";
+import { Product, Category, SubCategory } from "@/types";
 import { ProductCard } from "./product-card";
 import { ProductCardSkeleton } from "./product-card-skeleton";
 import { useEffect, useState } from "react";
 import { getProducts } from "../api/get-products";
 import { getVisiblePages } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./ProductGrid.css";
 
 const paginationStyles = `
@@ -45,92 +48,120 @@ const paginationStyles = `
 `;
 
 interface ProductGridProps {
-  products?: Product[];
+  products: Product[];
   searchKeyword?: string;
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  theme?: "default";
   isShopPage?: boolean;
+  selectedAgeGroup?: string;
 }
 
 export function ProductGrid({
   products: initialProducts,
   searchKeyword,
   currentPage = 1,
+  theme = "default",
   totalPages = 1,
   onPageChange,
   isShopPage = false,
+  selectedAgeGroup,
 }: ProductGridProps) {
-  const [products, setProducts] = useState(initialProducts);
-  const [pages, setPages] = useState(1);
+  const [products, setProducts] = useState<Product[]>(initialProducts || []);
+  const [pages, setPages] = useState(totalPages);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { language } = useLanguage();
+
+  // Fetch categories and subcategories for reference
+  useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories?includeInactive=false"
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  useQuery<SubCategory[]>({
+    queryKey: ["all-subcategories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/subcategories?includeInactive=false"
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
-    if (searchKeyword) {
+    // For search page, don't fetch again - just use the provided products
+    if (searchKeyword && initialProducts) {
+      setProducts(initialProducts);
+      setPages(totalPages);
+      setIsLoading(false);
+      return;
+    }
+
+    if (searchKeyword && !initialProducts) {
       setIsLoading(true);
+      setError(null);
+
       const fetchSearchResults = async () => {
         try {
-          const { items, pages: totalPages } = await getProducts(
+          const { items = [], pages: totalPages } = await getProducts(
             currentPage,
             10,
-            searchKeyword
+            searchKeyword ? { keyword: searchKeyword } : undefined
           );
 
-          const processedItems = items.map((item) => {
-            if (!item.categoryStructure) {
-              // Assign a default category structure based on the item's category
-              const mainCategory =
-                item.category && ["Fishing", "Camping"].includes(item.category)
-                  ? MainCategory.HUNTING
-                  : MainCategory.FISHING;
-              return {
-                ...item,
-                categoryStructure: {
-                  main: mainCategory,
-                  sub: item.category,
-                },
-              };
-            }
-            return item;
-          });
-          setProducts(processedItems);
+          if (!items || items.length === 0) {
+            setProducts([]);
+            setPages(1);
+            setIsLoading(false);
+            return;
+          }
+
+          setProducts(items);
           setPages(totalPages);
         } catch (error) {
           console.error("Failed to search products:", error);
+          setError("Failed to load products. Please try again later.");
+          setProducts([]);
+          setPages(1);
         } finally {
           setIsLoading(false);
         }
       };
 
       fetchSearchResults();
-    } else {
-      const processedProducts = initialProducts?.map((item) => {
-        if (!item.categoryStructure) {
-          // Assign a default category structure based on the item's category
-          const fishingCategories = ["Fishing", "Camping"];
-          const isFishing = fishingCategories.includes(item.category);
-
-          return {
-            ...item,
-            categoryStructure: {
-              main: isFishing ? MainCategory.HUNTING : MainCategory.FISHING,
-              sub: item.category,
-            },
-          };
-        }
-        return item;
-      });
-
-      setProducts(processedProducts);
-
-      if (totalPages > 1) {
-        setPages(totalPages);
-      }
+    } else if (initialProducts) {
+      // Simply use initial products without any processing
+      setProducts(initialProducts);
+      setPages(totalPages);
     }
-  }, [searchKeyword, currentPage, initialProducts, totalPages]);
+  }, [
+    searchKeyword,
+    currentPage,
+    initialProducts,
+    totalPages,
+    selectedAgeGroup,
+  ]);
 
   const renderPagination = () => {
-    // Only show pagination if we have more than 1 page and we're on the shop page
     if (totalPages <= 1 || !isShopPage || !onPageChange) return null;
 
     return (
@@ -140,7 +171,7 @@ export function ProductGrid({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
         >
-          &larr; წინა
+          &larr; {language === "en" ? "Previous" : "წინა"}
         </button>
 
         <span className="pagination-info">
@@ -152,7 +183,7 @@ export function ProductGrid({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
         >
-          შემდეგი &rarr;
+          {language === "en" ? "Next" : "შემდეგი"} &rarr;
         </button>
       </div>
     );
@@ -170,10 +201,27 @@ export function ProductGrid({
     );
   }
 
-  if (!products?.length) {
+  if (error) {
+    return (
+      <div className="error-state">
+        <p>{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="retry-button"
+        >
+          {language === "en" ? "Try Again" : "სცადეთ თავიდან"}
+        </button>
+      </div>
+    );
+  }
+
+  if (!products || products.length === 0) {
     return (
       <div className="no-products">
-        <p>No products found</p>
+        <p>
+          {language === "en" ? "No products found" : "პროდუქტები ვერ მოიძებნა"}
+        </p>
+        <p>Debug info: products array length = {products?.length || 0}</p>
       </div>
     );
   }
@@ -185,7 +233,7 @@ export function ProductGrid({
       <style jsx>{paginationStyles}</style>
       <div className="grid-container">
         {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
+          <ProductCard key={product._id} product={product} theme={theme} />
         ))}
       </div>
 
@@ -202,7 +250,7 @@ export function ProductGrid({
               }`)
             }
           >
-            Previous
+            {language === "en" ? "Previous" : "წინა"}
           </button>
 
           {visiblePages.map((pageNum, idx) =>
@@ -234,7 +282,7 @@ export function ProductGrid({
               }`)
             }
           >
-            Next
+            {language === "en" ? "Next" : "შემდეგი"}
           </button>
         </div>
       )}

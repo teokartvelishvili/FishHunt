@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "@/modules/cart/context/cart-context";
-import { useToast } from "@/hooks/use-toast";
-import cartIcon from "../../../assets/cart2.png";
-import Image from "next/image";
 
+import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/LanguageContext";
+import "./ProductCard.css";
+import { useCart } from "@/modules/cart/context/cart-context";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -13,7 +13,12 @@ interface AddToCartButtonProps {
   className?: string;
 }
 
-export function AddToCartButton({ productId, countInStock, className }: AddToCartButtonProps) {
+export function AddToCartButton({
+  productId,
+  countInStock,
+  className,
+}: AddToCartButtonProps) {
+  const { t } = useLanguage();
   const { addItem } = useCart();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -24,8 +29,8 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
   const handleAddToCart = async () => {
     setLoading(true);
     toast({
-      title: "Adding to cart...",
-      description: "Please wait while we add your item.",
+      title: t("cart.addingToCart"),
+      description: t("cart.pleaseWait"),
     });
 
     try {
@@ -33,8 +38,8 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
     } catch (error) {
       console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to add item to cart. Please try again.",
+        title: t("cart.error"),
+        description: t("cart.failedToAdd"),
         variant: "destructive",
       });
     } finally {
@@ -53,11 +58,19 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
   return (
     <div className="cart-actions">
       <div className="quantity-container">
-        <button className="quantity-button" onClick={decreaseQuantity} disabled={quantity <= 1}>
+        <button
+          className="quantity-button"
+          onClick={decreaseQuantity}
+          disabled={quantity <= 1}
+        >
           -
         </button>
         <span className="quantity-input">{quantity}</span>
-        <button className="quantity-button" onClick={increaseQuantity} disabled={quantity >= countInStock}>
+        <button
+          className="quantity-button"
+          onClick={increaseQuantity}
+          disabled={quantity >= countInStock}
+        >
           +
         </button>
       </div>
@@ -67,9 +80,12 @@ export function AddToCartButton({ productId, countInStock, className }: AddToCar
         disabled={isOutOfStock || loading}
         onClick={handleAddToCart}
       >
-        {/* <HiOutlineShoppingBag size={20} /> */}
-        {isOutOfStock ? "Out of Stock" : loading ? "Adding..." : "Add to Cart"}
-        <Image src={cartIcon} alt="Cart Icon" width={28} height={28} />
+        {/* <span>🛒</span> */}
+        {isOutOfStock
+          ? t("cart.outOfStock")
+          : loading
+          ? t("cart.adding")
+          : t("cart.addToCart")}
       </button>
     </div>
   );
