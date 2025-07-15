@@ -17,6 +17,7 @@ import { SharedServicesModule } from './shared-services.module';
 import { AiModule } from '@/ai/ai.module';
 import { GoogleStrategy } from '@/strategies/google.strategy';
 import { connectDB } from '@/utils/config';
+
 import {
   IndexCleanupService,
   ProductsModule,
