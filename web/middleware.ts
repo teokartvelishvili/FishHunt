@@ -9,56 +9,38 @@ const publicPaths = [
   "/reset-password",
   "/forum",
 ];
-const protectedPaths = [
-  "/profile",
-  "/orders",
-  "/admin",
-  "/admin/products",
-  "/admin/products/create",
-  "/admin/products/[id]/edit", // დავამატოთ პროდუქტის რედაქტირების გზა
-];
+
+const protectedPaths = ["/profile", "/orders", "/admin"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasTokens =
-    request.cookies.get("access_token") || request.cookies.get("refresh_token");
-  const isAuthenticated = Boolean(hasTokens); // ✅ Boolean() ვამატებთ, რომ სწორი იყოს
 
-  console.log("📌 Pathname:", pathname);
-  console.log("🔐 Is Authenticated:", isAuthenticated);
-
-  // Skip middleware for non-relevant paths (like api, _next, static files)
+  // Skip middleware for static files, API routes, and Next.js internal files
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    pathname.includes(".")
+    pathname.startsWith("/static") ||
+    pathname.includes(".") ||
+    pathname.startsWith("/favicon")
   ) {
-    console.log("➡️ Skipping middleware for:", pathname);
     return NextResponse.next();
   }
 
-  // თუ მომხმარებელი ავტორიზებულია და publicPaths-ია, გავუშვათ
-  if (isAuthenticated && publicPaths.includes(pathname)) {
-    console.log("✅ Authenticated user accessing public path:", pathname);
+  const hasTokens =
+    request.cookies.get("access_token") || request.cookies.get("refresh_token");
+  const isAuthenticated = Boolean(hasTokens);
+
+  // Allow access to public paths regardless of authentication
+  if (publicPaths.includes(pathname)) {
     return NextResponse.next();
   }
 
-  // თუ მომხმარებელი **არ არის** ავტორიზებული და სარეზერვო პაროლის გვერდზეა, უნდა შევუშვათ
-  if (!isAuthenticated && publicPaths.includes(pathname)) {
-    console.log("🛑 Unauthenticated user accessing public path:", pathname);
-    return NextResponse.next();
-  }
+  // Check if the path is protected and user is not authenticated
+  const isProtectedPath = protectedPaths.some((path) =>
+    pathname.startsWith(path)
+  );
 
-  // Redirect unauthenticated users trying to access protected pages
-  if (
-    !isAuthenticated &&
-    protectedPaths.some((path) => {
-      const isProtected = pathname.startsWith(path);
-      console.log(`Checking path ${pathname} against ${path}: ${isProtected}`);
-      return isProtected;
-    })
-  ) {
-    console.log("🚨 Redirecting unauthenticated user to /login from:", pathname);
+  if (isProtectedPath && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -66,5 +48,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|public|.*\\.).*)",
+  ],
 };
