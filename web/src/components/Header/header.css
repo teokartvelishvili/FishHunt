@@ -3,7 +3,8 @@
   top: 0;
   z-index: 9000;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.95);
+  /* background-color: rgba(255, 255, 255, 0.95); */
+  background-color: rgba(0, 7, 2, 0.758);
   backdrop-filter: blur(10px);
   overflow: visible; /* dropdown-ისთვის visible გავხადოთ */
 }
@@ -11,6 +12,8 @@
 .header1 {
   position: relative;
   width: 100%;
+  height: 50px;
+  padding: 2px;
   background-color: inherit;
    border-bottom: 1px solid rgba(165, 189, 165, 0.2);
    box-shadow: 0 2px 8px rgba(165, 189, 165, 0.15);
@@ -19,6 +22,12 @@
 .header2 {
   position: relative;
   width: 100%;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2px;
+  padding-bottom: 10px;
+  background-color: rgba(3, 46, 15, 0.72);
   /* border-top: 1px solid rgba(165, 189, 165, 0.2); */
   
 }

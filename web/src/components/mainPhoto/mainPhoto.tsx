@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import fishingPhoto from "../../assets/fishingPhoto.jpg";
+// import fishingPhoto from "../../assets/fishingPhoto.jpg";
+// import fishhuntPhoto from "../../assets/fishhuntPhoto1.png";
+import fishingPhoto2 from "../../assets/fishingPhoto2.png";
 import map from "../../assets/map.png";
 import target from "../../assets/target.png";
 import "./mainPhoto.css";
@@ -13,8 +15,8 @@ const MainPhoto = () => {
   const handleMouseMove = (event: React.MouseEvent) => {
     const { left, top } = (event.currentTarget as HTMLElement).getBoundingClientRect();
     setCursorPosition({
-      x: `${event.clientX - left - 80}px`, // კურსორისგან px მარჯვნივ
-      y: `${event.clientY - top - 5}px`, // კურსორისგან px ზემოთ
+      x: `${event.clientX - left - 0}px`, // კურსორისგან px მარჯვნივ
+      y: `${event.clientY - top - 0}px`, // კურსორისგან px ზემოთ
     });
   };
 
@@ -29,7 +31,7 @@ const MainPhoto = () => {
       onMouseLeave={handleMouseLeave}
     >
       <div className="photo-frame">
-        <Image src={fishingPhoto} alt="Fishing" className="main-photo" />
+        <Image src={fishingPhoto2} alt="Fishing" className="main-photo" />
         <Image
           src={map}
           alt="Map"

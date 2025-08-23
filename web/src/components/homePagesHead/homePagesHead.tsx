@@ -1,18 +1,18 @@
-// import MainPhoto from "../mainPhoto/mainPhoto";
+import MainPhoto from "../mainPhoto/mainPhoto";
 import "./homePagesHead.css";
 // import DiscountCard from "../discountCard/discountCard";
 // import campImage from '../../assets/camp.webp'
 // import rifleImage from '../../assets/rifle.jpg'
-import PatternBackground from "../patternBackground/patternBackground";
-import WelcomeMessage from "../welcomeMessage/welcomeMessage";
+// import PatternBackground from "../patternBackground/patternBackground";
+// import WelcomeMessage from "../welcomeMessage/welcomeMessage";
 
 const HomePagesHead = () => {
   return (
     <div className="HomePageshead">
-      <PatternBackground imageSize={350} />
-      <WelcomeMessage />
+      {/* <PatternBackground imageSize={350} /> */}
+      {/* <WelcomeMessage /> */}
       {/* <div><Navbar/></div> */}
-      {/* <div className="main-photo-container"><MainPhoto/></div> */}
+      <div className="main-photo-container"><MainPhoto/></div>
       {/* <div className="discount-cards-container">
       <DiscountCard
         title="Special Offer"

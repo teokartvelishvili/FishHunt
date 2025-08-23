@@ -6,6 +6,7 @@
   /* padding-top: 1%; */
   list-style: none;
   z-index: 2;
+
 }
 
 .UlCont li {
@@ -17,19 +18,35 @@
   align-items: flex-end; /* ელემენტები ქვედა მხარეს */
   justify-content: center;
   text-decoration: none;
-  color: #37241E;
-  padding-bottom: 5px;
-  border-bottom: 3px solid #EAEEEA;
+  /* color: #37241E; */
+  color: white;
+  padding: 2px 22px;
+  /* border-bottom: 3px solid #EAEEEA; */
   gap: 10px;
   position: relative;
   overflow: hidden;
-  height: 100%;
+  height: 110%;
 }
 
-.UlCont li a:hover {
-  color: #19100d;
-  border-bottom: 3px solid #a5bda5;
+/* აიქონების ფერი თეთრი filter-ით */
+.UlCont li a .icon,
+.UlCont li a svg,
+.UlCont li a i,
+.UlCont li a img {
+  filter: brightness(0) invert(1);
 }
+
+.UlCont li a:hover .icon,
+.UlCont li a:hover svg,
+.UlCont li a:hover i,
+.UlCont li a:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* .UlCont li a:hover {
+  color: #19100d;
+  border: 2px solid #f9fbf9;
+} */
 
 /* მობილური სტილები */
 @media screen and (max-width: 768px) {

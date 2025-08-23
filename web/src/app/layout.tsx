@@ -10,7 +10,7 @@ import { satoshi } from "./fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
-import SiteTimer from "@/components/SiteTimer/SiteTimer";
+// import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -19,6 +19,20 @@ export const metadata: Metadata = {
   title: "FishHunt",
   description:
     "FishHunt - Ecommerce platform for fishing equipment and accessories",
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { url: "/android-chrome-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/favicon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "ka_GE",
@@ -56,7 +70,7 @@ export default function RootLayout({
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  <SiteTimer />
+                  {/* <SiteTimer /> */}
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />
