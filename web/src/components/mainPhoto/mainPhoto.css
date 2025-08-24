@@ -29,9 +29,9 @@
 }
 .map {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 200px;
+  bottom: 50px;
+  right: 50px;
+  width: 300px;
   height: auto;
   border-radius: 8px;
   background-color: white;

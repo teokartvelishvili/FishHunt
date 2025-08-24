@@ -1,8 +1,8 @@
 import MainPhoto from "../mainPhoto/mainPhoto";
 import "./homePagesHead.css";
-// import DiscountCard from "../discountCard/discountCard";
-// import campImage from '../../assets/camp.webp'
-// import rifleImage from '../../assets/rifle.jpg'
+import DiscountCard from "../discountCard/discountCard";
+import campImage from '../../assets/camp.webp'
+import rifleImage from '../../assets/rifle.jpg'
 // import PatternBackground from "../patternBackground/patternBackground";
 // import WelcomeMessage from "../welcomeMessage/welcomeMessage";
 
@@ -13,7 +13,7 @@ const HomePagesHead = () => {
       {/* <WelcomeMessage /> */}
       {/* <div><Navbar/></div> */}
       <div className="main-photo-container"><MainPhoto/></div>
-      {/* <div className="discount-cards-container">
+      <div className="discount-cards-container">
       <DiscountCard
         title="Special Offer"
         description="Get 50% Off on Camping Gear"
@@ -29,10 +29,16 @@ const HomePagesHead = () => {
       <DiscountCard
         title="Special Offer"
         description="Get 50% Off on Camping Gear"
+        imageSrc={campImage} 
+        altText="Camping Tent"
+      />
+      <DiscountCard
+        title="Special Offer"
+        description="Get 50% Off on Camping Gear"
         imageSrc={rifleImage} 
         altText="Camping Tent"
       />
-      </div> */}
+      </div>
     </div>
   );
 };
