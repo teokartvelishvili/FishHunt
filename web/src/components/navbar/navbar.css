@@ -77,10 +77,6 @@
     padding: 8px 2%;
     margin: 0;
     gap: 8px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
     width: max-content;
     min-width: 100%;
     height: auto;
@@ -146,10 +142,6 @@
     gap: 6px;
     width: max-content;
     min-width: 100%;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
   }
   
   /* Webkit scrollbar hide */
