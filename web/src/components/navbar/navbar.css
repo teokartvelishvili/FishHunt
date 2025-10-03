@@ -81,7 +81,8 @@
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     height: auto;
   }
   
@@ -143,9 +144,19 @@
     padding: 6px 1%;
     margin: 0;
     gap: 6px;
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+  }
+  
+  /* Webkit scrollbar hide */
+  .UlCont::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
   
   /* Webkit scrollbar hide */
