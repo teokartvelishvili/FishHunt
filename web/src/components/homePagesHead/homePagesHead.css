@@ -20,67 +20,60 @@
 .discount-cards-container {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     margin-bottom: 40px;
     margin-top: -55px;
     z-index: 2;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0 2%;
 }
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .HomePageshead {
-        height: 350px;
+        height: auto;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        padding: 0.5%;
+        gap: 0;
+        padding: 0;
     }
 
-    /* ზედა კონტეინერი */
-    .HomePageshead > div:nth-child(-n+2) {
-        display: flex;
-    }
-
-    /* ნავბარის კონტეინერი */
-    .HomePageshead > div:first-child {
-        /* width: 25%; */
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 10;
-    }
-
-    /* მეინფოტოს კონტეინერი */
-    .HomePageshead > div:nth-child(2) {
-        width: 85%;
-        margin-left: auto;
-        z-index: 1;
-    }
-
-    /* დისქაუნთ ქარდების კონტეინერი */
-    .HomePageshead > div:nth-child(3) {
+    .main-photo-container {
         width: 100%;
-        display: flex;
-        justify-content: center;
+        height: auto;
+        margin: 0;
+    }
+
+    .discount-cards-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
-        margin-top: 10px;
+        margin-top: -45px;
+        margin-bottom: 20px;
+        padding: 0 3%;
+        justify-items: center;
+        z-index: 2;
     }
 }
 
 @media screen and (max-width: 480px) {
     .HomePageshead {
-        height: 300px;
+        min-height: auto;
         padding: 0;
     }
 
-    .HomePageshead > div:first-child {
-        width: 30%;
+    .main-photo-container {
+        width: 100%;
     }
 
-    .HomePageshead > div:nth-child(2) {
-        width: 80%;
-    }
-
-    .HomePageshead > div:nth-child(3) {
+    .discount-cards-container {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+        margin-top: -35px;
+        margin-bottom: 15px;
+        padding: 0 2%;
+        justify-items: center;
     }
 }

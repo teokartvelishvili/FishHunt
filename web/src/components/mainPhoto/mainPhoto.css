@@ -56,19 +56,23 @@
 @media screen and (max-width: 768px) {
   .photo-container {
     height: auto;
-    min-height: 50vh;
-    /* padding: 10px; */
+    min-height: 40vh;
   }
 
   .photo-frame {
-    min-width: 100%;
-    /* border-width: 5px; */
+    width: 100vw;
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .main-photo {
+    object-fit: cover;
   }
 
   .map {
     width: 120px;
-    bottom: 5px;
-    right: 5px;
+    bottom: 10px;
+    right: 10px;
   }
 
   .target {
@@ -78,8 +82,19 @@
 }
 
 @media screen and (max-width: 480px) {
+  .photo-container {
+    min-height: 35vh;
+  }
+
+  .photo-frame {
+    height: 40vh;
+    min-height: 250px;
+  }
+
   .map {
-    width: 100px;
+    width: 90px;
+    bottom: 8px;
+    right: 8px;
   }
 
   .target {
