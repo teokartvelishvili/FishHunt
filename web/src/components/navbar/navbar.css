@@ -20,7 +20,7 @@
   text-decoration: none;
   /* color: #37241E; */
   color: white;
-  padding: 2px 22px;
+  padding: 5px 22px;
   /* border-bottom: 3px solid #EAEEEA; */
   gap: 10px;
   position: relative;
@@ -71,7 +71,7 @@
 @media screen and (max-width: 768px) {
   .UlCont {
     justify-content: flex-start;
-    padding: 10px 1%; /* padding მხოლოდ გვერდებზე */
+    padding: 20px 1%; /* padding მხოლოდ გვერდებზე */
     margin: 0; /* margin მოშორებული */
     gap: 8px;
     overflow-x: auto;
