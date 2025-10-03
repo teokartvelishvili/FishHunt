@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./user-menu.css";
 import { Role } from "@/types/role";
 import hunterIcon from "../../assets/icons/hunter.png";
@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function UserMenu() {
+  const { t } = useLanguage();
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -43,21 +44,23 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Link href="/login" className="button">
+      <Link href="/login" className="button sign-in-button">
         <span className="icon">
-          {/* 👤 */}
           <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
-        </span>{" "}
-        Sign In
+        </span>
+        <span className="sign-in-text">{t("navigation.login")}</span>
       </Link>
     );
   }
+
+  // Extract first name (before space)
+  const firstName = user.name?.split(' ')[0] || "მომხმარებელი";
 
   return (
     <div className="dropdown" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="button"
+        className="button user-button"
         aria-label="Toggle user menu"
       >
         <div className="user-avatar">
@@ -69,38 +72,34 @@ export default function UserMenu() {
             className="avatar-image"
           />
         </div>
-        {user.name || "მომხმარებელი"}
-        <span className="icon">
-          <Image src={hunterIcon} alt="hunterIcon" width={42} height={42} />
-
-          {/* 👤 */}
-        </span>
+        <span className="username desktop-name">{user.name || "მომხმარებელი"}</span>
+        <span className="username mobile-name">{firstName}</span>
       </button>
       {isOpen && (
         <div className="dropdown-menu">
-          <div className="dropdown-label">My Account</div>
+          <div className="dropdown-label">{t("userMenu.myAccount")}</div>
           <hr />
           <Link
             href="/profile"
             className="dropdown-item"
             onClick={() => setIsOpen(false)}
           >
-            Profile
+            {t("navigation.profile")}
           </Link>
           <Link
             href="/profile/orders"
             className="dropdown-item"
             onClick={() => setIsOpen(false)}
           >
-            Orders
+            {t("navigation.orders")}
           </Link>
 
           {(user.role === Role.Admin || user.role === Role.Seller) && (
             <>
               <hr />
-              <div className="dropdown-label">Admin Dashboard</div>
+              <div className="dropdown-label">{t("userMenu.adminDashboard")}</div>
               <Link href="/admin/products" className="dropdown-item" onClick={() => setIsOpen(false)}>
-                Products
+                {t("navigation.products")}
               </Link>
             </>
           )}
@@ -112,14 +111,14 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
-                Users
+                {t("navigation.users")}
               </Link>
               <Link
                 href="/admin/orders"
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
-                Orders
+                {t("navigation.orders")}
               </Link>
             </>
           )}
@@ -132,7 +131,7 @@ export default function UserMenu() {
             }}
             className="dropdown-item logout-button"
           >
-            გასვლა
+            {t("navigation.logout")}
           </button>
         </div>
       )}

@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./SearchBox.css";
 
 export default function SearchBox() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
 
@@ -20,7 +22,7 @@ export default function SearchBox() {
     <form onSubmit={onSubmit} className="search-form">
       <input
         type="text"
-        placeholder="ძიება..."
+        placeholder={t("common.searchPlaceholder")}
         value={keyword}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setKeyword(e.target.value)

@@ -48,52 +48,110 @@
   border: 2px solid #f9fbf9;
 } */
 
-/* მობილური სტილები */
-@media screen and (max-width: 768px) {
-  .UlCont li a span {
-    position: absolute;
-    left: 35px;
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* Responsive Styles - Tablet */
+@media screen and (max-width: 1000px) {
+  .UlCont {
+    gap: 0;
+    justify-content: space-evenly;
+  }
+
+  .UlCont li a {
+    padding: 2px 15px;
+    gap: 8px;
+    font-size: 14px;
   }
   
-  .UlCont li a {
-    width: 28px;
-    transition: all 0.3s ease;
-  }
-
-  /* აქტიური ლინკის სტილები */
-  .UlCont li a.active {
-    width: 150px;
-    padding-right: 15px;
-  }
-
-  .UlCont li a:hover {
-    width: 150px;
-  }
-
-  .UlCont li a.active span,
-  .UlCont li a:hover span {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-
   .icon {
-    z-index: 2;
-    min-width: 20px;
+    width: 20px;
+    height: 20px;
   }
 }
 
+/* Responsive Styles - Mobile */
+@media screen and (max-width: 768px) {
+  .UlCont {
+    justify-content: flex-start;
+    padding: 4px 2%; /* შემცირებული padding */
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox-ში სქროლბარი დამალული */
+    min-height: 60px; /* შემცირებული height */
+  }
+  
+  /* Webkit browsers (Chrome, Safari) scrollbar hide */
+  .UlCont::-webkit-scrollbar {
+    display: none; /* სრულად დამალული */
+  }
+
+  .UlCont li {
+    flex-shrink: 0;
+  }
+
+  .UlCont li a {
+    padding: 4px 10px; /* შემცირებული padding */
+    gap: 3px; /* შემცირებული gap */
+    font-size: 11px;
+    position: relative;
+    min-width: 60px;
+    justify-content: center;
+    flex-direction: column; /* ვერტიკალური განლაგება */
+    align-items: center;
+    height: 100%;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
+
+  /* Show text below icons */
+  .UlCont li a span {
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+  
+  /* Remove tooltip since text is visible */
+  .UlCont li a:hover::after,
+  .UlCont li a:focus::after,
+  .UlCont li a:hover::before,
+  .UlCont li a:focus::before {
+    display: none;
+  }
+}
+
+/* Responsive Styles - Small Mobile */
 @media screen and (max-width: 480px) {
-  .UlCont li a.active,
-  .UlCont li a:hover {
-    width: 130px;
+  .UlCont {
+    gap: 6px;
+    padding: 3px 1%; /* შემცირებული padding */
+    scrollbar-width: none;
+    min-height: 58px; /* შემცირებული height */
+  }
+  
+  /* Webkit scrollbar hide */
+  .UlCont::-webkit-scrollbar {
+    display: none;
+  }
+
+  .UlCont li a {
+    padding: 4px 8px; /* შემცირებული padding */
+    min-width: 55px;
+    gap: 2px; /* შემცირებული gap */
+    font-size: 10px;
+  }
+  
+  .icon {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+  }
+  
+  .UlCont li a span {
+    font-size: 9px;
   }
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-// import { LanguageContext } from "../../hooks/LanguageContext";
-// import { TEXTS } from "../../hooks/Languages";
+import { useLanguage } from "@/hooks/LanguageContext";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,20 +25,20 @@ interface MenuItem {
 }
 
 const Navbar: React.FC = () => {
-  // const { language } = useContext(LanguageContext);
+  const { t } = useLanguage();
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const router = useRouter();
 
   const menuItems: MenuItem[] = [
-    { href: "/", text: "Home", icon: homeIcon },
-    { href: "/fishing", text: "Fishing", icon: fishing },
-    { href: "/hunting", text: "Hunting", icon: hunting },
-    { href: "/camping", text: "Camping", icon: camping },
-    { href: "/shop", text: "Shopping", icon: shopping },
-    { href: "/rentcar", text: "RentCar", icon: jeep },
-    { href: "/video", text: "Video", icon: video },
-    { href: "/forum", text: "Forum", icon: forum },
-    { href: "/about", text: "about", icon: about },
+    { href: "/", text: t("navigation.home"), icon: homeIcon },
+    { href: "/fishing", text: t("navbar.fishing"), icon: fishing },
+    { href: "/hunting", text: t("navbar.hunting"), icon: hunting },
+    { href: "/camping", text: t("navbar.camping"), icon: camping },
+    { href: "/shop", text: t("navigation.shop"), icon: shopping },
+    { href: "/rentcar", text: t("navbar.rentCar"), icon: jeep },
+    { href: "/video", text: t("navbar.video"), icon: video },
+    { href: "/forum", text: t("navigation.forum"), icon: forum },
+    { href: "/about", text: t("navigation.about"), icon: about },
   ];
 
   const handleClick = (e: React.MouseEvent, index: number, href: string) => {
@@ -64,6 +63,8 @@ const Navbar: React.FC = () => {
               href={item.href}
               className={activeItem === index ? "active" : ""}
               onClick={(e) => handleClick(e, index, item.href)}
+              aria-label={item.text}
+              title={item.text}
             >
               <Image
                 src={item.icon}

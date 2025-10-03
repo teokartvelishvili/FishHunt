@@ -6,6 +6,7 @@ import logo from "../../assets/logo.png";
 import SearchBox from "../SearchBox/search-box";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
 import UserMenu from "./user-menu";
+import LanguageSelector from "./language-selector";
 // import Pattern from "../pattern/pattern"; 
 import "./header.css";
 import Navbar from "../navbar/navbar";
@@ -26,23 +27,24 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Search box for desktop */}
-            <div className="search-box desktop-only">
+            {/* Search box - desktop in header, mobile separate line */}
+            <div className="search-box search-desktop">
               <SearchBox />
             </div>
 
             <div className="cart-user-menu">
               <CartIcon />
               <UserMenu />
+              <LanguageSelector />
             </div>
             {/* Cart and User Menu */}
             {/* <nav className="nav-menu">
             </nav> */}
           </div>
         </div>
-
-        {/* Search box for mobile */}
-        <div className="search-box mobile-only">
+        
+        {/* Search box for mobile - separate line */}
+        <div className="search-mobile-container">
           <SearchBox />
         </div>
       </div>

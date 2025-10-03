@@ -14,7 +14,6 @@ export const TRANSLATIONS: Translations = {
     navigation: {
       home: "მთავარი",
       homePage: "მთავარი გვერდი",
-
       shop: "პროდუქტები",
       auction: "აუქციონი",
       myOrders: "ჩემი შეკვეთები",
@@ -27,6 +26,19 @@ export const TRANSLATIONS: Translations = {
       products: "პროდუქტები",
       users: "მომხმარებლები",
       logout: "გასვლა",
+    },
+    // Navbar
+    navbar: {
+      fishing: "თევზაობა",
+      hunting: "ნადირობა",
+      camping: "კემპინგი",
+      rentCar: "მანქანის ქირაობა",
+      video: "ვიდეო",
+    },
+    // User Menu
+    userMenu: {
+      myAccount: "ჩემი ანგარიში",
+      adminDashboard: "ადმინ პანელი",
     }, // Shop
     shop: {
       searchResults: "ძებნის შედეგები",
@@ -85,7 +97,13 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "კატეგორიების ჩატვირთვა ვერ მოხერხდა",
       errorLoadingSubcategories: "ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა",
-    }, // Product Details
+    },
+    // Common
+    common: {
+      search: "ძიება",
+      searchPlaceholder: "ძიება პროდუქტების...",
+    },
+    // Product Details
     product: {
       ref: "Ref:",
       reviews: "შეფასებები",
@@ -684,6 +702,19 @@ export const TRANSLATIONS: Translations = {
       products: "Products",
       users: "Users",
       logout: "Logout",
+    },
+    // Navbar
+    navbar: {
+      fishing: "Fishing",
+      hunting: "Hunting",
+      camping: "Camping",
+      rentCar: "Rent a Car",
+      video: "Video",
+    },
+    // User Menu
+    userMenu: {
+      myAccount: "My Account",
+      adminDashboard: "Admin Dashboard",
     }, // Shop
     shop: {
       searchResults: "Search Results",
@@ -740,7 +771,13 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "Failed to load categories",
       errorLoadingSubcategories: "Failed to load subcategories",
-    }, // Product Details
+    },
+    // Common
+    common: {
+      search: "Search",
+      searchPlaceholder: "Search products...",
+    },
+    // Product Details
     product: {
       ref: "Ref:",
       reviews: "Reviews",
@@ -1304,6 +1341,128 @@ export const TRANSLATIONS: Translations = {
       updateError: "Failed to update subcategory",
       deleteError: "Failed to delete subcategory",
       retry: "Retry",
+    },
+  },
+  ru: {
+    // Navigation
+    navigation: {
+      home: "Главная",
+      homePage: "Главная страница",
+      shop: "Продукты",
+      auction: "Аукцион",
+      myOrders: "Мои заказы",
+      forum: "Форум",
+      about: "О нас",
+      login: "Войти",
+      profile: "Профиль",
+      orders: "Заказы",
+      adminPanel: "Админ панель",
+      products: "Продукты",
+      users: "Пользователи",
+      logout: "Выйти",
+    },
+    // Navbar
+    navbar: {
+      fishing: "Рыбалка",
+      hunting: "Охота",
+      camping: "Кемпинг",
+      rentCar: "Аренда авто",
+      video: "Видео",
+    },
+    // User Menu
+    userMenu: {
+      myAccount: "Мой аккаунт",
+      adminDashboard: "Админ панель",
+    },
+    // Shop
+    shop: {
+      searchResults: "Результаты поиска",
+      backToHome: "Вернуться на главную",
+      noResultsMessage: "Продукты не найдены по вашим критериям поиска",
+      tryDifferent: "Попробуйте другое ключевое слово",
+      noResults: "Продукты не найдены",
+      browseAll: "Просмотреть все продукты",
+      errorTitle: "Ошибка",
+      errorMessage: "Не удалось загрузить продукты. Пожалуйста, попробуйте позже.",
+      allartworks: "Все продукты",
+      artistWorks: "Продукты художника",
+      loading: "Загрузка...",
+      filters: "Фильтры",
+      sort: "Сортировка",
+      categories: "Категории",
+      painters: "Художники",
+      priceRange: "Диапазон цен",
+      inStock: "В наличии",
+      outOfStock: "Нет в наличии",
+      clearFilters: "Очистить фильтры",
+      applyFilters: "Применить фильтры",
+      showing: "Показано",
+      of: "из",
+      products: "продуктов",
+      sortByNewest: "Сначала новые",
+      sortByPriceAsc: "Цена: по возрастанию",
+      sortByPriceDesc: "Цена: по убыванию",
+      sortByName: "По названию",
+      viewDetails: "Подробнее",
+      addToCart: "Добавить в корзину",
+      quickView: "Быстрый просмотр",
+      noProductsInCategory: "В этой категории пока нет продуктов",
+    },
+    // Common
+    common: {
+      search: "Поиск...",
+      searchPlaceholder: "Поиск продуктов...",
+      submit: "Отправить",
+      cancel: "Отмена",
+      save: "Сохранить",
+      delete: "Удалить",
+      edit: "Редактировать",
+      close: "Закрыть",
+      confirm: "Подтвердить",
+      loading: "Загрузка...",
+      error: "Ошибка",
+      success: "Успешно",
+      warning: "Предупреждение",
+      info: "Информация",
+      yes: "Да",
+      no: "Нет",
+      ok: "ОК",
+      back: "Назад",
+      next: "Далее",
+      previous: "Предыдущий",
+      finish: "Завершить",
+    },
+    // Cart
+    cart: {
+      title: "Корзина",
+      emptyCart: "Корзина пуста",
+      continueShopping: "Продолжить покупки",
+      checkout: "Оформить заказ",
+      subtotal: "Промежуточный итог",
+      shipping: "Доставка",
+      total: "Итого",
+      removeItem: "Удалить товар",
+      updateQuantity: "Обновить количество",
+      itemAdded: "Товар добавлен в корзину",
+      itemRemoved: "Товар удален из корзины",
+    },
+    // Product Details
+    productDetails: {
+      description: "Описание",
+      specifications: "Характеристики",
+      reviews: "Отзывы",
+      addToCart: "Добавить в корзину",
+      buyNow: "Купить сейчас",
+      inStock: "В наличии",
+      outOfStock: "Нет в наличии",
+      price: "Цена",
+      quantity: "Количество",
+      availability: "Наличие",
+      sku: "Артикул",
+      category: "Категория",
+      tags: "Теги",
+      share: "Поделиться",
+      relatedProducts: "Похожие продукты",
     },
   },
 };

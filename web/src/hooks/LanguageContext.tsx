@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { TRANSLATIONS } from "./Languages";
 
-type Language = "en" | "ge";
+type Language = "en" | "ge" | "ru";
 
 // Define recursive type for nested translations
 interface TranslationContent {
@@ -38,7 +38,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   // Load language preference from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") as Language;
-    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "ge")) {
+    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "ge" || savedLanguage === "ru")) {
       setLanguage(savedLanguage);
     }
   }, []);

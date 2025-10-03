@@ -2,59 +2,115 @@
   display: flex;
   width: 100%;
   align-items: center;
-  /* gap: 0px; */
+  position: relative;
 }
 
 .search-input {
   height: 28px;
   width: 100%;
   padding: 6px 12px;
-  padding-left: 30px;
+  padding-left: 35px; /* აიქონისთვის ადგილი */
   font-size: 14px;
-  border: 1px solid black;
-  background-color: rgba(0, 128, 0, 0.057);
-  border: none;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* თხელი border როგორც language selector */
+  border-radius: 8px;
   outline: none;
-  transition: border-color 0.2s ease-in-out;
+  color: white;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .search-input:focus {
-  border: 1px solid #264D2B;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4); /* focus-ზე ცოტა უფრო მკვეთრი */
 }
 
-/* .search-button {
-  height: 36px;
-  width: 36px;
+.search-button {
+  position: absolute;
+  left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: inherit;
+  background: transparent;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  color: white;
+  padding: 0;
+  pointer-events: none; /* აიქონი მხოლოდ ვიზუალურია */
+}
+.search-button {
+  position: absolute;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  padding: 0;
+  pointer-events: none; /* აიქონი მხოლოდ ვიზუალურია */
 }
 
-.search-button:hover {
-  background-color: #b6f5c039;
-  border-radius: 20%;
-} */
-.searchIcon {
-  height: 18px;
-  width: 18px;
-  margin-right: -25px;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
+/* Responsive Styles - Tablet */
+@media screen and (max-width: 1000px) {
   .search-input {
-    font-size: 12px;
+    height: 26px;
+    font-size: 13px;
     padding: 5px 10px;
+    padding-left: 32px;
   }
-
+  
   .search-button {
-    width: 32px;
-    height: 32px;
+    left: 8px;
+  }
+  
+  .search-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Responsive Styles - Mobile */
+@media screen and (max-width: 768px) {
+  .search-input {
+    height: 32px; /* გაზრდილი height */
+    font-size: 13px; /* ცოტა დიდი font */
+    padding: 6px 10px;
+    padding-left: 35px;
+    border-radius: 6px;
+  }
+  
+  .search-button {
+    left: 8px;
+  }
+  
+  .search-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Responsive Styles - Small Mobile */
+@media screen and (max-width: 480px) {
+  .search-input {
+    height: 30px; /* გაზრდილი height */
+    font-size: 12px;
+    padding: 5px 8px;
+    padding-left: 32px;
+  }
+  
+  .search-button {
+    left: 7px;
+  }
+  
+  .search-button svg {
+    width: 15px;
+    height: 15px;
   }
 }
