@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import type { StaticImageData } from "next/image"; // StaticImageData ტიპის იმპორტი
+import type { StaticImageData } from "next/image";
 import "./navbar.css";
 
 import homeIcon from "../../assets/icons/home.png";
@@ -26,8 +24,6 @@ interface MenuItem {
 
 const Navbar: React.FC = () => {
   const { t } = useLanguage();
-  const [activeItem, setActiveItem] = useState<number | null>(null);
-  const router = useRouter();
 
   const menuItems: MenuItem[] = [
     { href: "/", text: t("navigation.home"), icon: homeIcon },
@@ -41,19 +37,6 @@ const Navbar: React.FC = () => {
     { href: "/about", text: t("navigation.about"), icon: about },
   ];
 
-  const handleClick = (e: React.MouseEvent, index: number, href: string) => {
-    e.preventDefault();
-
-    if (activeItem === index) {
-      // თუ იგივე აიტემზე დავაკლიკეთ მეორედ, გადავდივართ ლინკზე
-      router.push(href);
-      setActiveItem(null); // ვასუფთავებთ აქტიურ აიტემს
-    } else {
-      // პირველი კლიკი - ვააქტიურებთ აიტემს
-      setActiveItem(index);
-    }
-  };
-
   return (
     <div className="NavCont">
       <ul className="UlCont">
@@ -61,8 +44,6 @@ const Navbar: React.FC = () => {
           <li key={index}>
             <Link
               href={item.href}
-              className={activeItem === index ? "active" : ""}
-              onClick={(e) => handleClick(e, index, item.href)}
               aria-label={item.text}
               title={item.text}
             >

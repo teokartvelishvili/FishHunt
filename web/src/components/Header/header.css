@@ -29,7 +29,14 @@
   padding-bottom: 10px;
   background-color: rgba(3, 46, 15, 0.72);
   /* border-top: 1px solid rgba(165, 189, 165, 0.2); */
-  
+}
+
+/* Mobile-ზე padding გაუქმება */
+@media (max-width: 768px) {
+  .header2 {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .container {
@@ -187,8 +194,8 @@
 
   .header2 {
     height: auto;
-    min-height: 60px; /* შემცირებული height */
-    padding: 0;
+    min-height: auto; /* min-height მოშორებული */
+    padding: 0; /* ყველა padding მოშორებული */
     display: flex;
     align-items: center;
   }
@@ -246,7 +253,8 @@
   }
 
   .header2 {
-    min-height: 58px; /* შემცირებული height */
+    height: auto;
+    min-height: auto; /* min-height მოშორებული */
     padding: 0;
   }
 

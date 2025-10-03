@@ -6,7 +6,7 @@
   /* padding-top: 1%; */
   list-style: none;
   z-index: 2;
-
+  margin: 0; /* default margin მოშორებული */
 }
 
 .UlCont li {
@@ -71,48 +71,54 @@
 @media screen and (max-width: 768px) {
   .UlCont {
     justify-content: flex-start;
-    padding: 4px 2%; /* შემცირებული padding */
+    padding: 10px 1%; /* padding მხოლოდ გვერდებზე */
+    margin: 0; /* margin მოშორებული */
     gap: 8px;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox-ში სქროლბარი დამალული */
-    min-height: 60px; /* შემცირებული height */
+    scrollbar-width: none;
+    min-height: auto; /* min-height მოშორებული */
+    height: auto; /* auto height */
+    scroll-snap-type: none;
+    overscroll-behavior-x: contain;
   }
   
   /* Webkit browsers (Chrome, Safari) scrollbar hide */
   .UlCont::-webkit-scrollbar {
-    display: none; /* სრულად დამალული */
+    display: none;
   }
 
   .UlCont li {
     flex-shrink: 0;
+    margin: 0; /* li-ს margin-იც 0 */
   }
 
   .UlCont li a {
-    padding: 4px 10px; /* შემცირებული padding */
-    gap: 3px; /* შემცირებული gap */
-    font-size: 11px;
+    padding: 1px 10px; /* ზედა/ქვედა padding თითქმის 0 */
+    gap: 1px; /* minimum gap */
+    font-size: 10px;
     position: relative;
     min-width: 60px;
     justify-content: center;
-    flex-direction: column; /* ვერტიკალური განლაგება */
+    flex-direction: column;
     align-items: center;
-    height: 100%;
+    height: auto; /* height auto */
   }
   
   .icon {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
   }
 
   /* Show text below icons */
   .UlCont li a span {
     display: block;
     text-align: center;
-    line-height: 1.2;
-    margin-top: 2px;
+    line-height: 1;
+    margin: 0; /* margin მოშორებული */
+    padding: 0; /* padding მოშორებული */
   }
   
   /* Remove tooltip since text is visible */
@@ -128,30 +134,42 @@
 @media screen and (max-width: 480px) {
   .UlCont {
     gap: 6px;
-    padding: 3px 1%; /* შემცირებული padding */
+    padding: 0 1%;
+    margin: 0;
     scrollbar-width: none;
-    min-height: 58px; /* შემცირებული height */
+    min-height: auto; /* min-height მოშორებული */
+    height: auto; /* auto height */
+    scroll-snap-type: none;
+    overscroll-behavior-x: contain;
   }
   
   /* Webkit scrollbar hide */
   .UlCont::-webkit-scrollbar {
     display: none;
   }
+  
+  .UlCont li {
+    margin: 0;
+  }
 
   .UlCont li a {
-    padding: 4px 8px; /* შემცირებული padding */
-    min-width: 55px;
-    gap: 2px; /* შემცირებული gap */
-    font-size: 10px;
+    padding: 1px 8px; /* ზედა/ქვედა padding თითქმის 0 */
+    min-width: 52px;
+    gap: 0px; /* gap მოშორებული */
+    font-size: 9px;
+    height: auto;
   }
   
   .icon {
-    width: 22px;
-    height: 22px;
-    min-width: 22px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
   }
   
   .UlCont li a span {
-    font-size: 9px;
+    font-size: 8px;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
   }
 }
