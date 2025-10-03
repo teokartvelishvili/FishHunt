@@ -80,8 +80,11 @@
     scrollbar-width: none;
     min-height: auto; /* min-height მოშორებული */
     height: auto; /* auto height */
-    scroll-snap-type: none;
-    overscroll-behavior-x: contain;
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior: none !important;
+    scroll-padding: 0 !important;
   }
   
   /* Webkit browsers (Chrome, Safari) scrollbar hide */
@@ -139,8 +142,11 @@
     scrollbar-width: none;
     min-height: auto; /* min-height მოშორებული */
     height: auto; /* auto height */
-    scroll-snap-type: none;
-    overscroll-behavior-x: contain;
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior: none !important;
+    scroll-padding: 0 !important;
   }
   
   /* Webkit scrollbar hide */
