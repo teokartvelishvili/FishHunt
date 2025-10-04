@@ -65,7 +65,7 @@ const CategoryNavigation = () => {
       href: "/shop/firearms",
     },
     { id: 2, name: "თევზაობა", nameEn: "Fishing", href: "/shop/fishing" },
-    { id: 3, name: "კემპინგი", nameEn: "Camping", href: "/shop/camping" },
+    { id: 3, name: "ლაშქრობა", nameEn: "Camping", href: "/shop/camping" },
     {
       id: 4,
       name: "აქსესუარები",
