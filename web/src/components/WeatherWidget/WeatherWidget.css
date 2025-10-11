@@ -361,6 +361,10 @@
   .weather-forecast {
     padding: 15px;
   }
+
+  .city-dropdown {
+    background: rgba(42, 85, 48, 0.95);
+  }
 }
 
 @media (max-width: 480px) {
@@ -403,5 +407,9 @@
 
   .detail-value {
     font-size: 1rem;
+  }
+
+  .city-dropdown {
+    background: rgba(42, 85, 48, 0.95);
   }
 }
