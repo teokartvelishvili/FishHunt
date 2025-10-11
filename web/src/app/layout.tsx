@@ -10,7 +10,7 @@ import { satoshi } from "./fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
-// import SiteTimer from "@/components/SiteTimer/SiteTimer";
+import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -70,7 +70,7 @@ export default function RootLayout({
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  {/* <SiteTimer /> */}
+                  <SiteTimer />
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />

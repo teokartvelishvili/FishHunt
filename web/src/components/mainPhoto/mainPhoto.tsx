@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import WeatherWidget from "../WeatherWidget/WeatherWidget";
 // import fishingPhoto from "../../assets/fishingPhoto.jpg";
 // import fishhuntPhoto from "../../assets/fishhuntPhoto1.png";
 import fishingPhoto2 from "../../assets/fishingPhoto2.png";
@@ -30,6 +31,7 @@ const MainPhoto = () => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      <WeatherWidget />
       <div className="photo-frame">
         <Image src={fishingPhoto2} alt="Fishing" className="main-photo" />
         <Image
