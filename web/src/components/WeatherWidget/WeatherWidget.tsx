@@ -69,6 +69,10 @@ interface ForecastDay {
   temp_min: number;
   description: string;
   icon: string;
+  humidity?: number;
+  wind_speed?: number;
+  sunrise?: number;
+  sunset?: number;
 }
 
 interface DailyForecast {
@@ -76,12 +80,18 @@ interface DailyForecast {
   temps: number[];
   descriptions: string[];
   icons: string[];
+  humidities: number[];
+  wind_speeds: number[];
 }
 
 interface ForecastItem {
   dt: number;
   main: {
     temp: number;
+    humidity: number;
+  };
+  wind: {
+    speed: number;
   };
   weather: Array<{
     description: string;
@@ -161,10 +171,12 @@ export default function WeatherWidget() {
   const { language } = useLanguage();
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastDay[]>([]);
   const [showForecast, setShowForecast] = useState(false);
   const [showCitySelect, setShowCitySelect] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
 
   useEffect(() => {
     // Load saved city from localStorage
@@ -177,6 +189,8 @@ export default function WeatherWidget() {
 
   useEffect(() => {
     fetchWeather();
+    // Reset to current weather when component mounts or city changes
+    resetToCurrentWeather();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCity]);
 
@@ -216,7 +230,7 @@ export default function WeatherWidget() {
         return;
       }
 
-      setWeather({
+      const currentWeatherData: WeatherData = {
         temp: Math.round(currentData.main.temp),
         feels_like: Math.round(currentData.main.feels_like),
         description: currentData.weather[0].description,
@@ -226,7 +240,10 @@ export default function WeatherWidget() {
         city: selectedCity.name,
         sunrise: currentData.sys.sunrise,
         sunset: currentData.sys.sunset,
-      });
+      };
+
+      setWeather(currentWeatherData);
+      setCurrentWeather(currentWeatherData);
 
       // 5-day forecast
       const forecastResponse = await fetchWithTimeout(
@@ -256,11 +273,15 @@ export default function WeatherWidget() {
             temps: [],
             descriptions: [],
             icons: [],
+            humidities: [],
+            wind_speeds: [],
           };
         }
         dailyForecasts[date].temps.push(item.main.temp);
         dailyForecasts[date].descriptions.push(item.weather[0].description);
         dailyForecasts[date].icons.push(item.weather[0].icon);
+        dailyForecasts[date].humidities.push(item.main.humidity);
+        dailyForecasts[date].wind_speeds.push(item.wind.speed * 3.6); // m/s to km/h
       });
 
       const forecastArray = Object.values(dailyForecasts).slice(0, 5).map((day: DailyForecast) => ({
@@ -269,6 +290,8 @@ export default function WeatherWidget() {
         temp_min: Math.round(Math.min(...day.temps)),
         description: day.descriptions[0],
         icon: day.icons[0],
+        humidity: Math.round(day.humidities.reduce((a, b) => a + b, 0) / day.humidities.length),
+        wind_speed: Math.round(day.wind_speeds.reduce((a, b) => a + b, 0) / day.wind_speeds.length),
       }));
 
       setForecast(forecastArray);
@@ -307,6 +330,40 @@ export default function WeatherWidget() {
     return city.name;
   };
 
+  const translateWeatherDescription = (description: string): string => {
+    const descriptions: { [key: string]: { ge: string; ru: string } } = {
+      "clear sky": { ge: "მოწმენდილი ცა", ru: "ясное небо" },
+      "few clouds": { ge: "მცირე ღრუბლიანობა", ru: "малооблачно" },
+      "scattered clouds": { ge: "გაფანტული ღრუბლები", ru: "рассеянные облака" },
+      "broken clouds": { ge: "ნაწილობრივ მოღრუბლული", ru: "облачно с прояснениями" },
+      "overcast clouds": { ge: "მოღრუბლული", ru: "пасмурно" },
+      "shower rain": { ge: "ხანმოკლე წვიმა", ru: "ливневый дождь" },
+      "rain": { ge: "წვიმა", ru: "дождь" },
+      "light rain": { ge: "სუსტი წვიმა", ru: "небольшой дождь" },
+      "moderate rain": { ge: "ზომიერი წვიმა", ru: "умеренный дождь" },
+      "heavy intensity rain": { ge: "ძლიერი წვიმა", ru: "сильный дождь" },
+      "thunderstorm": { ge: "ელჭექ-ქუხილი", ru: "гроза" },
+      "snow": { ge: "თოვლი", ru: "снег" },
+      "light snow": { ge: "სუსტი თოვლი", ru: "небольшой снег" },
+      "mist": { ge: "ბურუსი", ru: "туман" },
+      "fog": { ge: "ბურუსი", ru: "туман" },
+      "haze": { ge: "ნისლი", ru: "дымка" },
+      "smoke": { ge: "კვამლი", ru: "дым" },
+      "dust": { ge: "მტვერი", ru: "пыль" },
+      "sand": { ge: "ქვიშა", ru: "песок" },
+    };
+
+    const lowerDescription = description.toLowerCase();
+    const translation = descriptions[lowerDescription];
+
+    if (translation) {
+      if (language === 'ge') return translation.ge;
+      if (language === 'ru') return translation.ru;
+    }
+
+    return description;
+  };
+
   const texts = {
     ge: {
       feelsLike: "იგრძნობა როგორც",
@@ -317,6 +374,7 @@ export default function WeatherWidget() {
       forecast: "პროგნოზი",
       hideForcast: "დამალე პროგნოზი",
       changeCity: "ქალაქის შეცვლა",
+      today: "დღევანდელი",
     },
     en: {
       feelsLike: "Feels like",
@@ -327,6 +385,7 @@ export default function WeatherWidget() {
       forecast: "Forecast",
       hideForcast: "Hide Forecast",
       changeCity: "Change City",
+      today: "Today",
     },
     ru: {
       feelsLike: "Ощущается как",
@@ -337,6 +396,7 @@ export default function WeatherWidget() {
       forecast: "Прогноз",
       hideForcast: "Скрыть прогноз",
       changeCity: "Изменить город",
+      today: "Сегодня",
     },
   };
 
@@ -348,6 +408,29 @@ export default function WeatherWidget() {
       minute: '2-digit',
       hour12: false
     });
+  };
+
+  const handleForecastDayClick = (index: number) => {
+    const selectedForecast = forecast[index];
+    if (selectedForecast && currentWeather) {
+      setSelectedDayIndex(index);
+      // Update weather display with forecast day data
+      setWeather({
+        ...currentWeather,
+        temp: selectedForecast.temp_max,
+        description: selectedForecast.description,
+        icon: selectedForecast.icon,
+        humidity: selectedForecast.humidity || currentWeather.humidity,
+        wind_speed: selectedForecast.wind_speed || currentWeather.wind_speed,
+      });
+    }
+  };
+
+  const resetToCurrentWeather = () => {
+    setSelectedDayIndex(null);
+    if (currentWeather) {
+      setWeather(currentWeather);
+    }
   };
 
   if (loading || !weather) {
@@ -403,7 +486,7 @@ export default function WeatherWidget() {
             </div>
           )}
 
-          <div className="weather-description">{weather.description}</div>
+          <div className="weather-description">{translateWeatherDescription(weather.description)}</div>
 
           <div className="weather-details">
             <div className="weather-detail">
@@ -424,6 +507,16 @@ export default function WeatherWidget() {
             </div>
           </div>
 
+          {selectedDayIndex !== null && (
+            <button
+              className="forecast-toggle-btn"
+              onClick={resetToCurrentWeather}
+              style={{ marginBottom: '10px', background: 'rgba(42, 85, 48, 0.8)' }}
+            >
+              ← {t.today}
+            </button>
+          )}
+
           <button
             className="forecast-toggle-btn"
             onClick={() => setShowForecast(!showForecast)}
@@ -437,7 +530,12 @@ export default function WeatherWidget() {
       {showForecast && showDetails && (
         <div className="weather-forecast">
           {forecast.map((day, index) => (
-            <div key={index} className="forecast-day">
+            <div 
+              key={index} 
+              className={`forecast-day ${selectedDayIndex === index ? 'forecast-day-selected' : ''}`}
+              onClick={() => handleForecastDayClick(index)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="forecast-date">{day.date}</div>
               {(() => {
                 const IconComponent = getWeatherIcon(day.icon);

@@ -281,6 +281,12 @@
   transform: translateX(5px);
 }
 
+.forecast-day-selected {
+  background: rgba(236, 152, 67, 0.3) !important;
+  border: 2px solid rgba(236, 152, 67, 0.6) !important;
+  transform: translateX(5px);
+}
+
 .forecast-date {
   font-size: 0.85rem;
   font-weight: 600;
