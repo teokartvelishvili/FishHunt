@@ -340,8 +340,72 @@
   }
 
   .weather-compact {
+    padding: 15px 18px;
+    min-width: 120px;
+  }
+
+  .weather-city-name {
+    font-size: 0.85rem;
+  }
+
+  .weather-temp-large {
+    font-size: 2.2rem;
+  }
+
+  .weather-icon-compact {
+    width: 45px;
+    height: 45px;
+  }
+
+  .weather-details-panel {
+    min-width: 280px;
+    padding: 18px;
+  }
+
+  .weather-details {
+    gap: 12px;
+  }
+
+  .weather-detail {
+    padding: 10px;
+  }
+
+  .detail-label {
+    font-size: 0.9rem;
+  }
+
+  .detail-value {
+    font-size: 1.1rem;
+  }
+
+  .weather-forecast {
+    padding: 18px;
+  }
+
+  .city-dropdown {
+    max-height: 320px;
+    background: rgba(42, 85, 48, 0.9);
+  }
+
+  .weather-forecast {
+    max-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-widget {
+    top: 10px;
+    left: 10px;
+  }
+
+  .weather-compact {
     padding: 12px 16px;
-    min-width: 100px;
+    min-width: 110px;
+    border-radius: 15px;
+  }
+
+  .weather-city-name {
+    font-size: 0.8rem;
   }
 
   .weather-temp-large {
@@ -354,54 +418,32 @@
   }
 
   .weather-details-panel {
-    min-width: 250px;
+    min-width: 260px;
     padding: 15px;
-  }
-
-  .weather-forecast {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .weather-widget {
-    top: 10px;
-    left: 10px;
-  }
-
-  .weather-compact {
-    padding: 10px 14px;
-    min-width: 90px;
-    border-radius: 15px;
-  }
-
-  .weather-city-name {
-    font-size: 0.7rem;
-  }
-
-  .weather-temp-large {
-    font-size: 1.8rem;
-  }
-
-  .weather-icon-compact {
-    width: 35px;
-    height: 35px;
-  }
-
-  .weather-details-panel {
-    min-width: 220px;
-    padding: 12px;
   }
 
   .weather-details {
-    gap: 8px;
+    gap: 10px;
   }
 
   .weather-detail {
-    padding: 8px;
+    padding: 9px;
+  }
+
+  .detail-label {
+    font-size: 0.85rem;
   }
 
   .detail-value {
     font-size: 1rem;
+  }
+
+  .city-dropdown {
+    max-height: 250px;
+    background: rgba(42, 85, 48, 0.9);
+  }
+
+  .weather-forecast {
+    max-height: 200px;
   }
 }
