@@ -9,21 +9,38 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
-    padding-bottom: 50px;
+    padding-bottom: 10px;
+}
+.see-more {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 40px;
+    margin-top: 10px;
 }
 .see-more-btn{
     border: none;
     background: transparent;
-    color: green;
+    color: #2A5530;
     font-weight: bold;
-    float: right;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
 }
-.section-title {
+.see-more-btn:hover {
+    opacity: 0.7;
+}
+
+.homepage-section-header {
+    margin-bottom: 15px;
+}
+
+.homepage-category-title {
     margin: 20px auto;
     padding: 10px 20px;
     color: #2A5530;
     font-size: 22px;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
 }
 
 @media screen and (max-width: 1200px) {
@@ -35,7 +52,7 @@
 
 @media screen and (max-width: 992px) {
     .productGrid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* 2 cards on tablet */
         gap: 16px;
     }
 }
@@ -46,7 +63,7 @@
     }
     
     .productGrid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* 2 cards on mobile */
         gap: 12px;
         padding-bottom: 30px;
     }
@@ -58,7 +75,7 @@
     }
     
     .productGrid {
-        grid-template-columns: 1fr; /* მხოლოდ ერთი ქარდი ხაზში */
+        grid-template-columns: repeat(2, 1fr); /* 2 cards on small mobile */
         gap: 10px;
         padding-bottom: 20px;
     }

@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ForumPost from "@/app/(pages)/forum/ForumPost";
 import Pattern from "@/components/pattern/pattern";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const HomePageForum = () => {
+  const { t } = useLanguage();
   interface Post {
     _id: string;
     image?: string;
@@ -52,7 +54,7 @@ const HomePageForum = () => {
   return (
     <div className="homePageForum">
       <Pattern imageSize={350}  />
-      <h1 className="homePageForumH1">ფორუმი </h1>
+      <h1 className="homePageForumH1">{t("navbar.forum")}</h1>
       {posts.map((post) => (
         <ForumPost
           key={post._id}
@@ -86,7 +88,7 @@ const HomePageForum = () => {
         />
       ))}
       <Link href="/forum" className="forumPageLink">
-        დაამატე პოსტი / ნახე სხვა პოსტებიც
+        {t("forum.addPostSeeOthers")}
       </Link>
     </div>
   );

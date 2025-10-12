@@ -34,8 +34,8 @@
   
   text-align: right;
   text-decoration: none;
-  color: green;
-  font-size: 20px;
+  color: #ffffff;
+  font-size: 24px;
   font-weight: bolder;
   float: right;
 }
@@ -53,7 +53,7 @@
   }
 
   .forumPageLink {
-    font-size: 18px;
+    font-size: 20px;
     text-align: center;
   }
 }
@@ -71,7 +71,7 @@
   }
 
   .forumPageLink {
-    font-size: 16px;
+    font-size: 18px;
     text-align: center;
   }
 }

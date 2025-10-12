@@ -114,9 +114,9 @@
 }
 
 .review-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #093d67, #012645);
+  background: linear-gradient(135deg, #ec9843, #2a5530);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(1, 38, 69, 0.4);
+  box-shadow: 0 6px 20px rgba(42, 85, 48, 0.4);
 }
 
 /* Review info section */

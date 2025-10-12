@@ -5,7 +5,7 @@ import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
 import "./productDetails.css";
-import "./videoTabs.css"; // Import new tabs styles
+import "./videoTabs.css"; // Import new pd-tabs styles
 import { Product } from "@/types";
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -32,7 +32,7 @@ function AddToCartButton({
   selectedAgeGroup = "",
   quantity = 1,
   disabled = false,
-  price, // Add price parameter
+  price, // Add pd-price parameter
 }: {
   productId: string;
   countInStock?: number;
@@ -42,7 +42,7 @@ function AddToCartButton({
   selectedAgeGroup?: string;
   quantity?: number;
   disabled?: boolean;
-  price?: number; // Add price parameter type
+  price?: number; // Add pd-price parameter type
 }) {
   const [pending, setPending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -88,7 +88,7 @@ function AddToCartButton({
 
   if (countInStock === 0 || disabled) {
     return (
-      <button className={`add-to-cart-btn out-of-stock ${className}`} disabled>
+      <button className={`pd-add-to-cart-btn out-of-stock ${className}`} disabled>
         {t("shop.outOfStock") || "არ არის მარაგში"}
       </button>
     );
@@ -118,7 +118,7 @@ function AddToCartButton({
       )}
 
       <button
-        className={`add-to-cart-btn ${className}`}
+        className={`pd-add-to-cart-btn ${className}`}
         onClick={handleClick}
         disabled={pending}
       >
@@ -201,11 +201,11 @@ function SimilarProducts({
   // Don't render if loading
   if (isLoading) {
     return (
-      <div className="similar-products-section">
-        <h2 className="similar-products-title">
+      <div className="pd-similar-products-section">
+        <h2 className="pd-similar-products-title">
           {t("product.similarProducts")}
         </h2>
-        <div className="similar-products-loading">
+        <div className="pd-similar-products-loading">
           <p>{t("shop.loading")}</p>
         </div>
       </div>
@@ -218,9 +218,9 @@ function SimilarProducts({
   }
 
   return (
-    <div className="similar-products-section">
-      <h2 className="similar-products-title">{t("product.similarProducts")}</h2>{" "}
-      <div className="similar-products-grid">
+    <div className="pd-similar-products-section">
+      <h2 className="pd-similar-products-title">{t("product.similarProducts")}</h2>{" "}
+      <div className="pd-similar-products-grid">
         {similarProducts.map((product: Product) => (
           <ProductCard key={product._id} product={product} />
         ))}
@@ -333,7 +333,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     return isAfterStart && isBeforeEnd;
   };
 
-  // Calculate discounted price
+  // Calculate discounted pd-price
   const calculateDiscountedPrice = () => {
     if (!hasActiveDiscount()) return product.price;
     const discountAmount = (product.price * product.discountPercentage!) / 100;
@@ -402,39 +402,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   };
 
   return (
-    <div className="container">
+    <div className="pd-container">
       {/* SEO Product Schema */}
       <ProductSchema product={product} productId={product._id} />
 
-      <div className="grid">
-        {/* Left Column - Thumbnails */}
-        <div className="thumbnail-container">
-          {product.images.map((image, index) => (
-            <motion.button
-              key={image}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`thumbnail ${
-                index === currentImageIndex ? "active" : ""
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Image
-                src={image}
-                alt={`${displayName} view ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Center Column - Main Image */}
-        <div className="image-section">
-          <div className="image-container">
+      <div className="pd-grid">
+        {/* Left Column - Main Image with Thumbnails below */}
+        <div className="pd-image-section">
+          <div className="pd-image-container">
             {/* Discount Badge */}
             {isDiscounted && product.discountPercentage && (
-              <div className="discount-badge">
+              <div className="pd-discount-badge">
                 -{product.discountPercentage}%
               </div>
             )}
@@ -445,7 +423,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="image-wrapper"
+                className="pd-image-wrapper"
                 onClick={openFullscreen} // Add click handler to open fullscreen
               >
                 <Image
@@ -454,53 +432,75 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   fill
                   quality={90}
                   priority
-                  className="details-image"
+                  className="pd-details-image"
                 />
               </motion.div>
             </AnimatePresence>
           </div>
+          
+          {/* Thumbnails below main image */}
+          <div className="pd-thumbnail-container">
+            {product.images.map((image, index) => (
+              <motion.button
+                key={image}
+                onClick={() => setCurrentImageIndex(index)}
+                className={`pd-thumbnail ${
+                  index === currentImageIndex ? "active" : ""
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Image
+                  src={image}
+                  alt={`${displayName} view ${index + 1}`}
+                  fill
+                  className="pd-object-cover"
+                />
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         {/* Right Column - Product Info */}
-        <div className="product-info-details">
+        <div className="pd-product-info-details">
           {/* Brand Container */}
-          <div className="brand-container">
-            <div className="brand-details">
+          <div className="pd-brand-container">
+            <div className="pd-brand-details">
               {product.brandLogo && (
-                <div className="brand-logo">
+                <div className="pd-brand-logo">
                   <Image
                     src={product.brandLogo}
                     alt={`${product.brandLogo} logo`}
                     width={40}
                     height={40}
-                    className="brand-logo-image"
+                    className="pd-brand-logo-image"
                   />
                 </div>
               )}
-              <div className="brand-info">
-                <div className="brand-label">
+              <div className="pd-brand-info">
+                <div className="pd-brand-label">
                   {language === "en" ? "Brand" : "ბრენდი"}
                 </div>
-                <div className="brand-name">
-                  {product.brand || "Unknown Brand"}
+                <div className="pd-brand-name">
+                  {product.brand || (language === "en" ? "Unknown Brand" : language === "ru" ? "Неизвестный бренд" : "უცნობი ბრენდი")}
                 </div>
               </div>
             </div>
           </div>
-          <h1 className="product-title">{displayName}</h1>{" "}
-          <div className="price-section">
+          <h1 className="pd-product-title">{displayName}</h1>{" "}
+          <div className="pd-price-section">
             {isDiscounted ? (
-              <div className="price-container">
-                <span className="original-price-details">
+              <div className="pd-price-container">
+                <span className="pd-original-price-details">
                   {product.price.toFixed(2)}{" "}
                   {language === "en" ? "GEL" : "ლარი"}
                 </span>
-                <span className="price discounted-price-details">
+                <span className="pd-price pd-discounted-price-details">
                   {finalPrice.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
                 </span>
               </div>
             ) : (
-              <span className="price">
+              <span className="pd-price">
                 {product.price.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
               </span>
             )}
@@ -510,13 +510,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             title={`Check out ${displayName} by ${product.brand} on FishHunt`}
           />
           {!isOutOfStock && (
-            <div className="product-options-container">
+            <div className="pd-product-options-container">
               {" "}
               {/* Age Group Selector - only show if product has age groups */}
               {product.ageGroups && product.ageGroups.length > 0 && (
-                <div className="select-container">
+                <div className="pd-select-container">
                   <select
-                    className="option-select"
+                    className="pd-option-select"
                     value={selectedAgeGroup}
                     onChange={(e) => setSelectedAgeGroup(e.target.value)}
                     disabled={isOutOfStock || product.ageGroups.length === 0}
@@ -533,10 +533,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
               {/* Size Selector - only show if product has sizes */}
               {product.sizes && product.sizes.length > 0 && (
-                <div className="select-container">
+                <div className="pd-select-container">
                   {" "}
                   <select
-                    className="option-select"
+                    className="pd-option-select"
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
                     disabled={isOutOfStock || product.sizes.length === 0}
@@ -553,10 +553,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}{" "}
               {/* Color selector - only show if product has colors */}
               {product.colors && product.colors.length > 0 && (
-                <div className="select-container">
+                <div className="pd-select-container">
                   {" "}
                   <select
-                    className="option-select2"
+                    className="pd-option-select2"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
                     disabled={isOutOfStock || product.colors.length === 0}
@@ -573,9 +573,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
               {/* Quantity Selector */}
               {availableQuantity > 0 && (
-                <div className="select-container">
+                <div className="pd-select-container">
                   <select
-                    className="option-select"
+                    className="pd-option-select"
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
                     disabled={availableQuantity <= 0}
@@ -593,18 +593,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
               {/* Stock Status */}
               {availableQuantity <= 0 && (
-                <div className="out-of-stock-message">
+                <div className="pd-out-of-stock-message">
                   {t("shop.outOfStock") || "არ არის მარაგში"}
                 </div>
               )}
             </div>
           )}
           {/* New Tabs UI with Description and Video */}
-          <div className="tabs">
+          <div className="pd-tabs">
             {/* Tab controls */}
-            <div className="tabs-list">
+            <div className="pd-tabs-list">
               <button
-                className={`tabs-trigger ${
+                className={`pd-tabs-trigger ${
                   activeTab === "description" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("description")}
@@ -614,7 +614,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
               {product.videoDescription && (
                 <button
-                  className={`tabs-trigger ${
+                  className={`pd-tabs-trigger ${
                     activeTab === "video" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("video")}
@@ -626,20 +626,20 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
             {/* Tab content */}
             <div
-              className={`tab-content ${
+              className={`pd-tab-content ${
                 activeTab === "description" ? "active" : ""
               }`}
             >
-              <p className="product-description">{displayDescription}</p>
+              <p className="pd-product-description">{displayDescription}</p>
             </div>
 
             {product.videoDescription && (
               <div
-                className={`tab-content ${
+                className={`pd-tab-content ${
                   activeTab === "video" ? "active" : ""
                 }`}
               >
-                <div className="video-container">
+                <div className="pd-video-container">
                   <div
                     dangerouslySetInnerHTML={{
                       __html: product.videoDescription,
@@ -652,7 +652,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <AddToCartButton
               productId={product._id}
               countInStock={availableQuantity}
-              className="custom-style-2"
+              className="pd-custom-style-2"
               selectedSize={selectedSize}
               selectedColor={selectedColor}
               selectedAgeGroup={selectedAgeGroup}
@@ -672,9 +672,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
           {/* Fullscreen Image Modal */}
           {isFullscreenOpen && (
-            <div className="fullscreen-modal" onClick={closeFullscreen}>
+            <div className="pd-fullscreen-modal" onClick={closeFullscreen}>
               <button
-                className="fullscreen-close"
+                className="pd-fullscreen-close"
                 onClick={(e) => {
                   e.stopPropagation();
                   closeFullscreen();
@@ -683,7 +683,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <X />
               </button>
               <div
-                className="fullscreen-image-container"
+                className="pd-fullscreen-image-container"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Image
@@ -692,7 +692,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   width={1200}
                   height={1200}
                   quality={100}
-                  className="fullscreen-image"
+                  className="pd-fullscreen-image"
                 />
               </div>
             </div>
@@ -701,15 +701,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Reviews Section */}
-      <div className="reviews-section">
-        <h2 className="reviews-title">Customer Reviews</h2>
+      <div className="pd-reviews-section">
+        <h2 className="pd-reviews-title">{t("product.reviews")}</h2>
 
         {/* Product Reviews */}
         <ProductReviews product={product} />
 
         {/* Review Form */}
-        <div className="review-form-container">
-          <h3 className="review-form-title">Write a Review</h3>
+        <div className="pd-review-form-container">
+          <h3 className="pd-review-form-title">{language === "en" ? "Write a Review" : language === "ru" ? "Написать отзыв" : "შეფასების დაწერა"}</h3>
           <ReviewForm
             productId={product._id}
             onSuccess={() => {

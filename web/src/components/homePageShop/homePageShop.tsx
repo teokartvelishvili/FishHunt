@@ -187,32 +187,22 @@ export default function HomePageShop() {
                     sectionRefs.current[index] = el;
                   }}
                 >
-                  <div className="section-header">
+                  <div className="homepage-section-header">
                     <h2
-                      className="section-title"
+                      className="homepage-category-title"
                       ref={(el) => {
                         titleRefs.current[index] = el;
                       }}
                     >
                       {categoryData.category}
                     </h2>
-
-                    <div className="see-more-desktop see-more">
-                      <Link
-                        href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
-                      >
-                        <button className="see-more-btn">
-                          {t("shop.seeAll")}
-                        </button>
-                      </Link>
-                    </div>
                   </div>
                   <ProductGrid
-                    products={categoryData.products.slice(0, 3)} // Only take first 3 products
+                    products={categoryData.products.slice(0, 4)} // Take first 4 products for homepage
                     theme="default"
                     isShopPage={false}
                   />
-                  <div className="see-more-mobile see-more">
+                  <div className="see-more">
                     <Link
                       href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
                     >

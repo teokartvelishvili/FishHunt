@@ -1,11 +1,13 @@
 import { StarIcon } from "lucide-react";
 import type { Product } from "@/types";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 interface ProductReviewsProps {
   product: Product;
 }
 
 export function ProductReviews({ product }: ProductReviewsProps) {
+  const { t } = useLanguage();
   const ratings = product.reviews.reduce((acc, review) => {
     acc[review.rating] = (acc[review.rating] || 0) + 1;
     return acc;
@@ -42,7 +44,7 @@ export function ProductReviews({ product }: ProductReviewsProps) {
             ))}
           </div>
           <div className="text-sm text-muted-foreground">
-            Based on {product.numReviews} reviews
+            {t("product.basedOnReviews", { numReviews: product.numReviews })}
           </div>
         </div>
       </div>
@@ -52,7 +54,7 @@ export function ProductReviews({ product }: ProductReviewsProps) {
           .reverse()
           .map(([rating, count]) => (
             <div key={rating} className="flex items-center gap-4 sm:gap-3">
-              <div className="w-12 text-sm">{rating} stars</div>
+              <div className="w-12 text-sm">{rating} {t("product.stars")}</div>
               <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-yellow-400"

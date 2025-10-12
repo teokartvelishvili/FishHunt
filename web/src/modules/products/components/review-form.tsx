@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StarIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./ReviewForm.css";
 
 interface ReviewFormProps {
@@ -17,14 +18,15 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
   const [showPurchaseError, setShowPurchaseError] = useState(false);
   const [isUnauthorizedError, setIsUnauthorizedError] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (rating === 0) {
       toast({
-        title: "Error",
-        description: "Please select a rating",
+        title: t("product.errorTitle"),
+        description: t("product.selectRating"),
         variant: "destructive",
       });
       return;
@@ -32,8 +34,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
 
     if (!comment.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a review comment",
+        title: t("product.errorTitle"),
+        description: t("product.enterReviewComment"),
         variant: "destructive",
       });
       return;
@@ -55,7 +57,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
       setComment("");
       onSuccess();
     } catch (error: unknown) {
-      let errorMessage = "Failed to submit review";
+      let errorMessage = t("product.failedToSubmitReview");
       // Use a more specific type for fullError
       let fullError: Record<string, unknown> = {};
 
@@ -135,9 +137,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
       if (isUnauthorizedError) {
         console.log("Unauthorized error detected");
         toast({
-          title: "ავტორიზაცია საჭიროა / Authorization Required",
-          description:
-            "გთხოვთ გაიაროთ ავტორიზაცია შეფასების დასატოვებლად / Please log in to submit a review",
+          title: t("product.authorizationRequired"),
+          description: t("product.loginToSubmitReview"),
           variant: "destructive",
         });
 
@@ -166,9 +167,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
           "Bad Request (400) detected - assuming 'only purchased products' error"
         );
         toast({
-          title: "შეზღუდული წვდომა / Access Restricted",
-          description:
-            "მხოლოდ ნაყიდი პროდუქტების შეფასება შეგიძლიათ / You can only review products you have purchased",
+          title: t("product.accessRestricted"),
+          description: t("product.onlyPurchasedProductsLong"),
           variant: "destructive",
         });
 
@@ -220,9 +220,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
         console.log("Showing purchase error popup");
         // Show both toast and custom popup
         toast({
-          title: "შეზღუდული წვდომა / Access Restricted",
-          description:
-            "მხოლოდ ნაყიდი პროდუქტების შეფასება შეგიძლიათ / You can only review products you have purchased",
+          title: t("product.accessRestricted"),
+          description: t("product.onlyPurchasedProductsLong"),
           variant: "destructive",
         });
 
@@ -285,8 +284,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
             <div className="error-popup-header">
               <h3>
                 {isUnauthorizedError
-                  ? "⚠️ ავტორიზაცია საჭიროა"
-                  : "⚠️ შეზღუდული წვდომა"}
+                  ? `⚠️ ${t("product.authorizationRequired")}`
+                  : `⚠️ ${t("product.accessRestricted")}`}
               </h3>
               <button
                 className="error-popup-close"
@@ -301,16 +300,16 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
             <div className="error-popup-body">
               {isUnauthorizedError ? (
                 <>
-                  <p>გთხოვთ გაიაროთ ავტორიზაცია შეფასების დასატოვებლად.</p>
+                  <p>{t("product.pleaseLogin")}</p>
                   <p>
-                    <em>Please log in to submit a review.</em>
+                    <em>{t("product.loginToSubmitReview")}</em>
                   </p>
                 </>
               ) : (
                 <>
-                  <p>მხოლოდ ნაყიდი პროდუქტების შეფასება შეგიძლიათ.</p>
+                  <p>{t("product.onlyPurchasedProductsLong")}</p>
                   <p>
-                    <em>You can only review products you have purchased.</em>
+                    <em>{t("product.onlyPurchasedProductsLong")}</em>
                   </p>
                 </>
               )}
@@ -332,15 +331,13 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
 
       <div className="review-info">
         <p className="review-info-text">
-          📝 მხოლოდ ნაყიდი პროდუქტების შეფასება შეგიძლიათ
-          <br />
-          Only purchased products can be reviewed
+          {t("product.onlyPurchasedProducts")}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="review-form">
         <div className="review-section">
-          <label className="review-label">Rating</label>
+          <label className="review-label">{t("product.rating")}</label>
           <div className="review-stars">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
@@ -365,19 +362,19 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
 
         <div className="review-section">
           <label htmlFor="comment" className="review-label">
-            Review
+            {t("product.review")}
           </label>
           <textarea
             id="comment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Write your review here..."
+            placeholder={t("product.reviewPlaceholder")}
             className="review-textarea"
           />
         </div>
 
         <button type="submit" disabled={isSubmitting} className="review-submit">
-          {isSubmitting ? "Submitting..." : "Submit Review"}
+          {isSubmitting ? t("product.submitting") : t("product.submitReview")}
         </button>
       </form>
     </div>

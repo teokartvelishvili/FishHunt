@@ -22,7 +22,19 @@ export function ProductCard({
   className = "",
   theme = "default",
 }: ProductCardProps) {
-  const { language } = useLanguage();
+  let t: (key: string, values?: Record<string, string | number>) => string;
+  let language: string;
+
+  try {
+    const languageContext = useLanguage();
+    t = languageContext.t;
+    language = languageContext.language;
+  } catch {
+    // Fallback if hook is not available
+    t = (key: string) => key;
+    language = "ge";
+  }
+
   const [quantity, setQuantity] = useState(1);
 
   // ვამოწმებთ სურათის ვალიდურობას
@@ -121,7 +133,7 @@ export function ProductCard({
           <h3 className="product-name">{displayName}</h3>
         </Link>
 
-        <div className="product-rating">
+        {/* <div className="product-rating">
           <div className="rating-stars">
             {[...Array(5)].map((_, i) => (
               <span
@@ -137,7 +149,7 @@ export function ProductCard({
           <span className="rating-text">
             {(product.rating || 0).toFixed(1)} ({product.numReviews || 0})
           </span>
-        </div>
+        </div> */}
 
         <div className="product-details">
           <div className="priceAndRaiting">
@@ -209,7 +221,7 @@ export function ProductCard({
               console.log(`Add ${quantity} of ${product.name} to cart`);
             }}
           >
-            Add to Cart 🛒
+            {t("product.addToCart")} 🛒
           </button>
         </div>
       </div>
