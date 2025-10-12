@@ -1,11 +1,13 @@
 import "./discountCard.css";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface DiscountCardProps {
   title: string;
   description: string;
-  imageSrc: StaticImageData; // აქ ვუთითებთ StaticImageData, რომ გამოსწორდეს ტიპი
+  imageSrc: string;
   altText: string;
+  link?: string;
 }
 
 const DiscountCard: React.FC<DiscountCardProps> = ({
@@ -13,9 +15,29 @@ const DiscountCard: React.FC<DiscountCardProps> = ({
   description,
   imageSrc,
   altText,
+  link,
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (link) {
+      // თუ link იწყება http-ით, ახალ ფანჯარაში გახსენი
+      if (link.startsWith('http')) {
+        window.open(link, '_blank');
+      } else {
+        // თუ შიდა ლინკია, navigate გააკეთე
+        router.push(link);
+      }
+    }
+  };
+
   return (
-    <div className="discountCard">
+    <div 
+      className={`discountCard ${link ? 'clickable' : ''}`}
+      onClick={handleClick}
+      role={link ? "button" : undefined}
+      tabIndex={link ? 0 : undefined}
+    >
     <div className="circle-container">
       <div className="circle">
         <div className="line top-line"></div>
@@ -28,7 +50,18 @@ const DiscountCard: React.FC<DiscountCardProps> = ({
         </div>
       </div>
       <div className="overlay-circle">
-        <Image src={imageSrc} alt={altText} className="circle-image" />
+        {imageSrc ? (
+          <Image 
+            src={imageSrc} 
+            alt={altText} 
+            className="circle-image"
+            width={140}
+            height={140}
+            style={{ objectFit: 'cover' }}
+          />
+        ) : (
+          <div className="circle-image" style={{ background: '#2c6133' }} />
+        )}
       </div>
     </div>
     </div>

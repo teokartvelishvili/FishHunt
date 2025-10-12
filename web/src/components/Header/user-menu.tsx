@@ -120,6 +120,20 @@ export default function UserMenu() {
               >
                 {t("navigation.orders")}
               </Link>
+              <Link
+                href="/admin/categories"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
+                {t("navigation.categories")}
+              </Link>
+              <Link
+                href="/admin/banners"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
+                {t("navigation.banners")}
+              </Link>
             </>
           )}
 

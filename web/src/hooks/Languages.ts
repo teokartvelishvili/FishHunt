@@ -25,6 +25,8 @@ export const TRANSLATIONS: Translations = {
       adminPanel: "ადმინ პანელი",
       products: "პროდუქტები",
       users: "მომხმარებლები",
+      categories: "კატეგორიები",
+      banners: "ბანერები",
       logout: "გასვლა",
     },
     // Navbar
@@ -711,6 +713,8 @@ export const TRANSLATIONS: Translations = {
       adminPanel: "Admin Panel",
       products: "Products",
       users: "Users",
+      categories: "Categories",
+      banners: "Banners",
       logout: "Logout",
     },
     // Navbar
@@ -1259,6 +1263,8 @@ export const TRANSLATIONS: Translations = {
       adminPanel: "Админ панель",
       products: "Продукты",
       users: "Пользователи",
+      categories: "Категории",
+      banners: "Баннеры",
       logout: "Выйти",
     },
     // Navbar

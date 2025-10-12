@@ -6,9 +6,11 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
+  padding-top: 150px;
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -17,8 +19,9 @@
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: calc(85vh - 150px);
   overflow-y: auto;
+  margin-bottom: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   color: #e6cd9f;
   font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
@@ -205,10 +208,15 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .modal-overlay {
+    padding-top: 80px;
+  }
+
   .modal-content {
     margin: 1rem;
     width: calc(100% - 2rem);
     max-width: none;
+    max-height: calc(90vh - 80px);
   }
 
   .modal-actions {

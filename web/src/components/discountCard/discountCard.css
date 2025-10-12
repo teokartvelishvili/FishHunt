@@ -1,6 +1,22 @@
 .discountCard{
   padding-bottom: 62px;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
+
+.discountCard.clickable {
+  cursor: pointer;
+}
+
+.discountCard.clickable:hover {
+  transform: translateY(-8px);
+  /* filter: drop-shadow(0 8px 16px rgba(44, 97, 51, 0.4)); */
+}
+
+.discountCard.clickable:active {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 4px 8px rgba(44, 97, 51, 0.3));
+}
+
 .circle-container {
     position: relative;
     display: flex;
@@ -15,19 +31,32 @@
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    border: 3px solid #2c6133;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     justify-content: center;
     padding: 10px;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.608);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .discountCard.clickable:hover .circle {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
   }
   
   .line {
     position: absolute;
-    background-color: #2c6133;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .discountCard.clickable:hover .line {
+    background-color: rgba(255, 255, 255, 0.6);
   }
   
   .top-line {
@@ -64,10 +93,21 @@
   
   .circle-text {
     position: absolute;
-    color: #0F1E11;
+    color: #ffffff;
     font-size: 12px;
     text-align: center;
     text-justify: start;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+    z-index: 2;
+  }
+
+  .discountCard.clickable:hover .circle-text {
+    color: #ffffff;
+    transform: scale(1.05);
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+    font-weight: 600;
   }
   
   .overlay-circle {
@@ -75,16 +115,33 @@
     width: 140px;
     height: 140px;
     border-radius: 0 40% 40% ;
-    background-color: white; 
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     bottom: -58px; 
     right: 0px;
     overflow: hidden;
-    border: 3px solid #377e40;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
   }
+
+  .discountCard.clickable:hover .overlay-circle {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+  }
+
   .circle-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .discountCard.clickable:hover .circle-image {
+    transform: scale(1.1);
   }
   
 @media screen and (max-width: 768px) {
@@ -100,7 +157,7 @@
     .circle {
         width: 110px;
         height: 110px;
-        border: 2px solid #2c6133;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         padding: 8px;
     }
 
@@ -108,7 +165,7 @@
         width: 110px;
         height: 110px;
         bottom: -38px;
-        border: 2px solid #377e40;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .circle-text {
@@ -155,7 +212,7 @@
     .circle {
         width: 95px;
         height: 95px;
-        border: 2px solid #2c6133;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         padding: 6px;
     }
 
@@ -163,7 +220,7 @@
         width: 95px;
         height: 95px;
         bottom: -33px;
-        border: 2px solid #377e40;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .circle-text {
