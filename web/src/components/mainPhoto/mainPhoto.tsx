@@ -6,7 +6,7 @@ import WeatherWidget from "../WeatherWidget/WeatherWidget";
 // import fishingPhoto from "../../assets/fishingPhoto.jpg";
 // import fishhuntPhoto from "../../assets/fishhuntPhoto1.png";
 import fishingPhoto2 from "../../assets/fishingPhoto2.png";
-import map from "../../assets/map.png";
+// import map from "../../assets/map.png";
 import target from "../../assets/target.png";
 import "./mainPhoto.css";
 
@@ -34,11 +34,11 @@ const MainPhoto = () => {
       <WeatherWidget />
       <div className="photo-frame">
         <Image src={fishingPhoto2} alt="Fishing" className="main-photo" />
-        <Image
+        {/* <Image
           src={map}
           alt="Map"
           className="map"
-        />
+        /> */}
         <Image
           src={target}
           alt="Target"
