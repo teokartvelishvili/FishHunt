@@ -303,17 +303,9 @@ const ShopContent = () => {
   return (
     <div className="shop-container default">
       <div className="content">
-        {/* <h1
-          className="title"
-          style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
-        >
-          {selectedBrand
-            ? `${selectedBrand}${t("shop.artistWorks")}`
-            : t("shop.allArtworks")}
-        </h1> */}
-
         <div className="shop-layout">
-          <div className="filters-sidebar">
+          {/* Filters at the top */}
+          <div className="filters-top-section">
             <ProductFilters
               onCategoryChange={handleCategoryChange}
               onSubCategoryChange={handleSubCategoryChange}
@@ -335,6 +327,7 @@ const ShopContent = () => {
             />
           </div>
 
+          {/* Products below filters */}
           <div className="products-area">
             {isLoading ? (
               <div className="loading-state">{t("shop.loading")}</div>

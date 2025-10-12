@@ -1,0 +1,212 @@
+/* FishHunt Shop Filters Styling */
+.filters-container {
+  width: 100%;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #2E5730 0%, #3F6B42 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(46, 87, 48, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-section:last-child {
+  margin-bottom: 0;
+}
+
+.filter-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-title::before {
+  content: "🎯";
+  font-size: 1.1rem;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-options.scrollable {
+  max-height: 250px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(46, 87, 48, 0.3);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filter-options.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-options.scrollable::-webkit-scrollbar-track {
+  background: rgba(46, 87, 48, 0.1);
+  border-radius: 3px;
+}
+
+.filter-options.scrollable::-webkit-scrollbar-thumb {
+  background: #2E5730;
+  border-radius: 3px;
+}
+
+.filter-options.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #1F3A21;
+}
+
+.filter-options.scrollable .filter-btn {
+  text-align: left;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.25rem;
+  border: 2px solid #2E5730;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #2E5730;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(46, 87, 48, 0.2);
+}
+
+.filter-btn:hover {
+  background: #2E5730;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 87, 48, 0.4);
+}
+
+.filter-btn.active {
+  background: #2E5730;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(46, 87, 48, 0.4);
+  transform: translateY(-1px);
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(46, 87, 48, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.search-container:focus-within {
+  border-color: #2E5730;
+  box-shadow: 0 0 0 3px rgba(46, 87, 48, 0.1);
+}
+
+.search-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: #1a202c;
+}
+
+.search-input::placeholder {
+  color: #a0aec0;
+}
+
+.selected-filter {
+  margin-top: 0.5rem;
+}
+
+.clear-filter {
+  display: inline-flex;
+  align-items: center;
+  background: green;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-filter:hover {
+  background: #011d34;
+}
+
+/* Category Icon Styling - Temporarily Hidden */
+.category-icon {
+  display: none; /* Hidden until actual icons are available */
+}
+
+.category-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.category-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .filters-container {
+    margin: 1rem 0;
+  }
+  
+  .filter-options {
+    gap: 0.3rem;
+  }
+  
+  .filter-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}

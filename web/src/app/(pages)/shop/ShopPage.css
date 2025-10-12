@@ -132,9 +132,10 @@
   display: none;
 }
 
-/* FishHunt Shop Layout Styling */
+/* FishHunt Shop Layout Styling - Vertical Layout */
 .shop-layout {
   display: flex;
+  flex-direction: column;
   gap: 30px;
   width: 100%;
   max-width: 1400px;
@@ -143,20 +144,24 @@
   box-sizing: border-box;
 }
 
-.filters-sidebar {
-  flex: 0 0 300px;
-  background: linear-gradient(135deg, #1a3e1f 0%, #2E5730 100%);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(46, 87, 48, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  height: fit-content;
-  position: sticky;
-  top: 120px;
+/* Filters at the top - full width */
+.filters-top-section {
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 
+/* Remove old sidebar styles */
+.filters-sidebar {
+  display: none;
+}
+
+/* Products below filters - full width */
 .products-area {
-  flex: 1;
+  width: 100%;
   min-height: 500px;
 }
 
