@@ -63,7 +63,7 @@ export function CreateProductForm({
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
-  const [formData, setFormData] = useState<ProductFormData & { _id?: string }>(
+  const [formData, setFormData] = useState<ProductFormData & { _id?: string; videoFile?: File }>(
     initialData || {
       name: "",
       nameEn: "",
@@ -78,6 +78,7 @@ export function CreateProductForm({
       hashtags: [],
       brandLogo: undefined,
       videoDescription: "",
+      videoFile: undefined,
     }
   );
 
@@ -106,6 +107,7 @@ export function CreateProductForm({
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [videoUploadStatus, setVideoUploadStatus] = useState<string | null>(null);
 
   // Fetch categories
   const { data: categories, isLoading: isCategoriesLoading } = useQuery<
@@ -343,11 +345,13 @@ export function CreateProductForm({
       sizes: [],
       colors: [],
       brandLogo: undefined,
+      videoFile: undefined,
     });
     setHashtagsInput("");
     setErrors({});
     setServerError(null);
     setSuccess(null);
+    setVideoUploadStatus(null);
 
     setSelectedCategory("");
     setSelectedSubcategory("");
@@ -527,6 +531,7 @@ export function CreateProductForm({
     setPending(true);
     setServerError(null);
     setSuccess(null);
+    setVideoUploadStatus(null); // Clear video upload status
 
     try {
       // Use validateField for validating form fields
@@ -785,6 +790,143 @@ export function CreateProductForm({
       }
 
       const data = await response.json();
+      
+      // Upload video to YouTube if provided (works for both create and edit)
+      if (formData.videoFile) {
+        try {
+          console.log("🎬 ვიდეოს ატვირთვა იწყება...");
+          console.log("📁 ვიდეო ფაილი:", formData.videoFile.name, formData.videoFile.size, "bytes");
+          
+          setVideoUploadStatus(
+            language === "en"
+              ? "📤 Uploading video to YouTube..."
+              : "📤 ვიდეო იტვირთება YouTube-ზე..."
+          );
+          
+          // Get correct product ID for video description
+          const productIdForVideo = isEdit ? formData._id : (data._id || data.id);
+          
+          const videoFormData = new FormData();
+          videoFormData.append("video", formData.videoFile);
+          videoFormData.append("title", `${formData.name} - ${formData.brand}`);
+          videoFormData.append(
+            "description",
+            `${formData.description}\n\n🛒 იხილეთ პროდუქტი: https://fishhunt.ge/products/${productIdForVideo}\n\n${formData.hashtags?.map(tag => `#${tag}`).join(" ") || ""}`
+          );
+          videoFormData.append("tags", formData.hashtags?.join(",") || "");
+          videoFormData.append("privacyStatus", "public");
+
+          console.log("📤 გაგზავნის URL:", `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`);
+          console.log("🔑 Token:", token ? "არსებობს ✓" : "არ არის ❌");
+
+          const videoResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`,
+            {
+              method: "POST",
+              body: videoFormData,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          
+          console.log("📥 Response Status:", videoResponse.status);
+          console.log("📥 Response OK:", videoResponse.ok);
+
+          console.log("📥 Response Status:", videoResponse.status);
+          console.log("📥 Response OK:", videoResponse.ok);
+
+          if (videoResponse.ok) {
+            const videoData = await videoResponse.json();
+            console.log("✅ ვიდეო წარმატებით აიტვირთა:", videoData);
+            
+            setVideoUploadStatus(
+              language === "en"
+                ? "🔄 Updating product with video..."
+                : "🔄 პროდუქტი ახლდება ვიდეოთი..."
+            );
+            
+            // Update product with video embed URL
+            const updateFormData = new FormData();
+            updateFormData.append(
+              "videoDescription",
+              `<iframe width="560" height="315" src="${videoData.embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+            );
+
+            // Use correct product ID (for both create and edit modes)
+            const productId = isEdit ? formData._id : (data._id || data.id);
+
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+              {
+                method: "PUT",
+                body: updateFormData,
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            setVideoUploadStatus(
+              language === "en"
+                ? "✅ Video uploaded successfully!"
+                : "✅ ვიდეო წარმატებით აიტვირთა!"
+            );
+
+            toast({
+              title: language === "en" ? "Video Uploaded!" : "ვიდეო აიტვირთა!",
+              description:
+                language === "en"
+                  ? "Your video has been uploaded to YouTube"
+                  : "თქვენი ვიდეო აიტვირთა YouTube-ზე",
+            });
+            
+            // Clear status after 3 seconds
+            setTimeout(() => setVideoUploadStatus(null), 3000);
+          } else {
+            const errorText = await videoResponse.text();
+            console.error("❌ ვიდეოს ატვირთვა ვერ მოხერხდა:");
+            console.error("Status:", videoResponse.status);
+            console.error("Error:", errorText);
+            
+            setVideoUploadStatus(
+              language === "en"
+                ? "❌ Video upload failed"
+                : "❌ ვიდეოს ატვირთვა ვერ მოხერხდა"
+            );
+            
+            toast({
+              title: language === "en" ? "Video Upload Failed" : "ვიდეოს ატვირთვა ვერ მოხერხდა",
+              description:
+                language === "en"
+                  ? "Product created but video upload failed"
+                  : "პროდუქტი შეიქმნა, მაგრამ ვიდეოს ატვირთვა ვერ მოხერხდა",
+              variant: "destructive",
+            });
+            
+            setTimeout(() => setVideoUploadStatus(null), 5000);
+          }
+        } catch (videoError) {
+          console.error("💥 ვიდეოს ატვირთვისას მოხდა შეცდომა:");
+          console.error(videoError);
+          
+          setVideoUploadStatus(
+            language === "en"
+              ? "❌ Upload error occurred"
+              : "❌ ატვირთვისას მოხდა შეცდომა"
+          );
+          
+          toast({
+            title: language === "en" ? "Video Upload Error" : "ვიდეოს ატვირთვის შეცდომა",
+            description: videoError instanceof Error ? videoError.message : "დაფიქსირდა შეცდომა",
+            variant: "destructive",
+          });
+          
+          setTimeout(() => setVideoUploadStatus(null), 5000);
+          // Don't fail the whole operation if video upload fails
+        }
+      }
+
       const successMessage = isEdit
         ? t("adminProducts.productUpdatedSuccess")
         : t("adminProducts.productAddedSuccess");
@@ -892,19 +1034,129 @@ export function CreateProductForm({
             <p className="create-product-error text-center">{serverError}</p>
           </div>
         )}{" "}
-        <div>
-          <label htmlFor="videoDescription">
-            YouTube Embed Code (optional)
-          </label>
-          <textarea
-            id="videoDescription"
-            name="videoDescription"
-            value={formData.videoDescription || ""}
-            onChange={handleChange}
-            className="create-product-textarea"
-            placeholder="Paste YouTube embed code or iframe here"
-            rows={3}
-          />
+        {/* Video Upload Section */}
+        <div className="video-section">
+          <h3>
+            {language === "en" ? "Product Video" : "პროდუქტის ვიდეო"}
+          </h3>
+          
+          <div>
+            <label htmlFor="videoFile">
+              {language === "en"
+                ? "Upload Video (will be uploaded to YouTube)"
+                : "ვიდეოს ატვირთვა (აიტვირთება YouTube-ზე)"}
+            </label>
+            <input
+              type="file"
+              id="videoFile"
+              name="videoFile"
+              accept="video/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  // Check file size (max 500MB)
+                  const maxSize = 500 * 1024 * 1024; // 500MB
+                  if (file.size > maxSize) {
+                    alert(
+                      language === "en"
+                        ? "Video file is too large. Maximum size is 500MB."
+                        : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB."
+                    );
+                    e.target.value = "";
+                    return;
+                  }
+                  // Store file in state
+                  setFormData((prev) => ({
+                    ...prev,
+                    videoFile: file,
+                  }));
+                }
+              }}
+              className="create-product-input"
+            />
+            <small style={{ color: "#666", fontSize: "0.9rem", display: "block", marginTop: "4px" }}>
+              {language === "en"
+                ? "Supported formats: MP4, AVI, MOV, WMV. Max size: 500MB"
+                : "მხარდაჭერილი ფორმატები: MP4, AVI, MOV, WMV. მაქს. ზომა: 500MB"}
+            </small>
+            
+            {/* Show selected file or upload status */}
+            {formData.videoFile && !videoUploadStatus && (
+              <div style={{ 
+                marginTop: "8px", 
+                padding: "6px 10px",
+                backgroundColor: "#e8f5e9",
+                color: "#2e7d32",
+                borderRadius: "4px",
+                border: "1px solid #a5d6a7",
+                fontSize: "0.9rem"
+              }}>
+                ✓ {formData.videoFile.name} (
+                {(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)
+              </div>
+            )}
+            
+            {/* Video Upload Status Indicator */}
+            {videoUploadStatus && (
+              <div style={{ 
+                marginTop: "12px", 
+                padding: "10px 14px",
+                backgroundColor: videoUploadStatus.includes("✅") ? "#d4edda" : videoUploadStatus.includes("❌") ? "#f8d7da" : "#fff3cd",
+                color: videoUploadStatus.includes("✅") ? "#155724" : videoUploadStatus.includes("❌") ? "#721c24" : "#856404",
+                borderRadius: "4px",
+                fontSize: "0.95rem",
+                fontWeight: "500",
+                border: `1px solid ${videoUploadStatus.includes("✅") ? "#c3e6cb" : videoUploadStatus.includes("❌") ? "#f5c6cb" : "#ffeaa7"}`,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
+                {videoUploadStatus.includes("📤") && <span style={{ animation: "pulse 1.5s infinite" }}>📤</span>}
+                {videoUploadStatus.includes("🔄") && <span style={{ animation: "spin 1s linear infinite" }}>🔄</span>}
+                <span>{videoUploadStatus}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Show current video status in edit mode */}
+          {isEdit && formData.videoDescription && !formData.videoFile && (
+            <div style={{ 
+              marginTop: "12px",
+              padding: "10px",
+              backgroundColor: "#e3f2fd",
+              color: "#1565c0",
+              borderRadius: "4px",
+              border: "1px solid #90caf9",
+              fontSize: "0.9rem"
+            }}>
+              <strong>ℹ️ {language === "en" ? "Current video:" : "მიმდინარე ვიდეო:"}</strong>
+              <br />
+              {language === "en" 
+                ? "This product already has a video. Upload a new video to replace it."
+                : "ამ პროდუქტს უკვე აქვს ვიდეო. ატვირთეთ ახალი ვიდეო რომ შეცვალოთ."}
+            </div>
+          )}
+
+          <div style={{ marginTop: "16px" }}>
+            <label htmlFor="videoDescription">
+              {language === "en"
+                ? "Or paste YouTube embed code (optional)"
+                : "ან ჩასვით YouTube embed კოდი (არასავალდებულო)"}
+            </label>
+            <textarea
+              id="videoDescription"
+              name="videoDescription"
+              value={formData.videoDescription || ""}
+              onChange={handleChange}
+              className="create-product-textarea"
+              placeholder={
+                language === "en"
+                  ? "Paste YouTube embed code or iframe here (if video is already uploaded)"
+                  : "ჩასვით YouTube embed კოდი ან iframe აქ (თუ ვიდეო უკვე ატვირთული გაქვთ)"
+              }
+              rows={3}
+            />
+          </div>
         </div>
         {/* Discount Section */}
         <div className="discount-section">
