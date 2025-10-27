@@ -43,7 +43,8 @@ export const TRANSLATIONS: Translations = {
     // Footer
     footer: {
       about: "ჩვენს შესახებ",
-      aboutText: "FishHunt არის საქართველოს წამყვანი პლატფორმა თევზაობის, ნადირობისა და ლაშქრობის მოყვარულებისთვის. ჩვენ გთავაზობთ ხარისხიან პროდუქტებს, პროფესიონალურ კონსულტაციას და საუკეთესო სერვისს.",
+      aboutText:
+        "FishHunt არის საქართველოს წამყვანი პლატფორმა თევზაობის, ნადირობისა და ლაშქრობის მოყვარულებისთვის. ჩვენ გთავაზობთ ხარისხიან პროდუქტებს, პროფესიონალურ კონსულტაციას და საუკეთესო სერვისს.",
       quickLinks: "სწრაფი ბმულები",
       legal: "იურიდიული ინფორმაცია",
       contact: "კონტაქტი",
@@ -56,7 +57,8 @@ export const TRANSLATIONS: Translations = {
       rightsReserved: "ყველა უფლება დაცულია",
       developedBy: "შექმნილია:",
       copyright: "CREATED BY",
-      description: "აღმოაჩინეთ ჩვენი სახალისო კოლექცია მაისურების, ჩანთების და აქსესუარების გულის დიზაინით, რომლებიც დაჭერისას სასაცილო 'პიპ' ხმას გამოსცემენ. შეიტანეთ მხიარულება და სიურპრიზი თქვენს ყოველდღიურ სტილში!",
+      description:
+        "აღმოაჩინეთ ჩვენი სახალისო კოლექცია მაისურების, ჩანთების და აქსესუარების გულის დიზაინით, რომლებიც დაჭერისას სასაცილო 'პიპ' ხმას გამოსცემენ. შეიტანეთ მხიარულება და სიურპრიზი თქვენს ყოველდღიურ სტილში!",
       termsOfService: "მომსახურების პირობები",
       email: "ელ-ფოსტა: info@FishHunt.ge",
       phone: "ტელეფონი: +995 551 999 055",
@@ -171,6 +173,8 @@ export const TRANSLATIONS: Translations = {
       submitting: "იგზავნება...",
       submitReview: "შეფასების გაგზავნა",
       addToCart: "კალათაში დამატება",
+      openCart: "კალათში გადასვლა",
+      cartReminderMessage: "გადადით კალათაში შესაძენად და გააგრძელეთ შეკვეთა.",
     },
 
     // Room Viewer
@@ -229,6 +233,7 @@ export const TRANSLATIONS: Translations = {
       remove: "წაშლა",
       addToCart: "კალათაში დამატება",
       adding: "ემატება...",
+      addedToCart: "დამატებულია კალათში",
       outOfStock: "არ არის მარაგში",
       title: "კალათა",
       emptyDescription:
@@ -748,7 +753,8 @@ export const TRANSLATIONS: Translations = {
     // Footer
     footer: {
       about: "About Us",
-      aboutText: "FishHunt is Georgia's leading platform for fishing, hunting and camping enthusiasts. We offer quality products, professional consultation and the best service.",
+      aboutText:
+        "FishHunt is Georgia's leading platform for fishing, hunting and camping enthusiasts. We offer quality products, professional consultation and the best service.",
       quickLinks: "Quick Links",
       legal: "Legal Information",
       contact: "Contact",
@@ -761,7 +767,8 @@ export const TRANSLATIONS: Translations = {
       rightsReserved: "All rights reserved",
       developedBy: "Developed by:",
       copyright: "CREATED BY",
-      description: "Explore our playful collection of t-shirts, bags, and accessories with squeaky heart designs that make a fun 'pip' sound when pressed. Add some joy and surprise to your everyday outfits!",
+      description:
+        "Explore our playful collection of t-shirts, bags, and accessories with squeaky heart designs that make a fun 'pip' sound when pressed. Add some joy and surprise to your everyday outfits!",
       termsOfService: "Terms of Service",
       email: "Email: info@FishHunt.ge",
       phone: "Phone: +995 551 999 055",
@@ -871,10 +878,13 @@ export const TRANSLATIONS: Translations = {
       accessRestricted: "Access Restricted",
       pleaseLogin: "Please log in to submit a review",
       loginToSubmitReview: "Please log in to submit a review",
-      onlyPurchasedProductsLong: "You can only review products you have purchased",
+      onlyPurchasedProductsLong:
+        "You can only review products you have purchased",
       submitting: "Submitting...",
       submitReview: "Submit Review",
       addToCart: "Add to Cart",
+      openCart: "Go to Cart",
+      cartReminderMessage: "Head to your cart to complete your purchase.",
     },
 
     // Room Viewer
@@ -933,6 +943,7 @@ export const TRANSLATIONS: Translations = {
       remove: "Remove",
       addToCart: "Add to Cart",
       adding: "Adding...",
+      addedToCart: "Added to Cart",
       outOfStock: "Out of Stock",
       title: "Shopping Cart",
       emptyDescription: "Your cart is empty. Add products to start shopping.",
@@ -1325,7 +1336,8 @@ export const TRANSLATIONS: Translations = {
     // Footer
     footer: {
       about: "О нас",
-      aboutText: "FishHunt - ведущая грузинская платформа для любителей рыбалки, охоты и кемпинга. Мы предлагаем качественные продукты, профессиональные консультации и лучший сервис.",
+      aboutText:
+        "FishHunt - ведущая грузинская платформа для любителей рыбалки, охоты и кемпинга. Мы предлагаем качественные продукты, профессиональные консультации и лучший сервис.",
       quickLinks: "Быстрые ссылки",
       legal: "Юридическая информация",
       contact: "Контакты",
@@ -1338,7 +1350,8 @@ export const TRANSLATIONS: Translations = {
       rightsReserved: "Все права защищены",
       developedBy: "Разработано:",
       copyright: "CREATED BY",
-      description: "Исследуйте нашу игривую коллекцию футболок, сумок и аксессуаров с дизайном сердца, которые издают забавный звук 'пип' при нажатии. Добавьте радость и сюрприз в ваш повседневный стиль!",
+      description:
+        "Исследуйте нашу игривую коллекцию футболок, сумок и аксессуаров с дизайном сердца, которые издают забавный звук 'пип' при нажатии. Добавьте радость и сюрприз в ваш повседневный стиль!",
       termsOfService: "Условия обслуживания",
       email: "Email: info@FishHunt.ge",
       phone: "Телефон: +995 551 999 055",
@@ -1364,7 +1377,8 @@ export const TRANSLATIONS: Translations = {
       noResults: "Продукты не найдены",
       browseAll: "Просмотреть все продукты",
       errorTitle: "Ошибка",
-      errorMessage: "Не удалось загрузить продукты. Пожалуйста, попробуйте позже.",
+      errorMessage:
+        "Не удалось загрузить продукты. Пожалуйста, попробуйте позже.",
       allartworks: "Все продукты",
       artistWorks: "Продукты художника",
       loading: "Загрузка...",
@@ -1419,11 +1433,16 @@ export const TRANSLATIONS: Translations = {
       authorizationRequired: "Требуется авторизация",
       accessRestricted: "Ограниченный доступ",
       pleaseLogin: "Пожалуйста, войдите в систему, чтобы оставить отзыв",
-      loginToSubmitReview: "Пожалуйста, войдите в систему, чтобы оставить отзыв",
-      onlyPurchasedProductsLong: "Вы можете оценивать только купленные продукты",
+      loginToSubmitReview:
+        "Пожалуйста, войдите в систему, чтобы оставить отзыв",
+      onlyPurchasedProductsLong:
+        "Вы можете оценивать только купленные продукты",
       submitting: "Отправляется...",
       submitReview: "Отправить отзыв",
       addToCart: "Добавить в корзину",
+      openCart: "Перейти в корзину",
+      cartReminderMessage:
+        "Перейдите в корзину, чтобы завершить оформление заказа.",
     },
     // Forum
     forum: {
@@ -1489,6 +1508,10 @@ export const TRANSLATIONS: Translations = {
       updateQuantity: "Обновить количество",
       itemAdded: "Товар добавлен в корзину",
       itemRemoved: "Товар удален из корзины",
+      addToCart: "Добавить в корзину",
+      adding: "Добавление...",
+      addedToCart: "Добавлено в корзину",
+      outOfStock: "Нет в наличии",
     },
     // Product Details
     productDetails: {
