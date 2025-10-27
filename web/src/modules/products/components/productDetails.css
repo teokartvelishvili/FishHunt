@@ -199,6 +199,27 @@
   gap: 2px;
 }
 
+.pd-seller-info {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pd-seller-label {
+  font-size: 12px;
+  color: #ec9843;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.pd-seller-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2a5530;
+  margin: 0;
+}
+
 .pd-product-title {
   font-size: 28px;
   font-weight: 700;

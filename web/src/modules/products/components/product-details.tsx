@@ -88,7 +88,10 @@ function AddToCartButton({
 
   if (countInStock === 0 || disabled) {
     return (
-      <button className={`pd-add-to-cart-btn out-of-stock ${className}`} disabled>
+      <button
+        className={`pd-add-to-cart-btn out-of-stock ${className}`}
+        disabled
+      >
         {t("shop.outOfStock") || "არ არის მარაგში"}
       </button>
     );
@@ -219,7 +222,9 @@ function SimilarProducts({
 
   return (
     <div className="pd-similar-products-section">
-      <h2 className="pd-similar-products-title">{t("product.similarProducts")}</h2>{" "}
+      <h2 className="pd-similar-products-title">
+        {t("product.similarProducts")}
+      </h2>{" "}
       <div className="pd-similar-products-grid">
         {similarProducts.map((product: Product) => (
           <ProductCard key={product._id} product={product} />
@@ -437,7 +442,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </motion.div>
             </AnimatePresence>
           </div>
-          
+
           {/* Thumbnails below main image */}
           <div className="pd-thumbnail-container">
             {product.images.map((image, index) => (
@@ -482,8 +487,30 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   {language === "en" ? "Brand" : "ბრენდი"}
                 </div>
                 <div className="pd-brand-name">
-                  {product.brand || (language === "en" ? "Unknown Brand" : language === "ru" ? "Неизвестный бренд" : "უცნობი ბრენდი")}
+                  {product.brand ||
+                    (language === "en"
+                      ? "Unknown Brand"
+                      : language === "ru"
+                      ? "Неизвестный бренд"
+                      : "უცნობი ბრენდი")}
                 </div>
+                {/* Seller Info */}
+                {product.user && (
+                  <div className="pd-seller-info">
+                    <div className="pd-seller-label">
+                      {language === "en"
+                        ? "Seller"
+                        : language === "ru"
+                        ? "Продавец"
+                        : "გამყიდველი"}
+                    </div>
+                    <div className="pd-seller-name">
+                      {product.user.seller
+                        ? `${product.user.seller.ownerFirstName} ${product.user.seller.ownerLastName}`
+                        : product.user.name}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -709,7 +736,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Review Form */}
         <div className="pd-review-form-container">
-          <h3 className="pd-review-form-title">{language === "en" ? "Write a Review" : language === "ru" ? "Написать отзыв" : "შეფასების დაწერა"}</h3>
+          <h3 className="pd-review-form-title">
+            {language === "en"
+              ? "Write a Review"
+              : language === "ru"
+              ? "Написать отзыв"
+              : "შეფასების დაწერა"}
+          </h3>
           <ReviewForm
             productId={product._id}
             onSuccess={() => {
