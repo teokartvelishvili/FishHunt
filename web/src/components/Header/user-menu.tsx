@@ -8,6 +8,17 @@ import { Role } from "@/types/role";
 import hunterIcon from "../../assets/icons/hunter.png";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  User,
+  ShoppingBag,
+  Package,
+  Users,
+  ClipboardList,
+  FolderTree,
+  ImageIcon,
+  LogOut,
+  X,
+} from "lucide-react";
 
 export default function UserMenu() {
   const { t } = useLanguage();
@@ -24,6 +35,19 @@ export default function UserMenu() {
     }
     console.log("User profile updated:", user);
   }, [user]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen && window.innerWidth <= 768) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -54,7 +78,7 @@ export default function UserMenu() {
   }
 
   // Extract first name (before space)
-  const firstName = user.name?.split(' ')[0] || "მომხმარებელი";
+  const firstName = user.name?.split(" ")[0] || "მომხმარებელი";
 
   return (
     <div className="dropdown" ref={menuRef}>
@@ -72,11 +96,28 @@ export default function UserMenu() {
             className="avatar-image"
           />
         </div>
-        <span className="username desktop-name">{user.name || "მომხმარებელი"}</span>
+        <span className="username desktop-name">
+          {user.name || "მომხმარებელი"}
+        </span>
         <span className="username mobile-name">{firstName}</span>
       </button>
       {isOpen && (
-        <div className="dropdown-menu">
+        <div
+          className="dropdown-menu"
+          onClick={(e) => {
+            // Close on backdrop click (mobile full-screen)
+            if (e.target === e.currentTarget) {
+              setIsOpen(false);
+            }
+          }}
+        >
+          <button
+            className="mobile-close-btn"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+          >
+            <X size={24} />
+          </button>
           <div className="dropdown-label">{t("userMenu.myAccount")}</div>
           <hr />
           <Link
@@ -84,6 +125,7 @@ export default function UserMenu() {
             className="dropdown-item"
             onClick={() => setIsOpen(false)}
           >
+            <User size={20} />
             {t("navigation.profile")}
           </Link>
           <Link
@@ -91,14 +133,22 @@ export default function UserMenu() {
             className="dropdown-item"
             onClick={() => setIsOpen(false)}
           >
+            <ShoppingBag size={20} />
             {t("navigation.orders")}
           </Link>
 
           {(user.role === Role.Admin || user.role === Role.Seller) && (
             <>
               <hr />
-              <div className="dropdown-label">{t("userMenu.adminDashboard")}</div>
-              <Link href="/admin/products" className="dropdown-item" onClick={() => setIsOpen(false)}>
+              <div className="dropdown-label">
+                {t("userMenu.adminDashboard")}
+              </div>
+              <Link
+                href="/admin/products"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
+                <Package size={20} />
                 {t("navigation.products")}
               </Link>
             </>
@@ -111,6 +161,7 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
+                <Users size={20} />
                 {t("navigation.users")}
               </Link>
               <Link
@@ -118,6 +169,7 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
+                <ClipboardList size={20} />
                 {t("navigation.orders")}
               </Link>
               <Link
@@ -125,6 +177,7 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
+                <FolderTree size={20} />
                 {t("navigation.categories")}
               </Link>
               <Link
@@ -132,6 +185,7 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
+                <ImageIcon size={20} />
                 {t("navigation.banners")}
               </Link>
             </>
@@ -145,6 +199,7 @@ export default function UserMenu() {
             }}
             className="dropdown-item logout-button"
           >
+            <LogOut size={20} />
             {t("navigation.logout")}
           </button>
         </div>
