@@ -105,42 +105,43 @@ export function ProductsActions({
   };
 
   return (
-    <div className="space-x-2">
+    <div className="prd-actions-group">
       <Link
         href={{
           pathname: `/admin/products/edit`,
-          query: { id: product._id, refresh: Date.now() }, // Add a timestamp to force refresh
+          query: { id: product._id, refresh: Date.now() },
         }}
-        className="prd-action-link prd-action-edit"
+        className="prd-action-btn prd-action-edit"
+        title="Edit product"
       >
-        <Pencil className="actions edit" />
+        <Pencil size={16} />
       </Link>
 
-      {/* Showing status buttons? {isAdmin && product.status === ProductStatus.PENDING} */}
       {isAdmin && product.status === ProductStatus.PENDING && (
         <>
           <button
             onClick={() => handleStatusChange(ProductStatus.APPROVED)}
-            className="text-green-500 hover:text-green-600"
+            className="prd-action-btn prd-action-approve"
             title="Approve product"
           >
-            <CheckCircle className="actions approve" />
+            <CheckCircle size={16} />
           </button>
           <button
             onClick={() => handleStatusChange(ProductStatus.REJECTED)}
-            className="text-red-500 hover:text-red-600"
+            className="prd-action-btn prd-action-reject"
             title="Reject product"
           >
-            <XCircle className="actions reject" />
+            <XCircle size={16} />
           </button>
         </>
       )}
 
       <button
-        className="text-red-500 hover:text-red-600"
+        className="prd-action-btn prd-action-delete"
         onClick={handleDelete}
+        title="Delete product"
       >
-        <Trash2 className="actions trash" />
+        <Trash2 size={16} />
       </button>
     </div>
   );

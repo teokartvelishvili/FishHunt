@@ -289,9 +289,126 @@ export function ProductsList() {
       {isAdmin && pendingProducts?.length > 0 && (
         <div className="pending-products mb-4">
           <h2 className="text-xl font-bold mb-4">Pending Approvals</h2>
-          <table className="prd-table">
-            <tbody>
-              {pendingProducts.map((product: Product) => (
+          <div className="prd-table-wrapper">
+            <table className="prd-table">
+              <tbody>
+                {pendingProducts.map((product: Product) => (
+                  <tr key={product._id} className="prd-tr">
+                    <td className="prd-td prd-td-bold">
+                      {" "}
+                      #{product._id ? product._id : "No ID"}
+                    </td>
+                    <td className="prd-td">
+                      <div className="prd-img-wrapper">
+                        <Image
+                          src={product.images[0]}
+                          alt={getDisplayName(product)}
+                          fill
+                          className="prd-img"
+                        />
+                      </div>
+                    </td>
+                    <td className="prd-td">{getDisplayName(product)}</td>
+                    <td className="prd-td">{product.price} ₾ </td>
+
+                    <td className="prd-td">
+                      {hasActiveDiscount(product) ? (
+                        <div className="price-display">
+                          <span
+                            className="original-price"
+                            style={{
+                              textDecoration: "line-through",
+                              color: "#999",
+                              fontSize: "0.9em",
+                            }}
+                          >
+                            {product.price} ₾
+                          </span>
+                          <br />
+                          <span
+                            className="discounted-price"
+                            style={{ color: "#e74c3c", fontWeight: "bold" }}
+                          >
+                            {calculateDiscountedPrice(product).toFixed(2)} ₾
+                          </span>
+                          <span
+                            className="discount-badge"
+                            style={{
+                              backgroundColor: "#e74c3c",
+                              color: "white",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              fontSize: "0.8em",
+                              marginLeft: "8px",
+                            }}
+                          >
+                            -{product.discountPercentage}%
+                          </span>
+                        </div>
+                      ) : (
+                        <span>{product.price} ₾</span>
+                      )}
+                    </td>
+                    <td className="prd-td">
+                      {product.category && typeof product.category === "object"
+                        ? product.category.name
+                        : product.category}
+                    </td>
+                    <td className="prd-td">{product.countInStock}</td>
+                    <td className="prd-td">
+                      <StatusBadge status={product.status} />
+                    </td>
+                    <td className="prd-td prd-td-right">
+                      <ProductsActions
+                        product={product}
+                        onStatusChange={handleStatusChange}
+                        onDelete={handleProductDeleted}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      <div className="prd-header">
+        <h1 className="prd-title">Products</h1>
+        <div className="prd-actions">
+          <Link href="/admin/products/create">
+            <button className="prd-btn-outline">
+              <Plus className="prd-icon" />
+              Add Product
+            </button>
+          </Link>
+          <Link href="/admin/products/ai">
+            <button className="prd-btn">
+              <Sparkles className="prd-icon" />
+              Create Products with AI
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="prd-table-wrapper">
+        <table className="prd-table">
+          <thead>
+            <tr className="prd-thead-row">
+              <th className="prd-th">ID</th>
+              <th className="prd-th">IMAGE</th>
+              <th className="prd-th">NAME</th>
+              <th className="prd-th">PRICE</th>
+              <th className="prd-th">CATEGORY</th>
+              <th className="prd-th">SUBCATEGORY</th>
+              <th className="prd-th">STOCK</th>
+              <th className="prd-th">Status</th>
+              <th className="prd-th">DELIVERY</th>
+              <th className="prd-th">SELLER INFO</th>
+              <th className="prd-th prd-th-right">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map(
+              (product: ProductWithCategories & { user?: User }) => (
                 <tr key={product._id} className="prd-tr">
                   <td className="prd-td prd-td-bold">
                     {" "}
@@ -308,8 +425,6 @@ export function ProductsList() {
                     </div>
                   </td>
                   <td className="prd-td">{getDisplayName(product)}</td>
-                  <td className="prd-td">{product.price} ₾ </td>
-
                   <td className="prd-td">
                     {hasActiveDiscount(product) ? (
                       <div className="price-display">
@@ -348,14 +463,39 @@ export function ProductsList() {
                       <span>{product.price} ₾</span>
                     )}
                   </td>
+                  <td className="prd-td">{getCategoryDisplayName(product)}</td>
                   <td className="prd-td">
-                    {product.category && typeof product.category === "object"
-                      ? product.category.name
-                      : product.category}
+                    {getSubcategoryDisplayName(product)}
                   </td>
                   <td className="prd-td">{product.countInStock}</td>
                   <td className="prd-td">
                     <StatusBadge status={product.status} />
+                  </td>
+                  <td className="prd-td">
+                    <div className="delivery-info">
+                      <span>{product.deliveryType || "FISHHUNT"}</span>
+                      {product.deliveryType === "SELLER" &&
+                        product.minDeliveryDays &&
+                        product.maxDeliveryDays && (
+                          <p className="text-sm text-gray-500">
+                            {product.minDeliveryDays}-{product.maxDeliveryDays}{" "}
+                            დღე
+                          </p>
+                        )}
+                    </div>
+                  </td>
+                  <td className="prd-td">
+                    <div className="seller-info">
+                      <p className="font-medium">
+                        {product.user?.name || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {product.user?.email || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {product.user?.phoneNumber || "N/A"}
+                      </p>
+                    </div>
                   </td>
                   <td className="prd-td prd-td-right">
                     <ProductsActions
@@ -365,141 +505,11 @@ export function ProductsList() {
                     />
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      <div className="prd-header">
-        <h1 className="prd-title">Products</h1>
-        <div className="prd-actions">
-          <Link href="/admin/products/create">
-            <button className="prd-btn-outline">
-              <Plus className="prd-icon" />
-              Add Product
-            </button>
-          </Link>
-          <Link href="/admin/products/ai">
-            <button className="prd-btn">
-              <Sparkles className="prd-icon" />
-              Create Products with AI
-            </button>
-          </Link>
-        </div>
+              )
+            )}
+          </tbody>
+        </table>
       </div>
-      <table className="prd-table">
-        <thead>
-          <tr className="prd-thead-row">
-            <th className="prd-th">ID</th>
-            <th className="prd-th">IMAGE</th>
-            <th className="prd-th">NAME</th>
-            <th className="prd-th">PRICE</th>
-            <th className="prd-th">CATEGORY</th>
-            <th className="prd-th">SUBCATEGORY</th>
-            <th className="prd-th">STOCK</th>
-            <th className="prd-th">Status</th>
-            <th className="prd-th">DELIVERY</th>
-            <th className="prd-th">SELLER INFO</th>
-            <th className="prd-th prd-th-right">ACTIONS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product: ProductWithCategories & { user?: User }) => (
-            <tr key={product._id} className="prd-tr">
-              <td className="prd-td prd-td-bold">
-                {" "}
-                #{product._id ? product._id : "No ID"}
-              </td>
-              <td className="prd-td">
-                <div className="prd-img-wrapper">
-                  <Image
-                    src={product.images[0]}
-                    alt={getDisplayName(product)}
-                    fill
-                    className="prd-img"
-                  />
-                </div>
-              </td>
-              <td className="prd-td">{getDisplayName(product)}</td>
-              <td className="prd-td">
-                <StatusBadge status={product.status} />
-                {hasActiveDiscount(product) ? (
-                  <div className="price-display">
-                    <span
-                      className="original-price"
-                      style={{
-                        textDecoration: "line-through",
-                        color: "#999",
-                        fontSize: "0.9em",
-                      }}
-                    >
-                      {product.price} ₾
-                    </span>
-                    <br />
-                    <span
-                      className="discounted-price"
-                      style={{ color: "#e74c3c", fontWeight: "bold" }}
-                    >
-                      {calculateDiscountedPrice(product).toFixed(2)} ₾
-                    </span>
-                    <span
-                      className="discount-badge"
-                      style={{
-                        backgroundColor: "#e74c3c",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        fontSize: "0.8em",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      -{product.discountPercentage}%
-                    </span>
-                  </div>
-                ) : (
-                  <span>{product.price} ₾</span>
-                )}
-              </td>
-              <td className="prd-td">{getCategoryDisplayName(product)}</td>
-              <td className="prd-td">{getSubcategoryDisplayName(product)}</td>
-              <td className="prd-td">{product.countInStock}</td>
-              <td className="prd-td">
-                <StatusBadge status={product.status} />
-              </td>
-              <td className="prd-td">
-                <div className="delivery-info">
-                  <span>{product.deliveryType || "FISHHUNT"}</span>
-                  {product.deliveryType === "SELLER" &&
-                    product.minDeliveryDays &&
-                    product.maxDeliveryDays && (
-                      <p className="text-sm text-gray-500">
-                        {product.minDeliveryDays}-{product.maxDeliveryDays} დღე
-                      </p>
-                    )}
-                </div>
-              </td>
-               <td className="prd-td">
-                <div className="seller-info">
-                  <p className="font-medium">{product.user?.name || "N/A"}</p>
-                  <p className="text-sm text-gray-500">
-                    {product.user?.email || "N/A"}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {product.user?.phoneNumber || "N/A"}
-                  </p>
-                </div>
-              </td>
-              <td className="prd-td prd-td-right">
-                <ProductsActions
-                  product={product}
-                  onStatusChange={handleStatusChange}
-                  onDelete={handleProductDeleted}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
       <div className="pagination">
         <button

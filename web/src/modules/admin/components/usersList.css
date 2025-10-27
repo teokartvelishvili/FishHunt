@@ -1,39 +1,76 @@
 .usr-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  background: linear-gradient(135deg, #f8fdf8 0%, #fff 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(42, 85, 48, 0.08);
+  padding: 32px;
+  border: 1px solid rgba(42, 85, 48, 0.1);
 }
 
 .usr-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(236, 152, 67, 0.2);
+  margin-bottom: 24px;
 }
 
 .usr-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2a5530;
+  letter-spacing: -0.5px;
+}
+
+.create-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2a5530 0%, #3a6d40 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(42, 85, 48, 0.2);
+}
+
+.create-user-btn:hover {
+  background: linear-gradient(135deg, #3a6d40 0%, #2a5530 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(42, 85, 48, 0.3);
 }
 
 .usr-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(42, 85, 48, 0.06);
 }
 
 .usr-th,
 .usr-td {
-  padding: 10px;
+  padding: 14px 16px;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(42, 85, 48, 0.08);
 }
 
 .usr-th {
-  font-weight: bold;
-  background: #f9fafb;
+  font-weight: 600;
+  background: linear-gradient(
+    135deg,
+    rgba(42, 85, 48, 0.05) 0%,
+    rgba(42, 85, 48, 0.02) 100%
+  );
+  color: #2a5530;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .usr-th-right,
@@ -41,86 +78,101 @@
   text-align: right;
 }
 
+.usr-tr {
+  transition: all 0.2s ease;
+}
+
 .usr-tr:hover {
-  background: #f3f4f6;
+  background: linear-gradient(
+    135deg,
+    rgba(236, 152, 67, 0.03) 0%,
+    rgba(42, 85, 48, 0.02) 100%
+  );
+  transform: scale(1.001);
+}
+
+.usr-td {
+  color: #4a5568;
 }
 
 .usr-td-bold {
   font-weight: 600;
+  color: #2a5530;
 }
 
 .usr-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 10px;
 }
 
 .usr-btn {
-  background: none;
-  border: none;
+  background: rgba(236, 152, 67, 0.1);
+  border: 1.5px solid rgba(236, 152, 67, 0.3);
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   display: flex;
   align-items: center;
+  border-radius: 8px;
+  color: #ec9843;
+  transition: all 0.3s ease;
 }
 
 .usr-btn:hover {
-  background: #e5e7eb;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #ec9843 0%, #d88839 100%);
+  color: white;
+  border-color: #ec9843;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 152, 67, 0.3);
 }
 
 .usr-btn-danger {
-  color: red;
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.3);
 }
 
 .usr-btn-danger:hover {
-  background: #fee2e2;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .usr-badge {
-  background: #e5e7eb;
-  color: #374151;
-  border-radius: 6px;
-  padding: 4px 8px;
+  background: linear-gradient(
+    135deg,
+    rgba(107, 114, 128, 0.1) 0%,
+    rgba(107, 114, 128, 0.05) 100%
+  );
+  color: #6b7280;
+  border-radius: 20px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1.5px solid rgba(107, 114, 128, 0.25);
 }
 
 .usr-badge-admin {
-  background: #ede9fe;
-  color: #6d28d9;
-  border-radius: 6px;
-  padding: 4px 8px;
+  background: linear-gradient(
+    135deg,
+    rgba(42, 85, 48, 0.15) 0%,
+    rgba(42, 85, 48, 0.08) 100%
+  );
+  color: #2a5530;
+  border-radius: 20px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1.5px solid rgba(42, 85, 48, 0.3);
 }
 
 .usr-icon {
-  width: 14px;
-  height: 14px;
-  margin-right: 5px;
-}
-.usr-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.create-user-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #2a5530;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.create-user-btn:hover {
-  background: #1e3d22;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
 }
