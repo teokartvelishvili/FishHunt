@@ -208,17 +208,6 @@
     transform: rotate(360deg);
   }
 }
-
-/* Mobile menu open state - lock scroll but keep header sticky */
-.mobile-menu-open {
-  overflow: hidden !important;
-  position: relative;
-}
-
-.mobile-menu-open .main-header {
-  position: sticky !important;
-  z-index: 9999;
-}
 .user-avatar {
   width: 32px;
   height: 32px;
@@ -236,6 +225,16 @@
 
 .username {
   margin-right: 4px;
+}
+
+/* Force header to stay fixed when dropdown is open on mobile */
+.dropdown-menu[style*="position: fixed"] ~ .main-header,
+body:has(.dropdown-menu[style*="position: fixed"]) .main-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99999999 !important;
 }
 
 /* Desktop/Mobile name visibility */
@@ -322,6 +321,7 @@
     box-shadow: none;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+    z-index: 99999998; /* Below header */
   }
 
   /* Subtle pattern overlay for hunting/fishing theme */
@@ -486,4 +486,13 @@
     width: 44px;
     height: 44px;
   }
+}
+
+/* Force header to stay fixed when dropdown is open on mobile */
+.dropdown-open-mobile .main-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99999999 !important;
 }

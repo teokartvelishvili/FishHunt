@@ -37,19 +37,42 @@ export default function UserMenu() {
   }, [user]);
 
   // Lock body scroll when mobile menu is open
+  // Prevent body scroll when dropdown is open on mobile
   useEffect(() => {
     if (isOpen && window.innerWidth <= 768) {
-      document.body.classList.add('mobile-menu-open');
-      
-      // Scroll to top when menu opens on mobile
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      document.body.classList.remove('mobile-menu-open');
-    }
+      // Force header to stay fixed
+      const header = document.querySelector(".main-header") as HTMLElement;
+      if (header) {
+        header.style.position = "fixed";
+        header.style.top = "0";
+        header.style.left = "0";
+        header.style.right = "0";
+        header.style.zIndex = "99999999";
+      }
 
-    return () => {
-      document.body.classList.remove('mobile-menu-open');
-    };
+      const preventScroll = (e: TouchEvent) => {
+        // Allow scroll only inside dropdown
+        if (!e.target || !(e.target as Element).closest(".dropdown-menu")) {
+          e.preventDefault();
+        }
+      };
+
+      // Add touch event listener
+      document.addEventListener("touchmove", preventScroll, { passive: false });
+
+      return () => {
+        // Reset header position
+        const header = document.querySelector(".main-header") as HTMLElement;
+        if (header) {
+          header.style.position = "";
+          header.style.top = "";
+          header.style.left = "";
+          header.style.right = "";
+          header.style.zIndex = "";
+        }
+        document.removeEventListener("touchmove", preventScroll);
+      };
+    }
   }, [isOpen]);
 
   useEffect(() => {
