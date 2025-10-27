@@ -208,6 +208,17 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile menu open state - lock scroll but keep header sticky */
+.mobile-menu-open {
+  overflow: hidden !important;
+  position: relative;
+}
+
+.mobile-menu-open .main-header {
+  position: sticky !important;
+  z-index: 9999;
+}
 .user-avatar {
   width: 32px;
   height: 32px;
@@ -360,7 +371,7 @@
   }
 
   .mobile-close-btn {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
     width: 48px;

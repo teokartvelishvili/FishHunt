@@ -39,13 +39,16 @@ export default function UserMenu() {
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen && window.innerWidth <= 768) {
-      document.body.style.overflow = "hidden";
+      document.body.classList.add('mobile-menu-open');
+      
+      // Scroll to top when menu opens on mobile
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      document.body.style.overflow = "unset";
+      document.body.classList.remove('mobile-menu-open');
     }
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.classList.remove('mobile-menu-open');
     };
   }, [isOpen]);
 
