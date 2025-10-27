@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import "./heartLoading.css";
-import Image from "next/image";
+import { Target } from "lucide-react";
 
 type HeartLoadingProps = {
   size?: "small" | "medium" | "large";
@@ -26,16 +26,12 @@ export default function HeartLoading({
     return () => clearInterval(interval);
   }, []);
 
+  const iconSize = size === "small" ? 24 : size === "medium" ? 32 : 40;
+
   const content = (
     <>
       <div className="heart-spin">
-        <Image
-          src="/loading.png"
-          alt="Loading heart"
-          width={size === "small" ? 24 : size === "medium" ? 32 : 40}
-          height={size === "small" ? 24 : size === "medium" ? 32 : 40}
-          className="heart-icon"
-        />
+        <Target className="heart-icon" size={iconSize} strokeWidth={2.5} />
       </div>
       <div className="loading-text">
         იტვირთება

@@ -425,7 +425,7 @@ export function ProductCard({
         </div>
       </Link>
 
-      <div className="product-info">
+      <div className="productCard-info">
         <Link href={`/products/${product._id}`}>
           <h3 className="product-name">{displayName}</h3>
         </Link>
@@ -448,7 +448,7 @@ export function ProductCard({
           </span>
         </div> */}
 
-        <div className="product-details">
+        <div className="productCard-details">
           <div className="priceAndRaiting">
             {isDiscounted ? (
               <div className="price-container">
@@ -511,9 +511,9 @@ export function ProductCard({
               t("shop.outOfStock") || "არ არის მარაგში"
             ) : (
               <>
-                <ShoppingCart size={16} />
                 <span className="add-to-cart-text">
                   {t("product.addToCart")}
+                  <ShoppingCart size={16} />
                 </span>
               </>
             )}

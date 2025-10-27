@@ -24,12 +24,16 @@
 
 .heart-spin {
   animation: heart-rotate 3s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .heart-icon {
   width: 1.5em;
   height: 1.5em;
-  color: rgba(76, 95, 44, 0.9);
+  color: #2e5730;
+  filter: drop-shadow(0 2px 4px rgba(46, 87, 48, 0.3));
 }
 
 .loading-text {

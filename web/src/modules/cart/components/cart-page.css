@@ -2,7 +2,9 @@
   padding-bottom: 40px;
   padding-top: 24px;
   margin-top: 0;
-  space-y: 32px;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .cart-header {
@@ -24,6 +26,9 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 32px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .cart-items {
