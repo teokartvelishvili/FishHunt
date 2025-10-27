@@ -37,7 +37,7 @@ export default function Header() {
               <UserMenu />
               <LanguageSelector />
             </div>
-            {/* Cart and User Menu */}
+            {/* Cart and User Men.u */}
             {/* <nav className="nav-menu">
             </nav> */}
           </div>
