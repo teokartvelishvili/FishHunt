@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { database } from "@/database/database";
 dotenv.config();
 
+
 // Verification code generation function
 const generateVerificationCode = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
