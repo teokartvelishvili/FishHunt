@@ -277,7 +277,9 @@
   line-height: 1.2;
   text-align: center;
   word-break: break-word;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .floating-cart-reminder {
