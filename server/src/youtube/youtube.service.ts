@@ -28,7 +28,9 @@ export class YoutubeService {
    */
   private initializeOAuth() {
     const clientId = this.configService.get<string>('YOUTUBE_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('YOUTUBE_CLIENT_SECRET');
+    const clientSecret = this.configService.get<string>(
+      'YOUTUBE_CLIENT_SECRET',
+    );
     const redirectUri = this.configService.get<string>('YOUTUBE_REDIRECT_URI');
 
     if (!clientId || !clientSecret || !redirectUri) {
@@ -43,7 +45,9 @@ export class YoutubeService {
     );
 
     // Refresh Token-ის დატვირთვა
-    const refreshToken = this.configService.get<string>('YOUTUBE_REFRESH_TOKEN');
+    const refreshToken = this.configService.get<string>(
+      'YOUTUBE_REFRESH_TOKEN',
+    );
     if (refreshToken) {
       this.oauth2Client.setCredentials({
         refresh_token: refreshToken,
@@ -59,10 +63,30 @@ export class YoutubeService {
   }
 
   /**
+   * Ensures OAuth client და youtube SDK მზადაა სანამ მოთხოვნას შევასრულებთ
+   */
+  private ensureYoutubeClient() {
+    if (!this.oauth2Client || !this.youtube) {
+      this.initializeOAuth();
+    }
+
+    if (!this.oauth2Client || !this.youtube) {
+      this.logger.error(
+        'YouTube API is not initialized. Check environment variables.',
+      );
+      throw new HttpException(
+        'YouTube API credentials are not configured on the server',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**
    * Authorization URL-ის გენერირება
    * პირველადი ავტორიზაციისთვის
    */
   getAuthUrl(): string {
+    this.ensureYoutubeClient();
     const scopes = [
       'https://www.googleapis.com/auth/youtube.upload',
       'https://www.googleapis.com/auth/youtube',
@@ -80,13 +104,14 @@ export class YoutubeService {
    * Authorization Code-ით Token-ის მიღება
    */
   async getTokenFromCode(code: string): Promise<any> {
+    this.ensureYoutubeClient();
     try {
       const { tokens } = await this.oauth2Client.getToken(code);
       this.oauth2Client.setCredentials(tokens);
-      
+
       this.logger.log('Tokens received successfully');
       this.logger.log('Refresh Token:', tokens.refresh_token);
-      
+
       return tokens;
     } catch (error) {
       this.logger.error('Error getting tokens:', error);
@@ -108,6 +133,7 @@ export class YoutubeService {
     options: VideoUploadOptions,
   ): Promise<{ videoId: string; videoUrl: string; embedUrl: string }> {
     try {
+      this.ensureYoutubeClient();
       if (!fs.existsSync(filePath)) {
         throw new HttpException('Video file not found', HttpStatus.NOT_FOUND);
       }
@@ -170,11 +196,9 @@ export class YoutubeService {
   /**
    * ვიდეოს Playlist-ში დამატება
    */
-  async addVideoToPlaylist(
-    videoId: string,
-    playlistId: string,
-  ): Promise<void> {
+  async addVideoToPlaylist(videoId: string, playlistId: string): Promise<void> {
     try {
+      this.ensureYoutubeClient();
       await this.youtube.playlistItems.insert({
         part: ['snippet'],
         requestBody: {
@@ -205,6 +229,7 @@ export class YoutubeService {
     privacyStatus: 'public' | 'private' | 'unlisted' = 'public',
   ): Promise<string> {
     try {
+      this.ensureYoutubeClient();
       const response = await this.youtube.playlists.insert({
         part: ['snippet', 'status'],
         requestBody: {
@@ -235,6 +260,7 @@ export class YoutubeService {
    */
   async getChannelInfo(): Promise<any> {
     try {
+      this.ensureYoutubeClient();
       const response = await this.youtube.channels.list({
         part: ['snippet', 'contentDetails', 'statistics'],
         mine: true,
@@ -255,6 +281,7 @@ export class YoutubeService {
    */
   async deleteVideo(videoId: string): Promise<void> {
     try {
+      this.ensureYoutubeClient();
       await this.youtube.videos.delete({
         id: videoId,
       });
@@ -277,6 +304,7 @@ export class YoutubeService {
     updates: Partial<VideoUploadOptions>,
   ): Promise<void> {
     try {
+      this.ensureYoutubeClient();
       const updateData: any = {
         id: videoId,
       };
@@ -284,7 +312,8 @@ export class YoutubeService {
       if (updates.title || updates.description || updates.tags) {
         updateData.snippet = {};
         if (updates.title) updateData.snippet.title = updates.title;
-        if (updates.description) updateData.snippet.description = updates.description;
+        if (updates.description)
+          updateData.snippet.description = updates.description;
         if (updates.tags) updateData.snippet.tags = updates.tags;
       }
 
