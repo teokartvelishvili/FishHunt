@@ -4,9 +4,10 @@ import { Metadata } from "next";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: { postId?: string };
+  searchParams: Promise<{ postId?: string }>;
 }): Promise<Metadata> {
-  const postId = searchParams.postId;
+  const params = await searchParams;
+  const postId = params.postId;
 
   if (postId) {
     try {
