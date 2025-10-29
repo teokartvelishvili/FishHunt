@@ -214,7 +214,15 @@ export class ForumsService {
       throw new Error('Forum post not found');
     }
 
-    return forum;
+    // Get forum post image from S3
+    const imageUrl = await this.awsS3Service.getImageByFileId(forum.imagePath);
+
+    // Convert to plain object and add image URL
+    const forumObject = forum.toObject();
+    return {
+      ...forumObject,
+      image: imageUrl,
+    };
   }
 
   async update(
