@@ -31,6 +31,18 @@ export async function generateMetadata({
         const categories = post.category?.join(', ') || '';
         const keywords = `${categories}, თევზაობა, მონადირება, კემპინგი, ფორუმი, საქართველო, fishhunt`.split(', ');
         
+        // Make sure image URL is absolute
+        let imageUrl = null;
+        if (post.image) {
+          // If image already has http/https, use it as is
+          if (post.image.startsWith('http://') || post.image.startsWith('https://')) {
+            imageUrl = post.image;
+          } else {
+            // Otherwise, prepend the site URL
+            imageUrl = `${siteUrl}${post.image.startsWith('/') ? '' : '/'}${post.image}`;
+          }
+        }
+        
         return {
           title: `${title} - FishHunt ფორუმი`,
           description: description,
@@ -41,14 +53,14 @@ export async function generateMetadata({
             description: description,
             url: postUrl,
             siteName: 'FishHunt - თევზაობა, მონადირება, კემპინგი',
-            images: post.image ? [
+            images: imageUrl ? [
               {
-                url: post.image,
+                url: imageUrl,
                 width: 1200,
                 height: 630,
                 alt: title,
               }
-            ] : [],
+            ] : undefined,
             type: 'article',
             publishedTime: post.createdAt,
             authors: [post.user?.name || 'FishHunt User'],
@@ -57,7 +69,7 @@ export async function generateMetadata({
             card: 'summary_large_image',
             title: title,
             description: description,
-            images: post.image ? [post.image] : [],
+            images: imageUrl ? [imageUrl] : undefined,
             creator: '@fishhunt',
           },
           alternates: {
