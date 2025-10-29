@@ -107,13 +107,31 @@
   color: #e60000;
 }
 
-.file-input {
-  margin: 12px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
+.file-upload-section {
+  margin: 16px 0;
+}
+
+.file-upload-label {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #2a5530 0%, #ec9843 100%);
+  color: white;
   border-radius: 8px;
-  background: #f9f9f9;
   cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-upload-label:hover {
+  background: linear-gradient(135deg, #3e6f49 0%, #d67d2e 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.file-input {
+  display: none;
 }
 
 .modal-actions {

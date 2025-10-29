@@ -197,8 +197,24 @@ export class ForumsService {
     return { message: 'forum disliked' };
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} forum`;
+  async findOne(id: string) {
+    const forum = await this.forumModel
+      .findById(id)
+      .populate('user', 'name role profileImage')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'name profileImage',
+        },
+      })
+      .exec();
+
+    if (!forum) {
+      throw new Error('Forum post not found');
+    }
+
+    return forum;
   }
 
   async update(

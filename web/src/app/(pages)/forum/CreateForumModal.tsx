@@ -10,9 +10,10 @@ import { useLanguage } from "@/hooks/LanguageContext";
 
 // Tag mapping for translation (frontend tag keys -> backend tags)
 const TAG_MAPPING = {
-  hunting: "hunting",
   fishing: "fishing",
-  other: "other",
+  hunting: "hunting",
+  camping: "camping",
+  all: "all",
 };
 
 // Tag keys for translation
@@ -54,8 +55,8 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
   const createMutation = useMutation({
     mutationFn: async () => {
       try {
-        // Prepare tags for backend
-        const backendTags = prepareTagsForBackend(tags);
+        // Prepare tags for backend - default to 'all' if no tags selected
+        const backendTags = tags.length > 0 ? prepareTagsForBackend(tags) : ["all"];
 
         if (image) {
           // Compress the image before uploading
@@ -222,11 +223,11 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
             disabled={tags.length >= 3}
           >
             <option value="" disabled>
-              {t("forum.selectTag")}
+              {t("forum.selectCategory")}
             </option>
             {TAG_KEYS.map((key) => (
               <option key={key} value={key}>
-                {t(`forum.tags.${key}`)}
+                {t(`forum.categories.${key}`)}
               </option>
             ))}
           </select>
@@ -235,18 +236,24 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
         <div className="tags-list">
           {tags.map((tagKey) => (
             <span key={tagKey} className="tag">
-              {t(`forum.tags.${tagKey}`)}
+              {t(`forum.categories.${tagKey}`)}
               <button onClick={() => handleRemoveTag(tagKey)}>×</button>
             </span>
           ))}
         </div>
 
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept="image/*"
-          className="file-input"
-        />
+        <div className="file-upload-section">
+          <label htmlFor="file-upload" className="file-upload-label">
+            📷 {image ? image.name : t("forum.chooseImage")}
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            className="file-input"
+          />
+        </div>
 
         {error && <div className="error-message">{error}</div>}
 

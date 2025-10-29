@@ -26,6 +26,15 @@
   position: relative;
   overflow: hidden;
   height: 110%;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom-color 0.3s ease;
+}
+
+/* Hover effect - only for desktop (min-width: 769px) */
+@media screen and (min-width: 769px) {
+  .UlCont li a:hover {
+    border-bottom-color: rgba(165, 189, 165, 0.5);
+  }
 }
 
 /* აიქონების ფერი თეთრი filter-ით */

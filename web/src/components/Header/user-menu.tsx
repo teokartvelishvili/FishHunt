@@ -94,11 +94,11 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Link href="/login" className="button sign-in-button">
-        <span className="icon">
+      <Link href="/login" className="user-menu-button user-menu-sign-in-button">
+        <span className="user-menu-icon">
           <Image src={hunterIcon} alt="hunterIcon" width={28} height={28} />
         </span>
-        <span className="sign-in-text">{t("navigation.login")}</span>
+        <span className="user-menu-sign-in-text">{t("navigation.login")}</span>
       </Link>
     );
   }
@@ -107,29 +107,29 @@ export default function UserMenu() {
   const firstName = user.name?.split(" ")[0] || "მომხმარებელი";
 
   return (
-    <div className="dropdown" ref={menuRef}>
+    <div className="user-menu-dropdown" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="button user-button"
+        className="user-menu-button user-menu-user-button"
         aria-label="Toggle user menu"
       >
-        <div className="user-avatar">
+        <div className="user-menu-user-avatar">
           <Image
             src={profileImage || "/avatar.jpg"}
             alt={user.name}
             width={32}
             height={32}
-            className="avatar-image"
+            className="user-menu-avatar-image"
           />
         </div>
-        <span className="username desktop-name">
+        <span className="user-menu-username user-menu-desktop-name">
           {user.name || "მომხმარებელი"}
         </span>
-        <span className="username mobile-name">{firstName}</span>
+        <span className="user-menu-username user-menu-mobile-name">{firstName}</span>
       </button>
       {isOpen && (
         <div
-          className="dropdown-menu"
+          className="user-menu-dropdown-menu"
           onClick={(e) => {
             // Close on backdrop click (mobile full-screen)
             if (e.target === e.currentTarget) {
@@ -138,17 +138,17 @@ export default function UserMenu() {
           }}
         >
           <button
-            className="mobile-close-btn"
+            className="user-menu-mobile-close-btn"
             onClick={() => setIsOpen(false)}
             aria-label="Close menu"
           >
             <X size={24} />
           </button>
-          <div className="dropdown-label">{t("userMenu.myAccount")}</div>
-          <hr />
+          <div className="user-menu-dropdown-label">{t("userMenu.myAccount")}</div>
+          <hr className="user-menu-divider" />
           <Link
             href="/profile"
-            className="dropdown-item"
+            className="user-menu-dropdown-item"
             onClick={() => setIsOpen(false)}
           >
             <User size={20} />
@@ -156,7 +156,7 @@ export default function UserMenu() {
           </Link>
           <Link
             href="/profile/orders"
-            className="dropdown-item"
+            className="user-menu-dropdown-item"
             onClick={() => setIsOpen(false)}
           >
             <ShoppingBag size={20} />
@@ -165,13 +165,13 @@ export default function UserMenu() {
 
           {(user.role === Role.Admin || user.role === Role.Seller) && (
             <>
-              <hr />
-              <div className="dropdown-label">
+              <hr className="user-menu-divider" />
+              <div className="user-menu-dropdown-label">
                 {t("userMenu.adminDashboard")}
               </div>
               <Link
                 href="/admin/products"
-                className="dropdown-item"
+                className="user-menu-dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
                 <Package size={20} />
@@ -184,7 +184,7 @@ export default function UserMenu() {
             <>
               <Link
                 href="/admin/users"
-                className="dropdown-item"
+                className="user-menu-dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
                 <Users size={20} />
@@ -192,7 +192,7 @@ export default function UserMenu() {
               </Link>
               <Link
                 href="/admin/orders"
-                className="dropdown-item"
+                className="user-menu-dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
                 <ClipboardList size={20} />
@@ -200,7 +200,7 @@ export default function UserMenu() {
               </Link>
               <Link
                 href="/admin/categories"
-                className="dropdown-item"
+                className="user-menu-dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
                 <FolderTree size={20} />
@@ -208,7 +208,7 @@ export default function UserMenu() {
               </Link>
               <Link
                 href="/admin/banners"
-                className="dropdown-item"
+                className="user-menu-dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
                 <ImageIcon size={20} />
@@ -217,13 +217,13 @@ export default function UserMenu() {
             </>
           )}
 
-          <hr />
+          <hr className="user-menu-divider" />
           <button
             onClick={() => {
               setIsOpen(false);
               logout();
             }}
-            className="dropdown-item logout-button"
+            className="user-menu-dropdown-item user-menu-logout-button"
           >
             <LogOut size={20} />
             {t("navigation.logout")}

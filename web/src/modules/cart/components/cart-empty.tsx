@@ -1,7 +1,7 @@
 import { useLanguage } from "@/hooks/LanguageContext";
 import Link from "next/link";
 import "./cart-empty.css";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 export function CartEmpty() {
   const { t } = useLanguage();
@@ -9,7 +9,7 @@ export function CartEmpty() {
   return (
     <div className="cart-empty-container">
       <div className="cart-empty-icon">
-        <ShoppingBag size={70} />
+        <ShoppingCart size={70} strokeWidth={1.5} />
       </div>
       <div className="cart-empty-content">
         <h2 className="cart-empty-title">{t("cart.empty")}</h2>

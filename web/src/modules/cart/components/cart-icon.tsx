@@ -1,10 +1,8 @@
 import { useCart } from "../context/cart-context";
-import Image from "next/image";
 import Link from "next/link";
 import "./cart-icon.css";
-// import { ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useLanguage } from "@/hooks/LanguageContext";
-import cart from "../../../assets/icons/cart.png"; // Assuming you have a cart icon image
 
 export function CartIcon({ onNavigate }: { onNavigate?: () => void }) {
   const { items } = useCart();
@@ -13,7 +11,7 @@ export function CartIcon({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <Link href="/cart" className="cart-icon-container" onClick={onNavigate}>
-      <Image src={cart} alt="cart" className="shopping-cart-icon" />
+      <ShoppingCart className="shopping-cart-icon" size={24} />
       <span className="cart-text">{t("cart.title")}</span>
       {itemCount > 0 && <span className="cartIconsSpan">{itemCount}</span>}
     </Link>

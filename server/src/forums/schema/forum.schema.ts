@@ -44,12 +44,13 @@ export class Forum extends Document {
       values: [
       'fishing',
       'hunting',
-      'other'
+      'camping',
+      'all'
       ],
       message:
-        'Tags must be one of: fishing, hunting, other',
+        'Tags must be one of: fishing, hunting, camping, all',
     },
-    required: true,
+    default: ['all'],
   })
   tags: string[];
 

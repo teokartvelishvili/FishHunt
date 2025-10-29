@@ -200,7 +200,7 @@
 }
 
 .addButtonCart {
-  background: linear-gradient(135deg, #2a5530 0%, #3d7045 50%, #ec9843 100%);
+  background: linear-gradient(135deg, #ec9843 0%, #d67d2e 10%, #2a5530 80%);
   color: white;
   border: none;
   padding: 10px 16px;
@@ -227,7 +227,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ec9843 0%, #d67d2e 50%, #2a5530 100%);
+  background: linear-gradient(135deg, #2a5530 0%, #3d7045 40%, #ec9843 70%);
   transition: left 0.4s ease;
   z-index: 0;
 }

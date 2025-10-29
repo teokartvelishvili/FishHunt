@@ -6,9 +6,10 @@ import "./ForumPost.css";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
-import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import imageCompression from "browser-image-compression";
 import { apiClient } from "@/lib/api-client";
+import { ThumbsUp, Share2, Edit2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Comment {
   id: string;
@@ -65,6 +66,7 @@ const ForumPost = ({
   isAuthorized,
 }: PostProps) => {
   const { t } = useLanguage();
+  const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [editingComment, setEditingComment] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -81,16 +83,51 @@ const ForumPost = ({
     [key: string]: boolean;
   }>({});
   const [replyText, setReplyText] = useState<{ [key: string]: string }>({});
-  const [commentLikes, setCommentLikes] = useState<Record<string, number>>({});
-  const [likedComments, setLikedComments] = useState<Record<string, boolean>>(
-    {}
-  );
 
   const [error, setError] = useState<string | null>(null);
 
   const isPostAuthor = currentUser?._id === author._id;
   const isAdmin = currentUser?.role === "admin";
   const canModifyPost = isPostAuthor || isAdmin;
+
+  // Function to redirect to login with return URL
+  const redirectToLogin = () => {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/forum';
+    router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+  };
+
+  // Sync local state with props when they change
+  useEffect(() => {
+    setLikes(likes);
+    setIsLiked(isLiked);
+  }, [likes, isLiked]);
+
+  // Check if this post is linked via URL (postId query parameter)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('postId');
+      
+      if (postId === id) {
+        // Auto-expand comments for this post
+        setShowComments(true);
+        
+        // Scroll to this post after a short delay
+        setTimeout(() => {
+          const element = document.getElementById(`forum-post-${id}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add a highlight effect
+            element.style.backgroundColor = 'rgba(165, 189, 165, 0.2)';
+            setTimeout(() => {
+              element.style.transition = 'background-color 2s ease';
+              element.style.backgroundColor = '';
+            }, 1000);
+          }
+        }, 100);
+      }
+    }
+  }, [id]);
 
   useEffect(() => {
     if (currentUser) {
@@ -106,35 +143,6 @@ const ForumPost = ({
     }
   }, [currentUser, author._id, id, isAdmin, isPostAuthor, canModifyPost]);
 
-  useEffect(() => {
-    if (comments) {
-      const likesMap: Record<string, number> = {};
-      const likedMap: Record<string, boolean> = {};
-
-      comments.forEach((comment) => {
-        likesMap[comment.id] = comment.likes || 0;
-        const hasLiked =
-          comment.likesArray?.some((userId) => userId === currentUser?._id) ||
-          false;
-        likedMap[comment.id] = hasLiked;
-      });
-
-      setCommentLikes(likesMap);
-      setLikedComments(likedMap);
-
-      console.log("Comment likes initialized:", {
-        likesMap,
-        likedMap,
-        currentUserId: currentUser?._id,
-        comments: comments.map((c) => ({
-          id: c.id,
-          likesArray: c.likesArray,
-          hasCurrentUserLike: c.likesArray?.includes(currentUser?._id || ""),
-        })),
-      });
-    }
-  }, [comments, currentUser]);
-
   const replyMutation = useMutation({
     mutationFn: async ({
       commentId,
@@ -143,28 +151,25 @@ const ForumPost = ({
       commentId: string;
       content: string;
     }) => {
-      const response = await fetchWithAuth(`/forums/add-reply`, {
-        method: "POST",
+      if (!isAuthorized || !currentUser) {
+        throw new Error("You must be logged in to reply");
+      }
+
+      const response = await apiClient.post(`/forums/add-reply`, {
+        commentId,
+        content,
+      }, {
         headers: {
-          "Content-Type": "application/json",
           "forum-id": id,
         },
-        credentials: "include",
-        body: JSON.stringify({
-          commentId,
-          content,
-        }),
       });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to add reply");
-      }
-      return response.json();
+      return response.data;
     },
     onSuccess: () => {
       setReplyText({});
       setReplyInputVisible({});
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "Success",
         description: "Reply added successfully",
@@ -188,25 +193,16 @@ const ForumPost = ({
         throw new Error("Operation canceled by user");
       }
 
-      const response = await fetchWithAuth(
-        `/forums/delete-comment/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "forum-id": id,
-          },
-          credentials: "include",
-        }
-      );
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to delete comment");
-      }
-      return response.json();
+      const response = await apiClient.delete(`/forums/delete-comment/${commentId}`, {
+        headers: {
+          "forum-id": id,
+        },
+      });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "წარმატება",
         description: "კომენტარი წარმატებით წაიშალა",
@@ -236,30 +232,20 @@ const ForumPost = ({
         forumId: id,
       });
 
-      const response = await fetchWithAuth(
-        `/forums/edit-comment/${commentId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "forum-id": id,
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            content,
-          }),
-        }
-      );
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to edit comment");
-      }
-      return response.json();
+      const response = await apiClient.put(`/forums/edit-comment/${commentId}`, {
+        content,
+      }, {
+        headers: {
+          "forum-id": id,
+        },
+      });
+      return response.data;
     },
     onSuccess: () => {
       setEditingComment(null);
       setEditText("");
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "წარმატება",
         description: "კომენტარი წარმატებით განახლდა",
@@ -276,22 +262,23 @@ const ForumPost = ({
 
   const commentMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetchWithAuth(`/forums/add-comment`, {
-        method: "POST",
+      if (!isAuthorized || !currentUser) {
+        throw new Error("You must be logged in to comment");
+      }
+
+      const response = await apiClient.post(`/forums/add-comment`, {
+        content: newComment,
+      }, {
         headers: {
-          "Content-Type": "application/json",
           "forum-id": id,
         },
-        credentials: "include",
-        body: JSON.stringify({
-          content: newComment,
-        }),
       });
-      return response.json();
+      return response.data;
     },
     onSuccess: () => {
       setNewComment("");
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "Success",
         description: "Comment added successfully",
@@ -308,25 +295,22 @@ const ForumPost = ({
 
   const likeMutation = useMutation({
     mutationFn: async () => {
-      const endpoint = userLiked ? "remove-like" : "add-like";
-      const response = await fetchWithAuth(`/forums/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "forum-id": id,
-        },
-        body: JSON.stringify({}),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update like");
+      if (!isAuthorized || !currentUser) {
+        throw new Error("You must be logged in to like posts");
       }
 
-      return response.json();
+      const endpoint = userLiked ? "remove-like" : "add-like";
+      const response = await apiClient.post(`/forums/${endpoint}`, {}, {
+        headers: {
+          "forum-id": id,
+        },
+      });
+
+      return response.data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
 
       if (data?.likes !== undefined) {
         setLikes(data.likes);
@@ -345,101 +329,69 @@ const ForumPost = ({
     },
   });
 
-  const likeCommentMutation = useMutation({
-    mutationFn: async (commentId: string) => {
-      const isLiked = likedComments[commentId];
-      const endpoint = isLiked ? "remove-comment-like" : "add-comment-like";
-
-      console.log("Like mutation starting:", {
-        commentId,
-        action: isLiked ? "unlike" : "like",
-        endpoint,
-      });
-
-      const response = await fetchWithAuth(`/forums/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "forum-id": id,
-        },
-        body: JSON.stringify({
-          commentId: commentId,
-        }),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Like mutation error:", errorData);
-        throw new Error(errorData.message || "Failed to update comment like");
-      }
-
-      return response.json();
-    },
-    onSuccess: (data, commentId) => {
-      console.log("Like mutation success:", data);
-
-      queryClient.invalidateQueries({ queryKey: ["forums"] });
-
-      setCommentLikes((prev) => ({
-        ...prev,
-        [commentId]: data.likes,
-      }));
-
-      setLikedComments((prev) => ({
-        ...prev,
-        [commentId]: !prev[commentId],
-      }));
-    },
-    onError: (error: Error) => {
-      console.error("Like mutation error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    },
-  });
-
   const handleLike = () => {
     if (!isAuthorized) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please login to like posts",
-      });
+      redirectToLogin();
       return;
     }
     likeMutation.mutate();
   };
 
-  const handleCommentLike = (commentId: string) => {
-    if (!isAuthorized) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "გთხოვთ გაიაროთ ავტორიზაცია",
-      });
-      return;
+  const handleShare = async () => {
+    const postUrl = `${window.location.origin}/forum?postId=${id}`;
+    const shareText = `${text.substring(0, 100)}${text.length > 100 ? '...' : ''}`;
+    
+    const shareData = {
+      title: 'Forum Post',
+      text: shareText,
+      url: postUrl,
+    };
+
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast({
+          title: t("forum.shareSuccess") || "Success",
+          description: t("forum.shareSuccessDesc") || "Post shared successfully",
+        });
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(postUrl);
+        toast({
+          title: t("forum.linkCopied") || "Link Copied",
+          description: t("forum.linkCopiedDesc") || "Post link copied to clipboard",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: Try to copy to clipboard
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        toast({
+          title: t("forum.linkCopied") || "Link Copied",
+          description: t("forum.linkCopiedDesc") || "Post link copied to clipboard",
+        });
+      } catch {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not share post",
+        });
+      }
     }
-
-    console.log("Comment like clicked:", {
-      commentId,
-      currentStatus: likedComments[commentId] ? "liked" : "not liked",
-    });
-
-    likeCommentMutation.mutate(commentId);
   };
 
-  const validTags = ["fishing", "hunting", "other"];
+  const validTags = ["fishing", "hunting", "camping", "all"];
 
   // Helper function to translate backend tags to current language
   const translateTag = (backendTag: string) => {
     // Map from backend tag values to translation keys
     const tagToKeyMap: Record<string, string> = {
-      hunting: "forum.tags.hunting",
-      fishing: "forum.tags.fishing",
-      other: "forum.tags.other",
+      hunting: "forum.categories.hunting",
+      fishing: "forum.categories.fishing",
+      camping: "forum.categories.camping",
+      all: "forum.categories.all",
     };
 
     // If we have a mapping for this tag, translate it; otherwise show as is
@@ -559,6 +511,10 @@ const ForumPost = ({
   };
 
   const handleReplySubmit = (commentId: string) => {
+    if (!isAuthorized) {
+      redirectToLogin();
+      return;
+    }
     const content = replyText[commentId];
     if (!content?.trim()) return;
 
@@ -679,10 +635,12 @@ const ForumPost = ({
   };
 
   const renderComment = (comment: Comment, level = 0) => {
+    if (!comment || !comment.author) {
+      return null;
+    }
+
     const isCommentAuthor = currentUser?._id === comment.author._id;
     const canModifyComment = isCommentAuthor || isAdmin;
-    const commentLikeCount = commentLikes[comment.id] || 0;
-    const isCommentLiked = likedComments[comment.id] || false;
 
     return (
       <div
@@ -692,8 +650,8 @@ const ForumPost = ({
       >
         <div className="comment-header">
           <Image
-            src={comment.author.profileImage || comment.author.avatar}
-            alt={comment.author.name}
+            src={comment.author.profileImage || comment.author.avatar || "/avatar.jpg"}
+            alt={`${comment.author.name || "User"}'s avatar`}
             width={25}
             height={25}
             className="comment-avatar"
@@ -721,31 +679,18 @@ const ForumPost = ({
             <p className="comment-text">{comment.text}</p>
 
             <div className="comment-actions">
-              {isAuthorized && (
-                <>
-                  <button
-                    className="reply-button"
-                    onClick={() => toggleReplyInput(comment.id)}
-                  >
-                    {t("forum.reply")}
-                  </button>
-                  <button
-                    className={`comment-like-button ${
-                      isCommentLiked ? "liked" : ""
-                    }`}
-                    onClick={() => handleCommentLike(comment.id)}
-                    disabled={likeCommentMutation.isPending}
-                    aria-label={
-                      isCommentLiked ? t("forum.unlike") : t("forum.like")
-                    }
-                  >
-                    <span>{commentLikeCount}</span>
-                    <span className="art-like-icon">
-                      {isCommentLiked ? "💫" : "⭐"}
-                    </span>
-                  </button>
-                </>
-              )}
+              <button
+                className="reply-button"
+                onClick={() => {
+                  if (!isAuthorized) {
+                    redirectToLogin();
+                    return;
+                  }
+                  toggleReplyInput(comment.id);
+                }}
+              >
+                {t("forum.reply")}
+              </button>
               {canModifyComment && (
                 <>
                   <button
@@ -792,25 +737,81 @@ const ForumPost = ({
     );
   };
 
+  // Generate JSON-LD structured data for SEO
+  const generateStructuredData = () => {
+    const postUrl = typeof window !== 'undefined' 
+      ? `${window.location.origin}/forum?postId=${id}`
+      : '';
+    
+    return {
+      "@context": "https://schema.org",
+      "@type": "DiscussionForumPosting",
+      "headline": text.substring(0, 110),
+      "text": text,
+      "image": image || undefined,
+      "datePublished": time,
+      "author": {
+        "@type": "Person",
+        "name": author.name,
+        "image": author.profileImage || author.avatar
+      },
+      "interactionStatistic": [
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "https://schema.org/LikeAction",
+          "userInteractionCount": likesCount
+        },
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "https://schema.org/CommentAction",
+          "userInteractionCount": comments.length
+        }
+      ],
+      "url": postUrl,
+      "mainEntityOfPage": postUrl,
+      "keywords": category.join(', '),
+      "comment": comments.slice(0, 5).map(comment => ({
+        "@type": "Comment",
+        "text": comment.text,
+        "author": {
+          "@type": "Person",
+          "name": comment.author.name
+        }
+      }))
+    };
+  };
+
   return (
-    <div className="forum-post">
-      <Image
-        src={image}
-        alt="post image"
-        width={150}
-        height={100}
-        className="forum-post-image"
+    <>
+      {/* JSON-LD Structured Data for Google */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateStructuredData())
+        }}
       />
+      
+      <div className="forum-post" id={`forum-post-${id}`}>
+      {image && (
+        <Image
+          src={image}
+          alt={text ? `Forum post: ${text.substring(0, 50)}` : "Forum post image"}
+          width={150}
+          height={100}
+          className="forum-post-image"
+        />
+      )}
       <div className="forum-post-content">
         <div className="forum-post-author">
           <Image
-            src={author.profileImage || "/avatar.jpg"}
-            alt={`${author.name}'s avatar`}
+            src={author.profileImage || author.avatar || "/avatar.jpg"}
+            alt={`${author.name || "User"}'s profile picture`}
             width={30}
             height={30}
             className="forum-post-avatar"
           />
           <span className="forum-post-author-name">{author.name}</span>
+          <span className="forum-post-time">{time}</span>
           {isAuthorized && canModifyPost && (
             <div className="post-actions">
               <button
@@ -824,6 +825,7 @@ const ForumPost = ({
                 }}
                 aria-label={t("forum.edit")}
               >
+                <Edit2 size={16} className="button-icon" />
                 <span className="button-text">{t("forum.edit")}</span>
               </button>
               <button
@@ -837,6 +839,7 @@ const ForumPost = ({
                 }}
                 aria-label={t("forum.delete")}
               >
+                <Trash2 size={16} className="button-icon" />
                 <span className="button-text">{t("forum.delete")}</span>
               </button>
             </div>
@@ -857,11 +860,11 @@ const ForumPost = ({
                 disabled={editedPostTags.length >= 3}
               >
                 <option value="" disabled>
-                  {t("forum.selectTag")}
+                  {t("forum.selectCategory")}
                 </option>
                 {validTags.map((tag) => (
                   <option key={tag} value={tag}>
-                    {tag}
+                    {translateTag(tag)}
                   </option>
                 ))}
               </select>
@@ -878,20 +881,22 @@ const ForumPost = ({
               <div className="current-image">
                 <Image
                   src={URL.createObjectURL(editedPostImage)}
-                  alt="current post image"
+                  alt="New post image preview"
                   width={150}
                   height={100}
                 />
               </div>
             ) : (
-              <div className="current-image">
-                <Image
-                  src={image}
-                  alt="current post image"
-                  width={150}
-                  height={100}
-                />
-              </div>
+              image && (
+                <div className="current-image">
+                  <Image
+                    src={image}
+                    alt="Current post image"
+                    width={150}
+                    height={100}
+                  />
+                </div>
+              )
             )}
             <input
               type="file"
@@ -919,26 +924,36 @@ const ForumPost = ({
         )}
 
         <div className="forum-post-footer">
-          <div className="forum-post-categories">
-            {category.map((cat, index) => (
-              <span key={index} className="forum-post-category">
-                {translateTag(cat)}
-              </span>
-            ))}
+          <div className="forum-post-left-section">
+            <div className="forum-post-categories">
+              {category.map((cat, index) => (
+                <span key={index} className="forum-post-category">
+                  {translateTag(cat)}
+                </span>
+              ))}
+            </div>
+            <span
+              className="forum-post-comments"
+              onClick={() => setShowComments(!showComments)}
+            >
+              💬 {t("forum.comments")} {comments.length}
+            </span>
+            <button
+              className={`forum-post-favorite ${userLiked ? "favorited" : ""}`}
+              onClick={handleLike}
+              disabled={likeMutation.isPending}
+            >
+              <ThumbsUp size={16} className={userLiked ? "liked-icon" : "like-icon"} />
+              {likesCount}
+            </button>
           </div>
-          <span className="forum-post-time">{time}</span>
-          <span
-            className="forum-post-comments"
-            onClick={() => setShowComments(!showComments)}
-          >
-            💬 {comments.length}
-          </span>
           <button
-            className={`forum-post-favorite ${userLiked ? "favorited" : ""}`}
-            onClick={handleLike}
-            disabled={!isAuthorized || likeMutation.isPending}
+            className="forum-post-share"
+            onClick={handleShare}
+            aria-label={t("forum.share") || "Share"}
           >
-            {likesCount} {userLiked ? "💫" : "⭐"}
+            <Share2 size={16} />
+            <span className="share-text">{t("forum.share")}</span>
           </button>
         </div>
 
@@ -950,25 +965,35 @@ const ForumPost = ({
           </div>
         )}
 
-        {isAuthorized && (
-          <div className="main-comment-container">
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="main-comment-input"
-              placeholder={t("forum.writeComment")}
-            />
-            <button
-              onClick={() => commentMutation.mutate()}
-              disabled={!newComment.trim() || commentMutation.isPending}
-            >
-              {commentMutation.isPending ? t("forum.posting") : t("forum.send")}
-            </button>
-          </div>
-        )}
+        <div className="main-comment-container">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            onFocus={() => {
+              if (!isAuthorized) {
+                redirectToLogin();
+              }
+            }}
+            className="main-comment-input"
+            placeholder={t("forum.writeComment")}
+          />
+          <button
+            onClick={() => {
+              if (!isAuthorized) {
+                redirectToLogin();
+                return;
+              }
+              commentMutation.mutate();
+            }}
+            disabled={!newComment.trim() || commentMutation.isPending}
+          >
+            {commentMutation.isPending ? t("forum.posting") : t("forum.send")}
+          </button>
+        </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -7,6 +7,34 @@
   backdrop-filter: blur(10px);
 }
 
+.homepage-forum-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.add-post-button-home {
+  background: linear-gradient(to left, #ec9843, #2a5530);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-post-button-home:hover {
+  background: linear-gradient(to left, #d67d2e, #3e6f49);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
 .forum-container {
   margin: 0 auto;
   padding: 0 5%;
@@ -25,18 +53,31 @@
 }
 
 .homePageForumH1 {
-  width: 100%;
+  width: auto;
   text-align: left;
-  color: #402000;
+  color: #ffffff;
+  margin: 0;
 }
 
 .forumPageLink {
-  text-align: right;
+  display: inline-block;
   text-decoration: none;
-  color: #ffffff;
-  font-size: 24px;
-  font-weight: bolder;
-  float: right;
+  background: linear-gradient(to left, #ec9843, #2a5530);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 32px;
+  border-radius: 8px;
+  margin: 20px auto;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.forumPageLink:hover {
+  background: linear-gradient(to left, #d67d2e, #3e6f49);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 /* 768px-მდე ეკრანებისთვის */
@@ -44,6 +85,16 @@
   .homePageForum {
     padding: 10px 3%;
     gap: 10px;
+  }
+
+  .homepage-forum-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .add-post-button-home {
+    width: 100%;
+    text-align: center;
   }
 
   .homePageForumH1 {

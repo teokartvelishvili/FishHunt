@@ -33,10 +33,10 @@
 .shopping-cart-icon {
   width: 32px;
   height: 32px;
-  filter: brightness(0) invert(1);
+  /* filter: brightness(0) invert(1); - აღარ არის საჭირო lucide-react აიქონისთვის */
   position: relative;
-  transform: scale(1.3); /* აიქონის თვითონ გადიდება */
-  transform-origin: center;
+  color: white;
+  stroke-width: 2;
 }
 
 .cart-text {
@@ -47,8 +47,8 @@
 
 .cartIconsSpan {
   position: absolute;
-  top: -2px; /* კალათის თავზე */
-  right: -2px; /* კალათის აიქონის მარჯვნივ */
+  top: 2px; /* ცოტა ქვევით */
+  right: 16px; /* კიდევ მარცხნივ */
   background-color: #2A5530; /* ძველი ფერი უკან */
   color: white;
   border-radius: 50%;
@@ -72,7 +72,7 @@
   .shopping-cart-icon {
     width: 28px;
     height: 28px;
-    transform: scale(1.2);
+    stroke-width: 2;
   }
   
   .cart-text {
@@ -80,8 +80,8 @@
   }
   
   .cartIconsSpan {
-    top: -3px;
-    right: -3px;
+    top: 1px;
+    right: 14px;
     min-width: 19px;
     height: 19px;
     font-size: 11px;
@@ -98,7 +98,7 @@
   .shopping-cart-icon {
     width: 24px;
     height: 24px;
-    transform: scale(1.15);
+    stroke-width: 2;
   }
   
   .cart-text {
@@ -106,8 +106,8 @@
   }
   
   .cartIconsSpan {
-    top: -4px;
-    right: -4px;
+    top: 0px;
+    right: 12px;
     min-width: 18px;
     height: 18px;
     font-size: 10px;
@@ -124,7 +124,7 @@
   .shopping-cart-icon {
     width: 22px;
     height: 22px;
-    transform: scale(1.1);
+    stroke-width: 2;
   }
   
   .cart-text {
@@ -132,8 +132,8 @@
   }
   
   .cartIconsSpan {
-    top: -4px;
-    right: -4px;
+    top: 0px;
+    right: 10px;
     min-width: 16px;
     height: 16px;
     font-size: 9px;

@@ -132,12 +132,13 @@ const ForumPage = () => {
               const isOwner = user?._id === forum.user._id;
               const isAdmin = user?.role === "admin";
               const canModify = isOwner || isAdmin;
+              const isLiked = user?._id ? forum.likesArray?.includes(user._id) : false;
 
               return (
                 <ForumPost
                   key={forum._id}
                   id={forum._id}
-                  image={forum.image || "/avatar.jpg"}
+                  image={forum.image}
                   text={forum.content}
                   category={forum.tags}
                   author={{
@@ -173,7 +174,7 @@ const ForumPage = () => {
                   }))}
                   time={new Date(forum.createdAt).toLocaleDateString()}
                   likes={forum.likes}
-                  isLiked={forum.likesArray.includes(user?._id || "")}
+                  isLiked={isLiked}
                   isAuthorized={!!user}
                   canModify={canModify}
                 />

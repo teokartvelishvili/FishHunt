@@ -16,7 +16,6 @@ const FLOATING_REMINDER_ID = "floating-cart-reminder";
 const FLOATING_REMINDER_NAV_EVENT = "floating-cart-reminder:navigate";
 let floatingReminderInterval: number | null = null;
 let floatingReminderListenerCount = 0;
-let floatingReminderShownInitial = false;
 
 type FloatingCartReminderConfig = {
   label: string;
@@ -335,6 +334,8 @@ export function ProductCard({
   const isDiscounted = hasActiveDiscount();
 
   useEffect(() => {
+    // დროებით გამორთულია floating cart reminder
+    /*
     if (totalItems > 0) {
       if (!floatingReminderShownInitial) {
         showReminder({
@@ -349,6 +350,7 @@ export function ProductCard({
       hideReminder();
       floatingReminderShownInitial = false;
     }
+    */
   }, [totalItems, showReminder, hideReminder, t]);
 
   // Add to cart handler
@@ -372,12 +374,15 @@ export function ProductCard({
         description: `${displayName} - ${quantity} ცალი`,
       });
 
+      // დროებით გამორთულია floating cart reminder
+      /*
       showReminder({
         label: t("product.openCart") || "კალათში გადასვლა",
         message:
           t("product.cartReminderMessage") ||
           "გადადით კალათში, რომ დაასრულოთ შეკვეთა.",
       });
+      */
 
       setQuantity(1); // Reset quantity after successful add
     } catch (error) {

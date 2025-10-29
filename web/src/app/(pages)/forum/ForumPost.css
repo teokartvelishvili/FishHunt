@@ -1,7 +1,8 @@
 .forum-post {
   display: flex;
   align-items: flex-start;
-  background-color: rgba(255, 255, 255, 0.096);
+  gap: 15px;
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -14,31 +15,45 @@
 }
 
 .forum-post:hover {
-  background-color: rgba(255, 255, 255, 0.248);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
   /* transform: translateY(-2px); */
 }
 
 .forum-post-image {
   border-radius: 8px;
-  margin-right: 15px;
   height: 180px;
   width: 180px;
+  flex-shrink: 0;
+  object-fit: cover;
 }
 
 .forum-post-content {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .forum-post-author {
   display: flex;
   align-items: center;
   margin-top: 10px;
+  gap: 8px;
 }
 
 .forum-post-avatar {
   border-radius: 50%;
-  margin-right: 8px;
+}
+
+.forum-post-author-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #402000;
+}
+
+.forum-post-author .forum-post-time {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
 }
 
 .author-name {
@@ -55,8 +70,18 @@
 .forum-post-footer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.forum-post-left-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 .forum-post-categories {
@@ -84,6 +109,59 @@
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forum-post-favorite .like-icon {
+  color: #264d2b;
+  transition: all 0.3s ease;
+}
+
+.forum-post-favorite .liked-icon {
+  color: #ec9843;
+  fill: #ec9843;
+  transition: all 0.3s ease;
+}
+
+.forum-post-favorite:hover .like-icon {
+  color: #ec9843;
+}
+
+.forum-post-favorite.favorited {
+  color: #ec9843;
+}
+
+.forum-post-share {
+  background: linear-gradient(135deg, #2a5530 0%, #ec9843 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.forum-post-share:hover {
+  background: linear-gradient(135deg, #3e6f49 0%, #d67d2e 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.forum-post-share:active {
+  transform: translateY(0);
+}
+
+.forum-post-share .share-text {
+  font-size: 14px;
 }
 
 .forum-comments {
@@ -126,26 +204,48 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   margin-top: 15px;
 }
 
 .main-comment-input {
-  width: calc(100% - 80px);
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 10px;
-  display: block;
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #2a5530;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.main-comment-input:focus {
+  outline: none;
+  border-color: #ec9843;
+  box-shadow: 0 0 0 3px rgba(236, 152, 67, 0.1);
 }
 
 .main-comment-container button {
-  background: linear-gradient(to left, #2a5530, #ec9843);
-  color: white;
-  margin-top: 10px;
-  padding: 10px 20px;
+  background: #2a5530;
+  color: #ec9843;
+  padding: 10px 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.main-comment-container button:hover {
+  background: #3e6f49;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main-comment-container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 @media (max-width: 768px) {
@@ -161,6 +261,69 @@
 
   .forum-post-footer {
     justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .forum-post-left-section {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .forum-post-share {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .forum-post-share svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .forum-post-share span {
+    display: none;
+  }
+
+  .author-name,
+  .forum-post-author-name {
+    font-size: 12px;
+  }
+
+  .post-actions .button-text {
+    display: none !important;
+  }
+
+  .post-actions .button-icon {
+    display: inline !important;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 5px;
+    min-width: auto;
+  }
+
+  .comment-author {
+    font-size: 12px;
+  }
+
+  .forum-post-comments {
+    font-size: 12px;
+  }
+
+  .forum-post-favorite {
+    font-size: 12px;
+  }
+
+  .forum-post-time {
+    font-size: 12px;
+  }
+
+  .forum-post-category {
+    font-size: 11px;
+    padding: 4px 8px;
   }
 }
 
@@ -182,37 +345,87 @@
 .reply-section {
   margin-left: 20px;
   margin-top: 10px;
-  display: block;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .reply-section input {
-  width: calc(100% - 80px);
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 5px;
-  display: block;
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #2a5530;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.reply-section input:focus {
+  outline: none;
+  border-color: #ec9843;
+  box-shadow: 0 0 0 3px rgba(236, 152, 67, 0.1);
 }
 
 .reply-section button {
-  background-color: #2a5530;
-  color: white;
-  padding: 5px 10px;
+  background: #2a5530;
+  color: #ec9843;
+  padding: 8px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-left: 5px;
-  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .reply-section button:hover {
-  background-color: #1e3d22;
+  background: #3e6f49;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .comment-actions {
   display: flex;
   gap: 10px;
   margin-top: 5px;
+  align-items: center;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.like-button .like-icon {
+  color: #264d2b;
+  transition: all 0.3s ease;
+}
+
+.like-button .liked-icon {
+  color: #ec9843;
+  fill: #ec9843;
+  transition: all 0.3s ease;
+}
+
+.like-button:hover .like-icon {
+  color: #ec9843;
+}
+
+.like-button.liked {
+  color: #ec9843;
+}
+
+.art-like-icon {
+  display: flex;
+  align-items: center;
 }
 
 .edit-button,
@@ -222,9 +435,12 @@
   border: none;
   background-color: inherit;
   cursor: pointer;
-  padding: 5px;
+  padding: 5px 10px;
   border-radius: 4px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .edit-button:hover {
@@ -239,38 +455,65 @@
 
 .edit-comment-section {
   margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .edit-comment-input {
-  width: calc(100% - 160px);
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #2a5530;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.edit-comment-input:focus {
+  outline: none;
+  border-color: #ec9843;
+  box-shadow: 0 0 0 3px rgba(236, 152, 67, 0.1);
 }
 
 .edit-comment-section button {
-  background-color: #2a5530;
-  color: white;
-  padding: 5px 10px;
+  background: #2a5530;
+  color: #ec9843;
+  padding: 8px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-right: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .edit-comment-section button:last-child {
-  background-color: #666;
+  background: #666;
+  color: white;
 }
 
 .edit-comment-section button:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.edit-comment-section button:last-child:hover {
+  background: #555;
 }
 
 .post-actions {
   display: flex;
   gap: 10px;
-  margin-left: 15px;
+  margin-left: auto;
+}
+
+.post-actions .button-icon {
+  display: inline;
+}
+
+.post-actions .button-text {
+  display: inline;
 }
 
 .edit-post-section {

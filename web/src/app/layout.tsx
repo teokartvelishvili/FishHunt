@@ -10,15 +10,40 @@ import { satoshi } from "./fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
-import SiteTimer from "@/components/SiteTimer/SiteTimer";
+// import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_CLIENT_URL || "https://fishhunt.ge"
   ),
-  title: "FishHunt",
+  title: {
+    default: "FishHunt - თევზაობა, მონადირება, კემპინგი | ონლაინ მაღაზია",
+    template: "%s | FishHunt"
+  },
   description:
-    "FishHunt - Ecommerce platform for fishing equipment and accessories",
+    "FishHunt - საქართველოს უმსხვილესი ონლაინ მაღაზია თევზაობის, მონადირების და კემპინგის ინვენტარისთვის. ფართო ასორტიმენტი, საუკეთესო ფასები, სწრაფი მიწოდება.",
+  keywords: [
+    'თევზაობა', 
+    'მონადირება', 
+    'კემპინგი', 
+    'თევზაობის აღჭურვილობა', 
+    'მონადირების ინვენტარი',
+    'კემპინგის აქსესუარები',
+    'ონლაინ მაღაზია',
+    'საქართველო',
+    'fishing',
+    'hunting',
+    'camping',
+    'FishHunt'
+  ],
+  authors: [{ name: 'FishHunt' }],
+  creator: 'FishHunt',
+  publisher: 'FishHunt',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -37,11 +62,38 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ka_GE",
     url: "https://fishhunt.ge/",
-    siteName: "FishHunt",
-    title: "FishHunt",
+    siteName: "FishHunt - თევზაობა, მონადირება, კემპინგი",
+    title: "FishHunt - თევზაობა, მონადირება, კემპინგი",
+    description: "საქართველოს უმსხვილესი ონლაინ მაღაზია თევზაობის, მონადირების და კემპინგის ინვენტარისთვის",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "FishHunt",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: "FishHunt - თევზაობა, მონადირება, კემპინგი",
+    description: "საქართველოს უმსხვილესი ონლაინ მაღაზია",
+    creator: "@fishhunt",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code', // შეცვალეთ Google Search Console-დან მიღებული კოდით
   },
 };
 
@@ -70,7 +122,7 @@ export default function RootLayout({
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  <SiteTimer />
+                  {/* <SiteTimer /> */}
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />
