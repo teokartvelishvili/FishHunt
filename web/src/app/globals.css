@@ -34,6 +34,26 @@ main {
   padding-top: 106px; /* header1(56px) + header2(50px) */
 }
 
+/* Mobile responsive padding - ზუსტი გაზომვა */
+@media (max-width: 768px) {
+  main {
+    padding-top: 140px; /* 106px + 34px safety margin */
+  }
+}
+
+/* Medium mobile screens (750px - 481px) */
+@media (max-width: 750px) and (min-width: 481px) {
+  main {
+    padding-top: 170px; /* extra padding for medium screens */
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding-top: 150px; /* 106px + 44px safety margin */
+  }
+}
+
 .container {
   padding: 20px;
   max-width: 100%;
