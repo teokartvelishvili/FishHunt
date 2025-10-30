@@ -31,9 +31,9 @@ const Navbar: React.FC = () => {
     { href: "/hunting", text: t("navbar.hunting"), icon: hunting },
     { href: "/camping", text: t("navbar.camping"), icon: camping },
     { href: "/shop", text: t("navigation.shop"), icon: shopping },
+    { href: "/forum", text: t("navigation.forum"), icon: forum },
     { href: "/rentcar", text: t("navbar.rentCar"), icon: jeep },
     { href: "/video", text: t("navbar.video"), icon: video },
-    { href: "/forum", text: t("navigation.forum"), icon: forum },
     { href: "/about", text: t("navigation.about"), icon: about },
   ];
 
