@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogin } from "../hooks/use-auth";
-import { FaGoogle } from "react-icons/fa";
+// import { FaGoogle } from "react-icons/fa";
 import { toast } from "@/hooks/use-toast";
 import "./login-form.css";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -133,9 +133,6 @@ export function LoginForm() {
           className="social-button google-button"
           onClick={handleGoogleAuth}
         >
-          <div className="google-icon">
-            <FaGoogle />
-          </div>
           <span>
             <span className="google-brand">
               <span className="google-blue">G</span>
@@ -150,10 +147,10 @@ export function LoginForm() {
       </div>
 
       <div className="register-prompt">
+        {t("auth.dontHaveAccount")}{" "}
         <Link href="/register" className="register-link">
           {t("auth.createAccount")}
         </Link>
-        {t("auth.dontHaveAccount")}
       </div>
     </div>
   );

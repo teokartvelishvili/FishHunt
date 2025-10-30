@@ -1,0 +1,234 @@
+.fishing-rules-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(42, 85, 48, 0.05), rgba(236, 152, 67, 0.05));
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fishing-rules-title {
+  text-align: center;
+  color: #2a5530;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.fishing-rules-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+.fishing-rules-section {
+  margin-bottom: 35px;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  border-left: 5px solid #2a5530;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title.allowed {
+  color: #2a5530;
+}
+
+.section-title.nets {
+  color: #ec9843;
+}
+
+.section-title.forbidden {
+  color: #d9534f;
+}
+
+.section-title.info {
+  color: #5bc0de;
+}
+
+.section-title.sources {
+  color: #37241e;
+}
+
+.section-intro {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.rules-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.rules-list li {
+  padding: 12px 0 12px 30px;
+  position: relative;
+  color: #444;
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.rules-list li:last-child {
+  border-bottom: none;
+}
+
+.rules-list li::before {
+  content: "•";
+  position: absolute;
+  left: 10px;
+  color: #ec9843;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.rules-list li strong {
+  color: #2a5530;
+  font-weight: 600;
+}
+
+.section-note {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(236, 152, 67, 0.1);
+  border-left: 4px solid #ec9843;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.fishing-rules-sources {
+  margin-top: 40px;
+  padding: 25px;
+  background: rgba(42, 85, 48, 0.05);
+  border-radius: 12px;
+  border: 2px solid rgba(236, 152, 67, 0.3);
+}
+
+.sources-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.sources-list li {
+  padding: 10px 0;
+}
+
+.sources-list a {
+  color: #2a5530;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+  display: inline-block;
+  border-bottom: 2px solid transparent;
+}
+
+.sources-list a:hover {
+  color: #ec9843;
+  border-bottom: 2px solid #ec9843;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .fishing-rules-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .fishing-rules-title {
+    font-size: 26px;
+  }
+
+  .fishing-rules-subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .fishing-rules-section {
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .section-intro {
+    font-size: 15px;
+  }
+
+  .rules-list li {
+    font-size: 14px;
+    padding: 10px 0 10px 25px;
+  }
+
+  .section-note {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .sources-list a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fishing-rules-container {
+    margin: 15px;
+    padding: 15px;
+  }
+
+  .fishing-rules-title {
+    font-size: 22px;
+  }
+
+  .fishing-rules-subtitle {
+    font-size: 13px;
+  }
+
+  .fishing-rules-section {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .section-intro {
+    font-size: 14px;
+  }
+
+  .rules-list li {
+    font-size: 13px;
+    padding: 8px 0 8px 20px;
+  }
+
+  .rules-list li::before {
+    font-size: 16px;
+  }
+
+  .section-note {
+    font-size: 12px;
+  }
+
+  .sources-list a {
+    font-size: 13px;
+  }
+}

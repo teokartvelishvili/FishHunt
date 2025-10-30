@@ -2,37 +2,150 @@
 import Link from "next/link";
 import Pattern from "../../../components/pattern/pattern";
 import React from "react";
+import "./about.css";
+import { useLanguage } from "../../../hooks/LanguageContext";
 
 export default function AboutPage() {
+  const { t } = useLanguage();
+
   return (
-    <div className="container"> {/* დავამატეთ relative და overflow-hidden */}
+    <div className="about-container">
       <Pattern imageSize={250}/>
-      <div className="relative z-10"> {/* დავამატეთ wrapper კონტენტისთვის */}
-        <h1 className="text-2xl font-bold mb-6">ჩვენს შესახებ</h1>
+      <div className="about-content">
+        <h1 className="about-title">{t("aboutUs.title")}</h1>
+        <p className="about-slogan">{t("aboutUs.slogan")}</p>
         
-        <div className="mb-8">
-          <p>
-            Fish Hunt არის პლატფორმა, რომელიც აერთიანებს თევზაობის მოყვარულებს და 
-            პროფესიონალ მეთევზეებს. ჩვენი მიზანია შევქმნათ ერთიანი სივრცე, სადაც 
-            შეძლებთ იპოვოთ ყველაფერი, რაც თევზაობისთვის გჭირდებათ.
+        <div className="about-section">
+          <h2 className="section-subtitle">{t("aboutUs.sectionTitle")}</h2>
+          <p className="section-text">
+            {t("aboutUs.sectionText")}
           </p>
         </div>
 
-        <div className="mb-8 p-4 border rounded">
-          <h2 className="text-xl font-bold mb-4">გახდით გამყიდველი</h2>
-          <p className="mb-4">
-            გსურთ გახსნათ საკუთარი ონლაინ მაღაზია? გახდით ჩვენი პლატფორმის ნაწილი 
-            და გაყიდეთ თქვენი პროდუქცია მარტივად.
-          </p>
-          <Link 
-            href="/sellers-register" 
-            className="inline-block px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            დარეგისტრირდით როგორც გამყიდველი
-          </Link>
+        <div className="about-section">
+          <h2 className="section-subtitle">{t("aboutUs.whatWeOfferTitle")}</h2>
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">🎯</div>
+              <h3>{t("aboutUs.wideRange")}</h3>
+              <p>{t("aboutUs.wideRangeDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">💬</div>
+              <h3>{t("aboutUs.communityForum")}</h3>
+              <p>{t("aboutUs.communityForumDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">📍</div>
+              <h3>{t("aboutUs.locationMap")}</h3>
+              <p>{t("aboutUs.locationMapDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🌤️</div>
+              <h3>{t("aboutUs.weatherForecast")}</h3>
+              <p>{t("aboutUs.weatherForecastDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🐟</div>
+              <h3>{t("aboutUs.riversLakes")}</h3>
+              <p>{t("aboutUs.riversLakesDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🦆</div>
+              <h3>{t("aboutUs.huntingSeasons")}</h3>
+              <p>{t("aboutUs.huntingSeasonsDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">📚</div>
+              <h3>{t("aboutUs.officialLaws")}</h3>
+              <p>{t("aboutUs.officialLawsDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🎯</div>
+              <h3>{t("aboutUs.weaponExam")}</h3>
+              <p>{t("aboutUs.weaponExamDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🚙</div>
+              <h3>{t("aboutUs.offroadRental")}</h3>
+              <p>{t("aboutUs.offroadRentalDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🎥</div>
+              <h3>{t("aboutUs.videoPortal")}</h3>
+              <p>{t("aboutUs.videoPortalDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🚚</div>
+              <h3>{t("aboutUs.fastDelivery")}</h3>
+              <p>{t("aboutUs.fastDeliveryDesc")}</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">✅</div>
+              <h3>{t("aboutUs.securePayment")}</h3>
+              <p>{t("aboutUs.securePaymentDesc")}</p>
+            </div>
+          </div>
         </div>
 
-    
+        <div className="about-section highlight-section">
+          <h2 className="section-subtitle">{t("aboutUs.expandBusinessTitle")}</h2>
+          <p className="section-text">
+            {t("aboutUs.expandBusinessText")}
+          </p>
+          
+          <div className="benefits-list">
+            <h3 className="benefits-title">{t("aboutUs.benefitsTitle")}</h3>
+            <ul>
+              <li>✅ <strong>{t("aboutUs.freeRegistration")}</strong> - {t("aboutUs.freeRegistrationDesc")}</li>
+              <li>✅ <strong>{t("aboutUs.wideAudience")}</strong> - {t("aboutUs.wideAudienceDesc")}</li>
+              <li>✅ <strong>{t("aboutUs.easyManagement")}</strong> - {t("aboutUs.easyManagementDesc")}</li>
+              <li>✅ <strong>{t("aboutUs.orderManagement")}</strong> - {t("aboutUs.orderManagementDesc")}</li>
+              <li>✅ <strong>{t("aboutUs.analyticsStats")}</strong> - {t("aboutUs.analyticsStatsDesc")}</li>
+              <li>✅ <strong>{t("aboutUs.support247")}</strong> - {t("aboutUs.support247Desc")}</li>
+              <li>✅ <strong>{t("aboutUs.promotionOptions")}</strong> - {t("aboutUs.promotionOptionsDesc")}</li>
+            </ul>
+          </div>
+
+          <div className="cta-section">
+            <p className="cta-text">
+              {t("aboutUs.ctaText")}
+            </p>
+            <Link href="/become-seller" className="cta-button">
+              {t("aboutUs.ctaButton")}
+            </Link>
+          </div>
+        </div>
+
+        <div className="about-section">
+          <h2 className="section-subtitle">{t("aboutUs.missionTitle")}</h2>
+          <p className="section-text">
+            {t("aboutUs.missionText")}
+          </p>
+        </div>
+
+        <div className="about-section">
+          <h2 className="section-subtitle">{t("aboutUs.contactTitle")}</h2>
+          <p className="section-text">
+            {t("aboutUs.contactText")}
+          </p>
+          <div className="contact-info">
+            <p>{t("aboutUs.email")}</p>
+            <p>{t("aboutUs.phone")}</p>
+            <p>{t("aboutUs.address")}</p>
+          </div>
+        </div>
       </div>
     </div>
   );

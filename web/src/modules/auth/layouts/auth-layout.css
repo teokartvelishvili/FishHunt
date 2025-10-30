@@ -1,21 +1,13 @@
-.logo{
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: none;
-  color: black;
-}
 .auth-layout {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   background-color: white;
-  padding: 40px;
-  padding-bottom: 80px;
+  padding: 20px;
+  padding-top: 30px;
+  padding-bottom: 40px;
 }
 .auth-bg {
   position: absolute;
@@ -30,13 +22,13 @@
 }
 
 .auth-layout-inner {
-  margin-top: 80px;
+  margin-top: 50px;
   width: 100%;
-  max-width: 24rem;
+  max-width: 28rem;
   position: relative;
   z-index: 1; 
   background: rgba(253, 245, 236, 0.52); 
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 30px;
   box-shadow: 0 4px 10px #2a5530b5;
   backdrop-filter: blur(10px); /* ბლურ ეფექტი */
@@ -49,23 +41,26 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.5rem; /* space-y-2 */
+  gap: 0.3rem; /* space-y-2 */
+  margin-bottom: 1rem;
 }
 
 .auth-layout-title {
-  font-size: 1.25rem; /* text-2xl */
+  font-size: 1.15rem; /* text-2xl */
   font-weight: 600; /* font-semibold */
   letter-spacing: 0.025em; /* tracking-tight */
   color: #2A5530;
+  margin: 0;
 }
 
 .auth-layout-subtitle {
-  font-size: 0.875rem; /* text-sm */
+  font-size: 0.82rem; /* text-sm */
   color: #2a5530b2;
+  margin: 0;
 }
 
 .auth-layout-children {
-  margin-top: 2rem; /* mt-8 */
+  margin-top: 1rem; /* mt-8 */
 }
 
 

@@ -53,6 +53,7 @@ export default function Footer() {
             <li><Link href="/return-policy">{t('footer.returnPolicy')}</Link></li>
             <li><Link href="/shipping-info">{t('footer.shippingInfo')}</Link></li>
             <li><Link href="/faq">{t('footer.faq')}</Link></li>
+            <li><Link href="/become-seller">{t('footer.becomeSeller')}</Link></li>
           </ul>
         </div>
 

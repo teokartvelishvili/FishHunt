@@ -1,7 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import "./huntingPageMain.css";
-import mapImage from "../../../assets/map.png";
 import AnserAnser from "../../../assets/birds/AnserAnser.jpg";
 import MarecaStrepera from "../../../assets/birds/MarecaStrepera.png";
 import AnasCrecca from "../../../assets/birds/Anas crecca.png";
@@ -22,6 +23,8 @@ import ColumbaOenas from "../../../assets/birds/Columba oenas.jpeg";
 import StreptopeliaDecaocto from "../../../assets/birds/Streptopelia decaocto.png";
 import Crex from "../../../assets/birds/Crex crex.png";
 import LymnocryptesMinimus from "../../../assets/birds/Lymnocryptes minimus.jpeg";
+import { useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
 
 const category1 = [
   { name: "Anser anser", geo: "რუხი ბატი (Anser anser)", limit: 5, image: AnserAnser },
@@ -86,7 +89,11 @@ const getFourthSaturdayOfAugust = (year: number) => {
   return date;
 };
 
-const HuntingPageMain = () => {
+function HuntingPageMain() {
+  const [showCategory1, setShowCategory1] = useState(false);
+  const [showCategory2, setShowCategory2] = useState(false);
+  const [showCategory3, setShowCategory3] = useState(false);
+
   const currentYear = new Date().getFullYear();
   const seasonStartWaterfowl = new Date(currentYear, 10, 1);
   const seasonEndWaterfowl = new Date(currentYear + 1, 2, 1);
@@ -129,48 +136,103 @@ const HuntingPageMain = () => {
       
       <h3 className="hunting-main-list-title">ნადირობისათვის დაშვებული ფრინველები:</h3>
 
-      <h4 className="hunting-main-list-category">წყალმცურავი ფრინველები </h4>
-      <p className="hunting-main-list-category-p"> (საქართველოს ტერიტორიაზე, გარდა ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების ტერიტორიებისა) </p>
-      <h3 className="status">{statusWaterfowl}</h3>
-      <p className="status"> (01.11 – 01.03) </p>
-      <ul className="hunting-main-list">
-        {category1.map((bird, index) => (
-          <li key={index} className="bird-item">
-            <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-            {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
-          </li>
-        ))}
-      </ul>
+      {/* Category 1 - Waterfowl */}
+      <div className="section-container">
+        <h3 className="status">{statusWaterfowl}</h3>
+        <p className="status">(01.11 – 01.03)</p>
+        
+        <div 
+          className="section-header"
+          onClick={() => setShowCategory1(!showCategory1)}
+        >
+          <div>
+            <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
+              🦆 წყალმცურავი ფრინველები
+            </h4>
+            <p className="hunting-main-list-category-p" style={{margin: '5px 0', fontSize: '0.9em', textAlign: 'left'}}>
+              (საქართველოს ტერიტორიაზე, გარდა ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების ტერიტორიებისა)
+            </p>
+          </div>
+          <FaChevronDown 
+            className={`section-arrow ${showCategory1 ? 'open' : ''}`}
+          />
+        </div>
+        
+        <div className={`section-content ${showCategory1 ? 'open' : ''}`}>
+          <ul className="hunting-main-list">
+            {category1.map((bird, index) => (
+              <li key={index} className="bird-item">
+                <Image src={bird.image} alt={bird.geo} width={100} height={100} />
+                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-      <h4 className="hunting-main-list-category">წყალმცურავი ფრინველები - სპეციალური ზონები </h4>
-      <p className="hunting-main-list-category-p">(მხოლოდ ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების  ტერიტორიებზე)</p>
-      <h3 className="status">{statusLimitedWaterfowl}</h3>
-        <p className="status" >(10.09 – 31.12)</p>
-      <ul className="hunting-main-list">
+      {/* Category 2 - Limited Zones Waterfowl */}
+      <div className="section-container">
+        <h3 className="status">{statusLimitedWaterfowl}</h3>
+        <p className="status">(10.09 – 31.12)</p>
+        
+        <div 
+          className="section-header"
+          onClick={() => setShowCategory2(!showCategory2)}
+        >
+          <div>
+            <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
+              🦆 წყალმცურავი ფრინველები - სპეციალური ზონები
+            </h4>
+            <p className="hunting-main-list-category-p" style={{margin: '5px 0', fontSize: '0.9em', textAlign: 'left'}}>
+              (მხოლოდ ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების ტერიტორიებზე)
+            </p>
+          </div>
+          <FaChevronDown 
+            className={`section-arrow ${showCategory2 ? 'open' : ''}`}
+          />
+        </div>
+        
+        <div className={`section-content ${showCategory2 ? 'open' : ''}`}>
+          <ul className="hunting-main-list">
+            {category2.map((bird, index) => (
+              <li key={index} className="bird-item">
+                <Image src={bird.image} alt={bird.geo} width={100} height={100} />
+                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-        {category2.map((bird, index) => (
-          <li key={index} className="bird-item">
-            <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-            {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
-          </li>
-        ))}
-      </ul>
-
-      <h4 className="hunting-main-list-category">სხვა ფრინველები</h4>
-      <h3 className="status">{statusOthers}</h3>
-      <p className="status"> (აგვისტოს მეოთხე შაბათიდან – 15 თებერვლამდე)</p>
-      <ul className="hunting-main-list">
-        {category3.map((bird, index) => (
-          <li key={index} className="bird-item">
-            <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-            {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
-          </li>
-        ))}
-      </ul>
-
-      <div className="hunting-main-map">
-        <h5 className="hunting-main-map-title">იპოვე რუკაზე სანადირო ლოკაციები საქართველოში</h5>
-        <Image src={mapImage} alt="Hunting Map" className="hunting-main-map-image" width={600} height={400} />
+      {/* Category 3 - Other Birds */}
+      <div className="section-container">
+        <h3 className="status">{statusOthers}</h3>
+        <p className="status">(აგვისტოს მეოთხე შაბათიდან – 15 თებერვლამდე)</p>
+        
+        <div 
+          className="section-header"
+          onClick={() => setShowCategory3(!showCategory3)}
+        >
+          <div>
+            <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
+              🐦 სხვა ფრინველები
+            </h4>
+          </div>
+          <FaChevronDown 
+            className={`section-arrow ${showCategory3 ? 'open' : ''}`}
+          />
+        </div>
+        
+        <div className={`section-content ${showCategory3 ? 'open' : ''}`}>
+          <ul className="hunting-main-list">
+            {category3.map((bird, index) => (
+              <li key={index} className="bird-item">
+                <Image src={bird.image} alt={bird.geo} width={100} height={100} />
+                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <Link href="/hunting-permits" className="hunting-main-permit-link">

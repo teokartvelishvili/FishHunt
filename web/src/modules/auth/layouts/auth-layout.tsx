@@ -1,5 +1,4 @@
 import "./auth-layout.css";
-import Link from "next/link";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -12,10 +11,6 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
     <div className="auth-layout">
   {/* ფონის გრადიენტი */}
   <div className="auth-bg"></div>
-  <Link href="/" className="logo">
-    FishHunt
-  </Link>
-
 
       <div className="auth-layout-inner">
         <div className="auth-layout-header">

@@ -1,12 +1,12 @@
 import "./fishingPage.css";
-import GoogleMap from "./GoogleMap";
+// import GoogleMap from "./GoogleMap";
 import RiverList from "./RiverList";
 
 const FishingPage = () => {
   return (
     <div>
       <RiverList/>
-      <GoogleMap />
+      {/* <GoogleMap /> */}
     </div>
   );
 };

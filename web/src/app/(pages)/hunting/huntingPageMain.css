@@ -201,4 +201,67 @@
   list-style-type: none; */
 }
 
+/* Section Container Styles for Collapsible Categories */
+.section-container {
+  margin-bottom: 40px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 20px 30px;
+  background: linear-gradient(135deg, rgba(42, 85, 48, 0.15), rgba(236, 152, 67, 0.15));
+  border-radius: 12px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 900px;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(236, 152, 67, 0.3);
+}
+
+.section-header > div {
+  flex: 1;
+  text-align: left;
+}
+
+.section-header span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a5530;
+}
+
+.section-header:hover {
+  background: linear-gradient(135deg, rgba(42, 85, 48, 0.25), rgba(236, 152, 67, 0.25));
+  border-color: rgba(236, 152, 67, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.section-arrow {
+  font-size: 24px;
+  color: #2a5530;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.section-arrow.open {
+  transform: rotate(180deg);
+}
+
+.section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.section-content.open {
+  max-height: 50000px;
+}
 

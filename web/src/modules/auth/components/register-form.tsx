@@ -1,6 +1,7 @@
 "use client";
 
-import { FaCheckCircle, FaFacebook, FaGoogle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
+// import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../validation";
@@ -11,10 +12,12 @@ import { toast } from "@/hooks/use-toast";
 import "./register-form.css";
 import type * as z from "zod";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const { mutate: register, isPending } = useRegister();
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -86,8 +89,8 @@ export function RegisterForm() {
       onSuccess: () => {
         setIsSuccess(true);
         toast({
-          title: "რეგისტრაცია წარმატებულია",
-          description: "თქვენი ანგარიში წარმატებით შეიქმნა",
+          title: t("auth.registrationSuccessful"),
+          description: t("auth.accountCreatedSuccessfully"),
           variant: "default",
         });
 
@@ -102,7 +105,7 @@ export function RegisterForm() {
         setRegisterError(errorMessage);
 
         toast({
-          title: "რეგისტრაცია ვერ მოხერხდა",
+          title: t("auth.registrationFailed"),
           description: errorMessage,
           variant: "destructive",
         });
@@ -118,9 +121,9 @@ export function RegisterForm() {
     return (
       <div className="form-container">
         <div className="success-message">
-          <h3>რეგისტრაცია წარმატებულია!</h3>
-          <p>თქვენი ანგარიში წარმატებით შეიქმნა.</p>
-          <p>გადამისამართება ავტორიზაციის გვერდზე...</p>
+          <h3>{t("auth.registrationSuccessful")}</h3>
+          <p>{t("auth.accountCreatedSuccessfully")}</p>
+          <p>{t("auth.redirectingToLogin")}</p>
         </div>
       </div>
     );
@@ -130,18 +133,18 @@ export function RegisterForm() {
     <div className="form-container">
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">{t("auth.name")}</label>
           <input
             id="name"
             type="text"
-            placeholder="სახელი"
+            placeholder={t("auth.name")}
             {...registerField("name")}
           />
           {errors.name && <p className="error-text">{errors.name.message}</p>}
         </div>
 
         <div className="input-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t("auth.email")}</label>
           <div className="email-container">
             <input
               id="email"
@@ -163,35 +166,35 @@ export function RegisterForm() {
               type="button"
               onClick={sendVerificationEmail}
             >
-              Send Verification Code
+              {t("auth.sendVerificationCode")}
             </button>
           )}
         </div>
 
         {emailSent && !isVerified && (
           <div className="input-group">
-            <label htmlFor="verification-code">Verification Code</label>
+            <label htmlFor="verification-code">{t("auth.verificationCode")}</label>
             <input
               id="verification-code"
               type="text"
-              placeholder="Enter Code"
+              placeholder={t("auth.enterCode")}
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
             />
             <button className="verifBtn" type="button" onClick={verifyCode}>
-              Verify
+              {t("auth.verify")}
             </button>
             {errorMessage && <p className="error-text">{errorMessage}</p>}
             {errorMessage && (
               <button className="verifBtn" type="button" onClick={resendCode}>
-                Resend Code
+                {t("auth.resendCode")}
               </button>
             )}
           </div>
         )}
 
         <div className="input-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">{t("auth.password")}</label>
           <input
             id="password"
             type="password"
@@ -214,33 +217,32 @@ export function RegisterForm() {
           className="submit-btn"
           disabled={isPending || !isVerified}
         >
-          {isPending ? "Creating account..." : "Create account"}
+          {isPending ? t("auth.creatingAccount") : t("auth.createAccount")}
         </button>
 
         <div className="divider">
-          <span>Or continue with</span>
+          <span>{t("auth.orContinueWith")}</span>
         </div>
 
         <div className="social-buttons">
-          <button type="button" className="social-button">
+          {/* <button type="button" className="social-button">
             <FaFacebook className="icon" />
             Facebook
-          </button>
+          </button> */}
           <button
             type="button"
             onClick={handleGoogleAuth}
             className="social-btn"
             disabled={isPending}
           >
-            <FaGoogle className="icon" />
             Google
           </button>
         </div>
 
         <div className="text-center">
-          Already have an account?{" "}
+          {t("auth.alreadyHaveAccount")}{" "}
           <Link href="/login" className="login-link">
-            Sign in
+            {t("auth.login")}
           </Link>
         </div>
       </form>

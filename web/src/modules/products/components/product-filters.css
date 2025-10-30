@@ -241,7 +241,7 @@
 /* Filters Panel - Expandable */
 .filters-panel {
   max-height: 0;
-  overflow: hidden;
+  overflow: visible;
   transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   opacity: 0;
 }
@@ -260,6 +260,9 @@
   padding: 20px;
   margin-top: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  overflow: visible;
+  position: relative;
+  z-index: 50;
 }
 
 /* Filter Groups */
@@ -267,6 +270,8 @@
   margin-bottom: 15px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: visible;
+  position: relative;
 }
 
 .filter-group:last-child {
@@ -1166,6 +1171,7 @@
   grid-template-columns: 1.5fr 2fr 1.2fr;
   gap: 10px;
   align-items: end;
+  overflow: visible;
 }
 
 .brand-section,
@@ -1173,11 +1179,16 @@
 .discount-section {
   display: flex;
   flex-direction: column;
+  overflow: visible;
+  position: relative;
+  z-index: 100;
 }
 
 /* Brand Dropdown - Same height as sort */
 .brand-dropdown {
   position: relative;
+  overflow: visible;
+  z-index: 100;
 }
 
 .dropdown-toggle {
@@ -1218,7 +1229,7 @@
   border: 1px solid rgba(236, 152, 67, 0.3);
   border-radius: 6px;
   padding: 8px;
-  z-index: 1000;
+  z-index: 99999;
   max-height: 250px;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
