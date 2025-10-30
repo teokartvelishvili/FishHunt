@@ -4,6 +4,7 @@ import Pattern from "../../../components/pattern/pattern";
 import React from "react";
 import "./about.css";
 import { useLanguage } from "../../../hooks/LanguageContext";
+import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export default function AboutPage() {
   const { t } = useLanguage();
@@ -144,6 +145,42 @@ export default function AboutPage() {
             <p>{t("aboutUs.email")}</p>
             <p>{t("aboutUs.phone")}</p>
             <p>{t("aboutUs.address")}</p>
+          </div>
+        </div>
+
+        <div className="about-section social-media-section">
+          <h2 className="section-subtitle">{t("aboutUs.socialMediaTitle")}</h2>
+          <p className="section-text">
+            {t("aboutUs.socialMediaText")}
+          </p>
+          <div className="social-media-links">
+            <a 
+              href="https://www.facebook.com/profile.php?id=100064347472899" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link facebook"
+            >
+              <FaFacebook className="social-icon" />
+              <span>{t("aboutUs.facebook")}</span>
+            </a>
+            <a 
+              href="https://www.instagram.com/fishhunt.ge?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link instagram"
+            >
+              <FaInstagram className="social-icon" />
+              <span>{t("aboutUs.instagram")}</span>
+            </a>
+            <a 
+              href="https://www.youtube.com/@FishHuntge" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link youtube"
+            >
+              <FaYoutube className="social-icon" />
+              <span>{t("aboutUs.youtube")}</span>
+            </a>
           </div>
         </div>
       </div>

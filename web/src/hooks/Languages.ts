@@ -818,6 +818,11 @@ export const TRANSLATIONS: Translations = {
       email: "📧 Email: info@fishhunt.ge",
       phone: "📱 ტელეფონი: +995 551 999 055",
       address: "📍 მისამართი: თბილისი, საქართველო",
+      socialMediaTitle: "გამოგვყევი სოციალურ ქსელებში",
+      socialMediaText: "იყავი კავშირზე ჩვენთან და მიიღე უახლესი ინფორმაცია ჩვენი სიახლეების შესახებ",
+      facebook: "Facebook",
+      instagram: "Instagram",
+      youtube: "YouTube",
     },
     // Become Seller Page
     becomeSeller: {
@@ -1636,6 +1641,11 @@ export const TRANSLATIONS: Translations = {
       email: "📧 Email: info@fishhunt.ge",
       phone: "📱 Phone: +995 551 999 055",
       address: "📍 Address: Tbilisi, Georgia",
+      socialMediaTitle: "Follow Us on Social Media",
+      socialMediaText: "Stay connected with us and get the latest updates about our news",
+      facebook: "Facebook",
+      instagram: "Instagram",
+      youtube: "YouTube",
     },
     // Become Seller Page
     becomeSeller: {
@@ -2099,6 +2109,11 @@ export const TRANSLATIONS: Translations = {
       email: "📧 Email: info@fishhunt.ge",
       phone: "📱 Телефон: +995 551 999 055",
       address: "📍 Адрес: Тбилиси, Грузия",
+      socialMediaTitle: "Следите за нами в социальных сетях",
+      socialMediaText: "Оставайтесь на связи с нами и получайте последние новости о наших обновлениях",
+      facebook: "Facebook",
+      instagram: "Instagram",
+      youtube: "YouTube",
     },
     // Become Seller Page
     becomeSeller: {
