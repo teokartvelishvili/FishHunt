@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from "react";
 import "./hunting-permits.css";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const questions = [
     {
@@ -119,6 +120,7 @@ const questions = [
   ];
   
   const Exam = () => {
+    const { t } = useLanguage();
     const [examStarted, setExamStarted] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
@@ -161,9 +163,9 @@ const questions = [
     if (!examStarted) {
       return (
         <div className="exam-container start-screen">
-          <h2>სავარჯიშო გამოცდის დასაწყებად დააჭირეთ ღილაკს</h2>
-          <p>(ეს მხოლოდ სავარჯიშოა)</p>
-          <button onClick={startExam} className="start-button">გამოცდის დაწყება</button>
+          <h2>{t("huntingPermits.practiceExamTitle")}</h2>
+          <p>{t("huntingPermits.practiceNote")}</p>
+          <button onClick={startExam} className="start-button">{t("huntingPermits.startExam")}</button>
         </div>
       );
     }
@@ -173,12 +175,12 @@ const questions = [
         <div className="exam-container result">
           {incorrectCount > 2 ? (
             <>
-              <h2>თქვენ ვერ ჩააბარეთ გამოცდა</h2>
-              <button onClick={startExam} className="retry-button">კიდევ სცადე</button>
+              <h2>{t("huntingPermits.failed")}</h2>
+              <button onClick={startExam} className="retry-button">{t("huntingPermits.tryAgain")}</button>
             </>
           ) : (
             <>
-              <h2>გილოცავთ! თქვენ წარმატებით ჩააბარეთ გამოცდა 🎉</h2>
+              <h2>{t("huntingPermits.passed")}</h2>
               {/* <a href="https://your-real-exam-link.com" target="_blank" rel="noopener noreferrer" className="real-exam-button">
                 ნამდვილ გამოცდაზე გადასვლა
               </a> */}
@@ -191,7 +193,7 @@ const questions = [
     return (
       <div className="exam-container">
         <div className="timer">
-          დრო: {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
+          {t("huntingPermits.timeLabel")} {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
         </div>
         <h3>{questions[currentQuestion].question}</h3>
         <div className="options">
@@ -216,10 +218,10 @@ const questions = [
         </div>
         <div className="navigation">
           <button onClick={() => setCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
-            უკან
+            {t("huntingPermits.back")}
           </button>
           <button onClick={() => setCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === questions.length - 1}>
-            შემდეგი 
+            {t("huntingPermits.next")}
           </button>
         </div>
       </div>

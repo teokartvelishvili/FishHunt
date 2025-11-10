@@ -25,6 +25,7 @@ import Crex from "../../../assets/birds/Crex crex.png";
 import LymnocryptesMinimus from "../../../assets/birds/Lymnocryptes minimus.jpeg";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const category1 = [
   { name: "Anser anser", geo: "რუხი ბატი (Anser anser)", limit: 5, image: AnserAnser },
@@ -68,16 +69,16 @@ const category3 = [
 
 
 
-const getSeasonStatus = (startDate: Date, endDate: Date): string => {
+const getSeasonStatus = (startDate: Date, endDate: Date, t: (key: string) => string): string => {
   const now = new Date();
   if (now >= startDate && now <= endDate) {
     const remainingDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return `ნადირობის სეზონი გახსნილია - დარჩენილია ${remainingDays} დღე`;
+    return `${t("hunting.seasonOpen")} ${remainingDays} ${t("hunting.days")}`;
   } else if (now < startDate) {
     const daysUntilOpen = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return `ნადირობის სეზონი დახურულია - გაიხსნება ${daysUntilOpen} დღეში`;
+    return `${t("hunting.seasonWillOpen")} ${daysUntilOpen} ${t("hunting.daysIn")}`;
   } else {
-    return "ნადირობის სეზონი დახურულია";
+    return t("hunting.seasonClosed");
   }
 };
 
@@ -90,6 +91,7 @@ const getFourthSaturdayOfAugust = (year: number) => {
 };
 
 function HuntingPageMain() {
+  const { t } = useLanguage();
   const [showCategory1, setShowCategory1] = useState(false);
   const [showCategory2, setShowCategory2] = useState(false);
   const [showCategory3, setShowCategory3] = useState(false);
@@ -102,9 +104,9 @@ function HuntingPageMain() {
   const seasonStartLimitedWaterfowl = new Date(currentYear, 8, 10);
   const seasonEndLimitedWaterfowl = new Date(currentYear, 11, 31);
 
-  const statusWaterfowl = getSeasonStatus(seasonStartWaterfowl, seasonEndWaterfowl);
-  const statusOthers = getSeasonStatus(seasonStartOthers, seasonEndOthers);
-  const statusLimitedWaterfowl = getSeasonStatus(seasonStartLimitedWaterfowl, seasonEndLimitedWaterfowl);
+  const statusWaterfowl = getSeasonStatus(seasonStartWaterfowl, seasonEndWaterfowl, t);
+  const statusOthers = getSeasonStatus(seasonStartOthers, seasonEndOthers, t);
+  const statusLimitedWaterfowl = getSeasonStatus(seasonStartLimitedWaterfowl, seasonEndLimitedWaterfowl, t);
   
   const seasonDates = [
     { start: seasonStartWaterfowl, end: seasonEndWaterfowl },
@@ -116,17 +118,17 @@ function HuntingPageMain() {
   const openSeasons = seasonDates.filter(({ start, end }) => now >= start && now <= end);
   const upcomingSeasons = seasonDates.filter(({ start }) => now < start);
 
-  let mainStatus = "ნადირობის სეზონი დახურულია";
+  let mainStatus = t("hunting.seasonClosed");
   if (openSeasons.length > 0) {
     const closingDates = openSeasons.map(({ end }) => end);
     const earliestClosing = new Date(Math.min(...closingDates.map(date => date.getTime())));
     const daysUntilClose = Math.ceil((earliestClosing.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    mainStatus = `ნადირობის სეზონი გახსნილია - დაიხურება ${daysUntilClose} დღეში`;
+    mainStatus = `${t("hunting.seasonWillClose")} ${daysUntilClose} ${t("hunting.daysIn")}`;
   } else if (upcomingSeasons.length > 0) {
     const openingDates = upcomingSeasons.map(({ start }) => start);
     const earliestOpening = new Date(Math.min(...openingDates.map(date => date.getTime())));
     const daysUntilOpen = Math.ceil((earliestOpening.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    mainStatus = `ნადირობის სეზონი დახურულია - გაიხსნება ${daysUntilOpen} დღეში`;
+    mainStatus = `${t("hunting.seasonWillOpen")} ${daysUntilOpen} ${t("hunting.daysIn")}`;
   }
 
   return (
@@ -134,7 +136,7 @@ function HuntingPageMain() {
       {/* <h1 className="hunting-main-title1">ნადირობა</h1> */}
       <h1 className="hunting-main-title">{mainStatus}</h1>
       
-      <h3 className="hunting-main-list-title">ნადირობისათვის დაშვებული ფრინველები:</h3>
+      <h3 className="hunting-main-list-title">{t("hunting.allowedBirdsTitle")}</h3>
 
       {/* Category 1 - Waterfowl */}
       <div className="section-container">
@@ -147,10 +149,10 @@ function HuntingPageMain() {
         >
           <div>
             <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
-              🦆 წყალმცურავი ფრინველები
+              {t("hunting.waterfowlCategory")}
             </h4>
             <p className="hunting-main-list-category-p" style={{margin: '5px 0', fontSize: '0.9em', textAlign: 'left'}}>
-              (საქართველოს ტერიტორიაზე, გარდა ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების ტერიტორიებისა)
+              {t("hunting.waterfowlZone")}
             </p>
           </div>
           <FaChevronDown 
@@ -163,7 +165,7 @@ function HuntingPageMain() {
             {category1.map((bird, index) => (
               <li key={index} className="bird-item">
                 <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+                {bird.geo} ({t("hunting.dailyLimit")} {bird.limit} {t("hunting.pieces")})
               </li>
             ))}
           </ul>
@@ -181,10 +183,10 @@ function HuntingPageMain() {
         >
           <div>
             <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
-              🦆 წყალმცურავი ფრინველები - სპეციალური ზონები
+              {t("hunting.specialZonesCategory")}
             </h4>
             <p className="hunting-main-list-category-p" style={{margin: '5px 0', fontSize: '0.9em', textAlign: 'left'}}>
-              (მხოლოდ ახალქალაქის, ნინოწმინდის, წალკის და დმანისის მუნიციპალიტეტების ტერიტორიებზე)
+              {t("hunting.specialZonesInfo")}
             </p>
           </div>
           <FaChevronDown 
@@ -197,7 +199,7 @@ function HuntingPageMain() {
             {category2.map((bird, index) => (
               <li key={index} className="bird-item">
                 <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+                {bird.geo} ({t("hunting.dailyLimit")} {bird.limit} {t("hunting.pieces")})
               </li>
             ))}
           </ul>
@@ -215,7 +217,7 @@ function HuntingPageMain() {
         >
           <div>
             <h4 className="hunting-main-list-category" style={{margin: 0, textAlign: 'left'}}>
-              🐦 სხვა ფრინველები
+              {t("hunting.otherBirdsCategory")}
             </h4>
           </div>
           <FaChevronDown 
@@ -228,7 +230,7 @@ function HuntingPageMain() {
             {category3.map((bird, index) => (
               <li key={index} className="bird-item">
                 <Image src={bird.image} alt={bird.geo} width={100} height={100} />
-                {bird.geo} (დღიური ლიმიტი: {bird.limit} ცალი)
+                {bird.geo} ({t("hunting.dailyLimit")} {bird.limit} {t("hunting.pieces")})
               </li>
             ))}
           </ul>
@@ -236,59 +238,45 @@ function HuntingPageMain() {
       </div>
 
       <Link href="/hunting-permits" className="hunting-main-permit-link">
-        იარაღის ნებართვა და საგამოცდო ბილეთები
+        {t("hunting.permitLink")}
       </Link>
 
 
       <div className="hunting-rules-container">
-      <h2 className="hunting-rules-title">ნადირობა აკრძალულია:</h2>
+      <h2 className="hunting-rules-title">{t("hunting.prohibitedTitle")}</h2>
       <ul className="hunting-rules-list">
         <li>
-          საქართველოს კანონმდებლობით დადგენილ ადგილებში, მათ შორის:
+          {t("hunting.prohibitedPlaces")}
           <ul>
-            <li>საქართველოს ქალაქების ადმინისტრაციულ საზღვრებში</li>
-            <li>სახელმწიფო ნაკრძალებში, ეროვნულ პარკებში</li>
-            <li>
-              ნუგზარ ზაზანაშვილის სახელობის სამუხის მრავალმხრივი გამოყენების
-              ტერიტორიაზე
-            </li>
-            <li>
-              სახელმწიფო ნაკრძალების გარშემო 500-მეტრიან და ეროვნული პარკების
-              გარშემო 250-მეტრიან ზონებში
-            </li>
-            <li>
-              სამინისტროს სსიპ ველური ბუნების ეროვნული სააგენტოს მართვაში/სარგებლობაში
-              არსებული საშენი მეურნეობების ფართობებზე
-            </li>
+            <li>{t("hunting.citiesAdmin")}</li>
+            <li>{t("hunting.stateReserves")}</li>
+            <li>{t("hunting.samukhi")}</li>
+            <li>{t("hunting.reserveZones")}</li>
+            <li>{t("hunting.breedingFarms")}</li>
           </ul>
         </li>
         <li>
-          ყველა სხვა იარაღით, რომელიც მითითებული არ არის „იარაღის შესახებ”
-          საქართველოს კანონის მე-7 მუხლში, მათ შორის:
+          {t("hunting.prohibitedWeapons")}
           <ul>
-            <li>სანადირო გლუვლულიანი ცეცხლსასროლი იარაღი (თოფი)</li>
-            <li>სანადირო ხრახნილლულიანი ცეცხლსასროლი იარაღი (კარაბინი ან შაშხანა)</li>
-            <li>სანადირო კომბინირებული ცეცხლსასროლი იარაღი</li>
-            <li>სანადირო ცივი და ცივი სასროლი იარაღი</li>
-            <li>სანადირო პნევმატური იარაღი</li>
+            <li>{t("hunting.smoothboreGun")}</li>
+            <li>{t("hunting.rifledGun")}</li>
+            <li>{t("hunting.combinedGun")}</li>
+            <li>{t("hunting.coldWeapon")}</li>
+            <li>{t("hunting.pneumaticGun")}</li>
           </ul>
         </li>
       </ul>
-      <h3 className="hunting-rules-subtitle">ნადირობა შესაძლებელია:</h3>
+      <h3 className="hunting-rules-subtitle">{t("hunting.allowedTitle")}</h3>
       <p className="hunting-rules-text">
-        გარემოდან გადამფრენი ფრინველების ამოღებაზე დაწესებული მოსაკრებლის (10 ლარი)
-        გადახდის დამადასტურებელი ქვითრის გაცემის წლის აგვისტოს მეოთხე შაბათიდან
-        მომდევნო წლის პირველ მარტამდე.
+        {t("hunting.feeInfo")}
       </p>
-      <h3 className="hunting-rules-subtitle">მოსაკრებლის გადახდა:</h3>
+      <h3 className="hunting-rules-subtitle">{t("hunting.feePaymentTitle")}</h3>
       <p className="hunting-rules-text">
-        საქართველოს ნებისმიერ ბანკში, მიმღების ბანკი: სახელმწიფო ხაზინა,
-        ბანკის კოდი: 220 101 222, ანგარიშის ნომერი: №200122900,
-        ბიუჯეტის შემოსულობების სახის განმსაზღვრელი სახაზინო კოდი: 3033.
+        {t("hunting.feePaymentInfo")}
       </p>
       <p className="hunting-rules-text">
-        მაგალითად, თბილისისათვის კოდი: <strong>3 0077 3033</strong>, ახმეტისათვის:
-        <strong> 3 0054 3033</strong>, რუსთავისათვის: <strong>3 0006 3033</strong>.
+        {t("hunting.feeExample")} <strong>{t("hunting.tbilisiCode")}</strong>, {t("hunting.forAkhmeti")}
+        <strong> {t("hunting.akhmetiCode")}</strong>, {t("hunting.forRustavi")} <strong>{t("hunting.rustaviCode")}</strong>.
       </p>
     </div>
 

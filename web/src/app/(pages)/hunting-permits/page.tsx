@@ -1,23 +1,27 @@
+"use client";
+
 import HuntingPermits from "./hunting-permits";
 import "./hunting-permits.css";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 
 
 
 const HuntingPermitsPage = () => {
+  const { t } = useLanguage();
 
   return (
     <div>
 <HuntingPermits/>
 <div className="real-exam"> <ul>
-  გამოცდაზე გასასვლელად მოქალაქემ უნდა წარადგინოს:
+  {t("huntingPermits.examRequirementsTitle")}
 
-<li>►ცნობა ფსიქიკური მდგომარეობის შესახებ;</li>
-<li>► პირადობის დამადასტურებელი დოკუმენტი;</li>
-<li>► საფასურის (20 ლარი) გადახდის დამადასტურებელი ქვითარი;</li>
+<li>{t("huntingPermits.mentalHealthCert")}</li>
+<li>{t("huntingPermits.idDocument")}</li>
+<li>{t("huntingPermits.paymentReceipt")}</li>
 
 </ul>
-მომსახურებით სარგებლობისთვის მიმართეთ სსიპ საქართველოს შინაგან საქმეთა სამინისტროს მომსახურების სააგენტოს. ცხელი ხაზი: +995 (032) 2 41 91 91
+{t("huntingPermits.contactInfo")}
    {/* <a href="https://my.sa.gov.ge/auth" target="_blank" rel="noopener noreferrer" className="real-exam-button">
           ნამდვილ გამოცდაზე გადასვლა
         </a> */}
