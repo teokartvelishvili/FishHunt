@@ -14,7 +14,7 @@ import shopping from "../../assets/icons/shopping.png";
 // import video from "../../assets/icons/video.png";
 import forum from "../../assets/icons/forum.png";
 import about from "../../assets/icons/about.png";
-import jeep from "../../assets/icons/jeep.png";
+// import jeep from "../../assets/icons/jeep.png";
 
 interface MenuItem {
   href: string;
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
     { href: "/camping", text: t("navbar.camping"), icon: camping },
     { href: "/shop", text: t("navigation.shop"), icon: shopping },
     { href: "/forum", text: t("navigation.forum"), icon: forum },
-    { href: "/rentcar", text: t("navbar.rentCar"), icon: jeep },
+    // { href: "/rentcar", text: t("navbar.rentCar"), icon: jeep },
     // { href: "/video", text: t("navbar.video"), icon: video },
     { href: "/about", text: t("navigation.about"), icon: about },
   ];
