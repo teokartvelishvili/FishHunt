@@ -11,7 +11,7 @@ import fishing from "../../assets/icons/fishing.png";
 import hunting from "../../assets/icons/hunting.png";
 import camping from "../../assets/icons/camping.png";
 import shopping from "../../assets/icons/shopping.png";
-import video from "../../assets/icons/video.png";
+// import video from "../../assets/icons/video.png";
 import forum from "../../assets/icons/forum.png";
 import about from "../../assets/icons/about.png";
 import jeep from "../../assets/icons/jeep.png";
@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
     { href: "/shop", text: t("navigation.shop"), icon: shopping },
     { href: "/forum", text: t("navigation.forum"), icon: forum },
     { href: "/rentcar", text: t("navbar.rentCar"), icon: jeep },
-    { href: "/video", text: t("navbar.video"), icon: video },
+    // { href: "/video", text: t("navbar.video"), icon: video },
     { href: "/about", text: t("navigation.about"), icon: about },
   ];
 
