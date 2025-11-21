@@ -26,10 +26,8 @@ export default function AdminOrderPage() {
   }
 
   return (
-    <div className="orderPage">
-      <div className="max-w-7xl mx-auto py-10">
-        <AdminOrderDetails order={order} />
-      </div>
+    <div className="Container">
+      <AdminOrderDetails order={order} />
     </div>
   );
 }
