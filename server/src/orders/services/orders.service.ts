@@ -12,6 +12,8 @@ import { Product } from '../../products/schemas/product.schema';
 import { ProductsService } from '@/products/services/products.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
+import { EmailService } from '@/email/services/email.services';
+import { User } from '@/users/schemas/user.schema';
 
 @Injectable()
 export class OrdersService {
@@ -20,8 +22,10 @@ export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(User.name) private userModel: Model<User>,
     private productsService: ProductsService,
     @InjectConnection() private connection: Connection,
+    private emailService: EmailService,
   ) {}
 
   async create(
@@ -589,6 +593,84 @@ export class OrdersService {
       }
 
       await product.save({ session });
+    }
+  }
+
+  async sendSuccessNotification(orderId: string) {
+    try {
+      const order = await this.orderModel
+        .findById(orderId)
+        .populate('user', 'name email')
+        .populate('orderItems.product', 'name user');
+
+      if (!order) {
+        throw new NotFoundException('Order not found');
+      }
+
+      const user = order.user as any;
+
+      // Get unique seller emails
+      const sellerEmails = [
+        ...new Set(
+          order.orderItems
+            .map((item) => {
+              const product = item.product as any;
+              return product?.user?.email;
+            })
+            .filter(Boolean),
+        ),
+      ];
+
+      const orderData = {
+        orderId: order._id.toString(),
+        customerEmail: user.email,
+        customerName: user.name,
+        totalAmount: order.totalPrice,
+        items: order.orderItems.map((item) => ({
+          name: (item.product as any).name,
+          quantity: item.qty,
+          price: item.price,
+          sellerEmail: (item.product as any).user?.email,
+        })),
+        shippingAddress: order.shippingDetails,
+        sellerEmails,
+      };
+
+      await this.emailService.sendOrderSuccessEmail(orderData);
+
+      return { message: 'Success notification sent' };
+    } catch (error) {
+      this.logger.error('Failed to send success notification:', error);
+      throw error;
+    }
+  }
+
+  async sendFailureNotification(orderId: string) {
+    try {
+      const order = await this.orderModel
+        .findById(orderId)
+        .populate('user', 'name email');
+
+      if (!order) {
+        throw new NotFoundException('Order not found');
+      }
+
+      const user = order.user as any;
+
+      const orderData = {
+        orderId: order._id.toString(),
+        customerEmail: user.email,
+        customerName: user.name,
+        totalAmount: order.totalPrice,
+        reason: 'Payment failed or was cancelled',
+      };
+
+      await this.emailService.sendOrderFailedEmail(orderData);
+
+      return { message: 'Failure notification sent' };
+    } catch (error) {
+      this.logger.error('Failed to send failure notification:', error);
+      throw error;
     }
   }
 }

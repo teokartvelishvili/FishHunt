@@ -3,17 +3,29 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { apiClient } from "@/lib/api-client";
 import "./page.css";
 
 function CheckoutFailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     const orderIdParam = searchParams.get("orderId");
     setOrderId(orderIdParam);
-  }, [searchParams]);
+
+    // Send failure email notification
+    if (orderIdParam && !emailSent) {
+      apiClient
+        .post(`/orders/${orderIdParam}/notify-failure`)
+        .then(() => setEmailSent(true))
+        .catch((err) =>
+          console.error("Failed to send email notification:", err)
+        );
+    }
+  }, [searchParams, emailSent]);
 
   const handleRetryPayment = () => {
     if (orderId) {

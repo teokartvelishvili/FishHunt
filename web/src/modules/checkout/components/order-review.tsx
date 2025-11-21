@@ -1,7 +1,7 @@
 "use client";
 
 import { useCheckout } from "../context/checkout-context";
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
@@ -18,6 +18,7 @@ export function OrderReview() {
   const router = useRouter();
   const { toast } = useToast();
   const { language } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -28,6 +29,9 @@ export function OrderReview() {
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const handlePlaceOrder = async () => {
+    if (isLoading) return; // Prevent double submission
+
+    setIsLoading(true);
     try {
       const orderItems = items.map((item) => ({
         name: item.name,
@@ -60,6 +64,7 @@ export function OrderReview() {
         description: "Please try again.",
         variant: "destructive",
       });
+      setIsLoading(false); // Re-enable on error
     }
   };
 
@@ -156,8 +161,35 @@ export function OrderReview() {
             <button
               className="place-order-button w-full"
               onClick={handlePlaceOrder}
+              disabled={isLoading}
             >
-              Place Order
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-1 w-1 inline mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  გთხოვთ დაელოდოთ...
+                </>
+              ) : (
+                "Place Order"
+              )}
             </button>
           </div>
         </div>

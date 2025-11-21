@@ -7,6 +7,7 @@ import { useCheckout } from "../context/checkout-context";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 // import { FaPaypal } from "react-icons/fa";
 // import { CreditCard } from "lucide-react";
 import "./payment-form.css";
@@ -21,6 +22,7 @@ export function PaymentForm() {
   const { setPaymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,6 +32,9 @@ export function PaymentForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (isLoading) return; // Prevent double submission
+
+    setIsLoading(true);
     try {
       const response = await apiClient.post("/cart/payment", {
         paymentMethod: values.paymentMethod,
@@ -45,6 +50,7 @@ export function PaymentForm() {
         description: "Please try again.",
         variant: "destructive",
       });
+      setIsLoading(false); // Re-enable on error
     }
   }
 
@@ -133,7 +139,7 @@ export function PaymentForm() {
                           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                         <span className="text-sm font-medium">
-                         ბარათით გადახდა
+                          ბარათით გადახდა
                         </span>
                       </div>
                     </label>
@@ -143,8 +149,38 @@ export function PaymentForm() {
             </div>
           </div>
 
-          <button type="submit" className="w-full btn btn-primary">
-            Continue to Review
+          <button
+            type="submit"
+            className="w-full btn btn-primary"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin h-1 w-1 inline mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                გთხოვთ დაელოდოთ...
+              </>
+            ) : (
+              "Continue to Review"
+            )}
           </button>
         </form>
       </div>

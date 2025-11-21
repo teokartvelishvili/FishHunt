@@ -54,11 +54,14 @@ main {
   }
 }
 
-.container {
+.Container {
   padding: 20px;
   max-width: 100%;
+  min-height: calc(100vh - 116px); /* viewport height minus header height */
   overflow-x: hidden;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {

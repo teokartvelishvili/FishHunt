@@ -3,16 +3,28 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { apiClient } from "@/lib/api-client";
 import "./page.css";
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     const orderIdParam = searchParams.get("orderId");
     setOrderId(orderIdParam);
-  }, [searchParams]);
+
+    // Send success email notification
+    if (orderIdParam && !emailSent) {
+      apiClient
+        .post(`/orders/${orderIdParam}/notify-success`)
+        .then(() => setEmailSent(true))
+        .catch((err) =>
+          console.error("Failed to send email notification:", err)
+        );
+    }
+  }, [searchParams, emailSent]);
 
   return (
     <div className="checkout-success-container">
