@@ -7,6 +7,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 export default function ForgotPasswordPage() {
   const { t } = useLanguage();
   
+  
   return (
     <AuthLayout
       title={t("auth.forgotPasswordTitle")}
