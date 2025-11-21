@@ -166,7 +166,7 @@ export function OrderReview() {
               {isLoading ? (
                 <>
                   <svg
-                    className="animate-spin h-1 w-1 inline mr-2"
+                    className="animate-spin h-4 w-4 inline mr-2"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ export function OrderReview() {
                       cy="12"
                       r="10"
                       stroke="currentColor"
-                      strokeWidth="4"
+                      strokeWidth="2"
                     ></circle>
                     <path
                       className="opacity-75"

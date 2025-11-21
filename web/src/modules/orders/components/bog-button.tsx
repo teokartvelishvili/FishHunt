@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { getAccessToken } from "@/lib/auth";
 
 interface BOGButtonProps {
@@ -7,7 +7,12 @@ interface BOGButtonProps {
 }
 
 export function BOGButton({ orderId, amount }: BOGButtonProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleBOGPayment = async () => {
+    if (isLoading) return; // Prevent double clicks
+
+    setIsLoading(true);
     try {
       const token = getAccessToken();
 
@@ -61,7 +66,8 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
       );
 
       if (!response.ok) {
-        throw new Error("Payment initiation failed");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "გადახდის ინიცირება ვერ მოხერხდა");
       }
 
       const result = await response.json();
@@ -69,18 +75,27 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
       if (result.redirect_url) {
         window.location.href = result.redirect_url;
       } else {
-        throw new Error("No redirect URL provided");
+        throw new Error("გადახდის ბმული არ მოიძებნა");
       }
     } catch (error) {
       console.error("BOG Payment Error:", error);
-      alert("Payment failed. Please try again.");
+
+      // Show user-friendly error message
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "გადახდა ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით.";
+
+      alert(errorMessage);
+      setIsLoading(false); // Re-enable button on error
     }
   };
 
   return (
     <button
       onClick={handleBOGPayment}
-      className="w-full hover:bg-gray-50 text-black font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-start space-x-3 border border-gray-200 hover:border-gray-300"
+      disabled={isLoading}
+      className="w-full hover:bg-gray-50 text-black font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-start space-x-3 border border-gray-200 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
       style={{
         fontFamily: '"ALK Life", serif',
         fontSize: "18px",
@@ -108,8 +123,12 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
       >
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
       </svg>
-      <span className="font-medium"> გადახდა</span>
-      <span className="font-bold ml-auto"> {amount.toFixed(2)} ₾</span>
+      <span className="font-medium">
+        {isLoading ? "გთხოვთ დაელოდოთ..." : "გადახდა"}
+      </span>
+      {!isLoading && (
+        <span className="font-bold ml-auto"> {amount.toFixed(2)} ₾</span>
+      )}
     </button>
   );
 }

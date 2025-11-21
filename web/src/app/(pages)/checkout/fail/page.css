@@ -1,6 +1,6 @@
 /* Checkout Fail Page - Hunting/Fishing Theme */
 .checkout-fail-container {
-  min-height: 100vh;
+  min-height: calc(100vh - 166px);
   display: flex;
   align-items: center;
   justify-content: center;

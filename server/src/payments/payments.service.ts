@@ -87,8 +87,14 @@ export class PaymentsService {
         },
       ];
 
+      const callbackUrl =
+        this.configService.get('BOG_CALLBACK_URL') ||
+        'https://fishhunt-f587.onrender.com/v1/payments/bog/callback';
+
+      console.log('BOG Callback URL:', callbackUrl);
+
       const payload = {
-        callback_url: this.configService.get('BOG_CALLBACK_URL'),
+        callback_url: callbackUrl,
         capture: 'automatic',
         external_order_id: externalOrderId,
         purchase_units: {

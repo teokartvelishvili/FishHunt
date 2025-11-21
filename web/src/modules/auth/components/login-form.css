@@ -6,6 +6,14 @@
   color: #2a5530;
 }
 
+.login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2a5530;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
