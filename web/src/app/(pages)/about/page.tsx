@@ -6,6 +6,7 @@ import "./about.css";
 import { useLanguage } from "../../../hooks/LanguageContext";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
+
 export default function AboutPage() {
   const { t } = useLanguage();
 
