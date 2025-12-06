@@ -19,27 +19,27 @@ export const metadata: Metadata = {
   ),
   title: {
     default: "FishHunt - თევზაობა, მონადირება, კემპინგი | ონლაინ მაღაზია",
-    template: "%s | FishHunt"
+    template: "%s | FishHunt",
   },
   description:
     "FishHunt - საქართველოს უმსხვილესი ონლაინ მაღაზია თევზაობის, მონადირების და კემპინგის ინვენტარისთვის. ფართო ასორტიმენტი, საუკეთესო ფასები, სწრაფი მიწოდება.",
   keywords: [
-    'თევზაობა', 
-    'მონადირება', 
-    'კემპინგი', 
-    'თევზაობის აღჭურვილობა', 
-    'მონადირების ინვენტარი',
-    'კემპინგის აქსესუარები',
-    'ონლაინ მაღაზია',
-    'საქართველო',
-    'fishing',
-    'hunting',
-    'camping',
-    'FishHunt'
+    "თევზაობა",
+    "მონადირება",
+    "კემპინგი",
+    "თევზაობის აღჭურვილობა",
+    "მონადირების ინვენტარი",
+    "კემპინგის აქსესუარები",
+    "ონლაინ მაღაზია",
+    "საქართველო",
+    "fishing",
+    "hunting",
+    "camping",
+    "FishHunt",
   ],
-  authors: [{ name: 'FishHunt' }],
-  creator: 'FishHunt',
-  publisher: 'FishHunt',
+  authors: [{ name: "FishHunt" }],
+  creator: "FishHunt",
+  publisher: "FishHunt",
   formatDetection: {
     email: false,
     address: false,
@@ -65,7 +65,8 @@ export const metadata: Metadata = {
     url: "https://fishhunt.ge/",
     siteName: "FishHunt - თევზაობა, მონადირება, კემპინგი",
     title: "FishHunt - თევზაობა, მონადირება, კემპინგი",
-    description: "საქართველოს უმსხვილესი ონლაინ მაღაზია თევზაობის, მონადირების და კემპინგის ინვენტარისთვის",
+    description:
+      "საქართველოს უმსხვილესი ონლაინ მაღაზია თევზაობის, მონადირების და კემპინგის ინვენტარისთვის",
     images: [
       {
         url: "/og-image.jpg",
@@ -88,13 +89,13 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   verification: {
-    google: 'your-google-verification-code', // შეცვალეთ Google Search Console-დან მიღებული კოდით
+    google: "your-google-verification-code", // შეცვალეთ Google Search Console-დან მიღებული კოდით
   },
 };
 
@@ -116,7 +117,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
-        style={{ fontFamily: 'var(--font-satoshi)' }}
+        style={{ fontFamily: "var(--font-satoshi)" }}
       >
         <Providers>
           <AuthProvider>

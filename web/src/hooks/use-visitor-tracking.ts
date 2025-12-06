@@ -12,7 +12,9 @@ const getSessionId = (): string => {
 
   let sessionId = sessionStorage.getItem("visitor_session_id");
   if (!sessionId) {
-    sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    sessionId = `session_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 15)}`;
     sessionStorage.setItem("visitor_session_id", sessionId);
   }
   return sessionId;

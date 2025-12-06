@@ -1,5 +1,6 @@
 import { axios } from "@/lib/axios";
 import { User } from "@/types";
+import { storeTokens, clearTokens } from "@/lib/auth";
 
 interface LoginCredentials {
   email: string;
@@ -30,8 +31,7 @@ export const authApi = {
     const response = await axios.post<AuthResponse>("/auth/login", credentials);
 
     if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+      storeTokens(response.data.accessToken, response.data.refreshToken);
     }
 
     return response.data;
@@ -54,9 +54,7 @@ export const authApi = {
     
     // Store tokens and return the response
     if (response.data.accessToken && response.data.refreshToken) {
-      const { accessToken, refreshToken } = response.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      storeTokens(response.data.accessToken, response.data.refreshToken);
     }
     
     return response.data;
@@ -71,8 +69,7 @@ export const authApi = {
     try {
       await axios.post("/auth/logout");
     } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      clearTokens();
     }
   },
 };
