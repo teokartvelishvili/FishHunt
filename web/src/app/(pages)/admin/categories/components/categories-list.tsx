@@ -61,7 +61,6 @@ export const CategoriesList = () => {
     isLoading,
     refetch,
     isError,
-    
   } = useCategories(showInactive);
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();

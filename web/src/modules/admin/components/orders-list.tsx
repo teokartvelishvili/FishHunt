@@ -62,22 +62,30 @@ export function OrdersList() {
                   <td>{order.user.email}</td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td>${order.totalPrice.toFixed(2)}</td>
-                 <td>
-                    {order.orderItems.some(item => 
-                      item.product && String(item.product.deliveryType) === "SELLER"
+                  <td>
+                    {order.orderItems.some(
+                      (item) =>
+                        item.product &&
+                        String(item.product.deliveryType) === "SELLER"
                     ) ? (
                       <span className="delivery-badge seller">
                         <Store className="icon" />
                         აგზავნის ავტორი
                         {order.orderItems
-                          .filter(item => item.product && String(item.product.deliveryType) === "SELLER")
-                          .map(item => (
-                            item.product?.minDeliveryDays && item.product?.maxDeliveryDays ? (
+                          .filter(
+                            (item) =>
+                              item.product &&
+                              String(item.product.deliveryType) === "SELLER"
+                          )
+                          .map((item) =>
+                            item.product?.minDeliveryDays &&
+                            item.product?.maxDeliveryDays ? (
                               <span className="delivery-time" key={item._id}>
-                                {item.product.minDeliveryDays}-{item.product.maxDeliveryDays} დღე
+                                {item.product.minDeliveryDays}-
+                                {item.product.maxDeliveryDays} დღე
                               </span>
                             ) : null
-                          ))}
+                          )}
                       </span>
                     ) : (
                       <span className="delivery-badge fishhunt">
@@ -85,7 +93,7 @@ export function OrdersList() {
                         FishHunt-ის კურიერი
                       </span>
                     )}
-                  </td> 
+                  </td>
                   <td>
                     {order.status === "cancelled" ? (
                       <span className="status-badge cancelled">

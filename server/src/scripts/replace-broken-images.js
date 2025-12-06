@@ -21,6 +21,7 @@ const BROKEN_IMAGE_IDS = [
   'ugpjd7hbxpk7l7rghejw',
   'axeobhuv6lqykrqfi8dv',
   'qtdleofi37qirrd5nxnv',
+  'tmvp6nvzaswr7br1o3kb',
 ];
 
 async function run() {

@@ -24,12 +24,16 @@ export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLanguage = LANGUAGES.find((lang) => lang.code === language) || LANGUAGES[0];
+  const currentLanguage =
+    LANGUAGES.find((lang) => lang.code === language) || LANGUAGES[0];
 
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -86,7 +90,9 @@ export default function LanguageSelector() {
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
-              className={`language-option ${language === lang.code ? "active" : ""}`}
+              className={`language-option ${
+                language === lang.code ? "active" : ""
+              }`}
               onClick={() => handleLanguageChange(lang.code as LanguageCode)}
             >
               <Image
