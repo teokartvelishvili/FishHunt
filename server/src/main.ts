@@ -36,6 +36,7 @@ async function bootstrap() {
         'fishhunt-muj5s8qno-teokartvelishvilis-projects.vercel.app',
         'https://fishhunt-git-main-aberoshvilis-projects.vercel.app',
         'https://fishhunt-aberoshvilis-projects.vercel.app',
+        'https://fishhunt-i2lkx.ondigitalocean.app',
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',
@@ -52,7 +53,8 @@ async function bootstrap() {
         !origin ||
         allowedOrigins.indexOf(origin) !== -1 ||
         origin.match(/localhost/) ||
-        origin.includes('.vercel.app') // Allow all Vercel domains
+        origin.includes('.vercel.app') || // Allow all Vercel domains
+        origin.includes('.ondigitalocean.app') // Allow all Digital Ocean domains
       ) {
         callback(null, true);
       } else {
