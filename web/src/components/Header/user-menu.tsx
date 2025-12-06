@@ -18,6 +18,7 @@ import {
   ImageIcon,
   LogOut,
   X,
+  BarChart3,
 } from "lucide-react";
 
 export default function UserMenu() {
@@ -216,6 +217,14 @@ export default function UserMenu() {
               >
                 <ImageIcon size={20} />
                 {t("navigation.banners")}
+              </Link>
+              <Link
+                href="/admin/analytics"
+                className="user-menu-dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
+                <BarChart3 size={20} />
+                {t("navigation.analytics")}
               </Link>
             </>
           )}

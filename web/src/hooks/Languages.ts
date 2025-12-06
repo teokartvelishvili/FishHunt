@@ -27,6 +27,7 @@ export const TRANSLATIONS: Translations = {
       users: "მომხმარებლები",
       categories: "კატეგორიები",
       banners: "ბანერები",
+      analytics: "ანალიტიკა",
       logout: "გასვლა",
     },
     // Navbar
@@ -1081,6 +1082,7 @@ export const TRANSLATIONS: Translations = {
       users: "Users",
       categories: "Categories",
       banners: "Banners",
+      analytics: "Analytics",
       logout: "Logout",
     },
     // Navbar

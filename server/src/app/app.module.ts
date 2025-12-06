@@ -25,6 +25,7 @@ import {
 import { CategoriesModule } from '@/categories/categories.module';
 import { ForumsModule } from '@/forums/forums.module';
 import { YoutubeModule } from '@/youtube/youtube.module';
+import { AnalyticsModule } from '@/analytics/analytics.module';
 
 
 @Module({
@@ -51,6 +52,7 @@ import { YoutubeModule } from '@/youtube/youtube.module';
     SharedServicesModule,
     BannerModule,
     YoutubeModule,
+    AnalyticsModule,
 
     // SeedsModule,
     AwsS3Module,
