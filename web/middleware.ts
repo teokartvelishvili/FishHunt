@@ -1,18 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicPaths = [
-  "/",
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/forum",
- 
-];
-
-const protectedPaths = ["/profile", "/orders", "/admin"];
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -27,24 +15,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hasTokens =
-    request.cookies.get("access_token") || request.cookies.get("refresh_token");
-  const isAuthenticated = Boolean(hasTokens);
-
-  // Allow access to public paths regardless of authentication
-  if (publicPaths.includes(pathname)) {
-    return NextResponse.next();
-  }
-
-  // Check if the path is protected and user is not authenticated
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  if (isProtectedPath && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
+  // Authentication is handled by ProtectedRoute component on client side
+  // since we use localStorage for token storage (not cookies)
   return NextResponse.next();
 }
 
