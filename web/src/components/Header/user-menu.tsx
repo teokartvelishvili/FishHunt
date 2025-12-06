@@ -33,7 +33,6 @@ export default function UserMenu() {
     } else {
       setProfileImage("/avatar.jpg");
     }
-    console.log("User profile updated:", user);
   }, [user]);
 
   // Lock body scroll when mobile menu is open
@@ -125,7 +124,9 @@ export default function UserMenu() {
         <span className="user-menu-username user-menu-desktop-name">
           {user.name || "მომხმარებელი"}
         </span>
-        <span className="user-menu-username user-menu-mobile-name">{firstName}</span>
+        <span className="user-menu-username user-menu-mobile-name">
+          {firstName}
+        </span>
       </button>
       {isOpen && (
         <div
@@ -144,7 +145,9 @@ export default function UserMenu() {
           >
             <X size={24} />
           </button>
-          <div className="user-menu-dropdown-label">{t("userMenu.myAccount")}</div>
+          <div className="user-menu-dropdown-label">
+            {t("userMenu.myAccount")}
+          </div>
           <hr className="user-menu-divider" />
           <Link
             href="/profile"

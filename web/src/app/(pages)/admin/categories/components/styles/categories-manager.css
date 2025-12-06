@@ -3,10 +3,10 @@
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  background-color: #161616;
+  background-color: #0a0a0a;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid #333333;
+  border: 1px solid #2a5530;
   padding: 28px;
   position: relative;
   box-sizing: border-box;
@@ -19,7 +19,7 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: #f48c06;
+  background: linear-gradient(90deg, #2a5530, #1a3e1f);
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
   border-radius: 12px 12px 0 0;
@@ -44,16 +44,16 @@
   font-size: 2rem;
   font-weight: 500;
   margin-bottom: 24px;
-  color: #ffffff;
+  color: #e6cd9f;
   font-family: "FiraGO", sans-serif;
   letter-spacing: 1px;
-  border-bottom: 2px solid #333333;
+  border-bottom: 2px solid #2a5530;
   padding-bottom: 0.75rem;
 }
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #2a5530;
   margin-bottom: 24px;
 }
 
@@ -71,7 +71,7 @@
 }
 
 .tab-button.active {
-  color: #f48c06;
+  color: #e6cd9f;
   font-weight: bold;
 }
 
@@ -82,12 +82,12 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #f48c06;
+  background-color: #2a5530;
 }
 
 .tab-button:hover {
-  color: #f48c06;
-  background-color: #222222;
+  color: #e6cd9f;
+  background-color: #1a1a1a;
 }
 
 .tab-content {

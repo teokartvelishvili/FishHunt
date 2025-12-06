@@ -92,7 +92,8 @@ const ForumPost = ({
 
   // Function to redirect to login with return URL
   const redirectToLogin = () => {
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/forum';
+    const currentPath =
+      typeof window !== "undefined" ? window.location.pathname : "/forum";
     router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
   };
 
@@ -104,44 +105,30 @@ const ForumPost = ({
 
   // Check if this post is linked via URL (postId query parameter)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
-      const postId = urlParams.get('postId');
-      
+      const postId = urlParams.get("postId");
+
       if (postId === id) {
         // Auto-expand comments for this post
         setShowComments(true);
-        
+
         // Scroll to this post after a short delay
         setTimeout(() => {
           const element = document.getElementById(`forum-post-${id}`);
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
             // Add a highlight effect
-            element.style.backgroundColor = 'rgba(165, 189, 165, 0.2)';
+            element.style.backgroundColor = "rgba(165, 189, 165, 0.2)";
             setTimeout(() => {
-              element.style.transition = 'background-color 2s ease';
-              element.style.backgroundColor = '';
+              element.style.transition = "background-color 2s ease";
+              element.style.backgroundColor = "";
             }, 1000);
           }
         }, 100);
       }
     }
   }, [id]);
-
-  useEffect(() => {
-    if (currentUser) {
-      console.log("Post permissions:", {
-        postId: id,
-        currentUserId: currentUser._id,
-        authorId: author._id,
-        currentUserRole: currentUser.role,
-        isAdmin,
-        isPostAuthor,
-        canModifyPost,
-      });
-    }
-  }, [currentUser, author._id, id, isAdmin, isPostAuthor, canModifyPost]);
 
   const replyMutation = useMutation({
     mutationFn: async ({
@@ -155,14 +142,18 @@ const ForumPost = ({
         throw new Error("You must be logged in to reply");
       }
 
-      const response = await apiClient.post(`/forums/add-reply`, {
-        commentId,
-        content,
-      }, {
-        headers: {
-          "forum-id": id,
+      const response = await apiClient.post(
+        `/forums/add-reply`,
+        {
+          commentId,
+          content,
         },
-      });
+        {
+          headers: {
+            "forum-id": id,
+          },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -193,11 +184,14 @@ const ForumPost = ({
         throw new Error("Operation canceled by user");
       }
 
-      const response = await apiClient.delete(`/forums/delete-comment/${commentId}`, {
-        headers: {
-          "forum-id": id,
-        },
-      });
+      const response = await apiClient.delete(
+        `/forums/delete-comment/${commentId}`,
+        {
+          headers: {
+            "forum-id": id,
+          },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -232,13 +226,17 @@ const ForumPost = ({
         forumId: id,
       });
 
-      const response = await apiClient.put(`/forums/edit-comment/${commentId}`, {
-        content,
-      }, {
-        headers: {
-          "forum-id": id,
+      const response = await apiClient.put(
+        `/forums/edit-comment/${commentId}`,
+        {
+          content,
         },
-      });
+        {
+          headers: {
+            "forum-id": id,
+          },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -266,13 +264,17 @@ const ForumPost = ({
         throw new Error("You must be logged in to comment");
       }
 
-      const response = await apiClient.post(`/forums/add-comment`, {
-        content: newComment,
-      }, {
-        headers: {
-          "forum-id": id,
+      const response = await apiClient.post(
+        `/forums/add-comment`,
+        {
+          content: newComment,
         },
-      });
+        {
+          headers: {
+            "forum-id": id,
+          },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -300,11 +302,15 @@ const ForumPost = ({
       }
 
       const endpoint = userLiked ? "remove-like" : "add-like";
-      const response = await apiClient.post(`/forums/${endpoint}`, {}, {
-        headers: {
-          "forum-id": id,
-        },
-      });
+      const response = await apiClient.post(
+        `/forums/${endpoint}`,
+        {},
+        {
+          headers: {
+            "forum-id": id,
+          },
+        }
+      );
 
       return response.data;
     },
@@ -339,10 +345,12 @@ const ForumPost = ({
 
   const handleShare = async () => {
     const postUrl = `${window.location.origin}/forum?postId=${id}`;
-    const shareText = `${text.substring(0, 100)}${text.length > 100 ? '...' : ''}`;
-    
+    const shareText = `${text.substring(0, 100)}${
+      text.length > 100 ? "..." : ""
+    }`;
+
     const shareData = {
-      title: 'Forum Post',
+      title: "Forum Post",
       text: shareText,
       url: postUrl,
     };
@@ -353,24 +361,27 @@ const ForumPost = ({
         await navigator.share(shareData);
         toast({
           title: t("forum.shareSuccess") || "Success",
-          description: t("forum.shareSuccessDesc") || "Post shared successfully",
+          description:
+            t("forum.shareSuccessDesc") || "Post shared successfully",
         });
       } else {
         // Fallback: Copy to clipboard
         await navigator.clipboard.writeText(postUrl);
         toast({
           title: t("forum.linkCopied") || "Link Copied",
-          description: t("forum.linkCopiedDesc") || "Post link copied to clipboard",
+          description:
+            t("forum.linkCopiedDesc") || "Post link copied to clipboard",
         });
       }
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
       // Fallback: Try to copy to clipboard
       try {
         await navigator.clipboard.writeText(postUrl);
         toast({
           title: t("forum.linkCopied") || "Link Copied",
-          description: t("forum.linkCopiedDesc") || "Post link copied to clipboard",
+          description:
+            t("forum.linkCopiedDesc") || "Post link copied to clipboard",
         });
       } catch {
         toast({
@@ -650,7 +661,11 @@ const ForumPost = ({
       >
         <div className="comment-header">
           <Image
-            src={comment.author.profileImage || comment.author.avatar || "/avatar.jpg"}
+            src={
+              comment.author.profileImage ||
+              comment.author.avatar ||
+              "/avatar.jpg"
+            }
             alt={`${comment.author.name || "User"}'s avatar`}
             width={25}
             height={25}
@@ -739,45 +754,46 @@ const ForumPost = ({
 
   // Generate JSON-LD structured data for SEO
   const generateStructuredData = () => {
-    const postUrl = typeof window !== 'undefined' 
-      ? `${window.location.origin}/forum?postId=${id}`
-      : '';
-    
+    const postUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/forum?postId=${id}`
+        : "";
+
     return {
       "@context": "https://schema.org",
       "@type": "DiscussionForumPosting",
-      "headline": text.substring(0, 110),
-      "text": text,
-      "image": image || undefined,
-      "datePublished": time,
-      "author": {
+      headline: text.substring(0, 110),
+      text: text,
+      image: image || undefined,
+      datePublished: time,
+      author: {
         "@type": "Person",
-        "name": author.name,
-        "image": author.profileImage || author.avatar
+        name: author.name,
+        image: author.profileImage || author.avatar,
       },
-      "interactionStatistic": [
+      interactionStatistic: [
         {
           "@type": "InteractionCounter",
-          "interactionType": "https://schema.org/LikeAction",
-          "userInteractionCount": likesCount
+          interactionType: "https://schema.org/LikeAction",
+          userInteractionCount: likesCount,
         },
         {
           "@type": "InteractionCounter",
-          "interactionType": "https://schema.org/CommentAction",
-          "userInteractionCount": comments.length
-        }
+          interactionType: "https://schema.org/CommentAction",
+          userInteractionCount: comments.length,
+        },
       ],
-      "url": postUrl,
-      "mainEntityOfPage": postUrl,
-      "keywords": category.join(', '),
-      "comment": comments.slice(0, 5).map(comment => ({
+      url: postUrl,
+      mainEntityOfPage: postUrl,
+      keywords: category.join(", "),
+      comment: comments.slice(0, 5).map((comment) => ({
         "@type": "Comment",
-        "text": comment.text,
-        "author": {
+        text: comment.text,
+        author: {
           "@type": "Person",
-          "name": comment.author.name
-        }
-      }))
+          name: comment.author.name,
+        },
+      })),
     };
   };
 
@@ -787,212 +803,219 @@ const ForumPost = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateStructuredData())
+          __html: JSON.stringify(generateStructuredData()),
         }}
       />
-      
-      <div className="forum-post" id={`forum-post-${id}`}>
-      {image && (
-        <Image
-          src={image}
-          alt={text ? `Forum post: ${text.substring(0, 50)}` : "Forum post image"}
-          width={150}
-          height={100}
-          className="forum-post-image"
-        />
-      )}
-      <div className="forum-post-content">
-        <div className="forum-post-author">
-          <Image
-            src={author.profileImage || author.avatar || "/avatar.jpg"}
-            alt={`${author.name || "User"}'s profile picture`}
-            width={30}
-            height={30}
-            className="forum-post-avatar"
-          />
-          <span className="forum-post-author-name">{author.name}</span>
-          <span className="forum-post-time">{time}</span>
-          {isAuthorized && canModifyPost && (
-            <div className="post-actions">
-              <button
-                className="edit-button"
-                onClick={() => {
-                  console.log(
-                    "Edit button clicked, canModifyPost:",
-                    canModifyPost
-                  );
-                  setIsEditingPost(true);
-                }}
-                aria-label={t("forum.edit")}
-              >
-                <Edit2 size={16} className="button-icon" />
-                <span className="button-text">{t("forum.edit")}</span>
-              </button>
-              <button
-                className="delete-button"
-                onClick={() => {
-                  console.log(
-                    "Delete button clicked, canModifyPost:",
-                    canModifyPost
-                  );
-                  deletePostMutation.mutate();
-                }}
-                aria-label={t("forum.delete")}
-              >
-                <Trash2 size={16} className="button-icon" />
-                <span className="button-text">{t("forum.delete")}</span>
-              </button>
-            </div>
-          )}
-        </div>
 
-        {isEditingPost ? (
-          <div className="edit-post-section">
-            <textarea
-              value={editedPostText}
-              onChange={(e) => setEditedPostText(e.target.value)}
-              className="edit-post-input"
+      <div className="forum-post" id={`forum-post-${id}`}>
+        {image && (
+          <Image
+            src={image}
+            alt={
+              text ? `Forum post: ${text.substring(0, 50)}` : "Forum post image"
+            }
+            width={150}
+            height={100}
+            className="forum-post-image"
+          />
+        )}
+        <div className="forum-post-content">
+          <div className="forum-post-author">
+            <Image
+              src={author.profileImage || author.avatar || "/avatar.jpg"}
+              alt={`${author.name || "User"}'s profile picture`}
+              width={30}
+              height={30}
+              className="forum-post-avatar"
             />
-            <div className="tags-input">
-              <select
-                value=""
-                onChange={handleTagChange}
-                disabled={editedPostTags.length >= 3}
-              >
-                <option value="" disabled>
-                  {t("forum.selectCategory")}
-                </option>
-                {validTags.map((tag) => (
-                  <option key={tag} value={tag}>
-                    {translateTag(tag)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="tags-list">
-              {editedPostTags.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                  <button onClick={() => handleRemoveTag(tag)}>×</button>
-                </span>
-              ))}
-            </div>
-            {editedPostImage ? (
-              <div className="current-image">
-                <Image
-                  src={URL.createObjectURL(editedPostImage)}
-                  alt="New post image preview"
-                  width={150}
-                  height={100}
-                />
+            <span className="forum-post-author-name">{author.name}</span>
+            <span className="forum-post-time">{time}</span>
+            {isAuthorized && canModifyPost && (
+              <div className="post-actions">
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    console.log(
+                      "Edit button clicked, canModifyPost:",
+                      canModifyPost
+                    );
+                    setIsEditingPost(true);
+                  }}
+                  aria-label={t("forum.edit")}
+                >
+                  <Edit2 size={16} className="button-icon" />
+                  <span className="button-text">{t("forum.edit")}</span>
+                </button>
+                <button
+                  className="delete-button"
+                  onClick={() => {
+                    console.log(
+                      "Delete button clicked, canModifyPost:",
+                      canModifyPost
+                    );
+                    deletePostMutation.mutate();
+                  }}
+                  aria-label={t("forum.delete")}
+                >
+                  <Trash2 size={16} className="button-icon" />
+                  <span className="button-text">{t("forum.delete")}</span>
+                </button>
               </div>
-            ) : (
-              image && (
+            )}
+          </div>
+
+          {isEditingPost ? (
+            <div className="edit-post-section">
+              <textarea
+                value={editedPostText}
+                onChange={(e) => setEditedPostText(e.target.value)}
+                className="edit-post-input"
+              />
+              <div className="tags-input">
+                <select
+                  value=""
+                  onChange={handleTagChange}
+                  disabled={editedPostTags.length >= 3}
+                >
+                  <option value="" disabled>
+                    {t("forum.selectCategory")}
+                  </option>
+                  {validTags.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {translateTag(tag)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="tags-list">
+                {editedPostTags.map((tag) => (
+                  <span key={tag} className="tag">
+                    {tag}
+                    <button onClick={() => handleRemoveTag(tag)}>×</button>
+                  </span>
+                ))}
+              </div>
+              {editedPostImage ? (
                 <div className="current-image">
                   <Image
-                    src={image}
-                    alt="Current post image"
+                    src={URL.createObjectURL(editedPostImage)}
+                    alt="New post image preview"
                     width={150}
                     height={100}
                   />
                 </div>
-              )
-            )}
-            <input
-              type="file"
-              onChange={handleEditedFileChange}
-              accept="image/*"
-              className="file-input"
-            />
-            {error && <div className="error-message">{error}</div>}
-            <div className="edit-post-buttons">
-              <button onClick={handlePostEdit}>{t("forum.save")}</button>
-              <button
-                onClick={() => {
-                  setIsEditingPost(false);
-                  setEditedPostText(text);
-                  setEditedPostTags(category);
-                  setEditedPostImage(null);
-                }}
+              ) : (
+                image && (
+                  <div className="current-image">
+                    <Image
+                      src={image}
+                      alt="Current post image"
+                      width={150}
+                      height={100}
+                    />
+                  </div>
+                )
+              )}
+              <input
+                type="file"
+                onChange={handleEditedFileChange}
+                accept="image/*"
+                className="file-input"
+              />
+              {error && <div className="error-message">{error}</div>}
+              <div className="edit-post-buttons">
+                <button onClick={handlePostEdit}>{t("forum.save")}</button>
+                <button
+                  onClick={() => {
+                    setIsEditingPost(false);
+                    setEditedPostText(text);
+                    setEditedPostTags(category);
+                    setEditedPostImage(null);
+                  }}
+                >
+                  {t("forum.cancel")}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="forum-post-text">{text}</p>
+          )}
+
+          <div className="forum-post-footer">
+            <div className="forum-post-left-section">
+              <div className="forum-post-categories">
+                {category.map((cat, index) => (
+                  <span key={index} className="forum-post-category">
+                    {translateTag(cat)}
+                  </span>
+                ))}
+              </div>
+              <span
+                className="forum-post-comments"
+                onClick={() => setShowComments(!showComments)}
               >
-                {t("forum.cancel")}
+                💬 {t("forum.comments")} {comments.length}
+              </span>
+              <button
+                className={`forum-post-favorite ${
+                  userLiked ? "favorited" : ""
+                }`}
+                onClick={handleLike}
+                disabled={likeMutation.isPending}
+              >
+                <ThumbsUp
+                  size={16}
+                  className={userLiked ? "liked-icon" : "like-icon"}
+                />
+                {likesCount}
               </button>
             </div>
-          </div>
-        ) : (
-          <p className="forum-post-text">{text}</p>
-        )}
-
-        <div className="forum-post-footer">
-          <div className="forum-post-left-section">
-            <div className="forum-post-categories">
-              {category.map((cat, index) => (
-                <span key={index} className="forum-post-category">
-                  {translateTag(cat)}
-                </span>
-              ))}
-            </div>
-            <span
-              className="forum-post-comments"
-              onClick={() => setShowComments(!showComments)}
-            >
-              💬 {t("forum.comments")} {comments.length}
-            </span>
             <button
-              className={`forum-post-favorite ${userLiked ? "favorited" : ""}`}
-              onClick={handleLike}
-              disabled={likeMutation.isPending}
+              className="forum-post-share"
+              onClick={handleShare}
+              aria-label={t("forum.share") || "Share"}
             >
-              <ThumbsUp size={16} className={userLiked ? "liked-icon" : "like-icon"} />
-              {likesCount}
+              <Share2 size={16} />
+              <span className="share-text">{t("forum.share")}</span>
             </button>
           </div>
-          <button
-            className="forum-post-share"
-            onClick={handleShare}
-            aria-label={t("forum.share") || "Share"}
-          >
-            <Share2 size={16} />
-            <span className="share-text">{t("forum.share")}</span>
-          </button>
-        </div>
 
-        {showComments && (
-          <div className="forum-comments">
-            {comments
-              .filter((comment) => !comment.parentId)
-              .map((comment) => renderComment(comment))}
+          {showComments && (
+            <div className="forum-comments">
+              {comments
+                .filter((comment) => !comment.parentId)
+                .map((comment) => renderComment(comment))}
+            </div>
+          )}
+
+          <div className="main-comment-container">
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onFocus={() => {
+                if (!isAuthorized) {
+                  redirectToLogin();
+                }
+              }}
+              className="main-comment-input"
+              placeholder={t("forum.writeComment")}
+            />
+            <button
+              onClick={() => {
+                if (!isAuthorized) {
+                  redirectToLogin();
+                  return;
+                }
+                commentMutation.mutate();
+              }}
+              disabled={!newComment.trim() || commentMutation.isPending}
+            >
+              {commentMutation.isPending ? t("forum.posting") : t("forum.send")}
+            </button>
           </div>
-        )}
-
-        <div className="main-comment-container">
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            onFocus={() => {
-              if (!isAuthorized) {
-                redirectToLogin();
-              }
-            }}
-            className="main-comment-input"
-            placeholder={t("forum.writeComment")}
-          />
-          <button
-            onClick={() => {
-              if (!isAuthorized) {
-                redirectToLogin();
-                return;
-              }
-              commentMutation.mutate();
-            }}
-            disabled={!newComment.trim() || commentMutation.isPending}
-          >
-            {commentMutation.isPending ? t("forum.posting") : t("forum.send")}
-          </button>
         </div>
       </div>
-    </div>
     </>
   );
 };

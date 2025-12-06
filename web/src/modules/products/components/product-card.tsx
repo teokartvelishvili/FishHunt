@@ -277,14 +277,7 @@ export function ProductCard({
 
   // Check if product has active discount
   const hasActiveDiscount = () => {
-    console.log("Product discount data:", {
-      discountPercentage: product.discountPercentage,
-      discountStartDate: product.discountStartDate,
-      discountEndDate: product.discountEndDate,
-    });
-
     if (!product.discountPercentage || product.discountPercentage <= 0) {
-      console.log("No discount percentage or <= 0");
       return false;
     }
 
@@ -293,7 +286,6 @@ export function ProductCard({
 
     // If no start/end dates specified, discount is always active
     if (!product.discountStartDate && !product.discountEndDate) {
-      console.log("No dates specified, discount is active");
       return true;
     }
 
@@ -310,15 +302,6 @@ export function ProductCard({
 
     const isAfterStart = !startDate || today >= startDate;
     const isBeforeEnd = !endDate || today <= endDate;
-
-    console.log("Date check:", {
-      today,
-      startDate,
-      endDate,
-      isAfterStart,
-      isBeforeEnd,
-      result: isAfterStart && isBeforeEnd,
-    });
 
     return isAfterStart && isBeforeEnd;
   };
@@ -403,12 +386,6 @@ export function ProductCard({
       setPending(false);
     }
   };
-
-  console.log("Final values:", {
-    isDiscounted,
-    finalPrice,
-    originalPrice: product.price,
-  });
 
   return (
     <div className={`product-card ${theme} ${className}`}>
