@@ -93,8 +93,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.2); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
 }
 
 /* Live Users Panel */
@@ -230,10 +237,18 @@
   margin-top: 0.25rem;
 }
 
-.metric-card--primary { border-left: 4px solid #3b82f6; }
-.metric-card--success { border-left: 4px solid #10b981; }
-.metric-card--info { border-left: 4px solid #06b6d4; }
-.metric-card--warning { border-left: 4px solid #f59e0b; }
+.metric-card--primary {
+  border-left: 4px solid #3b82f6;
+}
+.metric-card--success {
+  border-left: 4px solid #10b981;
+}
+.metric-card--info {
+  border-left: 4px solid #06b6d4;
+}
+.metric-card--warning {
+  border-left: 4px solid #f59e0b;
+}
 
 /* Sections */
 .ga4-section {
@@ -613,7 +628,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error Message */

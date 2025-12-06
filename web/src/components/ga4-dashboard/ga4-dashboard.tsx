@@ -404,7 +404,12 @@ export default function GA4Dashboard() {
                               <td>{index + 1}</td>
                               <td title={user.userEmail || undefined}>
                                 {user.userName || (
-                                  <span style={{ color: "#999", fontStyle: "italic" }}>
+                                  <span
+                                    style={{
+                                      color: "#999",
+                                      fontStyle: "italic",
+                                    }}
+                                  >
                                     სტუმარი
                                   </span>
                                 )}
@@ -422,7 +427,9 @@ export default function GA4Dashboard() {
                               </td>
                               <td>{user.device}</td>
                               <td title={user.location}>{user.location}</td>
-                              <td style={{ textAlign: "center" }}>{user.pageViews}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {user.pageViews}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -547,7 +554,14 @@ export default function GA4Dashboard() {
                 <tbody>
                   {data.pageViews.length === 0 ? (
                     <tr>
-                      <td colSpan={3} style={{ textAlign: "center", padding: "2rem", color: "#999" }}>
+                      <td
+                        colSpan={3}
+                        style={{
+                          textAlign: "center",
+                          padding: "2rem",
+                          color: "#999",
+                        }}
+                      >
                         მონაცემები ჯერ არ არის
                       </td>
                     </tr>
@@ -557,7 +571,10 @@ export default function GA4Dashboard() {
                         (sum, p) => sum + p.views,
                         0
                       );
-                      const share = totalViews > 0 ? ((page.views / totalViews) * 100).toFixed(1) : "0";
+                      const share =
+                        totalViews > 0
+                          ? ((page.views / totalViews) * 100).toFixed(1)
+                          : "0";
 
                       return (
                         <tr key={index}>
@@ -576,7 +593,9 @@ export default function GA4Dashboard() {
                                 className="progress-bar__fill"
                                 style={{ width: `${share}%` }}
                               ></div>
-                              <span className="progress-bar__label">{share}%</span>
+                              <span className="progress-bar__label">
+                                {share}%
+                              </span>
                             </div>
                           </td>
                         </tr>
@@ -593,7 +612,13 @@ export default function GA4Dashboard() {
             <h2 className="ga4-section__title">🛒 შეძენის ფუნელი</h2>
             <div className="funnel-chart">
               {data.purchaseFunnel.length === 0 ? (
-                <p style={{ textAlign: "center", padding: "2rem", color: "#999" }}>
+                <p
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#999",
+                  }}
+                >
                   ფუნელის მონაცემები ჯერ არ არის
                 </p>
               ) : (
@@ -614,7 +639,9 @@ export default function GA4Dashboard() {
                       {step.dropoff !== undefined && (
                         <span
                           className="funnel-step__dropoff"
-                          style={{ color: step.dropoff < 0 ? "#10b981" : "#ef4444" }}
+                          style={{
+                            color: step.dropoff < 0 ? "#10b981" : "#ef4444",
+                          }}
                         >
                           {-step.dropoff.toFixed(1)}%
                         </span>
@@ -679,8 +706,12 @@ export default function GA4Dashboard() {
                                     .slice(0, 5)
                                     .map((ep, idx) => (
                                       <div key={idx} className="endpoint-item">
-                                        <span className="endpoint-path">{ep.endpoint}</span>
-                                        <span className="endpoint-count">{ep.count}</span>
+                                        <span className="endpoint-path">
+                                          {ep.endpoint}
+                                        </span>
+                                        <span className="endpoint-count">
+                                          {ep.count}
+                                        </span>
                                       </div>
                                     ))}
                                 </div>
@@ -691,8 +722,12 @@ export default function GA4Dashboard() {
                               <div className="pagination-controls">
                                 <button
                                   className="pagination-btn"
-                                  onClick={() => handlePageChange(currentPage - 1)}
-                                  disabled={!detailedErrors.pagination.hasPrevPage}
+                                  onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                  }
+                                  disabled={
+                                    !detailedErrors.pagination.hasPrevPage
+                                  }
                                 >
                                   ← წინა
                                 </button>
@@ -702,8 +737,12 @@ export default function GA4Dashboard() {
                                 </span>
                                 <button
                                   className="pagination-btn"
-                                  onClick={() => handlePageChange(currentPage + 1)}
-                                  disabled={!detailedErrors.pagination.hasNextPage}
+                                  onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                  }
+                                  disabled={
+                                    !detailedErrors.pagination.hasNextPage
+                                  }
                                 >
                                   შემდეგი →
                                 </button>

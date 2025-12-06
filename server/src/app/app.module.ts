@@ -27,7 +27,6 @@ import { ForumsModule } from '@/forums/forums.module';
 import { YoutubeModule } from '@/youtube/youtube.module';
 import { AnalyticsModule } from '@/analytics/analytics.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
