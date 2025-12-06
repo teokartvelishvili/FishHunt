@@ -17,7 +17,6 @@ export function OrdersList() {
     queryFn: async () => {
       const response = await fetchWithAuth(`/orders?page=${page}&limit=8`);
       const data = await response.json();
-      console.log("Orders data:", data);
       return {
         items: Array.isArray(data) ? data : [],
         pages: Math.ceil((Array.isArray(data) ? data.length : 0) / 8),
@@ -33,7 +32,6 @@ export function OrdersList() {
 
   const orders = data?.items || [];
   const totalPages = data?.pages || 0;
-  console.log("Rendered orders:", orders);
 
   return (
     <div className="orders-container">

@@ -101,7 +101,6 @@ export const useCategories = (includeInactive = false) => {
         );
         return response.data;
       } catch (error) {
-        console.error("Error fetching categories:", error);
         throw error;
       }
     },
@@ -207,9 +206,6 @@ export const useSubCategories = (
     queryKey: ["subcategories", { categoryId, includeInactive }],
     queryFn: async () => {
       if (!categoryId) {
-        console.warn(
-          "[useSubCategories] categoryId is missing. API call will be skipped by 'enabled' flag or return empty if forced."
-        );
         // 'enabled' flag should prevent this, but as a safeguard:
         return [];
       } // Validate category ID format - should be a MongoDB ObjectId (24 hex characters)
@@ -226,19 +222,9 @@ export const useSubCategories = (
         params.append("includeInactive", "true");
       }
       const url = `/subcategories?${params.toString()}`;
-      console.log(`[useSubCategories] Attempting to fetch from URL: ${url}`);
 
       try {
         const response = await apiClient.get<SubCategory[]>(url);
-        console.log(
-          `[useSubCategories] Successfully fetched subcategories. Status: ${response.status}, Count: ${response.data.length}`
-        );
-        if (response.data.length > 0) {
-          console.log(
-            "[useSubCategories] First subcategory data:",
-            JSON.stringify(response.data[0])
-          );
-        }
         return response.data;
       } catch (error: unknown) {
         const err = error as ApiError; // Type assertion
@@ -252,12 +238,6 @@ export const useSubCategories = (
           // Fallback to original error message if backend message is not present
           displayMessage = error.message;
         }
-
-        console.error(
-          `[useSubCategories] Error fetching subcategories. URL: ${url}, Status: ${
-            errorStatus || "N/A"
-          }, Message: "${displayMessage}"`
-        );
 
         // Create a new error object that will be thrown for React Query
         // This error object will be available in query.error in the component
@@ -299,19 +279,8 @@ export const useCreateSubCategory = () => {
     mutationFn: async (data: SubCategoryCreateInput) => {
       // Ensure categoryId is included and valid
       if (!data.categoryId) {
-        console.error("Missing categoryId when creating subcategory");
         throw new Error("categoryId is required when creating a subcategory");
       }
-
-      console.log("Creating subcategory with data:", {
-        name: data.name,
-        categoryId: data.categoryId,
-        description: data.description,
-        ageGroups: data.ageGroups,
-        sizes: data.sizes,
-        colors: data.colors,
-        isActive: data.isActive,
-      });
 
       const response = await apiClient.post("/subcategories", data);
       return response.data;
@@ -328,7 +297,6 @@ export const useCreateSubCategory = () => {
     },
     onError: (error: unknown) => {
       const err = error as ApiError;
-      console.error("Error creating subcategory:", err);
       toast.error(
         err.response?.data?.message || "ქვეკატეგორიის დამატება ვერ მოხერხდა"
       );
@@ -402,7 +370,6 @@ export const useAttributes = () => {
         const response = await apiClient.get("/categories/attributes/all");
         return response.data;
       } catch (error) {
-        console.error("Error fetching attributes:", error);
         throw new Error("Failed to fetch attributes");
       }
     },
@@ -432,7 +399,6 @@ export const useAttributesWithTranslations = () => {
           ageGroups: ageGroupsResponse.data,
         };
       } catch (error) {
-        console.error("Error fetching attributes with translations:", error);
         throw new Error("Failed to fetch attributes with translations");
       }
     },

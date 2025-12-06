@@ -69,7 +69,6 @@ export const CategoriesList = () => {
 
   // Refetch categories when component mounts or when showInactive changes
   useEffect(() => {
-    console.log("Refetching categories...");
     refetch();
     // Also invalidate the query to ensure fresh data
     queryClient.invalidateQueries({ queryKey: ["categories"] });

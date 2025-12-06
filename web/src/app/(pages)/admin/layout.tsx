@@ -28,19 +28,15 @@ export default function AdminLayout({
         // Get user data from local storage
         const userData = getUserData();
         if (!userData) {
-          console.log("No user data found, redirecting to login");
           router.push("/login?redirect=/admin");
           return;
         }
-
-        console.log("Current user role:", userData.role);
 
         // Check if user has admin role (case-insensitive)
         if (
           userData.role?.toLowerCase() !== "admin" &&
           userData.role?.toLowerCase() !== "seller"
         ) {
-          console.log("User doesn't have admin permissions");
           router.push("/");
           return;
         }
