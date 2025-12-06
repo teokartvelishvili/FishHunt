@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/cart/dtos/save-payment-method.dto.ts"],"sourcesContent":["import { IsString } from 'class-validator';\r\n\r\nexport class SavePaymentMethodDto {\r\n  @IsString()\r\n  paymentMethod!: string;\r\n}\r\n"],"names":["SavePaymentMethodDto"],"mappings":";;;;+BAEaA;;;eAAAA;;;gCAFY;;;;;;;;;;AAElB,IAAA,AAAMA,uBAAN,MAAMA;AAGb"}

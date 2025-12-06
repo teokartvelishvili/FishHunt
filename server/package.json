@@ -5,12 +5,15 @@
   "author": "FishHunt",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
-    "postinstall": "npm install rimraf",
-    "prebuild": "rimraf dist",
+    "postinstall": "echo 'Skipping postinstall'",
     "seed": "ts-node -r tsconfig-paths/register src/cli.ts",
     "youtube:auth": "ts-node -r tsconfig-paths/register src/scripts/youtube-auth.ts",
-    "build": "nest build",
+    "build": "echo 'Using pre-built dist'",
+    "build:local": "rimraf dist && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main",
     "dev": "cross-env NODE_ENV=development nest start --watch",
@@ -74,6 +77,8 @@
     "@nestjs/cli": "^10.4.8",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.13",
+    "@swc/cli": "^0.5.2",
+    "@swc/core": "^1.15.3",
     "@types/aws-sdk": "^2.7.4",
     "@types/buffer-to-stream": "^1.0.3",
     "@types/cookie-parser": "^1.4.8",

@@ -1,5 +1,5 @@
 # compiled output
-/dist
+# /dist  # dist is committed for Digital Ocean deployment
 /node_modules
 /build
 
