@@ -51,14 +51,14 @@ export class UserResponseDto {
   @ApiProperty()
   name!: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: Role, required: false })
   role?: Role;
 }
 
 export class AuthResponseDto {
-  @ApiProperty()
+  @ApiProperty({ type: () => TokensDto })
   tokens!: TokensDto;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => UserResponseDto })
   user!: UserResponseDto;
 }

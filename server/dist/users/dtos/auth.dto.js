@@ -83,17 +83,24 @@ _ts_decorate([
     _ts_metadata("design:type", String)
 ], UserResponseDto.prototype, "name", void 0);
 _ts_decorate([
-    (0, _swagger.ApiProperty)(),
+    (0, _swagger.ApiProperty)({
+        enum: _roleenum.Role,
+        required: false
+    }),
     _ts_metadata("design:type", typeof _roleenum.Role === "undefined" ? Object : _roleenum.Role)
 ], UserResponseDto.prototype, "role", void 0);
 let AuthResponseDto = class AuthResponseDto {
 };
 _ts_decorate([
-    (0, _swagger.ApiProperty)(),
+    (0, _swagger.ApiProperty)({
+        type: ()=>TokensDto
+    }),
     _ts_metadata("design:type", typeof TokensDto === "undefined" ? Object : TokensDto)
 ], AuthResponseDto.prototype, "tokens", void 0);
 _ts_decorate([
-    (0, _swagger.ApiProperty)(),
+    (0, _swagger.ApiProperty)({
+        type: ()=>UserResponseDto
+    }),
     _ts_metadata("design:type", typeof UserResponseDto === "undefined" ? Object : UserResponseDto)
 ], AuthResponseDto.prototype, "user", void 0);
 
