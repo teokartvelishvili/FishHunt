@@ -25,7 +25,7 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
     JwtModule.register({
       global: true,
       secret: process.env.JWT_ACCESS_SECRET,
-      signOptions: { expiresIn: '10m' },
+      signOptions: { expiresIn: '15m' },
     }),
     AwsS3Module, // Add this line to import AwsS3Module
   ],

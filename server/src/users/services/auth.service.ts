@@ -71,25 +71,20 @@ export class AuthService {
 
     let existUser = await this.userModel.findOne({ email });
 
-    console.log('🆕 ახალი მომხმარებლის რეგისტრაცია Google-ით:', googleData);
-
     if (!existUser) {
       const newUser = new this.userModel({
         email,
         name: googleData.name || 'Google User',
-        googleId: googleData.id || googleData.sub, // Google ID უნდა შევინახოთ
+        googleId: googleData.id || googleData.sub,
         role: Role.User,
       });
 
-      await newUser.save(); // ⬅️ აქამდე უკვე აქვს googleId მნიშვნელობა, ამიტომ password არ ითვლება required
-
+      await newUser.save();
       existUser = newUser;
-      console.log('✅ ახალი მომხმარებელი წარმატებით დაემატა:', existUser);
     }
 
     const { tokens, user: userData } = await this.login(existUser);
 
-    console.log('✅ გენერირებული access_token და refresh_token:', tokens);
     return { tokens, user: userData };
   }
 
@@ -138,7 +133,7 @@ export class AuthService {
           type: 'access',
         } as TokenPayload,
         {
-          expiresIn: '20m',
+          expiresIn: '15m',
           secret: process.env.JWT_ACCESS_SECRET,
         },
       ),
@@ -152,7 +147,7 @@ export class AuthService {
           jti,
         } as TokenPayload,
         {
-          expiresIn: '7d',
+          expiresIn: '30d',
           secret: process.env.JWT_REFRESH_SECRET,
         },
       ),
@@ -190,7 +185,24 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      return this.generateTokens(user);
+      // Generate only new access token, keep the same refresh token
+      const accessToken = await this.jwtService.signAsync(
+        {
+          sub: user._id.toString(),
+          email: user.email,
+          role: user.role,
+          type: 'access',
+        } as TokenPayload,
+        {
+          expiresIn: '15m',
+          secret: process.env.JWT_ACCESS_SECRET,
+        },
+      );
+
+      return {
+        accessToken,
+        refreshToken, // Return the same refresh token
+      };
     } catch {
       throw new UnauthorizedException();
     }
