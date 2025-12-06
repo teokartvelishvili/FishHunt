@@ -34,8 +34,9 @@ export class User {
   @Prop()
   updatedAt?: Date;
 
-  @Prop({ type: String, default: null })
-  refreshToken?: string | null;
+  // Multi-device support: store array of refresh token JTIs
+  @Prop({ type: [String], default: [] })
+  refreshTokens: string[];
 
   // 👇 **ეს ველები მხოლოდ Seller-ს დასჭირდება, ამიტომ `required: false` ვუტოვებთ**
   @Prop({ type: String, default: null })

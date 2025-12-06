@@ -132,8 +132,11 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@CurrentUser() user: UserDocument) {
-    await this.authService.logout(user._id.toString());
+  async logout(
+    @CurrentUser() user: UserDocument,
+    @Body() body: { refreshToken?: string },
+  ) {
+    await this.authService.logout(user._id.toString(), body.refreshToken);
 
     return { success: true };
   }

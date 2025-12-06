@@ -50,13 +50,16 @@ export const authApi = {
 
   sellerRegister: async (data: SellerRegisterData) => {
     // Send seller registration data directly to the API
-    const response = await axios.post<AuthResponse>("/auth/sellers-register", data);
-    
+    const response = await axios.post<AuthResponse>(
+      "/auth/sellers-register",
+      data
+    );
+
     // Store tokens and return the response
     if (response.data.accessToken && response.data.refreshToken) {
       storeTokens(response.data.accessToken, response.data.refreshToken);
     }
-    
+
     return response.data;
   },
 

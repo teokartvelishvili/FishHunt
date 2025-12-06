@@ -153,8 +153,12 @@ export class AuthService {
       ),
     ]);
 
+    // Multi-device: add new token to array, keep max 10 devices
+    const currentTokens = user.refreshTokens || [];
+    const updatedTokens = [...currentTokens, jti].slice(-10); // Keep last 10 tokens
+
     await this.userModel.findByIdAndUpdate(user._id, {
-      refreshToken: jti,
+      refreshTokens: updatedTokens,
     });
 
     return {
@@ -177,11 +181,12 @@ export class AuthService {
       }
 
       const user = await this.userModel.findById(payload.sub);
-      if (!user || !user.refreshToken) {
+      if (!user || !user.refreshTokens || user.refreshTokens.length === 0) {
         throw new UnauthorizedException();
       }
 
-      if (user.refreshToken !== payload.jti) {
+      // Multi-device: check if jti exists in the array
+      if (!user.refreshTokens.includes(payload.jti)) {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
@@ -208,9 +213,29 @@ export class AuthService {
     }
   }
 
-  async logout(userId: string): Promise<void> {
+  async logout(userId: string, refreshToken?: string): Promise<void> {
+    if (refreshToken) {
+      // Remove only the specific token (logout from current device)
+      try {
+        const payload = await this.jwtService.verifyAsync<TokenPayload>(
+          refreshToken,
+          {
+            secret: process.env.JWT_REFRESH_SECRET,
+          },
+        );
+        if (payload.jti) {
+          await this.userModel.findByIdAndUpdate(userId, {
+            $pull: { refreshTokens: payload.jti },
+          });
+          return;
+        }
+      } catch {
+        // If token is invalid, just clear all
+      }
+    }
+    // Logout from all devices
     await this.userModel.findByIdAndUpdate(userId, {
-      refreshToken: null,
+      refreshTokens: [],
     });
   }
 }

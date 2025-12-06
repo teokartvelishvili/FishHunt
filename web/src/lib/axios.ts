@@ -1,5 +1,10 @@
 import axios from "axios";
-import { getAccessToken, getRefreshToken, storeTokens, clearTokens } from "./auth";
+import {
+  getAccessToken,
+  getRefreshToken,
+  storeTokens,
+  clearTokens,
+} from "./auth";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1",
@@ -66,14 +71,17 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     // Skip refresh for auth endpoints
-    if (originalRequest.url?.includes("/auth/refresh") || 
-        originalRequest.url?.includes("/auth/login")) {
+    if (
+      originalRequest.url?.includes("/auth/refresh") ||
+      originalRequest.url?.includes("/auth/login")
+    ) {
       return Promise.reject(error);
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // შევამოწმოთ არის თუ არა მიმდინარე მარშრუტი საჯარო
-      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      const currentPath =
+        typeof window !== "undefined" ? window.location.pathname : "";
       const isPublicRoute = publicRoutes.some(
         (route) =>
           currentPath.includes(route) || error.config.url?.includes(route)
@@ -87,7 +95,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
         clearTokens();
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
         return Promise.reject(error);
@@ -97,12 +105,14 @@ axiosInstance.interceptors.response.use(
         // Queue this request while refresh is in progress
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return axiosInstance(originalRequest);
-        }).catch((err) => {
-          return Promise.reject(err);
-        });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosInstance(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
       }
 
       originalRequest._retry = true;
@@ -133,7 +143,7 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         clearTokens();
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
         return Promise.reject(refreshError);
