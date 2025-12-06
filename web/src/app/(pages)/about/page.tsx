@@ -9,6 +9,7 @@ import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export default function AboutPage() {
   const { t } = useLanguage();
+  
 
   return (
     <div className="about-container">
