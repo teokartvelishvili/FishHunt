@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Turbopack configuration
+  turbopack: {},
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
@@ -8,7 +10,6 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: [],
   images: {
-    domains: ["res.cloudinary.com", "fish-hunt.s3.eu-north-1.amazonaws.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -26,20 +27,10 @@ const nextConfig: NextConfig = {
     // Better configuration for Vercel deployment
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    unoptimized: process.env.NODE_ENV === "production", // Disable optimization on production to avoid Vercel limits
   },
   reactStrictMode: true,
   poweredByHeader: false,
   distDir: ".next",
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-    return config;
-  },
 };
 
 export default nextConfig;
