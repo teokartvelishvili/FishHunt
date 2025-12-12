@@ -57,7 +57,7 @@ const HomePageForum = () => {
 
   return (
     <div className="homePageForum">
-      <Pattern imageSize={350} />
+      {/* <Pattern imageSize={350} /> */}
       <div className="homepage-forum-header">
         <h1 className="homePageForumH1">{t("navbar.forum")}</h1>
         <button

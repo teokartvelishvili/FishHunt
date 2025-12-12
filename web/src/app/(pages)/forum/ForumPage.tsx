@@ -110,7 +110,7 @@ const ForumPage = () => {
 
   return (
     <div className="forum-page">
-      <Pattern imageSize={350}  />
+      {/* <Pattern imageSize={350}  /> */}
       {isUserLoading || isForumsLoading ? (
         <div>
           {" "}
