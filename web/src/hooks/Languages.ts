@@ -288,8 +288,7 @@ export const TRANSLATIONS: Translations = {
         items: [
           "სრულიად უფასო პირადი ონლაინ გალერეა ულიმიტო პროდუქტებით",
           "მარტივი რეგისტრაცია და პროდუქტების ატვირთვა",
-          "პირველი თვე - 0% საკომისიო გაყიდვებზე",
-          "შემდგომი პერიოდი - მხოლოდ 10% წარმატებული გაყიდვებიდან",
+          "საკომისიო გაყიდვებზე - მხოლოდ 20% წარმატებული გაყიდვებიდან",
           "ანაზღაურების მომენტალური ჩარიცხვა მითითებულ ანგარიშზე, მას შემდეგ რაც მომხმარებელი დაადასტურებს რომ მიიღო შეკვეთა",
           "დეტალური სტატისტიკა და სრული კონტროლი თქვენს გაყიდვებზე",
           "თქვენი პროდუქტების პოპულარიზაცია ფართო აუდიტორიაში",
@@ -1084,9 +1083,9 @@ export const TRANSLATIONS: Translations = {
       salesAnalytics: "გაყიდვების ანალიტიკა",
       salesAnalyticsDesc:
         "დეტალური სტატისტიკა და რეპორტები თქვენი ბიზნესის შესახებ",
-      pricingTitle: "💵 აირჩიეთ შენთვის სასურველი პაკეტი",
+      pricingTitle: "💵 რა შედის პაკეტში",
       standardPackage: "სტანდარტული პაკეტი",
-      commission10: "კომისია გაყიდვებზე - 10%",
+      commission20Standard: "კომისია გაყიდვებზე - 20%",
       productPlacement: "პროდუქტების განთავსება",
       priceChangeAbility: "ფასის შეცვლის შესაძლებლობა",
       discountPlanning: "ფასდაკლების დაგეგმვა",
@@ -1113,9 +1112,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "შემიძლია ფასის შეცვლა?",
       faq3Answer:
         "დიახ, ნებისმიერ დროს შეგიძლიათ შეცვალოთ პროდუქტების ფასები. ასევე შეგიძლიათ მიუთითოთ საწყისი ფასი და ფასდაკლების პროცენტი გარკვეულ პერიოდზე, მაგალითად 5-დან 10 რიცხვამდე 20% ფასდაკლება.",
-      faq4Question: "რა განსხვავებაა სტანდარტულ და პრემიუმ პაკეტს შორის?",
+      faq4Question: "რა არის საკომისიო?",
       faq4Answer:
-        "სტანდარტული პაკეტი: 10% კომისია, FishHunt-ის მიწოდება არ შედის. პრემიუმ პაკეტი: 20% კომისია, შედის FishHunt-ის მიწოდების სერვისი, უფასო რეკლამა Facebook ჯგუფში და FishHunt-ის Facebook გვერდზე.",
+        "საკომისიო 20%-ია წარმატებული გაყიდვებიდან. თუ არ გაყიდეთ - არაფერს იხდით!",
       faq5Question: "როგორ დავაყენო ფასდაკლება?",
       faq5Answer:
         "შეგიძლიათ დააყენოთ ფასდაკლების პროცენტი და აირჩიოთ კონკრეტული თარიღები. მაგალითად, შეგიძლიათ დააყენოთ 20% ფასდაკლება 5 რიცხვიდან 10 რიცხვამდე.",
@@ -2129,9 +2128,9 @@ export const TRANSLATIONS: Translations = {
         "Track order status in real-time and manage delivery",
       salesAnalytics: "Sales Analytics",
       salesAnalyticsDesc: "Detailed statistics and reports about your business",
-      pricingTitle: "💵 Choose Your Package",
+      pricingTitle: "💵 What's Included in the Package",
       standardPackage: "Standard Package",
-      commission10: "Sales commission - 10%",
+      commission20Standard: "Sales commission - 20%",
       productPlacement: "Product placement",
       priceChangeAbility: "Ability to change prices",
       discountPlanning: "Discount planning",
@@ -2158,10 +2157,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "Can I change prices?",
       faq3Answer:
         "Yes, you can change product prices at any time. You can also specify initial price and discount percentage for a specific period, for example 20% discount from 5th to 10th.",
-      faq4Question:
-        "What's the difference between standard and premium packages?",
+      faq4Question: "What is the commission?",
       faq4Answer:
-        "Standard package: 10% commission, FishHunt delivery not included. Premium package: 20% commission, includes FishHunt delivery service, free advertising in Facebook group and on FishHunt's Facebook page.",
+        "The commission is 20% on successful sales. If you don't sell - you don't pay!",
       faq5Question: "How to set a discount?",
       faq5Answer:
         "You can set a discount percentage and choose specific dates. For example, you can set a 20% discount from 5th to 10th.",
@@ -2825,9 +2823,9 @@ export const TRANSLATIONS: Translations = {
         "Отслеживайте статус заказов в реальном времени и управляйте доставкой",
       salesAnalytics: "Аналитика продаж",
       salesAnalyticsDesc: "Подробная статистика и отчеты о вашем бизнесе",
-      pricingTitle: "💵 Выберите свой пакет",
+      pricingTitle: "💵 Что входит в пакет",
       standardPackage: "Стандартный пакет",
-      commission10: "Комиссия с продаж - 10%",
+      commission20Standard: "Комиссия с продаж - 20%",
       productPlacement: "Размещение продуктов",
       priceChangeAbility: "Возможность изменения цен",
       discountPlanning: "Планирование скидок",
@@ -2854,9 +2852,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "Могу ли я менять цены?",
       faq3Answer:
         "Да, вы можете изменять цены на продукты в любое время. Также вы можете указать начальную цену и процент скидки на определенный период, например, скидка 20% с 5 по 10 число.",
-      faq4Question: "В чем разница между стандартным и премиум пакетами?",
+      faq4Question: "Какая комиссия?",
       faq4Answer:
-        "Стандартный пакет: комиссия 10%, доставка FishHunt не включена. Премиум пакет: комиссия 20%, включает службу доставки FishHunt, бесплатную рекламу в группе Facebook и на странице FishHunt в Facebook.",
+        "Комиссия составляет 20% с успешных продаж. Если не продаете - не платите!",
       faq5Question: "Как установить скидку?",
       faq5Answer:
         "Вы можете установить процент скидки и выбрать конкретные даты. Например, вы можете установить скидку 20% с 5 по 10 число.",
