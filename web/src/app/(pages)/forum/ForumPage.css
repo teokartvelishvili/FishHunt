@@ -1,10 +1,10 @@
 .forum-page {
   padding: 5%;
-  background-image: url(../../../assets/pattern.png);
+  /* background-image: url(../../../assets/pattern.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-attachment: fixed; 
+  background-attachment: fixed;  */
 }
 
 .create-post-button {
