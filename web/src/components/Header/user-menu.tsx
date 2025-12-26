@@ -52,7 +52,7 @@ export default function UserMenu() {
 
       const preventScroll = (e: TouchEvent) => {
         // Allow scroll only inside dropdown
-        if (!e.target || !(e.target as Element).closest(".dropdown-menu")) {
+        if (!e.target || !(e.target as Element).closest(".user-menu-dropdown-menu")) {
           e.preventDefault();
         }
       };
