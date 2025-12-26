@@ -148,7 +148,7 @@ export default function BecomeSellerPage() {
           <div className="pricing-info">
             <div className="pricing-card">
               <h3>{t("becomeSeller.standardPackage")}</h3>
-              <div className="price">10%</div>
+              <div className="price">20%</div>
               <ul className="pricing-features">
                 <li>{t("becomeSeller.commission10")}</li>
                 <li>{t("becomeSeller.productPlacement")}</li>

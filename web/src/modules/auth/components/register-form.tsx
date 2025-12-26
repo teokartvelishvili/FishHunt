@@ -27,9 +27,13 @@ export function RegisterForm() {
     register: registerField,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    defaultValues: { agreeToPolicies: false },
   });
+
+  const agreeToPolicies = watch("agreeToPolicies");
 
   const [emailSent, setEmailSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -84,6 +88,11 @@ export function RegisterForm() {
       return;
     }
     setErrorMessage("");
+
+    if (!data.agreeToPolicies) {
+      setRegisterError(t("auth.agreeToPoliciesRequired"));
+      return;
+    }
 
     register(data, {
       onSuccess: () => {
@@ -212,10 +221,24 @@ export function RegisterForm() {
           </div>
         )}
 
+        <div className="checkbox-group">
+          <label className="checkbox-label">
+            <input type="checkbox" {...registerField("agreeToPolicies")} />
+            <span>
+              {t("auth.agreeToPolicies")} <Link href="/privacy-policy">{t("footer.privacyPolicy")}</Link> {" "}
+              {t("auth.and")} {" "}
+              <Link href="/terms-conditions">{t("footer.termsOfService")}</Link>
+            </span>
+          </label>
+          {errors.agreeToPolicies && (
+            <p className="error-text">{errors.agreeToPolicies.message}</p>
+          )}
+        </div>
+
         <button
           type="submit"
           className="submit-btn"
-          disabled={isPending || !isVerified}
+          disabled={isPending || !isVerified || !agreeToPolicies}
         >
           {isPending ? t("auth.creatingAccount") : t("auth.createAccount")}
         </button>

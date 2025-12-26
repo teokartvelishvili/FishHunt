@@ -20,4 +20,13 @@ export const sellerRegisterSchema = z.object({
     .string()
     .regex(/^GE[0-9]{2}[A-Z0-9]{18}$/, "არასწორი IBAN ფორმატი")
     .refine((value) => value.length === 22, "IBAN უნდა შეიცავდეს 22 სიმბოლოს"),
+  agreeToPrivacyPolicy: z
+    .boolean()
+    .refine((val) => val === true, "კონფიდენციალურობის პოლიტიკაზე თანხმობა აუცილებელია"),
+  agreeToSellerAgreement: z
+    .boolean()
+    .refine((val) => val === true, "გამყიდველის ხელშეკრულებაზე თანხმობა აუცილებელია"),
+  agreeToTerms: z
+    .boolean()
+    .refine((val) => val === true, "ზოგადი წესებისა და პირობების თანხმობა აუცილებელია"),
 });

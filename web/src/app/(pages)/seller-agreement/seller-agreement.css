@@ -1,0 +1,51 @@
+.agreement-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  color: #0b2b1c;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.agreement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.agreement-header h1 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+}
+
+.effective-date, .contact {
+  margin: 0;
+  color: #4b4b4b;
+  font-size: 13px;
+}
+
+.print-btn {
+  background: linear-gradient(90deg,#2a5530,#ec9843);
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.agreement-content {
+  white-space: pre-line;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* Print styles */
+@media print {
+  .print-btn { display: none !important; }
+  .agreement-container { box-shadow: none; border: none; margin: 0; padding: 0; }
+  body { background: #fff; }
+}

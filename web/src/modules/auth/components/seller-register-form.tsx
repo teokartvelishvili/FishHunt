@@ -29,10 +29,22 @@ export function SellerRegisterForm() {
   const {
     register: registerField,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SellerRegisterFormData>({
     resolver: zodResolver(sellerRegisterSchema),
+    mode: "onChange",
+    defaultValues: {
+      agreeToPrivacyPolicy: false,
+      agreeToSellerAgreement: false,
+      agreeToTerms: false,
+    },
   });
+
+  const allAgreed =
+    !!watch("agreeToPrivacyPolicy") &&
+    !!watch("agreeToSellerAgreement") &&
+    !!watch("agreeToTerms");
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -256,9 +268,47 @@ export function SellerRegisterForm() {
           </div>
         )}
 
-        <button type="submit" className="submit-btn" disabled={isPending}>
+        {/* Required agreement checkboxes */}
+        <div className="checkbox-group">
+          <label className="checkbox-label">
+            <input type="checkbox" {...registerField("agreeToPrivacyPolicy")} />
+            <span>
+              {t("auth.agreeToPrivacyPolicy")}
+              <Link href="/privacy-policy">{t("auth.privacyPolicy")}</Link>
+            </span>
+          </label>
+          {errors.agreeToPrivacyPolicy && (
+            <p className="error-text">{errors.agreeToPrivacyPolicy.message}</p>
+          )}
+
+          <label className="checkbox-label">
+            <input type="checkbox" {...registerField("agreeToSellerAgreement")} />
+            <span>
+              {t("auth.agreeToSellerAgreement")}
+              <Link href="/seller-agreement">{t("auth.sellerAgreement")}</Link>
+            </span>
+          </label>
+          {errors.agreeToSellerAgreement && (
+            <p className="error-text">{errors.agreeToSellerAgreement.message}</p>
+          )}
+
+          <label className="checkbox-label">
+            <input type="checkbox" {...registerField("agreeToTerms")} />
+            <span>
+              {t("auth.agreeToRules")}
+              <Link href="/terms-conditions">{t("auth.rules")}</Link>
+            </span>
+          </label>
+          {errors.agreeToTerms && (
+            <p className="error-text">{errors.agreeToTerms.message}</p>
+          )}
+        </div>
+
+        {!allAgreed && <p className="error-text">{t("auth.agreementsRequired")}</p>}
+
+        <button type="submit" className="submit-btn" disabled={isPending || !allAgreed}>
           {isPending ? t("auth.registering") : t("auth.register")}
-        </button>
+        </button> 
 
         <div className="text-center">
           {t("auth.alreadyHaveAccount")}{" "}
