@@ -76,19 +76,7 @@ export default function AboutPage() {
             </div>
             
             <div className="feature-card">
-              <div className="feature-icon">🚙</div>
-              <h3>{t("aboutUs.offroadRental")}</h3>
-              <p>{t("aboutUs.offroadRentalDesc")}</p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">🎥</div>
-              <h3>{t("aboutUs.videoPortal")}</h3>
-              <p>{t("aboutUs.videoPortalDesc")}</p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">🚚</div>
+              <div className="feature-icon">🚛</div>
               <h3>{t("aboutUs.fastDelivery")}</h3>
               <p>{t("aboutUs.fastDeliveryDesc")}</p>
             </div>
