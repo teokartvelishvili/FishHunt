@@ -402,7 +402,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               <span>{t("adminOrders.tax")}</span>
               <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
-8
+            8
             <div className="summary-total">
               <span>{t("adminOrders.total")}</span>
               <span>₾{order.totalPrice.toFixed(2)}</span>

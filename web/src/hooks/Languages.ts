@@ -221,6 +221,54 @@ export const TRANSLATIONS: Translations = {
       updateSuccessDescription: "თქვენი პროფილი წარმატებით განახლდა.",
     },
 
+    // Checkout
+    checkout: {
+      // Steps
+      step1: "ავტორიზაცია",
+      step2: "მიწოდება",
+      step3: "გადახდა",
+      step4: "შეკვეთა",
+      // Shipping form
+      shippingAddress: "მიწოდების მისამართი",
+      enterShippingDetails: "შეიყვანეთ მიწოდების დეტალები",
+      streetAddress: "ქუჩა და მისამართი",
+      city: "ქალაქი",
+      postalCode: "საფოსტო ინდექსი",
+      phone: "ტელეფონი",
+      country: "ქვეყანა",
+      selectCountry: "აირჩიეთ ქვეყანა",
+      continueToPayment: "გადახდაზე გადასვლა",
+      pleaseWait: "გთხოვთ დაელოდოთ...",
+      // Payment form
+      paymentMethod: "გადახდის მეთოდი",
+      choosePaymentMethod: "აირჩიეთ გადახდის მეთოდი",
+      cardPayment: "ბარათით გადახდა",
+      continueToReview: "შეკვეთის დადასტურება",
+      // Order review
+      orderReview: "შეკვეთის მიმოხილვა",
+      shipping: "მიწოდება",
+      address: "მისამართი",
+      payment: "გადახდა",
+      method: "მეთოდი",
+      orderItems: "შეკვეთის ნივთები",
+      placeOrder: "შეკვეთის განთავსება",
+      // Validation messages
+      addressRequired: "მისამართი სავალდებულოა",
+      cityRequired: "ქალაქი სავალდებულოა",
+      postalCodeRequired: "საფოსტო ინდექსი სავალდებულოა",
+      phoneRequired: "ტელეფონის ნომერი სავალდებულოა",
+      phoneInvalid: "გთხოვთ შეიყვანოთ სწორი ტელეფონის ნომერი",
+      countryRequired: "ქვეყანა სავალდებულოა",
+      paymentMethodRequired: "გთხოვთ აირჩიოთ გადახდის მეთოდი",
+      // New simplified flow
+      orderSummary: "შეკვეთის შეჯამება",
+      payWithCard: "ბარათით გადახდა",
+      processingPayment: "მიმდინარეობს გადახდა...",
+      securePaymentNote: "🔐 უსაფრთხო გადახდა საქართველოს ბანკით",
+      orderError: "შეკვეთის შექმნა ვერ მოხერხდა",
+      tryAgain: "გთხოვთ სცადოთ თავიდან",
+    },
+
     // Cart & Checkout
     cart: {
       yourCart: "თქვენი კალათა",
@@ -1430,6 +1478,54 @@ export const TRANSLATIONS: Translations = {
       passwordChangedDescription:
         "Your password has been changed successfully.",
       updateSuccessDescription: "Your profile has been updated successfully.",
+    },
+
+    // Checkout
+    checkout: {
+      // Steps
+      step1: "Login",
+      step2: "Shipping",
+      step3: "Payment",
+      step4: "Order",
+      // Shipping form
+      shippingAddress: "Shipping Address",
+      enterShippingDetails: "Enter your shipping details",
+      streetAddress: "Street Address",
+      city: "City",
+      postalCode: "Postal Code",
+      phone: "Phone",
+      country: "Country",
+      selectCountry: "Select a country",
+      continueToPayment: "Continue to Payment",
+      pleaseWait: "Please wait...",
+      // Payment form
+      paymentMethod: "Payment Method",
+      choosePaymentMethod: "Choose how you would like to pay",
+      cardPayment: "Card Payment",
+      continueToReview: "Continue to Review",
+      // Order review
+      orderReview: "Order Review",
+      shipping: "Shipping",
+      address: "Address",
+      payment: "Payment",
+      method: "Method",
+      orderItems: "Order Items",
+      placeOrder: "Place Order",
+      // Validation messages
+      addressRequired: "Address is required",
+      cityRequired: "City is required",
+      postalCodeRequired: "Postal code is required",
+      phoneRequired: "Phone number is required",
+      phoneInvalid: "Please enter a valid phone number",
+      countryRequired: "Country is required",
+      paymentMethodRequired: "Please select a payment method",
+      // New simplified flow
+      orderSummary: "Order Summary",
+      payWithCard: "Pay with Card",
+      processingPayment: "Processing payment...",
+      securePaymentNote: "🔐 Secure payment via Bank of Georgia",
+      orderError: "Failed to create order",
+      tryAgain: "Please try again",
     },
 
     // Cart & Checkout

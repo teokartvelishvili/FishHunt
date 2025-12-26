@@ -1,16 +1,14 @@
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import './checkout-steps.css';
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import "./checkout-steps.css";
 
 interface CheckoutStepsProps {
   currentStep: number;
 }
 
 const steps = [
-  { id: 1, name: 'ავტორიზაცია' },
-  { id: 2, name: 'მიწოდება' },
-  { id: 3, name: 'გადახდა' },
-  { id: 4, name: 'შეკვეთა' },
+  { id: 1, name: "მისამართი და გადახდა" },
+  { id: 2, name: "დასრულება" },
 ];
 
 export function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
@@ -22,8 +20,8 @@ export function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
             <li
               key={step.name}
               className={cn(
-                'step-item',
-                stepIdx !== steps.length - 1 ? 'with-connector' : '',
+                "step-item",
+                stepIdx !== steps.length - 1 ? "with-connector" : ""
               )}
             >
               {step.id < currentStep ? (

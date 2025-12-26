@@ -14,6 +14,8 @@ export class SaveShippingDetailsDto {
   country!: string;
 
   @IsString()
-  @Matches(/^[+]?[0-9\s\-()]{9,20}$/, { message: 'Please enter a valid phone number' })
+  @Matches(/^[+]?[0-9\s\-()]{9,20}$/, {
+    message: 'Please enter a valid phone number',
+  })
   phone!: string;
 }
