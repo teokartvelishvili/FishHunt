@@ -159,6 +159,10 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               {order.shippingDetails.postalCode},{" "}
               {order.shippingDetails.country}
             </p>
+            <p>
+              <strong>{t("adminOrders.phone")}:</strong>{" "}
+              {order.shippingDetails.phone}
+            </p>
             <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
               {order.isDelivered ? <CheckCircle2 /> : <XCircle />}
               <span>

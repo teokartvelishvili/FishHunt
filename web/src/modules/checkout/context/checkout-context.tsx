@@ -15,6 +15,7 @@ interface ShippingAddress {
   city: string;
   postalCode: string;
   country: string;
+  phone: string;
 }
 
 const CheckoutContext = createContext<CheckoutContextType | null>(null);

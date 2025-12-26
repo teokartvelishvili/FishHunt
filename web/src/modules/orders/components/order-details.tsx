@@ -142,6 +142,10 @@ export function OrderDetails({ order }: OrderDetailsProps) {
               {order.shippingDetails.postalCode},{" "}
               {order.shippingDetails.country}
             </p>
+            <p>
+              <span className="font-medium">{t("Phone")}: </span>
+              {order.shippingDetails.phone}
+            </p>
             <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
               {order.isDelivered ? (
                 <CheckCircle2 className="icon" />

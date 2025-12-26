@@ -14,6 +14,7 @@ interface ShippingFormData {
   city: string;
   postalCode: string;
   country: string;
+  phone: string;
 }
 
 export function ShippingForm() {
@@ -82,6 +83,25 @@ export function ShippingForm() {
           />
           {errors.postalCode && (
             <p className="error-text">{errors.postalCode.message}</p>
+          )}
+        </div>
+
+        <div className="shipping-form-field">
+          <label htmlFor="phone">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            {...register("phone", { 
+              required: "Phone number is required",
+              pattern: {
+                value: /^[+]?[0-9\s\-()]{9,20}$/,
+                message: "Please enter a valid phone number"
+              }
+            })}
+            placeholder="+995 555 123 456"
+          />
+          {errors.phone && (
+            <p className="error-text">{errors.phone.message}</p>
           )}
         </div>
 
