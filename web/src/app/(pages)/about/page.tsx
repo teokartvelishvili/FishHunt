@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import Pattern from "../../../components/pattern/pattern";
+// import Pattern from "../../../components/pattern/pattern";
 import React from "react";
 import "./about.css";
 import { useLanguage } from "../../../hooks/LanguageContext";
@@ -12,7 +12,7 @@ export default function AboutPage() {
 
   return (
     <div className="about-container">
-      <Pattern imageSize={250}/>
+      {/* <Pattern imageSize={250}/> */}
       <div className="about-content">
         <h1 className="about-title">{t("aboutUs.title")}</h1>
         <p className="about-slogan">{t("aboutUs.slogan")}</p>

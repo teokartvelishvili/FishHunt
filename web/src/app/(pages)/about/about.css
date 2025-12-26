@@ -1,17 +1,22 @@
 .about-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  position: relative;
+  padding: 40px;
+  background-image: url(../../../assets/pattern.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed; 
 }
 
 .about-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
   position: relative;
   z-index: 10;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  padding: 40px;
+  /* padding: 40px; */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 

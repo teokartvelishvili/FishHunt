@@ -5,6 +5,10 @@
   padding: 10px 5%;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
+  background-image: url(../../assets/pattern.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .homepage-forum-header {

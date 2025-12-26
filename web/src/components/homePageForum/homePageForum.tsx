@@ -3,7 +3,7 @@ import Link from "next/link";
 import "./homePageForum.css";
 import { useState } from "react";
 import ForumPost from "@/app/(pages)/forum/ForumPost";
-import Pattern from "@/components/pattern/pattern";
+// import Pattern from "@/components/pattern/pattern";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";

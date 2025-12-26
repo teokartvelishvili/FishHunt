@@ -10,7 +10,7 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import Loading from "../admin/users/loading";
 import LoadingAnim from "@/components/loadingAnim/loadingAnim";
 import { useLanguage } from "@/hooks/LanguageContext";
-import Pattern from "@/components/pattern/pattern";
+// import Pattern from "@/components/pattern/pattern";
 
 interface Forum {
   _id: string;

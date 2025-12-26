@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import Pattern from "../../../components/pattern/pattern";
+// import Pattern from "../../../components/pattern/pattern";
 import React from "react";
 import "./become-seller.css";
 import { useLanguage } from "../../../hooks/LanguageContext";
@@ -10,7 +10,7 @@ export default function BecomeSellerPage() {
 
   return (
     <div className="become-seller-container">
-      <Pattern imageSize={250}/>
+      {/* <Pattern imageSize={250}/> */}
       <div className="become-seller-content">
         <h1 className="seller-title">{t("becomeSeller.title")}</h1>
         
