@@ -243,6 +243,11 @@ export const TRANSLATIONS: Translations = {
       size: "ზომა",
       color: "ფერი",
       age: "ასაკი",
+      freeShippingTbilisi: "თბილისში უფასო მიტანა 50₾-დან",
+      freeShippingRegions: "რეგიონებში უფასო მიტანა 100₾-დან",
+      addMoreForFreeShipping: "უფასო მიტანისთვის აკლია",
+      shippingTbilisi: "მიტანა (თბილისი)",
+      shippingRegions: "მიტანა (რეგიონი)",
     },
 
     // About page
@@ -1447,6 +1452,11 @@ export const TRANSLATIONS: Translations = {
       size: "Size",
       color: "Color",
       age: "Age",
+      freeShippingTbilisi: "Free delivery in Tbilisi from 50₾",
+      freeShippingRegions: "Free delivery to regions from 100₾",
+      addMoreForFreeShipping: "Add more for free shipping",
+      shippingTbilisi: "Delivery (Tbilisi)",
+      shippingRegions: "Delivery (Region)",
     },
 
     // About page
@@ -2486,6 +2496,15 @@ export const TRANSLATIONS: Translations = {
       adding: "Добавление...",
       addedToCart: "Добавлено в корзину",
       outOfStock: "Нет в наличии",
+      freeShippingTbilisi: "Бесплатная доставка в Тбилиси от 50₾",
+      freeShippingRegions: "Бесплатная доставка в регионы от 100₾",
+      addMoreForFreeShipping: "До бесплатной доставки осталось",
+      shippingTbilisi: "Доставка (Тбилиси)",
+      shippingRegions: "Доставка (Регион)",
+      delivery: "Доставка",
+      free: "Бесплатно",
+      commission: "Комиссия",
+      totalCost: "Общая стоимость",
     },
     // Product Details
     productDetails: {

@@ -139,35 +139,18 @@ input:focus {
   justify-content: center;
   padding: 10px;
   background-color: #f5f5f5;
-  border: 2px solid transparent;
+  border: 2px solid #2a5530;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
   font-weight: bold;
   color: #333;
-  transition: border 1.5s ease-in-out, color 0.5s ease-in-out;
-  background-clip: padding-box;
-  position: relative;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
-.social-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 4px;
-  padding: 1px; /* ბორდერის სისქე */
-  background: linear-gradient(to right, #2a5530, #ec9843);
-  mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(white, white) content-box,
-    linear-gradient(white, white);
-  -webkit-mask-composite: xor;
-
-  transition: background-position 1.5s ease-in-out;
-}
-
-.social-button:hover::before {
-  background: linear-gradient(to left, #2a5530, #ec9843);
+.social-button:hover {
+  border-color: #ec9843;
+  background-color: rgba(42, 85, 48, 0.05);
 }
 
 .icon {
@@ -223,6 +206,29 @@ input:focus {
 .forgot-password:hover {
   color: #ec9843;
   text-decoration: none;
+}
+
+/* Google brand colors */
+.google-brand {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.google-blue {
+  color: #4285f4;
+}
+
+.google-red {
+  color: #ea4335;
+}
+
+.google-yellow {
+  color: #fbbc05;
+}
+
+.google-green {
+  color: #34a853;
 }
 
 .error-message {

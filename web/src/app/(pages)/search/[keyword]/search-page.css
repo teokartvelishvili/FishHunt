@@ -23,7 +23,7 @@
   gap: 20px;
   margin-bottom: 40px;
   padding: 30px;
-  background: rgba(75, 83, 32, 0.3);
+  background: transparent;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -35,8 +35,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: #4b5320;
-  color: #e6cd9f;
+  background: #032e0fb8;
+  color: white;
   text-decoration: none;
   border-radius: 12px;
   font-family: "BenchNine", sans-serif;
@@ -50,14 +50,14 @@
 
 .search-back-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(75, 83, 32, 0.6);
-  background: #5c6525;
+  box-shadow: 0 6px 20px #054217b8;
+  background: #054217b8;
 }
 
 .search-title {
   font-size: 36px;
   font-weight: 400;
-  color: #e6cd9f;
+  color: white;
   margin: 0;
   line-height: 110%;
   letter-spacing: 0.5px;
@@ -66,10 +66,10 @@
 
 /* Search keyword highlight */
 .search-keyword {
-  color: #e6cd9f;
+  color: white;
   font-weight: 600;
   padding: 2px 6px;
-  background: #4b5320;
+  background: #032e0fb8;
   border-radius: 4px;
   border: 1px solid rgba(75, 83, 32, 0.4);
 }
@@ -87,15 +87,15 @@
 
 .search-results-count {
   font-size: 18px;
-  color: #e6cd9f;
+  color: white;
   margin: 0;
   font-weight: 400;
 }
 
 .search-results-count .highlight {
-  color: #e6cd9f;
+  color: white;
   font-weight: 600;
-  background: #4b5320;
+  background: #032e0fb8;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -126,14 +126,14 @@
 
 .search-error-title {
   font-size: 24px;
-  color: #4b5320;
+  color: #032e0fb8;
   margin-bottom: 16px;
   font-weight: 500;
 }
 
 .search-error-message {
   font-size: 16px;
-  color: #e6cd9f;
+  color: white;
   margin-bottom: 30px;
   line-height: 1.6;
 }
@@ -142,7 +142,7 @@
 .search-no-results {
   text-align: center;
   padding: 80px 40px;
-  background: rgba(75, 83, 32, 0.2);
+
   backdrop-filter: blur(10px);
   border-radius: 20px;
   border: 1px solid rgba(230, 205, 159, 0.3);
@@ -160,14 +160,14 @@
 
 .search-no-results-title {
   font-size: 28px;
-  color: #e6cd9f;
+  color: white;
   margin-bottom: 16px;
   font-weight: 500;
 }
 
 .search-no-results-message {
   font-size: 18px;
-  color: #e6cd9f;
+  color: white;
   margin-bottom: 30px;
   line-height: 1.6;
 }
@@ -175,8 +175,8 @@
 .search-browse-button {
   display: inline-block;
   padding: 16px 32px;
-  background: #4b5320;
-  color: #e6cd9f;
+  background: #032e0fb8;
+  color: white;
   text-decoration: none;
   border-radius: 12px;
   font-family: "BenchNine", sans-serif;
@@ -184,13 +184,13 @@
   font-weight: 500;
   transition: all 0.3s ease;
   box-shadow: 0 6px 20px rgba(75, 83, 32, 0.4);
-  border: 1px solid rgba(75, 83, 32, 0.3);
+  border: 1px solid transparent;
 }
 
 .search-browse-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(75, 83, 32, 0.6);
-  background: #5c6525;
+  box-shadow: 0 8px 25px #054217b8;
+  background: #054217b8;
 }
 
 /* Product grid container */

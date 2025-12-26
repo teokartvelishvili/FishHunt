@@ -173,7 +173,9 @@ export function RegisterForm() {
 
         {emailSent && !isVerified && (
           <div className="input-group">
-            <label htmlFor="verification-code">{t("auth.verificationCode")}</label>
+            <label htmlFor="verification-code">
+              {t("auth.verificationCode")}
+            </label>
             <input
               id="verification-code"
               type="text"
@@ -235,7 +237,14 @@ export function RegisterForm() {
             className="social-btn"
             disabled={isPending}
           >
-            Google
+            <span className="google-brand">
+              <span className="google-blue">G</span>
+              <span className="google-red">o</span>
+              <span className="google-yellow">o</span>
+              <span className="google-blue">g</span>
+              <span className="google-green">l</span>
+              <span className="google-red">e</span>
+            </span>
           </button>
         </div>
 
