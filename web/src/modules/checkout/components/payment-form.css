@@ -1,23 +1,20 @@
 .card {
   padding: 2rem;
-  background-color: #faf6f2;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  border: 1px solid #e0d5c8;
-  font-family: 'Georgia', serif;
-  color: #4a3f35;
-  max-width: 800px;
+  background: linear-gradient(145deg, #ffffff, #f8faf8);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(42, 85, 48, 0.1);
+  border: 1px solid rgba(42, 85, 48, 0.1);
+  color: #333;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .text-2xl {
-  font-size: 2rem;
-  font-weight: normal;
-  color: #5d4037;
-  letter-spacing: 1px;
-  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2a5530;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid #e0d5c8;
+  border-bottom: 2px solid rgba(42, 85, 48, 0.15);
   padding-bottom: 0.75rem;
 }
 
@@ -26,7 +23,7 @@
 }
 
 .text-muted-foreground {
-  color: #7d6e63;
+  color: #666;
 }
 
 .space-y-6 > * + * {
@@ -39,9 +36,10 @@
 
 .form-label {
   display: block;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #6d4c41;
+  color: #2a5530;
+  font-size: 0.9rem;
 }
 
 .form-control {
@@ -65,37 +63,45 @@ input[type="radio"].sr-only {
 }
 
 .btn {
-  padding: 0.75rem;
+  padding: 1rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   border: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background-color: #8d6e63;
+  background: linear-gradient(135deg, #2a5530, #3d7a48);
   color: white;
   width: 100%;
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.3);
 }
 
 .btn-primary:hover {
-  background-color: #6d4c41;
+  background: linear-gradient(135deg, #3d7a48, #2a5530);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 6px 20px rgba(42, 85, 48, 0.4);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .border {
-  border: 1px solid #e0d5c8;
+  border: 2px solid #e0e0e0;
 }
 
 .rounded-lg {
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .p-4 {
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .cursor-pointer {
@@ -103,8 +109,8 @@ input[type="radio"].sr-only {
 }
 
 .hover\:border-primary:hover {
-  border-color: #8d6e63;
-  box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.1);
+  border-color: #2a5530;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.1);
 }
 
 .block {
@@ -125,41 +131,52 @@ input[type="radio"].sr-only {
 
 /* Payment method options */
 .payment-option {
-  background-color: #f5f0e9;
+  background-color: #fafafa;
   transition: all 0.3s ease;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.25rem;
 }
 
 .payment-option:hover {
-  background-color: #efe6da;
+  background-color: #f0f5f0;
+  border-color: rgba(42, 85, 48, 0.3);
 }
 
 .payment-option.selected {
-  background-color: #e0d5c8;
-  border-color: #8d6e63;
+  background-color: rgba(42, 85, 48, 0.08);
+  border-color: #2a5530;
 }
 
 .payment-option-title {
-  color: #5d4037;
+  color: #2a5530;
   font-weight: 600;
+  font-size: 1.05rem;
 }
 
 .payment-option-description {
-  color: #7d6e63;
+  color: #666;
   font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .card {
     padding: 1.5rem;
+    margin: 0 1rem;
   }
-  
+
   .text-2xl {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
-  
+
   .grid-cols-2 {
     grid-template-columns: 1fr;
+  }
+
+  .payment-option {
+    padding: 1rem;
   }
 }
 
@@ -167,12 +184,12 @@ input[type="radio"].sr-only {
   .card {
     padding: 1rem;
   }
-  
+
   .text-2xl {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
-  
+
   .btn {
-    padding: 0.6rem;
+    padding: 0.85rem;
   }
 }

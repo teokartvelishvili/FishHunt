@@ -2,30 +2,27 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  background-color: #faf6f2;
-  color: #4a3f35;
-  font-family: 'Georgia', serif;
-  max-width: 800px;
+  gap: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(42, 85, 48, 0.1);
+  background: linear-gradient(145deg, #ffffff, #f8faf8);
+  border: 1px solid rgba(42, 85, 48, 0.1);
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .shipping-form-header h1 {
-  font-size: 2rem;
-  font-weight: normal;
-  color: #5d4037;
-  letter-spacing: 1px;
-  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2a5530;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid #e0d5c8;
   padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(42, 85, 48, 0.15);
 }
 
 .shipping-form-header p {
-  font-size: 1rem;
-  color: #7d6e63;
+  font-size: 0.95rem;
+  color: #666;
 }
 
 .shipping-form {
@@ -36,110 +33,68 @@
 
 .shipping-form label {
   display: block;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #6d4c41;
+  color: #2a5530;
+  font-size: 0.9rem;
 }
 
 .shipping-form input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0d5c8;
-  border-radius: 6px;
-  background-color: #f9f5f0;
-  color: #4a3f35;
-  font-family: inherit;
+  padding: 0.85rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #fafafa;
+  color: #333;
+  font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .shipping-form input:focus {
   outline: none;
-  border-color: #8d6e63;
-  box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
+  border-color: #2a5530;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.1);
+  background-color: #fff;
 }
 
 .shipping-form select {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0d5c8;
-  border-radius: 6px;
-  background-color: #f9f5f0;
-  color: #4a3f35;
-  font-family: inherit;
-  max-height: 300px;
-  background-size: 12px;
-  max-width: 100%;
-  height: auto;
-  appearance: menulist-button; /* Standard appearance for select */
-  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #fafafa;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Control the dropdown width specifically */
-.shipping-form select[name="country"] {
-  max-width: 100%;
-  width: 100%;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Ensure dropdown options don't exceed the width of the select element */
-.shipping-form select option {
-  padding: 8px;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Remove the browser-specific styles that were targeting height */
-@-moz-document url-prefix() {
-  .shipping-form select[name="country"] {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
-@supports (-ms-ime-align:auto) {
-  .shipping-form select[name="country"] {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
-/* Responsive adjustments */
-@media (min-height: 800px) {
-  .shipping-form select[name="country"] {
-    max-height: 300px;
-  }
-}
-
-@media (max-height: 799px) {
-  .shipping-form select[name="country"] {
-    max-height: 250px;
-  }
+.shipping-form select:focus {
+  outline: none;
+  border-color: #2a5530;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.1);
 }
 
 .shipping-form .error-text {
-  font-size: 0.9rem;
-  color: #a65d5d;
+  font-size: 0.85rem;
+  color: #dc3545;
+  margin-top: 0.35rem;
 }
 
 .shipping-form-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: #8d6e63;
+  padding: 1rem;
+  background: linear-gradient(135deg, #2a5530, #3d7a48);
   color: white;
   font-size: 1rem;
-  font-weight: 500;
-  border-radius: 6px;
+  font-weight: 600;
+  border-radius: 10px;
   text-align: center;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.3);
 }
 
 .shipping-form-button:disabled {
@@ -148,45 +103,154 @@
 }
 
 .shipping-form-button:hover:not(:disabled) {
-  background-color: #6d4c41;
+  background: linear-gradient(135deg, #3d7a48, #2a5530);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 6px 20px rgba(42, 85, 48, 0.4);
 }
 
-/* Responsive adjustments */
+/* Order Summary Mini */
+.order-summary-mini {
+  background: linear-gradient(145deg, #f8faf8, #fff);
+  border: 2px solid rgba(42, 85, 48, 0.15);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.order-summary-mini h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2a5530;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(42, 85, 48, 0.1);
+}
+
+/* Products List */
+.order-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.order-product-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(42, 85, 48, 0.03);
+  border-radius: 8px;
+}
+
+.order-product-image {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.order-product-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.order-product-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-product-details {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.order-product-qty {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: rgba(42, 85, 48, 0.1);
+  border-radius: 4px;
+}
+
+.order-product-price {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a5530;
+  min-width: 60px;
+  text-align: right;
+}
+
+.summary-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(42, 85, 48, 0.2),
+    transparent
+  );
+  margin: 0.75rem 0;
+}
+
+.order-summary-mini .summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.order-summary-mini .summary-row.total {
+  border-top: 2px solid rgba(42, 85, 48, 0.15);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2a5530;
+}
+
+/* Payment Note */
+.payment-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .shipping-form-card {
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 12px;
+    margin: 0 1rem;
   }
-  
+
   .shipping-form-header h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .shipping-form-card {
-    padding: 1rem;
+    padding: 1.25rem;
   }
-  
+
   .shipping-form-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
-  
+
   .shipping-form input,
   .shipping-form select,
   .shipping-form-button {
-    padding: 0.6rem;
-  }
-  
-  .shipping-form select {
-    font-size: 14px;
-    padding: 0.5rem;
-  }
-  
-  .shipping-form select option {
-    padding: 6px;
-    font-size: 0.9rem;
+    padding: 0.75rem;
   }
 }

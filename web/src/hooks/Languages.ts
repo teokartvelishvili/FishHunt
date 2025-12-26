@@ -221,6 +221,54 @@ export const TRANSLATIONS: Translations = {
       updateSuccessDescription: "თქვენი პროფილი წარმატებით განახლდა.",
     },
 
+    // Checkout
+    checkout: {
+      // Steps
+      step1: "ავტორიზაცია",
+      step2: "მიწოდება",
+      step3: "გადახდა",
+      step4: "შეკვეთა",
+      // Shipping form
+      shippingAddress: "მიწოდების მისამართი",
+      enterShippingDetails: "შეიყვანეთ მიწოდების დეტალები",
+      streetAddress: "ქუჩა და მისამართი",
+      city: "ქალაქი",
+      postalCode: "საფოსტო ინდექსი",
+      phone: "ტელეფონი",
+      country: "ქვეყანა",
+      selectCountry: "აირჩიეთ ქვეყანა",
+      continueToPayment: "გადახდაზე გადასვლა",
+      pleaseWait: "გთხოვთ დაელოდოთ...",
+      // Payment form
+      paymentMethod: "გადახდის მეთოდი",
+      choosePaymentMethod: "აირჩიეთ გადახდის მეთოდი",
+      cardPayment: "ბარათით გადახდა",
+      continueToReview: "შეკვეთის დადასტურება",
+      // Order review
+      orderReview: "შეკვეთის მიმოხილვა",
+      shipping: "მიწოდება",
+      address: "მისამართი",
+      payment: "გადახდა",
+      method: "მეთოდი",
+      orderItems: "შეკვეთის ნივთები",
+      placeOrder: "შეკვეთის განთავსება",
+      // Validation messages
+      addressRequired: "მისამართი სავალდებულოა",
+      cityRequired: "ქალაქი სავალდებულოა",
+      postalCodeRequired: "საფოსტო ინდექსი სავალდებულოა",
+      phoneRequired: "ტელეფონის ნომერი სავალდებულოა",
+      phoneInvalid: "გთხოვთ შეიყვანოთ სწორი ტელეფონის ნომერი",
+      countryRequired: "ქვეყანა სავალდებულოა",
+      paymentMethodRequired: "გთხოვთ აირჩიოთ გადახდის მეთოდი",
+      // New simplified flow
+      orderSummary: "შეკვეთის შეჯამება",
+      payWithCard: "ბარათით გადახდა",
+      processingPayment: "მიმდინარეობს გადახდა...",
+      securePaymentNote: "🔐 უსაფრთხო გადახდა საქართველოს ბანკით",
+      orderError: "შეკვეთის შექმნა ვერ მოხერხდა",
+      tryAgain: "გთხოვთ სცადოთ თავიდან",
+    },
+
     // Cart & Checkout
     cart: {
       yourCart: "თქვენი კალათა",
@@ -243,6 +291,11 @@ export const TRANSLATIONS: Translations = {
       size: "ზომა",
       color: "ფერი",
       age: "ასაკი",
+      freeShippingTbilisi: "თბილისში უფასო მიტანა 50₾-დან",
+      freeShippingRegions: "რეგიონებში უფასო მიტანა 100₾-დან",
+      addMoreForFreeShipping: "უფასო მიტანისთვის აკლია",
+      shippingTbilisi: "მიტანა (თბილისი)",
+      shippingRegions: "მიტანა (რეგიონი)",
     },
 
     // About page
@@ -288,8 +341,7 @@ export const TRANSLATIONS: Translations = {
         items: [
           "სრულიად უფასო პირადი ონლაინ გალერეა ულიმიტო პროდუქტებით",
           "მარტივი რეგისტრაცია და პროდუქტების ატვირთვა",
-          "პირველი თვე - 0% საკომისიო გაყიდვებზე",
-          "შემდგომი პერიოდი - მხოლოდ 20% წარმატებული გაყიდვებიდან",
+          "საკომისიო გაყიდვებზე - მხოლოდ 20% წარმატებული გაყიდვებიდან",
           "ანაზღაურების მომენტალური ჩარიცხვა მითითებულ ანგარიშზე, მას შემდეგ რაც მომხმარებელი დაადასტურებს რომ მიიღო შეკვეთა",
           "დეტალური სტატისტიკა და სრული კონტროლი თქვენს გაყიდვებზე",
           "თქვენი პროდუქტების პოპულარიზაცია ფართო აუდიტორიაში",
@@ -671,6 +723,7 @@ export const TRANSLATIONS: Translations = {
       shipping: "მიწოდება",
       customer: "მყიდველი",
       address: "მისამართი",
+      phone: "ტელეფონი",
       deliveredOn: "მიწოდებულია {date}",
       notDelivered: "არ არის მიწოდებული",
       payment: "გადახდა",
@@ -1096,9 +1149,9 @@ export const TRANSLATIONS: Translations = {
       salesAnalytics: "გაყიდვების ანალიტიკა",
       salesAnalyticsDesc:
         "დეტალური სტატისტიკა და რეპორტები თქვენი ბიზნესის შესახებ",
-      pricingTitle: "💵 აირჩიეთ შენთვის სასურველი პაკეტი",
+      pricingTitle: "💵 რა შედის პაკეტში",
       standardPackage: "სტანდარტული პაკეტი",
-      commission10: "კომისია გაყიდვებზე - 20%",
+      commission20Standard: "კომისია გაყიდვებზე - 20%",
       productPlacement: "პროდუქტების განთავსება",
       priceChangeAbility: "ფასის შეცვლის შესაძლებლობა",
       discountPlanning: "ფასდაკლების დაგეგმვა",
@@ -1125,9 +1178,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "შემიძლია ფასის შეცვლა?",
       faq3Answer:
         "დიახ, ნებისმიერ დროს შეგიძლიათ შეცვალოთ პროდუქტების ფასები. ასევე შეგიძლიათ მიუთითოთ საწყისი ფასი და ფასდაკლების პროცენტი გარკვეულ პერიოდზე, მაგალითად 5-დან 10 რიცხვამდე 20% ფასდაკლება.",
-      faq4Question: "რა განსხვავებაა სტანდარტულ და პრემიუმ პაკეტს შორის?",
+      faq4Question: "რა არის საკომისიო?",
       faq4Answer:
-        "სტანდარტული პაკეტი: 20% კომისია (მიწოდება და ბანკის საკომისოები შედის). პრემიუ მ პაკეტი: 20% კომისია, შეიცავს FishHunt-ის მიწოდების სერვისსა და დამატებით სარგებელს (უფასო რეკლამა)",
+        "საკომისიო 20%-ია წარმატებული გაყიდვებიდან. თუ არ გაყიდეთ - არაფერს იხდით!",
       faq5Question: "როგორ დავაყენო ფასდაკლება?",
       faq5Answer:
         "შეგიძლიათ დააყენოთ ფასდაკლების პროცენტი და აირჩიოთ კონკრეტული თარიღები. მაგალითად, შეგიძლიათ დააყენოთ 20% ფასდაკლება 5 რიცხვიდან 10 რიცხვამდე.",
@@ -1451,6 +1504,54 @@ export const TRANSLATIONS: Translations = {
       updateSuccessDescription: "Your profile has been updated successfully.",
     },
 
+    // Checkout
+    checkout: {
+      // Steps
+      step1: "Login",
+      step2: "Shipping",
+      step3: "Payment",
+      step4: "Order",
+      // Shipping form
+      shippingAddress: "Shipping Address",
+      enterShippingDetails: "Enter your shipping details",
+      streetAddress: "Street Address",
+      city: "City",
+      postalCode: "Postal Code",
+      phone: "Phone",
+      country: "Country",
+      selectCountry: "Select a country",
+      continueToPayment: "Continue to Payment",
+      pleaseWait: "Please wait...",
+      // Payment form
+      paymentMethod: "Payment Method",
+      choosePaymentMethod: "Choose how you would like to pay",
+      cardPayment: "Card Payment",
+      continueToReview: "Continue to Review",
+      // Order review
+      orderReview: "Order Review",
+      shipping: "Shipping",
+      address: "Address",
+      payment: "Payment",
+      method: "Method",
+      orderItems: "Order Items",
+      placeOrder: "Place Order",
+      // Validation messages
+      addressRequired: "Address is required",
+      cityRequired: "City is required",
+      postalCodeRequired: "Postal code is required",
+      phoneRequired: "Phone number is required",
+      phoneInvalid: "Please enter a valid phone number",
+      countryRequired: "Country is required",
+      paymentMethodRequired: "Please select a payment method",
+      // New simplified flow
+      orderSummary: "Order Summary",
+      payWithCard: "Pay with Card",
+      processingPayment: "Processing payment...",
+      securePaymentNote: "🔐 Secure payment via Bank of Georgia",
+      orderError: "Failed to create order",
+      tryAgain: "Please try again",
+    },
+
     // Cart & Checkout
     cart: {
       yourCart: "Your Cart",
@@ -1472,6 +1573,11 @@ export const TRANSLATIONS: Translations = {
       size: "Size",
       color: "Color",
       age: "Age",
+      freeShippingTbilisi: "Free delivery in Tbilisi from 50₾",
+      freeShippingRegions: "Free delivery to regions from 100₾",
+      addMoreForFreeShipping: "Add more for free shipping",
+      shippingTbilisi: "Delivery (Tbilisi)",
+      shippingRegions: "Delivery (Region)",
     },
 
     // About page
@@ -1666,6 +1772,7 @@ export const TRANSLATIONS: Translations = {
       shipping: "Shipping",
       customer: "Customer",
       address: "Address",
+      phone: "Phone",
       deliveredOn: "Delivered on {date}",
       notDelivered: "Not Delivered",
       payment: "Payment",
@@ -2153,9 +2260,9 @@ export const TRANSLATIONS: Translations = {
         "Track order status in real-time and manage delivery",
       salesAnalytics: "Sales Analytics",
       salesAnalyticsDesc: "Detailed statistics and reports about your business",
-      pricingTitle: "💵 Choose Your Package",
+      pricingTitle: "💵 What's Included in the Package",
       standardPackage: "Standard Package",
-      commission10: "Sales commission - 20%",
+      commission20Standard: "Sales commission - 20%",
       productPlacement: "Product placement",
       priceChangeAbility: "Ability to change prices",
       discountPlanning: "Discount planning",
@@ -2182,10 +2289,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "Can I change prices?",
       faq3Answer:
         "Yes, you can change product prices at any time. You can also specify initial price and discount percentage for a specific period, for example 20% discount from 5th to 10th.",
-      faq4Question:
-        "What's the difference between standard and premium packages?",
+      faq4Question: "What is the commission?",
       faq4Answer:
-        "Standard package: 20% commission (includes FishHunt delivery and bank/processing fees). Premium package: 20% commission, includes FishHunt delivery service and additional benefits (free advertising).",
+        "The commission is 20% on successful sales. If you don't sell - you don't pay!",
       faq5Question: "How to set a discount?",
       faq5Answer:
         "You can set a discount percentage and choose specific dates. For example, you can set a 20% discount from 5th to 10th.",
@@ -2524,6 +2630,15 @@ export const TRANSLATIONS: Translations = {
       adding: "Добавление...",
       addedToCart: "Добавлено в корзину",
       outOfStock: "Нет в наличии",
+      freeShippingTbilisi: "Бесплатная доставка в Тбилиси от 50₾",
+      freeShippingRegions: "Бесплатная доставка в регионы от 100₾",
+      addMoreForFreeShipping: "До бесплатной доставки осталось",
+      shippingTbilisi: "Доставка (Тбилиси)",
+      shippingRegions: "Доставка (Регион)",
+      delivery: "Доставка",
+      free: "Бесплатно",
+      commission: "Комиссия",
+      totalCost: "Общая стоимость",
     },
     // Product Details
     productDetails: {
@@ -2861,9 +2976,9 @@ export const TRANSLATIONS: Translations = {
         "Отслеживайте статус заказов в реальном времени и управляйте доставкой",
       salesAnalytics: "Аналитика продаж",
       salesAnalyticsDesc: "Подробная статистика и отчеты о вашем бизнесе",
-      pricingTitle: "💵 Выберите свой пакет",
+      pricingTitle: "💵 Что входит в пакет",
       standardPackage: "Стандартный пакет",
-      commission10: "Комиссия с продаж - 20%",
+      commission20Standard: "Комиссия с продаж - 20%",
       productPlacement: "Размещение продуктов",
       priceChangeAbility: "Возможность изменения цен",
       discountPlanning: "Планирование скидок",
@@ -2890,10 +3005,9 @@ export const TRANSLATIONS: Translations = {
       faq3Question: "Могу ли я менять цены?",
       faq3Answer:
         "Да, вы можете изменять цены на продукты в любое время. Также вы можете указать начальную цену и процент скидки на определенный период, например, скидка 20% с 5 по 10 число.",
-      faq4Question: "В чем разница между стандартным и премиум пакетами?",
+      faq4Question: "Какая комиссия?",
       faq4Answer:
-        "Стандартный пакет: комиссия 20% (включает доставку FishHunt и банковские/процессинговые комиссии). Премиум пакет: комиссия 20%, включает службу доставки FishHunt и дополнительные преимущества (бесплатная реклама).",
-
+        "Комиссия составляет 20% с успешных продаж. Если не продаете - не платите!",
       faq5Question: "Как установить скидку?",
       faq5Answer:
         "Вы можете установить процент скидки и выбрать конкретные даты. Например, вы можете установить скидку 20% с 5 по 10 число.",

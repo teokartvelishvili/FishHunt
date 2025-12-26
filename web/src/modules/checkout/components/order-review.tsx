@@ -1,7 +1,7 @@
 "use client";
 
 import { useCheckout } from "../context/checkout-context";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
@@ -12,19 +12,53 @@ import Link from "next/link";
 import "./order-review.css";
 import { useCart } from "@/modules/cart/context/cart-context";
 
+// Helper function to check if city is Tbilisi
+const isTbilisi = (city: string): boolean => {
+  const tbilisiVariants = ["tbilisi", "თბილისი", "тбилиси"];
+  return tbilisiVariants.includes(city.toLowerCase().trim());
+};
+
+// Calculate shipping price based on city and items total
+const calculateShipping = (
+  city: string,
+  itemsPrice: number
+): { price: number; freeThreshold: number; amountToFree: number } => {
+  const isTbilisiCity = isTbilisi(city);
+  const threshold = isTbilisiCity ? 50 : 100;
+  const basePrice = isTbilisiCity ? 5 : 15;
+
+  if (itemsPrice >= threshold) {
+    return { price: 0, freeThreshold: threshold, amountToFree: 0 };
+  }
+
+  return {
+    price: basePrice,
+    freeThreshold: threshold,
+    amountToFree: Number((threshold - itemsPrice).toFixed(2)),
+  };
+};
+
 export function OrderReview() {
   const { shippingAddress: shippingDetails, paymentMethod } = useCheckout();
   const { items, clearCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   );
-  const shippingPrice: number = itemsPrice > 100 ? 0 : 0;
+
+  const shippingInfo = useMemo(() => {
+    if (!shippingDetails?.city) {
+      return { price: 0, freeThreshold: 50, amountToFree: 0 };
+    }
+    return calculateShipping(shippingDetails.city, itemsPrice);
+  }, [shippingDetails?.city, itemsPrice]);
+
+  const shippingPrice = shippingInfo.price;
   const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
@@ -78,6 +112,10 @@ export function OrderReview() {
             <strong>Address: </strong>
             {shippingDetails?.address}, {shippingDetails?.city},{" "}
             {shippingDetails?.postalCode}, {shippingDetails?.country}
+          </p>
+          <p className="phone-details">
+            <strong>Phone: </strong>
+            {shippingDetails?.phone}
           </p>
         </div>
 
@@ -138,24 +176,38 @@ export function OrderReview() {
           <h2 className="section-title">Order Summary</h2>
           <div className="summary-details space-y-4">
             <div className="summary-row flex justify-between">
-              <span className="summary-label text-muted-foreground">Items</span>
+              <span className="summary-label text-muted-foreground">
+                {t("cart.total")}
+              </span>
               <span>{itemsPrice.toFixed(2)} ₾</span>
             </div>
             <div className="summary-row flex justify-between">
               <span className="summary-label text-muted-foreground">
-                Shipping
+                {shippingDetails?.city && isTbilisi(shippingDetails.city)
+                  ? t("cart.shippingTbilisi")
+                  : t("cart.shippingRegions")}
               </span>
               <span>
-                {shippingPrice === 0 ? "Free" : `${shippingPrice.toFixed(2)}₾`}
+                {shippingPrice === 0
+                  ? t("cart.free")
+                  : `${shippingPrice.toFixed(2)} ₾`}
               </span>
             </div>
+            {shippingInfo.amountToFree > 0 && (
+              <div className="text-sm text-orange-600 dark:text-orange-400">
+                💡 {t("cart.addMoreForFreeShipping")}{" "}
+                {shippingInfo.amountToFree.toFixed(2)} ₾
+              </div>
+            )}
             <div className="summary-row flex justify-between">
-              <span className="summary-label text-muted-foreground">Tax</span>
+              <span className="summary-label text-muted-foreground">
+                {t("cart.commission")}
+              </span>
               <span>{taxPrice.toFixed(2)} ₾</span>
             </div>
             <div className="separator" />
             <div className="summary-row flex justify-between font-medium">
-              <span>Total</span>
+              <span>{t("cart.totalCost")}</span>
               <span>{totalPrice.toFixed(2)} ₾</span>
             </div>
             <button

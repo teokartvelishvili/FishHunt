@@ -4,8 +4,7 @@
   gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Georgia', serif;
-  color: #4a3f35;
+  color: #333;
 }
 
 .order-details {
@@ -14,29 +13,29 @@
 
 .card {
   padding: 2rem;
-  background-color: #faf6f2;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  border: 1px solid #e0d5c8;
+  background: linear-gradient(145deg, #ffffff, #f8faf8);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(42, 85, 48, 0.1);
+  border: 1px solid rgba(42, 85, 48, 0.1);
   margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 1.75rem;
-  font-weight: normal;
+  font-size: 1.5rem;
+  font-weight: 700;
   margin-bottom: 1.25rem;
-  color: #5d4037;
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 1px;
-  border-bottom: 2px solid #e0d5c8;
+  color: #2a5530;
+  border-bottom: 2px solid rgba(42, 85, 48, 0.15);
   padding-bottom: 0.75rem;
 }
 
 .address-details,
+.phone-details,
 .payment-method {
-  color: #7d6e63;
-  font-size: 1.05rem;
-  line-height: 1.6;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
 }
 
 .order-items {
@@ -48,34 +47,39 @@
   align-items: center;
   gap: 1.25rem;
   padding: 1rem;
-  border-bottom: 1px solid #e0d5c8;
+  border-bottom: 1px solid rgba(42, 85, 48, 0.1);
   transition: background-color 0.2s;
+  border-radius: 8px;
 }
 
 .order-item:hover {
-  background-color: #f5f0e9;
+  background-color: rgba(42, 85, 48, 0.03);
 }
 
 .image-container {
   position: relative;
   height: 80px;
   width: 80px;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(122, 94, 65, 0.1);
-  border: 1px solid #e0d5c8;
+  box-shadow: 0 4px 8px rgba(42, 85, 48, 0.1);
+  border: 1px solid rgba(42, 85, 48, 0.1);
 }
 
 .item-name {
   font-weight: 600;
-  color: #5d4037;
-  font-size: 1.1rem;
+  color: #2a5530;
+  font-size: 1.05rem;
+  transition: color 0.2s;
+}
+
+.item-name:hover {
+  color: #ec9843;
 }
 
 .item-price {
-  font-size: 1rem;
-  color: #7d6e63;
-  font-style: italic;
+  font-size: 0.95rem;
+  color: #666;
 }
 
 .order-summary {
@@ -90,36 +94,47 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .summary-label {
-  color: #7d6e63;
+  color: #666;
 }
 
 .separator {
-  border-top: 1px solid #e0d5c8;
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, #2a5530, #ec9843);
   margin: 1.25rem 0;
+  border-radius: 2px;
 }
 
 .place-order-button {
   width: 100%;
-  padding: 0.9rem;
+  padding: 1rem;
   font-size: 1.1rem;
-  background-color: #8d6e63;
+  background: linear-gradient(135deg, #2a5530, #3d7a48);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.3);
 }
 
 .place-order-button:hover {
-  background-color: #6d4c41;
+  background: linear-gradient(135deg, #3d7a48, #2a5530);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 6px 20px rgba(42, 85, 48, 0.4);
+}
+
+.place-order-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Responsive adjustments */
@@ -127,7 +142,7 @@
   .order-details {
     grid-column: span 7;
   }
-  
+
   .order-summary {
     grid-column: span 5;
   }
@@ -137,19 +152,20 @@
   .order-review-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+    padding: 0 1rem;
   }
-  
+
   .order-details,
   .order-summary {
-    grid-column: span 12;
+    grid-column: span 1;
   }
-  
+
   .card {
     padding: 1.5rem;
   }
-  
+
   .section-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 }
 
@@ -157,15 +173,15 @@
   .card {
     padding: 1rem;
   }
-  
+
   .order-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
-  
+
   .place-order-button {
-    padding: 0.75rem;
+    padding: 0.85rem;
     font-size: 1rem;
   }
 }

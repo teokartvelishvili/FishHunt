@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 
 export class SaveShippingDetailsDto {
   @IsString()
@@ -12,4 +12,10 @@ export class SaveShippingDetailsDto {
 
   @IsString()
   country!: string;
+
+  @IsString()
+  @Matches(/^[+]?[0-9\s\-()]{9,20}$/, {
+    message: 'Please enter a valid phone number',
+  })
+  phone!: string;
 }

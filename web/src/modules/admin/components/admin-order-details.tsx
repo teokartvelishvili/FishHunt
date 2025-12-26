@@ -159,6 +159,10 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               {order.shippingDetails.postalCode},{" "}
               {order.shippingDetails.country}
             </p>
+            <p>
+              <strong>{t("adminOrders.phone")}:</strong>{" "}
+              {order.shippingDetails.phone}
+            </p>
             <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
               {order.isDelivered ? <CheckCircle2 /> : <XCircle />}
               <span>
@@ -398,7 +402,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               <span>{t("adminOrders.tax")}</span>
               <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
-8
+            8
             <div className="summary-total">
               <span>{t("adminOrders.total")}</span>
               <span>₾{order.totalPrice.toFixed(2)}</span>

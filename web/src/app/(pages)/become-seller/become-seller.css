@@ -124,7 +124,11 @@
 
 /* Steps */
 .highlight-section {
-  background: linear-gradient(135deg, rgba(42, 85, 48, 0.05) 0%, rgba(236, 152, 67, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(42, 85, 48, 0.05) 0%,
+    rgba(236, 152, 67, 0.05) 100%
+  );
   border: 2px solid #ec9843;
   border-radius: 16px;
   padding: 40px;
@@ -207,15 +211,18 @@
 
 /* Pricing */
 .pricing-section {
-  background: linear-gradient(135deg, rgba(42, 85, 48, 0.05) 0%, rgba(236, 152, 67, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(42, 85, 48, 0.05) 0%,
+    rgba(236, 152, 67, 0.05) 100%
+  );
   border-radius: 16px;
   padding: 40px;
 }
 
 .pricing-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  display: flex;
+  justify-content: center;
   margin: 30px 0;
 }
 
@@ -223,9 +230,11 @@
   background: white;
   border: 2px solid rgba(42, 85, 48, 0.2);
   border-radius: 16px;
-  padding: 35px;
+  padding: 40px 50px;
   position: relative;
   transition: all 0.3s ease;
+  max-width: 500px;
+  width: 100%;
 }
 
 .pricing-card:hover {
@@ -236,6 +245,11 @@
 .pricing-card.premium {
   border-color: #ec9843;
   border-width: 3px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(236, 152, 67, 0.05) 100%
+  );
 }
 
 .badge {
@@ -368,7 +382,8 @@
   margin-bottom: 25px;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   padding: 16px 40px;
   border-radius: 50px;
   font-size: 18px;
@@ -445,7 +460,8 @@
     flex-direction: column;
   }
 
-  .btn-primary, .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
   }
 }
