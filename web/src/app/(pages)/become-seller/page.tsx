@@ -147,33 +147,23 @@ export default function BecomeSellerPage() {
 
         <div className="seller-section pricing-section">
           <h2 className="section-title">{t("becomeSeller.pricingTitle")}</h2>
-          <div className="pricing-info">
-            <div className="pricing-card">
-              <h3>{t("becomeSeller.standardPackage")}</h3>
+          <div className="pricing-info single">
+            <div className="pricing-card premium single">
+              <div className="badge">{t("becomeSeller.recommended")}</div>
+              <h3>{t("becomeSeller.premiumPackage")}</h3>
               <div className="price">20%</div>
               <ul className="pricing-features">
-                <li>{t("becomeSeller.commission10")}</li>
+                <li>{t("becomeSeller.commission20")}</li>
                 <li>{t("becomeSeller.productPlacement")}</li>
                 <li>{t("becomeSeller.priceChangeAbility")}</li>
                 <li>{t("becomeSeller.discountPlanning")}</li>
                 <li>{t("becomeSeller.initialPriceIndication")}</li>
                 <li>{t("becomeSeller.salesAnalyticsIncluded")}</li>
                 <li>{t("becomeSeller.noDelivery")}</li>
-              </ul>
-            </div>
-            
-            <div className="pricing-card premium">
-              <div className="badge">{t("becomeSeller.recommended")}</div>
-              <h3>{t("becomeSeller.premiumPackage")}</h3>
-              <div className="price">20%</div>
-              <ul className="pricing-features">
-                <li>{t("becomeSeller.commission20")}</li>
-                <li>{t("becomeSeller.allStandardFeatures")}</li>
                 <li>{t("becomeSeller.fishHuntDelivery")}</li>
                 <li>{t("becomeSeller.freeFacebookGroupAds")}</li>
                 <li>{t("becomeSeller.freeFacebookPageAds")}</li>
                 <li>{t("becomeSeller.priorityVisibility")}</li>
-                <li>{t("becomeSeller.salesAnalyticsIncluded")}</li>
               </ul>
             </div>
           </div>
