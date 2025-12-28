@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import imageCompression from "browser-image-compression";
@@ -32,6 +32,20 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   // Helper function to validate tags and convert to backend format
   const prepareTagsForBackend = (tags: string[]) => {
@@ -97,6 +111,7 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({ title: "Success", description: "Post created successfully" });
       onClose();
       setContent("");

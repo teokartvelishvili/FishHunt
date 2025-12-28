@@ -1,7 +1,7 @@
 .homePageForum {
   position: relative;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   padding: 10px 5%;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);

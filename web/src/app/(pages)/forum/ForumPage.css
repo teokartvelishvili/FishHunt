@@ -38,3 +38,28 @@
 .delete-post-button:hover {
   background: #b22b2b;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .forum-page {
+    padding: 20px 15px;
+  }
+
+  .create-post-button {
+    font-size: 18px;
+    padding: 12px 30px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .forum-page {
+    padding: 15px 10px;
+  }
+
+  .create-post-button {
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+  }
+}

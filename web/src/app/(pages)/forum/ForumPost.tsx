@@ -454,6 +454,7 @@ const ForumPost = ({
     onSuccess: () => {
       setIsEditingPost(false);
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "წარმატება",
         description: "პოსტი წარმატებით განახლდა",
@@ -496,6 +497,7 @@ const ForumPost = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
+      queryClient.invalidateQueries({ queryKey: ["homepageForums"] });
       toast({
         title: "წარმატება",
         description: "პოსტი წარმატებით წაიშალა",

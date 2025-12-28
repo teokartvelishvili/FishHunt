@@ -75,7 +75,9 @@ const HomePageForum = () => {
           const isOwner = user?._id === forum.user._id;
           const isAdmin = user?.role === "admin";
           const canModify = isOwner || isAdmin;
-          const isLiked = user?._id ? forum.likesArray?.includes(user._id) : false;
+          const isLiked = user?._id
+            ? forum.likesArray?.includes(user._id)
+            : false;
 
           return (
             <ForumPost
