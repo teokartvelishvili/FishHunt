@@ -24,4 +24,32 @@ export class UserDto {
 
   @Expose()
   updatedAt!: Date;
+
+  // Seller fields
+  @Expose()
+  storeName?: string;
+
+  @Expose()
+  storeAddress?: string;
+
+  @Expose()
+  phoneNumber?: string;
+
+  @Expose()
+  ownerFirstName?: string;
+
+  @Expose()
+  ownerLastName?: string;
+
+  @Expose()
+  identificationNumber?: string;
+
+  @Expose()
+  accountNumber?: string;
+
+  @Expose()
+  storeLogo?: string;
+
+  @Expose()
+  profileImage?: string;
 }

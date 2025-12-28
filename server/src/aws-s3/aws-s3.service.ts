@@ -15,17 +15,26 @@ export class AwsS3Service {
       },
       region: process.env.AWS_REGION
     })
+    console.log('AWS S3 Service initialized:', {
+      bucketName: this.bucketName,
+      region: process.env.AWS_REGION,
+      hasAccessKey: !!process.env.AWS_ACCESS_KEY,
+      hasSecretKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+    });
   }
 
   async uploadImage(filePath: string, file){
     if(!filePath || !file) throw new BadRequestException('filepath or file require')
+    console.log('AWS S3 uploadImage called with:', { filePath, fileSize: file?.length });
     const config = {
       Key: filePath, 
       Bucket: this.bucketName,
       Body: file
     }
+    console.log('AWS config:', { Key: config.Key, Bucket: config.Bucket, hasBody: !!config.Body });
     const uploadCommand = new PutObjectCommand(config)
     await this.s3.send(uploadCommand)
+    console.log('AWS upload successful for:', filePath);
     return filePath
   }
 

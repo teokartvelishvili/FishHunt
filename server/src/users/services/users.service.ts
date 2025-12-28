@@ -79,16 +79,24 @@ export class UsersService {
 
       let logoPath: string | undefined;
       if (logoFile) {
+        this.logger.log('Logo file received:', {
+          originalname: logoFile.originalname,
+          size: logoFile.size,
+          mimetype: logoFile.mimetype,
+        });
         // Upload logo to AWS S3
         try {
           logoPath = await this.awsS3Service.uploadImage(
             logoFile.originalname,
             logoFile.buffer,
           );
+          this.logger.log('Logo uploaded successfully, path:', logoPath);
         } catch (error) {
           this.logger.error('Failed to upload logo:', error);
           // Continue without logo if upload fails
         }
+      } else {
+        this.logger.log('No logo file provided');
       }
 
       const sellerData = {

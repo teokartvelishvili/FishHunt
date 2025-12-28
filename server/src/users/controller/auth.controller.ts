@@ -86,7 +86,7 @@ export class AuthController {
     };
   }
 
-  @Serialize(UserDto)
+  // @Serialize(UserDto)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.User, Role.Seller)
   @Get('profile')

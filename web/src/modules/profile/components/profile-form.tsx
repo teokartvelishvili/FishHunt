@@ -267,7 +267,7 @@ export function ProfileForm() {
       setIsUploading(true);
 
       const formData = new FormData();
-      formData.append("logoFile", file);
+      formData.append("file", file);
 
       const response = await apiClient.post("/users/seller-logo", formData, {
         headers: {
