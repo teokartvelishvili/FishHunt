@@ -505,15 +505,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         : "გამყიდველი"}
                     </div>
                     <div className="pd-seller-name">
-                      {product.user.seller
-                        ? `${product.user.seller.ownerFirstName} ${product.user.seller.ownerLastName}`
+                      {product.user.ownerFirstName && product.user.ownerLastName
+                        ? `${product.user.ownerFirstName} ${product.user.ownerLastName}`
                         : product.user.name}
                     </div>
                     {/* Seller Address */}
-                    {product.user.seller?.storeAddress && (
+                    {product.user.storeAddress && (
                       <div className="pd-seller-address">
                         <span className="pd-seller-address-icon">📍</span>
-                        <span>{product.user.seller.storeAddress}</span>
+                        <span>{product.user.storeAddress}</span>
                       </div>
                     )}
                   </div>

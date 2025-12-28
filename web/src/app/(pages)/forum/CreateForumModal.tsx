@@ -36,14 +36,14 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -70,7 +70,8 @@ const CreateForumModal = ({ isOpen, onClose }: CreateForumModalProps) => {
     mutationFn: async () => {
       try {
         // Prepare tags for backend - default to 'all' if no tags selected
-        const backendTags = tags.length > 0 ? prepareTagsForBackend(tags) : ["all"];
+        const backendTags =
+          tags.length > 0 ? prepareTagsForBackend(tags) : ["all"];
 
         if (image) {
           // Compress the image before uploading

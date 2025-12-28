@@ -8,9 +8,9 @@
 }
 
 .create-post-button {
-  background: linear-gradient(to left,  #2a5530, #ec9843);
-  background-size: 150% 100%; 
-  transition: background-position 1.7s ease-in-out; 
+  background: linear-gradient(to left, #2a5530, #ec9843);
+  background-size: 150% 100%;
+  transition: background-position 1.7s ease-in-out;
   border: none;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -24,7 +24,6 @@
 .create-post-button:hover {
   background-position: right;
 }
-
 
 .delete-post-button {
   background: red;

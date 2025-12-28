@@ -275,13 +275,20 @@ export class UsersService {
       if (updateDto.role) user.role = updateDto.role;
 
       // Seller specific fields
-      if (updateDto.storeName !== undefined) user.storeName = updateDto.storeName;
-      if (updateDto.storeAddress !== undefined) user.storeAddress = updateDto.storeAddress;
-      if (updateDto.ownerFirstName !== undefined) user.ownerFirstName = updateDto.ownerFirstName;
-      if (updateDto.ownerLastName !== undefined) user.ownerLastName = updateDto.ownerLastName;
-      if (updateDto.phoneNumber !== undefined) user.phoneNumber = updateDto.phoneNumber;
-      if (updateDto.identificationNumber !== undefined) user.identificationNumber = updateDto.identificationNumber;
-      if (updateDto.accountNumber !== undefined) user.accountNumber = updateDto.accountNumber;
+      if (updateDto.storeName !== undefined)
+        user.storeName = updateDto.storeName;
+      if (updateDto.storeAddress !== undefined)
+        user.storeAddress = updateDto.storeAddress;
+      if (updateDto.ownerFirstName !== undefined)
+        user.ownerFirstName = updateDto.ownerFirstName;
+      if (updateDto.ownerLastName !== undefined)
+        user.ownerLastName = updateDto.ownerLastName;
+      if (updateDto.phoneNumber !== undefined)
+        user.phoneNumber = updateDto.phoneNumber;
+      if (updateDto.identificationNumber !== undefined)
+        user.identificationNumber = updateDto.identificationNumber;
+      if (updateDto.accountNumber !== undefined)
+        user.accountNumber = updateDto.accountNumber;
 
       // Only hash and update password if it's provided and not empty
       if (updateDto.password && updateDto.password.trim() !== '') {

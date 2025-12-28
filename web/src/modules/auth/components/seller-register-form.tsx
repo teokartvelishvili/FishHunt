@@ -92,8 +92,8 @@ export function SellerRegisterForm() {
       onSuccess: (response) => {
         // Store tokens in localStorage
         if (response.tokens) {
-          localStorage.setItem('accessToken', response.tokens.accessToken);
-          localStorage.setItem('refreshToken', response.tokens.refreshToken);
+          localStorage.setItem("accessToken", response.tokens.accessToken);
+          localStorage.setItem("refreshToken", response.tokens.refreshToken);
         }
 
         setIsSuccess(true);
@@ -227,7 +227,7 @@ export function SellerRegisterForm() {
   //           mapMarker.setPosition(event.latLng);
   //           const lat = event.latLng.lat();
   //           const lng = event.latLng.lng();
-            
+
   //           setValue("storeLocation", {
   //             lat,
   //             lng,
@@ -262,7 +262,7 @@ export function SellerRegisterForm() {
   //           );
   //           const lat = event.latLng.lat();
   //           const lng = event.latLng.lng();
-            
+
   //           setValue("storeLocation", {
   //             lat,
   //             lng,

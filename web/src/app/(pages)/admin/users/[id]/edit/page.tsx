@@ -54,13 +54,13 @@ export default function EditUserPage() {
 
       // Add seller fields if user is a seller
       if (user.role === Role.Seller) {
-        updateData.storeName = user.storeName || '';
-        updateData.storeAddress = user.storeAddress || '';
-        updateData.ownerFirstName = user.ownerFirstName || '';
-        updateData.ownerLastName = user.ownerLastName || '';
-        updateData.phoneNumber = user.phoneNumber || '';
-        updateData.identificationNumber = user.identificationNumber || '';
-        updateData.accountNumber = user.accountNumber || '';
+        updateData.storeName = user.storeName || "";
+        updateData.storeAddress = user.storeAddress || "";
+        updateData.ownerFirstName = user.ownerFirstName || "";
+        updateData.ownerLastName = user.ownerLastName || "";
+        updateData.phoneNumber = user.phoneNumber || "";
+        updateData.identificationNumber = user.identificationNumber || "";
+        updateData.accountNumber = user.accountNumber || "";
       }
 
       const userId = params?.id as string;
@@ -125,14 +125,18 @@ export default function EditUserPage() {
         {/* Seller specific fields */}
         {user.role === Role.Seller && (
           <>
-            <h2 style={{ marginTop: '20px', marginBottom: '10px' }}>Seller Information</h2>
+            <h2 style={{ marginTop: "20px", marginBottom: "10px" }}>
+              Seller Information
+            </h2>
 
             <div className="form-group">
               <label>Store Name</label>
               <input
                 type="text"
-                value={user.storeName || ''}
-                onChange={(e) => setUser({ ...user, storeName: e.target.value })}
+                value={user.storeName || ""}
+                onChange={(e) =>
+                  setUser({ ...user, storeName: e.target.value })
+                }
               />
             </div>
 
@@ -140,8 +144,10 @@ export default function EditUserPage() {
               <label>Owner First Name</label>
               <input
                 type="text"
-                value={user.ownerFirstName || ''}
-                onChange={(e) => setUser({ ...user, ownerFirstName: e.target.value })}
+                value={user.ownerFirstName || ""}
+                onChange={(e) =>
+                  setUser({ ...user, ownerFirstName: e.target.value })
+                }
               />
             </div>
 
@@ -149,8 +155,10 @@ export default function EditUserPage() {
               <label>Owner Last Name</label>
               <input
                 type="text"
-                value={user.ownerLastName || ''}
-                onChange={(e) => setUser({ ...user, ownerLastName: e.target.value })}
+                value={user.ownerLastName || ""}
+                onChange={(e) =>
+                  setUser({ ...user, ownerLastName: e.target.value })
+                }
               />
             </div>
 
@@ -158,8 +166,10 @@ export default function EditUserPage() {
               <label>Phone Number</label>
               <input
                 type="tel"
-                value={user.phoneNumber || ''}
-                onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
+                value={user.phoneNumber || ""}
+                onChange={(e) =>
+                  setUser({ ...user, phoneNumber: e.target.value })
+                }
               />
             </div>
 
@@ -167,8 +177,10 @@ export default function EditUserPage() {
               <label>Store Address</label>
               <input
                 type="text"
-                value={user.storeAddress || ''}
-                onChange={(e) => setUser({ ...user, storeAddress: e.target.value })}
+                value={user.storeAddress || ""}
+                onChange={(e) =>
+                  setUser({ ...user, storeAddress: e.target.value })
+                }
               />
             </div>
 
@@ -176,8 +188,10 @@ export default function EditUserPage() {
               <label>Identification Number</label>
               <input
                 type="text"
-                value={user.identificationNumber || ''}
-                onChange={(e) => setUser({ ...user, identificationNumber: e.target.value })}
+                value={user.identificationNumber || ""}
+                onChange={(e) =>
+                  setUser({ ...user, identificationNumber: e.target.value })
+                }
               />
             </div>
 
@@ -185,8 +199,10 @@ export default function EditUserPage() {
               <label>Account Number</label>
               <input
                 type="text"
-                value={user.accountNumber || ''}
-                onChange={(e) => setUser({ ...user, accountNumber: e.target.value })}
+                value={user.accountNumber || ""}
+                onChange={(e) =>
+                  setUser({ ...user, accountNumber: e.target.value })
+                }
               />
             </div>
           </>

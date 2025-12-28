@@ -1,20 +1,25 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class AwsS3Service {
-  private bucketName
-  private s3
-  constructor(){
-    this.bucketName = process.env.AWS_BUCKET_NAME
+  private bucketName;
+  private s3;
+  constructor() {
+    this.bucketName = process.env.AWS_BUCKET_NAME;
     this.s3 = new S3Client({
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
-      region: process.env.AWS_REGION
-    })
+      region: process.env.AWS_REGION,
+    });
     console.log('AWS S3 Service initialized:', {
       bucketName: this.bucketName,
       region: process.env.AWS_REGION,
@@ -23,24 +28,32 @@ export class AwsS3Service {
     });
   }
 
-  async uploadImage(filePath: string, file){
-    if(!filePath || !file) throw new BadRequestException('filepath or file require')
-    console.log('AWS S3 uploadImage called with:', { filePath, fileSize: file?.length });
+  async uploadImage(filePath: string, file) {
+    if (!filePath || !file)
+      throw new BadRequestException('filepath or file require');
+    console.log('AWS S3 uploadImage called with:', {
+      filePath,
+      fileSize: file?.length,
+    });
     const config = {
-      Key: filePath, 
+      Key: filePath,
       Bucket: this.bucketName,
-      Body: file
-    }
-    console.log('AWS config:', { Key: config.Key, Bucket: config.Bucket, hasBody: !!config.Body });
-    const uploadCommand = new PutObjectCommand(config)
-    await this.s3.send(uploadCommand)
+      Body: file,
+    };
+    console.log('AWS config:', {
+      Key: config.Key,
+      Bucket: config.Bucket,
+      hasBody: !!config.Body,
+    });
+    const uploadCommand = new PutObjectCommand(config);
+    await this.s3.send(uploadCommand);
     console.log('AWS upload successful for:', filePath);
-    return filePath
+    return filePath;
   }
 
-  async getImageByFileId(fileId: string){
-    if(!fileId) return null
-    
+  async getImageByFileId(fileId: string) {
+    if (!fileId) return null;
+
     try {
       // Instead of downloading the file and converting to base64,
       // generate a pre-signed URL that provides temporary access to the object
@@ -48,9 +61,11 @@ export class AwsS3Service {
         Bucket: this.bucketName,
         Key: fileId,
       });
-      
+
       // Generate a signed URL that expires in 24 hours (86400 seconds)
-      const signedUrl = await getSignedUrl(this.s3, command, { expiresIn: 86400 });
+      const signedUrl = await getSignedUrl(this.s3, command, {
+        expiresIn: 86400,
+      });
       return signedUrl;
     } catch (error) {
       console.error(`Error generating signed URL for ${fileId}:`, error);
@@ -58,15 +73,15 @@ export class AwsS3Service {
     }
   }
 
-  async deleteImageByFileId(fileId: string){
-    if(!fileId) throw new BadRequestException('file id required')
+  async deleteImageByFileId(fileId: string) {
+    if (!fileId) throw new BadRequestException('file id required');
     const config = {
       Key: fileId,
       Bucket: this.bucketName,
-    }
-    const deleteCommand = new DeleteObjectCommand(config)
-    await this.s3.send(deleteCommand)
-    
-    return `image ${fileId} deleted`
+    };
+    const deleteCommand = new DeleteObjectCommand(config);
+    await this.s3.send(deleteCommand);
+
+    return `image ${fileId} deleted`;
   }
 }
