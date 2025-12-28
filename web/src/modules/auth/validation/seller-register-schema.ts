@@ -2,6 +2,13 @@ import * as z from "zod";
 
 export const sellerRegisterSchema = z.object({
   storeName: z.string().min(1, "მაღაზიის სახელი სავალდებულოა"),
+  storeAddress: z.string().min(1, "მაღაზიის მისამართი სავალდებულოა"),
+  storeLocation: z
+    .object({
+      lat: z.number(),
+      lng: z.number(),
+    })
+    .optional(),
   // Remove storeLogo since we'll handle it as a file upload
   ownerFirstName: z.string().min(1, "სახელი სავალდებულოა"),
   ownerLastName: z.string().min(1, "გვარი სავალდებულოა"),
@@ -22,11 +29,20 @@ export const sellerRegisterSchema = z.object({
     .refine((value) => value.length === 22, "IBAN უნდა შეიცავდეს 22 სიმბოლოს"),
   agreeToPrivacyPolicy: z
     .boolean()
-    .refine((val) => val === true, "კონფიდენციალურობის პოლიტიკაზე თანხმობა აუცილებელია"),
+    .refine(
+      (val) => val === true,
+      "კონფიდენციალურობის პოლიტიკაზე თანხმობა აუცილებელია"
+    ),
   agreeToSellerAgreement: z
     .boolean()
-    .refine((val) => val === true, "გამყიდველის ხელშეკრულებაზე თანხმობა აუცილებელია"),
+    .refine(
+      (val) => val === true,
+      "გამყიდველის ხელშეკრულებაზე თანხმობა აუცილებელია"
+    ),
   agreeToTerms: z
     .boolean()
-    .refine((val) => val === true, "ზოგადი წესებისა და პირობების თანხმობა აუცილებელია"),
+    .refine(
+      (val) => val === true,
+      "ზოგადი წესებისა და პირობების თანხმობა აუცილებელია"
+    ),
 });

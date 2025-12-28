@@ -1,68 +1,76 @@
 // Type declarations for CSS modules and other imports
-declare module '*.css' {
+declare module "*.css" {
   const content: { [className: string]: string };
   export default content;
 }
 
-declare module '*.scss' {
+declare module "*.scss" {
   const content: { [className: string]: string };
   export default content;
 }
 
-declare module '*.sass' {
+declare module "*.sass" {
   const content: { [className: string]: string };
   export default content;
 }
 
 // Image imports
-declare module '*.png' {
+declare module "*.png" {
   const value: string;
   export default value;
 }
 
-declare module '*.jpg' {
+declare module "*.jpg" {
   const value: string;
   export default value;
 }
 
-declare module '*.jpeg' {
+declare module "*.jpeg" {
   const value: string;
   export default value;
 }
 
-declare module '*.gif' {
+declare module "*.gif" {
   const value: string;
   export default value;
 }
 
-declare module '*.svg' {
+declare module "*.svg" {
   const value: string;
   export default value;
 }
 
-declare module '*.webp' {
+declare module "*.webp" {
   const value: string;
   export default value;
 }
 
-declare module '*.ico' {
+declare module "*.ico" {
   const value: string;
   export default value;
 }
 
 // Audio files
-declare module '*.wav' {
+declare module "*.wav" {
   const value: string;
   export default value;
 }
 
-declare module '*.mp3' {
+declare module "*.mp3" {
   const value: string;
   export default value;
 }
 
 // Other file types
-declare module '*.json' {
+declare module "*.json" {
   const value: Record<string, unknown>;
   export default value;
+}
+
+// Google Maps API
+declare global {
+  interface Window {
+    google: typeof google;
+    initMap: () => void;
+  }
 }

@@ -29,6 +29,14 @@ export class ProfileDto {
   storeName?: string;
 
   @IsOptional()
+  @IsString()
+  ownerFirstName?: string;
+
+  @IsOptional()
+  @IsString()
+  ownerLastName?: string;
+
+  @IsOptional()
   @IsPhoneNumber(null, { message: 'Invalid phone number format' })
   phoneNumber?: string;
 
@@ -39,4 +47,14 @@ export class ProfileDto {
   @IsOptional()
   @IsString()
   accountNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  storeAddress?: string;
+
+  @IsOptional()
+  storeLocation?: {
+    lat: number;
+    lng: number;
+  };
 }

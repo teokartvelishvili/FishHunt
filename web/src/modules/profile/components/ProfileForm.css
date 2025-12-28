@@ -404,3 +404,24 @@ form {
     grid-template-columns: 1fr;
   }
 }
+
+/* Seller Section Styles */
+.seller-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.seller-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2a5530;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.seller-section-title::before {
+  content: "🏪";
+}

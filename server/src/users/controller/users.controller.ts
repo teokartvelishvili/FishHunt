@@ -143,15 +143,15 @@ export class UsersController {
 
   @Post('seller-logo')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Seller)
   @UseInterceptors(FileInterceptor('file'))
   async uploadLogo(
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // Only admin can upload logos now
-    if (user.role !== Role.Admin) {
-      throw new BadRequestException('Only admins can upload logos');
+    // Only admin and sellers can upload logos
+    if (user.role !== Role.Admin && user.role !== Role.Seller) {
+      throw new BadRequestException('Only admins and sellers can upload logos');
     }
 
     if (!file) {
@@ -186,13 +186,16 @@ export class UsersController {
       throw new BadRequestException('The file must be less than 5 MB.');
     }
 
-    // Upload image and return the URL
-    const logoPath = await this.usersService.uploadImage(filePath, file.buffer);
-    const logoUrl = await this.usersService.getProfileImageUrl(logoPath);
+    // Update user's storeLogo field
+    const result = await this.usersService.updateStoreLogo(
+      user['_id'] as string,
+      filePath,
+      file.buffer,
+    );
 
     return {
       message: 'Logo uploaded successfully',
-      logoUrl: logoUrl,
+      storeLogo: result.storeLogo,
     };
   }
 }

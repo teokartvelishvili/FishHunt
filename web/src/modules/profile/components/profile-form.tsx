@@ -12,6 +12,7 @@ import "./ProfileForm.css";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { Role } from "@/types/role";
 
 const formSchema = z
   .object({
@@ -23,6 +24,14 @@ const formSchema = z
       .optional()
       .or(z.literal("")),
     confirmPassword: z.string().optional().or(z.literal("")),
+    // Seller specific fields
+    storeName: z.string().optional(),
+    storeAddress: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    ownerFirstName: z.string().optional(),
+    ownerLastName: z.string().optional(),
+    identificationNumber: z.string().optional(),
+    accountNumber: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -45,8 +54,12 @@ export function ProfileForm() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const { user, isLoading } = useUser();
   const { t } = useLanguage();
+
+  const isSeller = user?.role === Role.Seller;
 
   // Use manual invalidation instead of refetch
   const refreshUserData = useCallback(() => {
@@ -74,18 +87,48 @@ export function ProfileForm() {
       if (user.profileImage) {
         setProfileImage(`${user.profileImage}`);
       }
+
+      if (user.storeLogo) {
+        setLogoPreview(`${user.storeLogo}`);
+      }
     }
   }, [user]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user?.name || "",
-      email: user?.email || "",
+      name: "",
+      email: "",
       password: "",
       confirmPassword: "",
+      storeName: "",
+      storeAddress: "",
+      phoneNumber: "",
+      ownerFirstName: "",
+      ownerLastName: "",
+      identificationNumber: "",
+      accountNumber: "",
     },
   });
+
+  // Reset form when user data changes
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+        password: "",
+        confirmPassword: "",
+        storeName: user.storeName || "",
+        storeAddress: user.storeAddress || "",
+        phoneNumber: user.phoneNumber || "",
+        ownerFirstName: user.ownerFirstName || "",
+        ownerLastName: user.ownerLastName || "",
+        identificationNumber: user.identificationNumber || "",
+        accountNumber: user.accountNumber || "",
+      });
+    }
+  }, [user, form]);
 
   const updateProfile = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
@@ -102,6 +145,31 @@ export function ProfileForm() {
 
         if (values.password) {
           payload.password = values.password;
+        }
+
+        // Seller specific fields
+        if (isSeller) {
+          if (values.storeName !== user?.storeName) {
+            payload.storeName = values.storeName;
+          }
+          if (values.storeAddress !== user?.storeAddress) {
+            payload.storeAddress = values.storeAddress;
+          }
+          if (values.phoneNumber !== user?.phoneNumber) {
+            payload.phoneNumber = values.phoneNumber;
+          }
+          if (values.ownerFirstName !== user?.ownerFirstName) {
+            payload.ownerFirstName = values.ownerFirstName;
+          }
+          if (values.ownerLastName !== user?.ownerLastName) {
+            payload.ownerLastName = values.ownerLastName;
+          }
+          if (values.identificationNumber !== user?.identificationNumber) {
+            payload.identificationNumber = values.identificationNumber;
+          }
+          if (values.accountNumber !== user?.accountNumber) {
+            payload.accountNumber = values.accountNumber;
+          }
         }
 
         if (Object.keys(payload).length === 0) {
@@ -179,6 +247,60 @@ export function ProfileForm() {
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Show preview immediately
+    const fileReader = new FileReader();
+    fileReader.onload = (event) => {
+      if (event.target?.result) {
+        setLogoPreview(event.target.result as string);
+      }
+    };
+    fileReader.readAsDataURL(file);
+
+    try {
+      setIsUploading(true);
+
+      const formData = new FormData();
+      formData.append("logoFile", file);
+
+      const response = await apiClient.post("/users/seller-logo", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const cacheBustingUrl = `${
+        response.data.storeLogo
+      }?t=${new Date().getTime()}`;
+      setLogoPreview(cacheBustingUrl);
+
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+
+      toast({
+        title: t("profile.logoUploadSuccess"),
+        description: t("profile.logoUploadSuccessDescription"),
+      });
+    } catch (error) {
+      console.error("Error uploading store logo:", error);
+      toast({
+        title: t("profile.logoUploadError"),
+        description: t("profile.logoUploadErrorDescription"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const triggerLogoFileInput = () => {
+    if (logoFileInputRef.current) {
+      logoFileInputRef.current.click();
     }
   };
 
@@ -360,6 +482,137 @@ export function ProfileForm() {
             </span>
           )}
         </div>
+
+        {/* Seller specific fields */}
+        {isSeller && (
+          <>
+            <div className="seller-section">
+              <h3 className="seller-section-title">{t("profile.storeInfo")}</h3>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="logoFile" className="label">
+                {t("auth.uploadLogo")}
+              </label>
+              <div className="logo-upload-container">
+                {logoPreview && (
+                  <div className="logo-preview">
+                    <Image
+                      src={logoPreview}
+                      alt={t("auth.logoPreview")}
+                      width={100}
+                      height={100}
+                      className="logo-preview-image"
+                    />
+                  </div>
+                )}
+                <input
+                  ref={logoFileInputRef}
+                  id="logoFile"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  className="file-input"
+                  style={{ display: "none" }}
+                />
+                <button
+                  type="button"
+                  onClick={triggerLogoFileInput}
+                  className="logo-upload-button"
+                  disabled={isUploading}
+                >
+                  {isUploading
+                    ? t("profile.uploading")
+                    : logoPreview
+                    ? t("auth.changeLogo")
+                    : t("auth.uploadLogo")}
+                </button>
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="storeName" className="label">
+                {t("auth.companyName")}
+              </label>
+              <input
+                id="storeName"
+                {...form.register("storeName")}
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="ownerFirstName" className="label">
+                {t("auth.firstName")}
+              </label>
+              <input
+                id="ownerFirstName"
+                {...form.register("ownerFirstName")}
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="ownerLastName" className="label">
+                {t("auth.lastName")}
+              </label>
+              <input
+                id="ownerLastName"
+                {...form.register("ownerLastName")}
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="storeAddress" className="label">
+                {t("auth.storeAddress")}
+              </label>
+              <input
+                id="storeAddress"
+                {...form.register("storeAddress")}
+                placeholder={t("auth.storeAddressHint") as string}
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="phoneNumber" className="label">
+                {t("auth.phoneNumber")}
+              </label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                {...form.register("phoneNumber")}
+                placeholder="+995555123456"
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="identificationNumber" className="label">
+                {t("auth.idNumber")}
+              </label>
+              <input
+                id="identificationNumber"
+                {...form.register("identificationNumber")}
+                placeholder={t("auth.enterIdNumber") as string}
+                className="input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="accountNumber" className="label">
+                {t("auth.accountNumber")}
+              </label>
+              <input
+                id="accountNumber"
+                {...form.register("accountNumber")}
+                placeholder="GE29TB7777777777777777"
+                className="input"
+              />
+            </div>
+          </>
+        )}
 
         <button
           type="submit"

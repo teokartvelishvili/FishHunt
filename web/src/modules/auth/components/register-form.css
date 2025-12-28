@@ -225,3 +225,37 @@ input:focus {
 .google-green {
   color: #34a853;
 }
+
+/* Location Picker Styles */
+.location-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location-map {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #2a5530;
+  border-radius: 4px;
+}
+
+.location-coords {
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #2a5530;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  text-align: center;
+  padding: 20px;
+}

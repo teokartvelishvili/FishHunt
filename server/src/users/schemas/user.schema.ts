@@ -46,6 +46,9 @@ export class User {
   storeLogo?: string;
 
   @Prop({ type: String, default: null })
+  storeLogoPath?: string;
+
+  @Prop({ type: String, default: null })
   ownerFirstName?: string;
 
   @Prop({ type: String, default: null })
@@ -59,6 +62,15 @@ export class User {
 
   @Prop({ type: String, default: null })
   accountNumber?: string;
+
+  @Prop({ type: String, default: null })
+  storeAddress?: string;
+
+  @Prop({ type: Object, default: null })
+  storeLocation?: {
+    lat: number;
+    lng: number;
+  };
 
   @Prop()
   passwordResetToken?: string;

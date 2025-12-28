@@ -226,6 +226,19 @@
   margin: 0;
 }
 
+.pd-seller-address {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.pd-seller-address-icon {
+  font-size: 14px;
+}
+
 .pd-product-title {
   font-size: 28px;
   font-weight: 700;

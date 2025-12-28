@@ -96,7 +96,7 @@ export class UsersService {
         name: dto.storeName,
         role: Role.Seller,
         password: dto.password,
-        storeLogo: logoPath, // Add logo path to seller data
+        storeLogoPath: logoPath, // Add logo path to seller data
       };
 
       return await this.create(sellerData);
@@ -338,7 +338,50 @@ export class UsersService {
       };
     } catch (error) {
       throw new BadRequestException(
-        'Failed to update profile image: ' + error.message,
+        'Failed to update profile image. Please try again.',
+      );
+    }
+  }
+
+  async updateStoreLogo(userId: string, filePath: string, fileBuffer: Buffer) {
+    try {
+      const user = await this.userModel.findById(userId);
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Delete old logo if it exists
+      if (user.storeLogoPath) {
+        try {
+          await this.awsS3Service.deleteImageByFileId(
+            user.storeLogoPath as string,
+          );
+        } catch (error) {
+          console.error('Failed to delete old store logo', error);
+          // Continue even if deletion fails
+        }
+      }
+
+      // Upload new logo
+      const storeLogoPath = await this.awsS3Service.uploadImage(
+        filePath,
+        fileBuffer,
+      );
+
+      // Update user record
+      await this.userModel.findByIdAndUpdate(userId, { storeLogoPath });
+
+      // Get logo URL
+      const logoUrl = await this.awsS3Service.getImageByFileId(storeLogoPath);
+
+      return {
+        message: 'Store logo updated successfully',
+        storeLogo: logoUrl,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        'Failed to update store logo. Please try again.',
       );
     }
   }
@@ -359,6 +402,8 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    console.log('User object from database:', user.toObject()); // Debug log
+
     // Get profile image URL if it exists
     let profileImage = null;
     if (user.profileImagePath) {
@@ -367,10 +412,23 @@ export class UsersService {
       );
     }
 
-    return {
+    // Get store logo URL if it exists
+    let storeLogo = null;
+    if (user.storeLogoPath) {
+      storeLogo = await this.awsS3Service.getImageByFileId(
+        user.storeLogoPath as string,
+      );
+    }
+
+    const result = {
       ...user.toObject(),
       profileImage,
+      storeLogo,
     };
+
+    console.log('Profile data result:', result); // Debug log
+
+    return result;
   }
 
   async getProfileImageUrl(profileImagePath: string): Promise<string | null> {

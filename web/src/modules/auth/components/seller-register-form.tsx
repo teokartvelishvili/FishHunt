@@ -7,7 +7,7 @@ import { useSellerRegister } from "../hooks/use-auth";
 import Link from "next/link";
 import "./register-form.css";
 import type * as z from "zod";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
@@ -25,11 +25,15 @@ export function SellerRegisterForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // const [map, setMap] = useState<google.maps.Map | null>(null);
+  // const [marker, setMarker] = useState<google.maps.Marker | null>(null);
+  // const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   const {
     register: registerField,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<SellerRegisterFormData>({
     resolver: zodResolver(sellerRegisterSchema),
@@ -45,6 +49,8 @@ export function SellerRegisterForm() {
     !!watch("agreeToPrivacyPolicy") &&
     !!watch("agreeToSellerAgreement") &&
     !!watch("agreeToTerms");
+
+  // const [addressTimeout, setAddressTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -65,9 +71,14 @@ export function SellerRegisterForm() {
     // Create FormData to handle file uploads
     const formData = new FormData();
 
-    // Add all form fields to FormData
+    // Add all form fields to FormData, excluding agreement checkboxes
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined) {
+      if (
+        value !== undefined &&
+        key !== "agreeToPrivacyPolicy" &&
+        key !== "agreeToSellerAgreement" &&
+        key !== "agreeToTerms"
+      ) {
         formData.append(key, value as string);
       }
     });
@@ -78,7 +89,13 @@ export function SellerRegisterForm() {
     }
 
     register(formData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        // Store tokens in localStorage
+        if (response.tokens) {
+          localStorage.setItem('accessToken', response.tokens.accessToken);
+          localStorage.setItem('refreshToken', response.tokens.refreshToken);
+        }
+
         setIsSuccess(true);
         toast({
           title: t("auth.registrationSuccessful"),
@@ -86,9 +103,9 @@ export function SellerRegisterForm() {
           variant: "default",
         });
 
-        // Redirect to login page after 2 seconds
+        // Redirect to profile page after 2 seconds
         setTimeout(() => {
-          router.push("/login");
+          router.push("/profile");
         }, 2000);
       },
       onError: (error) => {
@@ -105,11 +122,180 @@ export function SellerRegisterForm() {
     });
   });
 
+  // const handleAddressChange = (address: string) => {
+  //   if (!window.google || !window.google.maps) return;
+
+  //   // Clear previous timeout
+  //   if (addressTimeout) {
+  //     clearTimeout(addressTimeout);
+  //   }
+
+  //   // Set new timeout for debounced geocoding
+  //   const timeout = setTimeout(() => {
+  //     const geocoder = new google.maps.Geocoder();
+  //     geocoder.geocode({ address }, (results, status) => {
+  //       if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+  //         const location = results[0].geometry.location;
+  //         const lat = location.lat();
+  //         const lng = location.lng();
+
+  //         setValue("storeLocation", { lat, lng });
+
+  //         // Update map and marker if they exist
+  //         if (map && marker) {
+  //           map.setCenter({ lat, lng });
+  //           marker.setPosition({ lat, lng });
+  //         }
+  //       }
+  //     });
+  //   }, 1000); // 1 second delay
+
+  //   setAddressTimeout(timeout);
+  // };
+
+  // Cleanup timeout on unmount
+  // useEffect(() => {
+  //   return () => {
+  //     if (addressTimeout) {
+  //       clearTimeout(addressTimeout);
+  //     }
+  //   };
+  // }, [addressTimeout]);
+
   const triggerFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
+
+  // Initialize Google Maps
+  // useEffect(() => {
+  //   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+  //   if (!apiKey) {
+  //     console.error("Google Maps API key not found");
+  //     return;
+  //   }
+
+  //   // Check if Google Maps is already loaded
+  //   if (window.google && window.google.maps) {
+  //     initializeMap();
+  //     return;
+  //   }
+
+  //   // Check if script is already loading
+  //   if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+  //     return;
+  //   }
+
+  //   // Define initMap function globally
+  //   window.initMap = initializeMap;
+
+  //   // Load Google Maps script
+  //   const script = document.createElement("script");
+  //   script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places`;
+  //   script.async = true;
+  //   script.defer = true;
+  //   document.head.appendChild(script);
+
+  //   function initializeMap() {
+  //     try {
+  //       console.log("Initializing Google Maps...");
+  //       console.log("Google Maps API available:", !!window.google?.maps);
+  //       const mapElement = document.getElementById("location-map");
+  //       if (!mapElement) {
+  //         console.error("Map element not found");
+  //         return;
+  //       }
+
+  //       const googleMap = new google.maps.Map(mapElement, {
+  //         center: { lat: 41.7167, lng: 44.7833 }, // Tbilisi center
+  //         zoom: 12,
+  //       });
+
+  //       console.log("Google Maps initialized successfully");
+
+  //       const mapMarker = new google.maps.Marker({
+  //         position: { lat: 41.7167, lng: 44.7833 },
+  //         map: googleMap,
+  //         draggable: true,
+  //       });
+
+  //       googleMap.addListener("click", (event: google.maps.MapMouseEvent) => {
+  //         if (event.latLng) {
+  //           console.log("Map clicked:", event.latLng.lat(), event.latLng.lng());
+  //           mapMarker.setPosition(event.latLng);
+  //           const lat = event.latLng.lat();
+  //           const lng = event.latLng.lng();
+            
+  //           setValue("storeLocation", {
+  //             lat,
+  //             lng,
+  //           });
+
+  //           // Reverse geocode to get address
+  //           const geocoder = new google.maps.Geocoder();
+  //           geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+  //             if (
+  //               status === google.maps.GeocoderStatus.OK &&
+  //               results &&
+  //               results[0]
+  //             ) {
+  //               console.log(
+  //                 "Reverse geocoding result:",
+  //                 results[0].formatted_address
+  //               );
+  //               setValue("storeAddress", results[0].formatted_address);
+  //             } else {
+  //               console.error("Reverse geocoding failed:", status);
+  //             }
+  //           });
+  //         }
+  //       });
+
+  //       mapMarker.addListener("dragend", (event: google.maps.MapMouseEvent) => {
+  //         if (event.latLng) {
+  //           console.log(
+  //             "Marker dragged:",
+  //             event.latLng.lat(),
+  //             event.latLng.lng()
+  //           );
+  //           const lat = event.latLng.lat();
+  //           const lng = event.latLng.lng();
+            
+  //           setValue("storeLocation", {
+  //             lat,
+  //             lng,
+  //           });
+
+  //           // Reverse geocode to get address
+  //           const geocoder = new google.maps.Geocoder();
+  //           geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+  //             if (
+  //               status === google.maps.GeocoderStatus.OK &&
+  //               results &&
+  //               results[0]
+  //             ) {
+  //               console.log(
+  //                 "Reverse geocoding result:",
+  //                 results[0].formatted_address
+  //               );
+  //               setValue("storeAddress", results[0].formatted_address);
+  //             } else {
+  //               console.error("Reverse geocoding failed:", status);
+  //             }
+  //           });
+  //         }
+  //       });
+  //       setMap(googleMap);
+  //       setMarker(mapMarker);
+  //       setIsMapLoaded(true);
+  //       console.log("Map initialization complete");
+  //     } catch (error) {
+  //       console.error("Error initializing Google Maps:", error);
+  //     }
+  //   }
+  // }, []);
 
   if (isSuccess) {
     return (
@@ -171,6 +357,63 @@ export function SellerRegisterForm() {
             </button>
           </div>
         </div>
+
+        <div className="input-group">
+          <label htmlFor="storeAddress">{t("auth.storeAddress")}</label>
+          <input
+            id="storeAddress"
+            type="text"
+            placeholder={t("auth.enterStoreAddress")}
+            {...registerField("storeAddress")}
+            // onChange={(e) => {
+            //   registerField("storeAddress").onChange(e);
+            //   handleAddressChange(e.target.value);
+            // }}
+          />
+          {errors.storeAddress && (
+            <p className="error-text">{errors.storeAddress.message}</p>
+          )}
+          <p className="hint-text">{t("auth.storeAddressHint")}</p>
+        </div>
+
+        {/* <div className="input-group">
+          <label>{t("auth.storeLocation")}</label>
+          <div className="location-picker-container">
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+              <>
+                <div id="location-map" className="location-map"></div>
+                <p className="hint-text">{t("auth.clickOnMap")}</p>
+              </>
+            ) : (
+              <div className="map-placeholder">
+                <p className="error-text">რუკა არ არის ხელმისაწვდომი</p>
+                <p className="hint-text">
+                  Google Maps API გასაღები არ არის კონფიგურირებული
+                </p>
+                <p className="hint-text">
+                  დაამატეთ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY .env.local ფაილში
+                </p>
+                <p className="hint-text">
+                  მიიღეთ API გასაღები{" "}
+                  <a
+                    href="https://console.cloud.google.com/google/maps-apis"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Google Cloud Console-დან
+                  </a>
+                </p>
+              </div>
+            )}
+            {watch("storeLocation") && (
+              <p className="location-coords">
+                {t("auth.selectedLocation")}:{" "}
+                {watch("storeLocation")?.lat.toFixed(6)},{" "}
+                {watch("storeLocation")?.lng.toFixed(6)}
+              </p>
+            )}
+          </div>
+        </div> */}
 
         <div className="input-group">
           <label htmlFor="ownerFirstName">{t("auth.firstName")}</label>
@@ -282,14 +525,19 @@ export function SellerRegisterForm() {
           )}
 
           <label className="checkbox-label">
-            <input type="checkbox" {...registerField("agreeToSellerAgreement")} />
+            <input
+              type="checkbox"
+              {...registerField("agreeToSellerAgreement")}
+            />
             <span>
               {t("auth.agreeToSellerAgreement")}
               <Link href="/seller-agreement">{t("auth.sellerAgreement")}</Link>
             </span>
           </label>
           {errors.agreeToSellerAgreement && (
-            <p className="error-text">{errors.agreeToSellerAgreement.message}</p>
+            <p className="error-text">
+              {errors.agreeToSellerAgreement.message}
+            </p>
           )}
 
           <label className="checkbox-label">
@@ -304,11 +552,17 @@ export function SellerRegisterForm() {
           )}
         </div>
 
-        {!allAgreed && <p className="error-text">{t("auth.agreementsRequired")}</p>}
+        {!allAgreed && (
+          <p className="error-text">{t("auth.agreementsRequired")}</p>
+        )}
 
-        <button type="submit" className="submit-btn" disabled={isPending || !allAgreed}>
+        <button
+          type="submit"
+          className="submit-btn"
+          disabled={isPending || !allAgreed}
+        >
           {isPending ? t("auth.registering") : t("auth.register")}
-        </button> 
+        </button>
 
         <div className="text-center">
           {t("auth.alreadyHaveAccount")}{" "}

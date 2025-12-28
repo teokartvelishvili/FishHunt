@@ -102,4 +102,24 @@ export class SellerRegisterDto {
   @IsNotEmpty()
   @IsString()
   accountNumber: string;
+
+  @ApiProperty({
+    example: 'თბილისი, რუსთაველის გამზირი 1',
+    description: 'მაღაზიის მისამართი',
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsNotEmpty({ message: 'მაღაზიის მისამართი სავალდებულოა' })
+  @IsString()
+  storeAddress: string;
+
+  @ApiProperty({
+    example: { lat: 41.7151, lng: 44.8271 },
+    description: 'მაღაზიის მდებარეობის კოორდინატები',
+    required: false,
+  })
+  @IsOptional()
+  storeLocation?: {
+    lat: number;
+    lng: number;
+  };
 }

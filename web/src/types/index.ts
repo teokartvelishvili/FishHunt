@@ -138,9 +138,19 @@ export interface User {
   role: Role;
   storeName?: string;
   storeLogo?: string;
+  storeAddress?: string;
+  storeLocation?: {
+    lat: number;
+    lng: number;
+  };
   seller?: {
     storeName: string;
     storeLogo?: string;
+    storeAddress?: string;
+    storeLocation?: {
+      lat: number;
+      lng: number;
+    };
     ownerFirstName: string;
     ownerLastName: string;
     phoneNumber: string;

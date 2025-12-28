@@ -509,6 +509,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         ? `${product.user.seller.ownerFirstName} ${product.user.seller.ownerLastName}`
                         : product.user.name}
                     </div>
+                    {/* Seller Address */}
+                    {product.user.seller?.storeAddress && (
+                      <div className="pd-seller-address">
+                        <span className="pd-seller-address-icon">📍</span>
+                        <span>{product.user.seller.storeAddress}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
