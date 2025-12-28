@@ -11,6 +11,7 @@ import LanguageSelector from "./language-selector";
 import "./header.css";
 import Navbar from "../navbar/navbar";
 
+
 export default function Header() {
   return (
     <header className="main-header">
