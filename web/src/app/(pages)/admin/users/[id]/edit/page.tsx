@@ -45,12 +45,23 @@ export default function EditUserPage() {
 
     try {
       // Only include password if it was provided
-      const updateData = {
+      const updateData: any = {
         name: user.name,
         email: user.email,
         role: user.role,
         ...(password && { password }),
       };
+
+      // Add seller fields if user is a seller
+      if (user.role === Role.Seller) {
+        updateData.storeName = user.storeName || '';
+        updateData.storeAddress = user.storeAddress || '';
+        updateData.ownerFirstName = user.ownerFirstName || '';
+        updateData.ownerLastName = user.ownerLastName || '';
+        updateData.phoneNumber = user.phoneNumber || '';
+        updateData.identificationNumber = user.identificationNumber || '';
+        updateData.accountNumber = user.accountNumber || '';
+      }
 
       const userId = params?.id as string;
       await fetchWithAuth(`/users/${userId}`, {
@@ -110,6 +121,76 @@ export default function EditUserPage() {
             <option value={Role.Seller}>Seller</option>
           </select>
         </div>
+
+        {/* Seller specific fields */}
+        {user.role === Role.Seller && (
+          <>
+            <h2 style={{ marginTop: '20px', marginBottom: '10px' }}>Seller Information</h2>
+
+            <div className="form-group">
+              <label>Store Name</label>
+              <input
+                type="text"
+                value={user.storeName || ''}
+                onChange={(e) => setUser({ ...user, storeName: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Owner First Name</label>
+              <input
+                type="text"
+                value={user.ownerFirstName || ''}
+                onChange={(e) => setUser({ ...user, ownerFirstName: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Owner Last Name</label>
+              <input
+                type="text"
+                value={user.ownerLastName || ''}
+                onChange={(e) => setUser({ ...user, ownerLastName: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                value={user.phoneNumber || ''}
+                onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Store Address</label>
+              <input
+                type="text"
+                value={user.storeAddress || ''}
+                onChange={(e) => setUser({ ...user, storeAddress: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Identification Number</label>
+              <input
+                type="text"
+                value={user.identificationNumber || ''}
+                onChange={(e) => setUser({ ...user, identificationNumber: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Account Number</label>
+              <input
+                type="text"
+                value={user.accountNumber || ''}
+                onChange={(e) => setUser({ ...user, accountNumber: e.target.value })}
+              />
+            </div>
+          </>
+        )}
 
         {!showPasswordField ? (
           <div className="form-action">

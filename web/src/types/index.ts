@@ -134,32 +134,21 @@ export interface User {
   name: string;
   email: string;
   profileImage?: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   role: Role;
+  // Seller specific fields
   storeName?: string;
   storeLogo?: string;
+  storeLogoPath?: string;
   storeAddress?: string;
   storeLocation?: {
     lat: number;
     lng: number;
   };
-  seller?: {
-    storeName: string;
-    storeLogo?: string;
-    storeAddress?: string;
-    storeLocation?: {
-      lat: number;
-      lng: number;
-    };
-    ownerFirstName: string;
-    ownerLastName: string;
-    phoneNumber: string;
-    email: string;
-    identificationNumber: string;
-    accountNumber: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+  ownerFirstName?: string;
+  ownerLastName?: string;
+  identificationNumber?: string;
+  accountNumber?: string;
   createdAt: string;
   updatedAt: string;
 }

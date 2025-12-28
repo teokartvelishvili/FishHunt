@@ -27,4 +27,33 @@ export class AdminProfileDto {
   @IsEnum(Role)
   @Transform(({ value }) => value as Role)
   role: Role;
+
+  // Seller specific fields
+  @IsOptional()
+  @IsString()
+  storeName?: string;
+
+  @IsOptional()
+  @IsString()
+  storeAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  ownerFirstName?: string;
+
+  @IsOptional()
+  @IsString()
+  ownerLastName?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  identificationNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  accountNumber?: string;
 }
