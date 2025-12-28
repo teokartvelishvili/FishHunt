@@ -5,14 +5,14 @@
   margin-left: auto;
   margin-right: auto;
   padding: 2rem;
-  background-color: white;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   border-radius: 1rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
   width: calc(100% - 4rem); /* დავამატოთ სიგანის შეზღუდვა */
-  box-sizing: border-box; /* დავამატოთ box-sizing, რათა padding-ი სიგანეში ჩაითვალოს */
+  border: 1px solid rgba(42, 85, 48, 0.1);
 }
 
 .card::before {
@@ -22,30 +22,34 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, #012645, #093d67, #012645);
-  background-size: 200% 100%;
-  animation: gradientAnimation 3s infinite alternate;
+  background: linear-gradient(90deg, #2a5530, #4a7c3d, #6ba85a, #2a5530);
+  background-size: 300% 100%;
+  animation: gradientAnimation 4s infinite ease-in-out;
 }
 
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
   }
-  100% {
+  50% {
     background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 30px rgba(42, 85, 48, 0.15);
+  border-color: rgba(42, 85, 48, 0.2);
 }
 
 .card h2 {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 2rem;
-  color: #012645;
+  color: #2a5530;
   text-align: center;
   font-family: "Georgia", serif;
   position: relative;
@@ -60,25 +64,27 @@
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background-color: #012645;
+  background: linear-gradient(90deg, #2a5530, #ec9843);
   border-radius: 2px;
 }
 
 .input {
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
+  border: 2px solid rgba(42, 85, 48, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  background-color: #ffffff;
 }
 
 .input:focus {
   outline: none;
-  border-color: #012645;
-  box-shadow: 0 0 0 3px rgba(1, 38, 69, 0.15);
+  border-color: #2a5530;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.15);
   transform: translateY(-2px);
+  background-color: #fefefe;
 }
 
 .label {
@@ -86,12 +92,12 @@
   margin-bottom: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #012645;
+  color: #2a5530;
   transition: color 0.3s ease;
 }
 
 .form-field:focus-within .label {
-  color: #093d67;
+  color: #4a7c3d;
 }
 
 .form-field {
@@ -103,10 +109,10 @@
 
 .ProfileButton {
   width: 100%;
-  background: linear-gradient(90deg, #012645, #093d67);
+  background: linear-gradient(135deg, #2a5530 0%, #ec9843 100%);
   color: white;
-  border-radius: 0.5rem;
-  padding: 1rem;
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
   font-weight: 700;
   font-size: 1.1rem;
   border: none;
@@ -115,6 +121,7 @@
   margin-top: 1rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(42, 85, 48, 0.3);
 }
 
 .ProfileButton::before {
@@ -127,7 +134,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.3),
     transparent
   );
   transition: all 0.6s ease;
@@ -139,8 +146,8 @@
 
 .ProfileButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(1, 38, 69, 0.3);
-  background: linear-gradient(90deg, #093d67, #012645);
+  box-shadow: 0 8px 25px rgba(42, 85, 48, 0.4);
+  background: linear-gradient(135deg, #3e6f49 0%, #d88531 100%);
 }
 
 .ProfileButton:active {
@@ -148,9 +155,10 @@
 }
 
 .ProfileButton:disabled {
-  background-color: #8aa1b6;
+  background: linear-gradient(135deg, #8aa1b6 0%, #b8c5d1 100%);
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .error-message {
@@ -218,7 +226,7 @@
 }
 
 .upload-button {
-  background-color: #012645;
+  background: linear-gradient(135deg, #2a5530 0%, #ec9843 100%);
   color: white;
   border: none;
   border-radius: 2rem;
@@ -229,6 +237,7 @@
   display: flex;
   align-items: center;
   font-weight: 600;
+  box-shadow: 0 4px 15px rgba(42, 85, 48, 0.3);
 }
 
 .upload-button::before {
@@ -238,8 +247,8 @@
 }
 
 .upload-button:hover {
-  background-color: #093d67;
-  box-shadow: 0 4px 10px rgba(1, 38, 69, 0.3);
+  background: linear-gradient(135deg, #3e6f49 0%, #d88531 100%);
+  box-shadow: 0 6px 20px rgba(42, 85, 48, 0.4);
   transform: translateY(-2px);
 }
 
