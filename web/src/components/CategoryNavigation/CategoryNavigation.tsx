@@ -11,6 +11,7 @@ import "./CategoryNavigation.css";
 const getCategoryIcon = (categoryName: string) => {
   const name = categoryName.toLowerCase();
 
+  
   if (
     name.includes("ნადირობა") ||
     name.includes("hunting") ||
