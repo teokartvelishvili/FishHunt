@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { ProductGrid } from "@/modules/products/components/product-grid";
@@ -36,7 +36,7 @@ interface StorePageProps {
   slug: string;
 }
 
-export default function StorePage({ slug }: StorePageProps) {
+function StorePageContent({ slug }: StorePageProps) {
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -141,13 +141,26 @@ export default function StorePage({ slug }: StorePageProps) {
                     src={
                       store.logo.startsWith("http")
                         ? store.logo
-                        : `${(
-                            process.env.NEXT_PUBLIC_API_URL ||
-                            "http://localhost:4000/v1"
-                          ).replace("/v1/", "")}${store.logo.replace(
-                            "/logos/",
-                            "/uploads/"
-                          )}`
+                        : (() => {
+                            const apiUrl =
+                              process.env.NEXT_PUBLIC_API_URL ||
+                              "http://localhost:4000/v1/";
+                            const baseUrl = apiUrl.replace(/\/v1\/?$/, "");
+                            
+                            // Handle logo path - it can be "logos/..." or "/logos/..."
+                            let logoPath = store.logo;
+                            if (logoPath.startsWith("logos/")) {
+                              logoPath = `/uploads/${logoPath}`;
+                            } else if (logoPath.startsWith("/logos/")) {
+                              logoPath = logoPath.replace("/logos/", "/uploads/logos/");
+                            } else if (!logoPath.startsWith("/")) {
+                              logoPath = `/uploads/${logoPath}`;
+                            } else {
+                              logoPath = `/uploads${logoPath}`;
+                            }
+                            
+                            return `${baseUrl}${logoPath}`;
+                          })()
                     }
                     alt={store.name}
                     width={140}
@@ -318,5 +331,20 @@ export default function StorePage({ slug }: StorePageProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StorePage({ slug }: StorePageProps) {
+  return (
+    <Suspense fallback={
+      <div className="loading-container">
+        <div className="loading-content">
+          <Loader2 className="loading-spinner" />
+          <p className="loading-text">Loading store...</p>
+        </div>
+      </div>
+    }>
+      <StorePageContent slug={slug} />
+    </Suspense>
   );
 }
