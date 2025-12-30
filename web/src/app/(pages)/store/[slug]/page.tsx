@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import StorePage from "./StorePage";
 
 interface PageProps {
@@ -60,5 +61,9 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  return <StorePage slug={slug} />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StorePage slug={slug} />
+    </Suspense>
+  );
 }
