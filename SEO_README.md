@@ -9,6 +9,7 @@
 - ✅ Keywords based on categories
 - ✅ Canonical URLs
 - ✅ Author information
+- 
 
 ### 2. **JSON-LD Structured Data**
 ყოველი ფორუმის პოსტი შეიცავს Google-ისთვის სტრუქტურირებულ მონაცემებს:
