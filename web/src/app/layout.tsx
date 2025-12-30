@@ -12,6 +12,7 @@ import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
 import { VisitorTracker } from "@/components/visitor-tracker";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Suspense } from "react";
 // import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
@@ -120,7 +121,9 @@ export default function RootLayout({
         className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
         style={{ fontFamily: "var(--font-satoshi)" }}
       >
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         <Providers>
           <AuthProvider>
             <CartProvider>
