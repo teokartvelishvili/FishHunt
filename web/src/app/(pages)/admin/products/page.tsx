@@ -5,9 +5,11 @@ import "./adminProduct.css";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 export default function AdminProductsPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function AdminProductsPage() {
   }, [router]);
 
   if (isLoading) {
-    return <div className="loading-container">იტვირთება...</div>;
+    return <div className="loading-container">{t("shop.loading")}</div>;
   }
 
   return (

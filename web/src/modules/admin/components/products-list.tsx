@@ -24,7 +24,7 @@ interface ProductWithCategories extends Product {
 export function ProductsList() {
   const [page, setPage] = useState(1);
   const { user } = useUser();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [refreshKey, setRefreshKey] = useState(Date.now());
 
   const isAdmin = user?.role === Role.Admin;
@@ -288,7 +288,7 @@ export function ProductsList() {
     <div className="prd-card">
       {isAdmin && pendingProducts?.length > 0 && (
         <div className="pending-products mb-4">
-          <h2 className="text-xl font-bold mb-4">Pending Approvals</h2>
+          <h2 className="text-xl font-bold mb-4">{t("adminProducts.pendingApprovals")}</h2>
           <div className="prd-table-wrapper">
             <table className="prd-table">
               <tbody>
@@ -296,7 +296,7 @@ export function ProductsList() {
                   <tr key={product._id} className="prd-tr">
                     <td className="prd-td prd-td-bold">
                       {" "}
-                      #{product._id ? product._id : "No ID"}
+                      #{product._id ? product._id : t("adminProducts.noId")}
                     </td>
                     <td className="prd-td">
                       <div className="prd-img-wrapper">
@@ -373,18 +373,18 @@ export function ProductsList() {
         </div>
       )}
       <div className="prd-header">
-        <h1 className="prd-title">Products</h1>
+        <h1 className="prd-title">{t("adminProducts.productsTitle")}</h1>
         <div className="prd-actions">
           <Link href="/admin/products/create">
             <button className="prd-btn-outline">
               <Plus className="prd-icon" />
-              Add Product
+              {t("adminProducts.addProduct")}
             </button>
           </Link>
           <Link href="/admin/products/ai">
             <button className="prd-btn">
               <Sparkles className="prd-icon" />
-              Create Products with AI
+              {t("adminProducts.createWithAI")}
             </button>
           </Link>
         </div>
@@ -393,17 +393,17 @@ export function ProductsList() {
         <table className="prd-table">
           <thead>
             <tr className="prd-thead-row">
-              <th className="prd-th">ID</th>
-              <th className="prd-th">IMAGE</th>
-              <th className="prd-th">NAME</th>
-              <th className="prd-th">PRICE</th>
-              <th className="prd-th">CATEGORY</th>
-              <th className="prd-th">SUBCATEGORY</th>
-              <th className="prd-th">STOCK</th>
-              <th className="prd-th">Status</th>
-              <th className="prd-th">DELIVERY</th>
-              <th className="prd-th">SELLER INFO</th>
-              <th className="prd-th prd-th-right">ACTIONS</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.id")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.image")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.name")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.price")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.category")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.subcategory")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.stock")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.status")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.delivery")}</th>
+              <th className="prd-th">{t("adminProducts.tableHeaders.sellerInfo")}</th>
+              <th className="prd-th prd-th-right">{t("adminProducts.tableHeaders.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -473,13 +473,13 @@ export function ProductsList() {
                   </td>
                   <td className="prd-td">
                     <div className="delivery-info">
-                      <span>{product.deliveryType || "FISHHUNT"}</span>
+                      <span>{product.deliveryType || t("adminProducts.fishhunt")}</span>
                       {product.deliveryType === "SELLER" &&
                         product.minDeliveryDays &&
                         product.maxDeliveryDays && (
                           <p className="text-sm text-gray-500">
                             {product.minDeliveryDays}-{product.maxDeliveryDays}{" "}
-                            დღე
+                            {t("adminProducts.days")}
                           </p>
                         )}
                     </div>
@@ -487,13 +487,13 @@ export function ProductsList() {
                   <td className="prd-td">
                     <div className="seller-info">
                       <p className="font-medium">
-                        {product.user?.name || "N/A"}
+                        {product.user?.name || t("adminProducts.notAvailable")}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {product.user?.email || "N/A"}
+                        {product.user?.email || t("adminProducts.notAvailable")}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {product.user?.phoneNumber || "N/A"}
+                        {product.user?.phoneNumber || t("adminProducts.notAvailable")}
                       </p>
                     </div>
                   </td>
@@ -517,17 +517,17 @@ export function ProductsList() {
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
         >
-          Previous
+          {t("adminProducts.pagination.previous")}
         </button>
         <span className="pagination-info">
-          Page {page} of {totalPages}
+          {t("adminProducts.pagination.page")} {page} {t("adminProducts.pagination.of")} {totalPages}
         </span>
         <button
           className="pagination-btn"
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
         >
-          Next
+          {t("adminProducts.pagination.next")}
         </button>
       </div>
     </div>

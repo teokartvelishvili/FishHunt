@@ -102,7 +102,7 @@ export function CartPage() {
               <div className="shipping-info text-sm space-y-1 py-2">
                 {amountForFreeTbilisi === 0 ? (
                   <p className="text-green-600 dark:text-green-400">
-                    ✓ მიტანა უფასო
+                    {t("cart.freeDelivery")}
                   </p>
                 ) : (
                   <p className="text-orange-600 dark:text-orange-400">

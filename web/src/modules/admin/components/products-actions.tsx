@@ -7,6 +7,7 @@ import "./productActions.css";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { Role } from "@/types/role";
 import Link from "next/link";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 interface ProductsActionsProps {
   product: Product;
@@ -21,6 +22,7 @@ export function ProductsActions({
 }: ProductsActionsProps) {
   const router = useRouter();
   const { user } = useUser();
+  const { t } = useLanguage();
 
   console.log("Current user from useUser:", user);
 
@@ -36,13 +38,13 @@ export function ProductsActions({
     if (!product._id) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Invalid product ID. Please refresh the page.",
+        title: t("adminProducts.actions.invalidProductId"),
+        description: "",
       });
       return;
     }
 
-    if (confirm("Are you sure you want to delete this product?")) {
+    if (confirm(t("adminProducts.actions.confirmDelete"))) {
       try {
         const response = await fetchWithAuth(`/products/${product._id}`, {
           method: "DELETE",
@@ -50,8 +52,8 @@ export function ProductsActions({
 
         if (response.ok) {
           toast({
-            title: "Success",
-            description: "Product deleted successfully",
+            title: t("adminProducts.actions.productDeleted"),
+            description: "",
           });
 
           onDelete?.();
@@ -62,8 +64,8 @@ export function ProductsActions({
         console.log(error);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to delete product",
+          title: t("adminProducts.actions.deleteFailed"),
+          description: "",
         });
       }
     }
@@ -86,11 +88,11 @@ export function ProductsActions({
       onStatusChange?.(product._id, newStatus);
 
       toast({
-        title: "Status Updated",
+        title: t("adminProducts.actions.statusUpdated"),
         description:
           newStatus === ProductStatus.APPROVED
-            ? "Product has been approved"
-            : "Product has been rejected",
+            ? t("adminProducts.actions.productApproved")
+            : t("adminProducts.actions.productRejected"),
       });
 
       router.refresh();
@@ -98,8 +100,8 @@ export function ProductsActions({
       console.log(error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update product status",
+        title: t("adminProducts.actions.statusUpdateFailed"),
+        description: "",
       });
     }
   };
@@ -112,7 +114,7 @@ export function ProductsActions({
           query: { id: product._id, refresh: Date.now() },
         }}
         className="prd-action-btn prd-action-edit"
-        title="Edit product"
+        title={t("adminProducts.actions.editProduct")}
       >
         <Pencil size={16} />
       </Link>
@@ -122,14 +124,14 @@ export function ProductsActions({
           <button
             onClick={() => handleStatusChange(ProductStatus.APPROVED)}
             className="prd-action-btn prd-action-approve"
-            title="Approve product"
+            title={t("adminProducts.actions.approveProduct")}
           >
             <CheckCircle size={16} />
           </button>
           <button
             onClick={() => handleStatusChange(ProductStatus.REJECTED)}
             className="prd-action-btn prd-action-reject"
-            title="Reject product"
+            title={t("adminProducts.actions.rejectProduct")}
           >
             <XCircle size={16} />
           </button>
@@ -139,7 +141,7 @@ export function ProductsActions({
       <button
         className="prd-action-btn prd-action-delete"
         onClick={handleDelete}
-        title="Delete product"
+        title={t("adminProducts.actions.deleteProduct")}
       >
         <Trash2 size={16} />
       </button>

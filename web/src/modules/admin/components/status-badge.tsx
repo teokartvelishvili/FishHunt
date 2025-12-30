@@ -1,10 +1,12 @@
 import { ProductStatus } from "@/types";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 interface StatusBadgeProps {
   status: ProductStatus;
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
+  const { t } = useLanguage();
   const getStatusStyles = () => {
     switch (status) {
       case ProductStatus.APPROVED:
@@ -37,11 +39,11 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusText = () => {
     switch (status) {
       case ProductStatus.APPROVED:
-        return "✓ Approved";
+        return t("adminProducts.statusBadge.approved");
       case ProductStatus.PENDING:
-        return "⏳ Pending";
+        return t("adminProducts.statusBadge.pending");
       case ProductStatus.REJECTED:
-        return "✗ Rejected";
+        return t("adminProducts.statusBadge.rejected");
       default:
         return status;
     }
