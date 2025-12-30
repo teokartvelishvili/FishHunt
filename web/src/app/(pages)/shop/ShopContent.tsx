@@ -30,6 +30,7 @@ const ShopContent = () => {
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [showDiscountedOnly, setShowDiscountedOnly] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [selectedUser, setSelectedUser] = useState<string>("");
   const [sorting, setSorting] = useState<{
     field: string;
     direction: "asc" | "desc";
@@ -73,6 +74,7 @@ const ShopContent = () => {
     const sortDirectionParam = searchParams
       ? (searchParams.get("sortDirection") as "asc" | "desc") || "desc"
       : "desc";
+    const userParam = searchParams ? searchParams.get("user") || "" : "";
 
     setCurrentPage(pageParam);
     setSelectedCategoryId(mainCategoryParam);
@@ -83,6 +85,7 @@ const ShopContent = () => {
     setSelectedBrand(brandParam);
     setShowDiscountedOnly(discountParam);
     setPriceRange([minPriceParam, maxPriceParam]);
+    setSelectedUser(userParam);
     setSorting({ field: sortByParam, direction: sortDirectionParam });
 
     console.log("Initial setup with URL params:", {
@@ -116,6 +119,7 @@ const ShopContent = () => {
       if (priceRange[0] > 0) params.minPrice = priceRange[0].toString();
       if (priceRange[1] < 1000) params.maxPrice = priceRange[1].toString();
       if (showDiscountedOnly) params.discounted = "true";
+      if (selectedUser) params.user = selectedUser;
 
       const response = await getProducts(currentPage, 20, params);
 
@@ -140,6 +144,7 @@ const ShopContent = () => {
     priceRange,
     sorting,
     showDiscountedOnly,
+    selectedUser,
   ]);
 
   // Fetch products when filters change

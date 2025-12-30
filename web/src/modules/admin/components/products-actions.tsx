@@ -38,13 +38,13 @@ export function ProductsActions({
     if (!product._id) {
       toast({
         variant: "destructive",
-        title: t("adminProducts.actions.invalidProductId"),
+        title: t("adminProducts.productActions.invalidProductId"),
         description: "",
       });
       return;
     }
 
-    if (confirm(t("adminProducts.actions.confirmDelete"))) {
+    if (confirm(t("adminProducts.productActions.confirmDelete"))) {
       try {
         const response = await fetchWithAuth(`/products/${product._id}`, {
           method: "DELETE",
@@ -52,7 +52,7 @@ export function ProductsActions({
 
         if (response.ok) {
           toast({
-            title: t("adminProducts.actions.productDeleted"),
+            title: t("adminProducts.productActions.productDeleted"),
             description: "",
           });
 
@@ -64,7 +64,7 @@ export function ProductsActions({
         console.log(error);
         toast({
           variant: "destructive",
-          title: t("adminProducts.actions.deleteFailed"),
+          title: t("adminProducts.productActions.deleteFailed"),
           description: "",
         });
       }
@@ -88,11 +88,11 @@ export function ProductsActions({
       onStatusChange?.(product._id, newStatus);
 
       toast({
-        title: t("adminProducts.actions.statusUpdated"),
+        title: t("adminProducts.productActions.statusUpdated"),
         description:
           newStatus === ProductStatus.APPROVED
-            ? t("adminProducts.actions.productApproved")
-            : t("adminProducts.actions.productRejected"),
+            ? t("adminProducts.productActions.productApproved")
+            : t("adminProducts.productActions.productRejected"),
       });
 
       router.refresh();
@@ -100,7 +100,7 @@ export function ProductsActions({
       console.log(error);
       toast({
         variant: "destructive",
-        title: t("adminProducts.actions.statusUpdateFailed"),
+        title: t("adminProducts.productActions.statusUpdateFailed"),
         description: "",
       });
     }
@@ -114,7 +114,7 @@ export function ProductsActions({
           query: { id: product._id, refresh: Date.now() },
         }}
         className="prd-action-btn prd-action-edit"
-        title={t("adminProducts.actions.editProduct")}
+        title={t("adminProducts.productActions.editProduct")}
       >
         <Pencil size={16} />
       </Link>
@@ -124,14 +124,14 @@ export function ProductsActions({
           <button
             onClick={() => handleStatusChange(ProductStatus.APPROVED)}
             className="prd-action-btn prd-action-approve"
-            title={t("adminProducts.actions.approveProduct")}
+            title={t("adminProducts.productActions.approveProduct")}
           >
             <CheckCircle size={16} />
           </button>
           <button
             onClick={() => handleStatusChange(ProductStatus.REJECTED)}
             className="prd-action-btn prd-action-reject"
-            title={t("adminProducts.actions.rejectProduct")}
+            title={t("adminProducts.productActions.rejectProduct")}
           >
             <XCircle size={16} />
           </button>
@@ -141,7 +141,7 @@ export function ProductsActions({
       <button
         className="prd-action-btn prd-action-delete"
         onClick={handleDelete}
-        title={t("adminProducts.actions.deleteProduct")}
+        title={t("adminProducts.productActions.deleteProduct")}
       >
         <Trash2 size={16} />
       </button>

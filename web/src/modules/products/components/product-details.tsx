@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import "./productDetails.css";
 import "./videoTabs.css"; // Import new pd-tabs styles
 import { Product } from "@/types";
@@ -366,6 +367,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     return stock;
   }, [selectedSize, selectedColor, selectedAgeGroup, product]);
 
+  const router = useRouter();
   const { t, language } = useLanguage();
 
   // Display name and description based on selected language
@@ -469,7 +471,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         {/* Right Column - Product Info */}
         <div className="pd-product-info-details">
           {/* Brand Container */}
-          <div className="pd-brand-container">
+          <div 
+            className="pd-brand-container cursor-pointer hover:bg-gray-50 transition-colors rounded-lg p-2"
+            onClick={() => router.push(`/shop?brand=${encodeURIComponent(product.brand || '')}`)}
+          >
             <div className="pd-brand-details">
               {product.brandLogo && (
                 <div className="pd-brand-logo">

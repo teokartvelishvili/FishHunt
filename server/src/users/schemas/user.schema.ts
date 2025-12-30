@@ -48,6 +48,9 @@ export class User {
   @Prop({ type: String, default: null })
   storeLogoPath?: string;
 
+  @Prop({ type: String, unique: true, sparse: true })
+  storeSlug?: string;
+
   @Prop({ type: String, default: null })
   ownerFirstName?: string;
 

@@ -214,7 +214,7 @@ export class ProductsService {
 
     const product = await this.productModel
       .findById(id)
-      .populate('user', 'name email seller')
+      .populate('user', 'name email ownerFirstName ownerLastName storeAddress')
       .populate('mainCategory')
       .populate('subCategory');
 

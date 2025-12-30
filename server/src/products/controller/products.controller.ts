@@ -21,6 +21,7 @@ import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
 import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
+import { UsersService } from '@/users/services/users.service';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
@@ -38,13 +39,14 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 export class ProductsController {
   constructor(
     private productsService: ProductsService,
+    private usersService: UsersService,
     private appService: AppService,
     private productExpertAgent: ProductExpertAgent,
   ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get products with filters' })
-  getProducts(
+  async getProducts(
     @Query('keyword') keyword: string,
     @Query('page') page: string,
     @Query('limit') limit: string,
@@ -58,6 +60,7 @@ export class ProductsController {
     @Query('color') color: string,
     @Query('discounted') discounted: string,
     @Query('includeVariants') includeVariants: string,
+    @Query('user') user: string,
   ) {
     console.log('Getting products with filters:', {
       mainCategory,
@@ -66,7 +69,14 @@ export class ProductsController {
       size,
       color,
       discounted,
+      user,
     });
+
+    // Find user if user parameter is provided
+    let userDocument: UserDocument | undefined;
+    if (user) {
+      userDocument = await this.usersService.findById(user);
+    }
 
     return this.productsService.findMany({
       keyword,
@@ -83,6 +93,7 @@ export class ProductsController {
       color,
       discounted: discounted === 'true',
       includeVariants: includeVariants === 'true',
+      user: userDocument,
     });
   }
 

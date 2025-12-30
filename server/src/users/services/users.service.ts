@@ -17,6 +17,7 @@ import { Role } from '@/types/role.enum';
 import { SellerRegisterDto } from '../dtos/seller-register.dto';
 import { AdminProfileDto } from '../dtos/admin.profile.dto';
 import { AwsS3Service } from '@/aws-s3/aws-s3.service';
+import { SlugService } from '@/utils/slug.service';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +26,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly awsS3Service: AwsS3Service,
+    private readonly slugService: SlugService,
   ) {}
 
   async findByEmail(email: string) {
@@ -99,12 +101,16 @@ export class UsersService {
         this.logger.log('No logo file provided');
       }
 
+      // Generate unique slug for the store
+      const storeSlug = await this.slugService.generateUniqueSlug(dto.storeName);
+
       const sellerData = {
         ...dto,
         name: dto.storeName,
         role: Role.Seller,
         password: dto.password,
         storeLogoPath: logoPath, // Add logo path to seller data
+        storeSlug, // Add generated slug
       };
 
       return await this.create(sellerData);
@@ -147,6 +153,10 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async findByStoreSlug(slug: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ storeSlug: slug, role: Role.Seller });
   }
 
   async findAll(

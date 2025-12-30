@@ -11,6 +11,7 @@ import { Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
 import { AiModule } from '@/ai/ai.module';
+import { UsersModule } from '@/users/users.module';
 
 // Add a provider to manually drop the problematic index on module initialization
 export class IndexCleanupService implements OnModuleInit {
@@ -92,6 +93,7 @@ export class IndexCleanupService implements OnModuleInit {
     ]),
     CloudinaryModule,
     AiModule,
+    UsersModule,
   ],
   providers: [ProductsService, AppService, IndexCleanupService, ProductExpertAgent],
   controllers: [ProductsController],

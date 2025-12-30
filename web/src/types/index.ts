@@ -140,6 +140,7 @@ export interface User {
   storeName?: string;
   storeLogo?: string;
   storeLogoPath?: string;
+  storeSlug?: string;
   storeAddress?: string;
   storeLocation?: {
     lat: number;

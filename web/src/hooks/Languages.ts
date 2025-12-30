@@ -867,7 +867,7 @@ export const TRANSLATIONS: Translations = {
       fishhunt: "FISHHUNT",
       notAvailable: "N/A",
       // Product actions translations
-      actions: {
+      productActions: {
         editProduct: "პროდუქტის რედაქტირება",
         approveProduct: "პროდუქტის დამტკიცება",
         rejectProduct: "პროდუქტის უარყოფა",
@@ -1996,7 +1996,7 @@ export const TRANSLATIONS: Translations = {
       fishhunt: "FISHHUNT",
       notAvailable: "N/A",
       // Product actions translations
-      actions: {
+      productActions: {
         editProduct: "Edit product",
         approveProduct: "Approve product",
         rejectProduct: "Reject product",
@@ -3294,7 +3294,7 @@ export const TRANSLATIONS: Translations = {
       fishhunt: "FISHHUNT",
       notAvailable: "Н/Д",
       // Product actions translations
-      actions: {
+      productActions: {
         editProduct: "Редактировать продукт",
         approveProduct: "Одобрить продукт",
         rejectProduct: "Отклонить продукт",

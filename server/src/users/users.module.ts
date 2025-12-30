@@ -12,6 +12,9 @@ import { UsersController } from './controller/users.controller';
 import { GoogleStrategy } from '@/strategies/google.strategy';
 import { EmailService } from '@/email/services/email.services';
 import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
+import { SlugService } from '@/utils/slug.service';
+import { StoresController } from './controller/stores.controller';
+import { ProductsModule } from '@/products/products.module';
 
 @Module({
   imports: [
@@ -20,7 +23,7 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
         name: User.name,
         schema: UserSchema,
       },
-    ]),
+    }),
     PassportModule.register({ defaultStrategy: 'google' }),
     JwtModule.register({
       global: true,
@@ -28,8 +31,9 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
       signOptions: { expiresIn: '15m' },
     }),
     AwsS3Module, // Add this line to import AwsS3Module
+    ProductsModule,
   ],
-  controllers: [AuthController, UsersController],
+  controllers: [AuthController, UsersController, StoresController],
   providers: [
     UsersService,
     AuthService,
@@ -38,7 +42,8 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
     AuthService,
     GoogleStrategy,
     EmailService,
+    SlugService,
   ],
-  exports: [UsersService],
+  exports: [UsersService, SlugService],
 })
 export class UsersModule {}
