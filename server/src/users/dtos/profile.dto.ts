@@ -30,6 +30,14 @@ export class ProfileDto {
 
   @IsOptional()
   @IsString()
+  storeAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  storeSlug?: string;
+
+  @IsOptional()
+  @IsString()
   ownerFirstName?: string;
 
   @IsOptional()

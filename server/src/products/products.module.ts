@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ProductsService } from './services/products.service';
 import { ProductsController } from './controller/products.controller';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
@@ -93,9 +93,14 @@ export class IndexCleanupService implements OnModuleInit {
     ]),
     CloudinaryModule,
     AiModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
-  providers: [ProductsService, AppService, IndexCleanupService, ProductExpertAgent],
+  providers: [
+    ProductsService,
+    AppService,
+    IndexCleanupService,
+    ProductExpertAgent,
+  ],
   controllers: [ProductsController],
   exports: [
     ProductsService,

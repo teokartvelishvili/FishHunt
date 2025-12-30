@@ -288,7 +288,9 @@ export function ProductsList() {
     <div className="prd-card">
       {isAdmin && pendingProducts?.length > 0 && (
         <div className="pending-products mb-4">
-          <h2 className="text-xl font-bold mb-4">{t("adminProducts.pendingApprovals")}</h2>
+          <h2 className="text-xl font-bold mb-4">
+            {t("adminProducts.pendingApprovals")}
+          </h2>
           <div className="prd-table-wrapper">
             <table className="prd-table">
               <tbody>
@@ -394,16 +396,34 @@ export function ProductsList() {
           <thead>
             <tr className="prd-thead-row">
               <th className="prd-th">{t("adminProducts.tableHeaders.id")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.image")}</th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.image")}
+              </th>
               <th className="prd-th">{t("adminProducts.tableHeaders.name")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.price")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.category")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.subcategory")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.stock")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.status")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.delivery")}</th>
-              <th className="prd-th">{t("adminProducts.tableHeaders.sellerInfo")}</th>
-              <th className="prd-th prd-th-right">{t("adminProducts.tableHeaders.actions")}</th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.price")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.category")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.subcategory")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.stock")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.status")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.delivery")}
+              </th>
+              <th className="prd-th">
+                {t("adminProducts.tableHeaders.sellerInfo")}
+              </th>
+              <th className="prd-th prd-th-right">
+                {t("adminProducts.tableHeaders.actions")}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -473,7 +493,9 @@ export function ProductsList() {
                   </td>
                   <td className="prd-td">
                     <div className="delivery-info">
-                      <span>{product.deliveryType || t("adminProducts.fishhunt")}</span>
+                      <span>
+                        {product.deliveryType || t("adminProducts.fishhunt")}
+                      </span>
                       {product.deliveryType === "SELLER" &&
                         product.minDeliveryDays &&
                         product.maxDeliveryDays && (
@@ -493,7 +515,8 @@ export function ProductsList() {
                         {product.user?.email || t("adminProducts.notAvailable")}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {product.user?.phoneNumber || t("adminProducts.notAvailable")}
+                        {product.user?.phoneNumber ||
+                          t("adminProducts.notAvailable")}
                       </p>
                     </div>
                   </td>
@@ -520,7 +543,8 @@ export function ProductsList() {
           {t("adminProducts.pagination.previous")}
         </button>
         <span className="pagination-info">
-          {t("adminProducts.pagination.page")} {page} {t("adminProducts.pagination.of")} {totalPages}
+          {t("adminProducts.pagination.page")} {page}{" "}
+          {t("adminProducts.pagination.of")} {totalPages}
         </span>
         <button
           className="pagination-btn"

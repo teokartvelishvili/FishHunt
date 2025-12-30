@@ -27,6 +27,7 @@ const formSchema = z
     // Seller specific fields
     storeName: z.string().optional(),
     storeAddress: z.string().optional(),
+    storeSlug: z.string().optional(),
     phoneNumber: z.string().optional(),
     ownerFirstName: z.string().optional(),
     ownerLastName: z.string().optional(),
@@ -154,6 +155,9 @@ export function ProfileForm() {
           }
           if (values.storeAddress !== user?.storeAddress) {
             payload.storeAddress = values.storeAddress;
+          }
+          if (values.storeSlug !== user?.storeSlug) {
+            payload.storeSlug = values.storeSlug;
           }
           if (values.phoneNumber !== user?.phoneNumber) {
             payload.phoneNumber = values.phoneNumber;
@@ -573,6 +577,22 @@ export function ProfileForm() {
                 placeholder={t("auth.storeAddressHint") as string}
                 className="input"
               />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="storeSlug" className="label">
+                Store URL Slug
+              </label>
+              <input
+                id="storeSlug"
+                {...form.register("storeSlug")}
+                placeholder="my-store-name"
+                className="input"
+              />
+              <small className="text-gray-500">
+                Your store will be available at:{" "}
+                {process.env.NEXT_PUBLIC_APP_URL}/store/[slug]
+              </small>
             </div>
 
             <div className="form-field">

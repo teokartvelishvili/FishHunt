@@ -471,9 +471,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         {/* Right Column - Product Info */}
         <div className="pd-product-info-details">
           {/* Brand Container */}
-          <div 
+          <div
             className="pd-brand-container cursor-pointer hover:bg-gray-50 transition-colors rounded-lg p-2"
-            onClick={() => router.push(`/shop?brand=${encodeURIComponent(product.brand || '')}`)}
+            onClick={() =>
+              product.user?.storeSlug &&
+              router.push(`/store/${product.user.storeSlug}`)
+            }
           >
             <div className="pd-brand-details">
               {product.brandLogo && (

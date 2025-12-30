@@ -9,6 +9,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UsersService } from '@/users/services/users.service';
 import { ProductsService } from '@/products/services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
+import { ProductStatus } from '@/products/schemas/product.schema';
 
 @ApiTags('stores')
 @Controller('stores')
@@ -42,7 +43,7 @@ export class StoresController {
       user: user,
       page,
       limit,
-      status: 'APPROVED', // Only show approved products
+      status: ProductStatus.APPROVED, // Only show approved products
     });
 
     // Return store data with products
@@ -53,10 +54,10 @@ export class StoresController {
         slug: user.storeSlug,
         logo: user.storeLogoPath,
         address: user.storeAddress,
-        owner: user.ownerFirstName && user.ownerLastName
-          ? `${user.ownerFirstName} ${user.ownerLastName}`
-          : user.name,
-        description: user.storeDescription, // Add this field if needed
+        owner:
+          user.ownerFirstName && user.ownerLastName
+            ? `${user.ownerFirstName} ${user.ownerLastName}`
+            : user.name,
         createdAt: user.createdAt,
       },
       products,

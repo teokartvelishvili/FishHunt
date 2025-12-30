@@ -5,16 +5,17 @@ import { User } from '@/users/schemas/user.schema';
 
 @Injectable()
 export class SlugService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   /**
    * Generate a unique slug for a store
    * @param baseName - The base name to create slug from
    * @param excludeId - User ID to exclude from uniqueness check (for updates)
    */
-  async generateUniqueSlug(baseName: string, excludeId?: string): Promise<string> {
+  async generateUniqueSlug(
+    baseName: string,
+    excludeId?: string,
+  ): Promise<string> {
     // Clean the base name: remove special chars, convert to lowercase, replace spaces with hyphens
     let slug = baseName
       .toLowerCase()
@@ -50,7 +51,10 @@ export class SlugService {
   /**
    * Check if a slug is already taken
    */
-  private async isSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+  private async isSlugTaken(
+    slug: string,
+    excludeId?: string,
+  ): Promise<boolean> {
     const query: any = { storeSlug: slug };
     if (excludeId) {
       query._id = { $ne: excludeId };

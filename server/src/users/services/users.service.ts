@@ -102,7 +102,9 @@ export class UsersService {
       }
 
       // Generate unique slug for the store
-      const storeSlug = await this.slugService.generateUniqueSlug(dto.storeName);
+      const storeSlug = await this.slugService.generateUniqueSlug(
+        dto.storeName,
+      );
 
       const sellerData = {
         ...dto,
@@ -229,23 +231,42 @@ export class UsersService {
       attrs.password = await hashPassword(attrs.password);
     }
 
+    // Handle storeSlug validation for sellers
+    if (attrs.storeSlug && user.role === Role.Seller) {
+      // Validate slug format
+      if (!this.slugService.validateSlug(attrs.storeSlug)) {
+        throw new BadRequestException(
+          'Store slug must contain only lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen',
+        );
+      }
+
+      // Check uniqueness (exclude current user)
+      const existingSlugUser = await this.userModel.findOne({
+        storeSlug: attrs.storeSlug,
+        _id: { $ne: id },
+      });
+
+      if (existingSlugUser) {
+        throw new BadRequestException('This store slug is already taken');
+      }
+    }
+
     // Prepare update data, filter out undefined values
-    const updateData = { ...attrs };
 
     // Prevent role changes unless admin
-    if (!adminRole) delete updateData.role;
+    if (!adminRole) delete attrs.role;
 
     // Filter out undefined values to ensure only provided fields are updated
-    Object.keys(updateData).forEach((key) => {
-      if (updateData[key] === undefined) {
-        delete updateData[key];
+    Object.keys(attrs).forEach((key) => {
+      if (attrs[key] === undefined) {
+        delete attrs[key];
       }
     });
 
     try {
       const updatedUser = await this.userModel.findByIdAndUpdate(
         id,
-        { $set: updateData },
+        { $set: attrs },
         { new: true, runValidators: true },
       );
 

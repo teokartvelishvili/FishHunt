@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './controller/auth.controller';
 import { User, UserSchema } from './schemas/user.schema';
@@ -18,12 +18,7 @@ import { ProductsModule } from '@/products/products.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-    }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule.register({ defaultStrategy: 'google' }),
     JwtModule.register({
       global: true,
@@ -31,7 +26,7 @@ import { ProductsModule } from '@/products/products.module';
       signOptions: { expiresIn: '15m' },
     }),
     AwsS3Module, // Add this line to import AwsS3Module
-    ProductsModule,
+    forwardRef(() => ProductsModule),
   ],
   controllers: [AuthController, UsersController, StoresController],
   providers: [
@@ -39,7 +34,6 @@ import { ProductsModule } from '@/products/products.module';
     AuthService,
     LocalStrategy,
     JwtStrategy,
-    AuthService,
     GoogleStrategy,
     EmailService,
     SlugService,

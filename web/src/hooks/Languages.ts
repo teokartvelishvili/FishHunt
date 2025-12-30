@@ -3233,12 +3233,15 @@ export const TRANSLATIONS: Translations = {
       loading: "Загрузка...",
       selectAtLeastOneImage: "Пожалуйста, выберите хотя бы одно изображение",
       enterBrandName: "Введите название бренда",
-      productNameEnPlaceholder: "Название продукта на английском (необязательно)",
-      descriptionEnPlaceholder: "Описание продукта на английском (необязательно)",
+      productNameEnPlaceholder:
+        "Название продукта на английском (необязательно)",
+      descriptionEnPlaceholder:
+        "Описание продукта на английском (необязательно)",
       // Error messages
       selectCategoryError: "Пожалуйста, выберите категорию",
       selectSubcategoryError: "Пожалуйста, выберите подкатегорию",
-      invalidImageFormat: "Разрешены только форматы изображений JPG, JPEG и PNG",
+      invalidImageFormat:
+        "Разрешены только форматы изображений JPG, JPEG и PNG",
       noImageSelected: "Необходимо загрузить хотя бы одно изображение",
       deliveryDaysRequired:
         "Пожалуйста, укажите время доставки, если доставку осуществляет продавец.",
@@ -3262,7 +3265,8 @@ export const TRANSLATIONS: Translations = {
       priceRequired: "Цена обязательна",
       priceInvalid: "Цена должна быть положительным числом",
       descriptionRequired: "Описание обязательно",
-      descriptionInvalid: "Описание недействительно, должно быть минимум 5 символов",
+      descriptionInvalid:
+        "Описание недействительно, должно быть минимум 5 символов",
       brandRequired: "Бренд обязателен",
       brandInvalid: "Название бренда недействительно",
       // Additional admin products page translations
@@ -3300,7 +3304,8 @@ export const TRANSLATIONS: Translations = {
         rejectProduct: "Отклонить продукт",
         deleteProduct: "Удалить продукт",
         confirmDelete: "Вы уверены, что хотите удалить этот продукт?",
-        invalidProductId: "Неверный ID продукта. Пожалуйста, обновите страницу.",
+        invalidProductId:
+          "Неверный ID продукта. Пожалуйста, обновите страницу.",
         productDeleted: "Продукт успешно удален",
         deleteFailed: "Не удалось удалить продукт",
         statusUpdated: "Статус обновлен",
@@ -3343,7 +3348,8 @@ export const TRANSLATIONS: Translations = {
       ageGroups: "Возрастные группы",
       attributes: "Атрибуты",
       confirmDeleteCategory: "Вы уверены, что хотите удалить эту категорию?",
-      confirmDeleteSubcategory: "Вы уверены, что хотите удалить эту подкатегорию?",
+      confirmDeleteSubcategory:
+        "Вы уверены, что хотите удалить эту подкатегорию?",
       createError: "Не удалось создать подкатегорию",
       editValue: "Редактировать",
       newValue: "Новое значение",
