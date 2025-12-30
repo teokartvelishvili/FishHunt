@@ -55,7 +55,7 @@ export class CartService {
       (acc, item) => acc + item.price * item.qty,
       0,
     );
-    cart.taxPrice = Number((0.02 * cart.itemsPrice).toFixed(2));
+    cart.taxPrice = 0; // No commission
     cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 0;
     cart.totalPrice = cart.itemsPrice + cart.taxPrice + cart.shippingPrice;
     return cart;

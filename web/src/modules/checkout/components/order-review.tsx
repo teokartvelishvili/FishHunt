@@ -199,12 +199,6 @@ export function OrderReview() {
                 {shippingInfo.amountToFree.toFixed(2)} ₾
               </div>
             )}
-            <div className="summary-row flex justify-between">
-              <span className="summary-label text-muted-foreground">
-                {t("cart.commission")}
-              </span>
-              <span>{taxPrice.toFixed(2)} ₾</span>
-            </div>
             <div className="separator" />
             <div className="summary-row flex justify-between font-medium">
               <span>{t("cart.totalCost")}</span>

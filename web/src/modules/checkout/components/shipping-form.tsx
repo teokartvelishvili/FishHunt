@@ -310,10 +310,6 @@ export function ShippingForm() {
                 : `${shippingPrice.toFixed(2)} ₾`}
             </span>
           </div>
-          <div className="summary-row">
-            <span>{t("cart.commission")}</span>
-            <span>{taxPrice.toFixed(2)} ₾</span>
-          </div>
           <div className="summary-row total">
             <span>{t("cart.totalCost")}</span>
             <span>{totalPrice.toFixed(2)} ₾</span>

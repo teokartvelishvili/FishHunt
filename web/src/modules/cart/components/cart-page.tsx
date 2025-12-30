@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./cart-page.css";
 import { Color } from "@/types";
+import { TAX_RATE } from "@/config/constants";
 
 export function CartPage() {
   const { items, loading } = useCart();
@@ -57,7 +58,7 @@ export function CartPage() {
   // Tbilisi: free from 50₾, otherwise 5₾
   // Regions: free from 100₾, otherwise 15₾
   const shipping = 0; // Will be calculated at checkout
-  const tax = Number((0.02 * subtotal).toFixed(2));
+  const tax = Number((TAX_RATE * subtotal).toFixed(2));
   const total = subtotal + shipping + tax;
 
   // Calculate amounts needed for free shipping
@@ -99,34 +100,26 @@ export function CartPage() {
 
               {/* Shipping info message */}
               <div className="shipping-info text-sm space-y-1 py-2">
-                {amountForFreeTbilisi > 0 ? (
+                {amountForFreeTbilisi === 0 ? (
+                  <p className="text-green-600 dark:text-green-400">
+                    ✓ მიტანა უფასო
+                  </p>
+                ) : (
                   <p className="text-orange-600 dark:text-orange-400">
                     🚚 {t("cart.addMoreForFreeShipping")}{" "}
                     {formatPrice(amountForFreeTbilisi)} (
                     {t("cart.shippingTbilisi")})
                   </p>
-                ) : (
-                  <p className="text-green-600 dark:text-green-400">
-                    ✓ {t("cart.freeShippingTbilisi")}
-                  </p>
                 )}
-                {amountForFreeRegions > 0 ? (
+                {amountForFreeRegions > 0 && (
                   <p className="text-orange-600 dark:text-orange-400">
                     🚛 {t("cart.addMoreForFreeShipping")}{" "}
                     {formatPrice(amountForFreeRegions)} (
                     {t("cart.shippingRegions")})
                   </p>
-                ) : (
-                  <p className="text-green-600 dark:text-green-400">
-                    ✓ {t("cart.freeShippingRegions")}
-                  </p>
                 )}
               </div>
 
-              <div className="summary-row">
-                <span className="summary-label">{t("cart.commission")}</span>
-                <span>{formatPrice(tax)}</span>
-              </div>
               <hr className="separator" />
               <div className="summary-row total">
                 <span>{t("cart.totalCost")}</span>

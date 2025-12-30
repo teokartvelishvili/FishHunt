@@ -335,10 +335,6 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                     : `${order.shippingPrice.toFixed(2)} ₾`}
                 </span>
               </div>
-              <div className="summary-item">
-                <span>{t("Tax")}</span>
-                <span>{order.taxPrice.toFixed(2)} ₾</span>
-              </div>
               <hr />
               <div className="summary-total">
                 <span>{t("Total")}</span>
