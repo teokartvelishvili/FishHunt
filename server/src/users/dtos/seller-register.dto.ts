@@ -21,6 +21,16 @@ export class SellerRegisterDto {
   storeName: string;
 
   @ApiProperty({
+    example: 'my-store',
+    description: 'მაღაზიის უნიკალური საიტის სახელი (URL slug)',
+    required: false,
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+  @IsOptional()
+  @IsString()
+  storeSlug?: string;
+
+  @ApiProperty({
     type: 'string',
     format: 'binary',
     description: 'მაღაზიის ლოგოს ფაილი',

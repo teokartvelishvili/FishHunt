@@ -50,6 +50,84 @@ export function SellerRegisterForm() {
     !!watch("agreeToSellerAgreement") &&
     !!watch("agreeToTerms");
 
+  // Watch storeName to auto-generate slug
+  const storeName = watch("storeName");
+  const storeSlug = watch("storeSlug");
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const [slugCheckResult, setSlugCheckResult] = useState<{
+    available: boolean;
+    suggestedSlug: string | null;
+    checking: boolean;
+  }>({ available: true, suggestedSlug: null, checking: false });
+  const slugCheckTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Function to generate slug from name
+  const generateSlugFromName = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single
+      .trim()
+      .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+  };
+
+  // Check slug availability
+  const checkSlugAvailability = async (slug: string) => {
+    if (!slug || slug.length < 3) {
+      setSlugCheckResult({ available: false, suggestedSlug: null, checking: false });
+      return;
+    }
+
+    setSlugCheckResult((prev) => ({ ...prev, checking: true }));
+
+    try {
+      const response = await fetch(`/api/stores/check-slug?slug=${encodeURIComponent(slug)}`);
+      const data = await response.json();
+
+      setSlugCheckResult({
+        available: data.available,
+        suggestedSlug: data.suggestedSlug,
+        checking: false,
+      });
+
+      // If not available and we have a suggestion, auto-fill it
+      if (!data.available && data.suggestedSlug && !slugManuallyEdited) {
+        setValue("storeSlug", data.suggestedSlug);
+      }
+    } catch (error) {
+      console.error("Error checking slug:", error);
+      setSlugCheckResult({ available: true, suggestedSlug: null, checking: false });
+    }
+  };
+
+  // Auto-generate slug from storeName
+  useEffect(() => {
+    if (storeName && !slugManuallyEdited) {
+      const generatedSlug = generateSlugFromName(storeName);
+      setValue("storeSlug", generatedSlug);
+    }
+  }, [storeName, slugManuallyEdited, setValue]);
+
+  // Check slug availability when it changes
+  useEffect(() => {
+    if (storeSlug && storeSlug.length >= 3) {
+      // Debounce the check
+      if (slugCheckTimeout.current) {
+        clearTimeout(slugCheckTimeout.current);
+      }
+      slugCheckTimeout.current = setTimeout(() => {
+        checkSlugAvailability(storeSlug);
+      }, 500);
+    }
+
+    return () => {
+      if (slugCheckTimeout.current) {
+        clearTimeout(slugCheckTimeout.current);
+      }
+    };
+  }, [storeSlug]);
+
   // const [addressTimeout, setAddressTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -323,6 +401,48 @@ export function SellerRegisterForm() {
           {errors.storeName && (
             <p className="error-text">{errors.storeName.message}</p>
           )}
+        </div>
+
+        <div className="input-group">
+          <label htmlFor="storeSlug">{t("auth.storeSlug")}</label>
+          <div className="slug-input-container">
+            <span className="slug-prefix">fishhunt.ge/store/</span>
+            <input
+              id="storeSlug"
+              type="text"
+              placeholder={t("auth.enterStoreSlug")}
+              {...registerField("storeSlug", {
+                onChange: () => setSlugManuallyEdited(true),
+              })}
+            />
+            {slugCheckResult.checking && (
+              <span className="slug-status slug-checking">⏳</span>
+            )}
+            {!slugCheckResult.checking && storeSlug && storeSlug.length >= 3 && (
+              <span className={`slug-status ${slugCheckResult.available ? 'slug-available' : 'slug-taken'}`}>
+                {slugCheckResult.available ? '✓' : '✗'}
+              </span>
+            )}
+          </div>
+          {errors.storeSlug && (
+            <p className="error-text">{errors.storeSlug.message}</p>
+          )}
+          {!slugCheckResult.available && slugCheckResult.suggestedSlug && storeSlug !== slugCheckResult.suggestedSlug && (
+            <p className="slug-suggestion">
+              {t("auth.slugTaken")} 
+              <button
+                type="button"
+                className="slug-suggestion-link"
+                onClick={() => {
+                  setValue("storeSlug", slugCheckResult.suggestedSlug!);
+                  setSlugManuallyEdited(false);
+                }}
+              >
+                {slugCheckResult.suggestedSlug}
+              </button>
+            </p>
+          )}
+          <p className="hint-text">{t("auth.storeSlugHint")}</p>
         </div>
 
         <div className="input-group">

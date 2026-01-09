@@ -2,6 +2,15 @@ import * as z from "zod";
 
 export const sellerRegisterSchema = z.object({
   storeName: z.string().min(1, "მაღაზიის სახელი სავალდებულოა"),
+  storeSlug: z
+    .string()
+    .min(3, "საიტის სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს")
+    .max(50, "საიტის სახელი არ უნდა აღემატებოდეს 50 სიმბოლოს")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "საიტის სახელი უნდა შეიცავდეს მხოლოდ პატარა ლათინურ ასოებს, ციფრებს და ტირეს"
+    )
+    .optional(),
   storeAddress: z.string().min(1, "მაღაზიის მისამართი სავალდებულოა"),
   storeLocation: z
     .object({

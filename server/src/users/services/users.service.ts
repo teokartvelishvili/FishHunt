@@ -102,9 +102,14 @@ export class UsersService {
       }
 
       // Generate unique slug for the store
-      const storeSlug = await this.slugService.generateUniqueSlug(
-        dto.storeName,
-      );
+      // If user provided a storeSlug, validate and use it, otherwise generate from storeName
+      let storeSlug: string;
+      if (dto.storeSlug && dto.storeSlug.trim()) {
+        // Validate and ensure uniqueness of user-provided slug
+        storeSlug = await this.slugService.generateUniqueSlug(dto.storeSlug);
+      } else {
+        storeSlug = await this.slugService.generateUniqueSlug(dto.storeName);
+      }
 
       const sellerData = {
         ...dto,

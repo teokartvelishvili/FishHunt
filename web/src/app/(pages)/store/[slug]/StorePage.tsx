@@ -138,30 +138,7 @@ function StorePageContent({ slug }: StorePageProps) {
               store.logo.trim() ? (
                 <div className="store-logo-wrapper">
                   <Image
-                    src={
-                      store.logo.startsWith("http")
-                        ? store.logo
-                        : (() => {
-                            const apiUrl =
-                              process.env.NEXT_PUBLIC_API_URL ||
-                              "http://localhost:4000/v1/";
-                            const baseUrl = apiUrl.replace(/\/v1\/?$/, "");
-                            
-                            // Handle logo path - it can be "logos/..." or "/logos/..."
-                            let logoPath = store.logo;
-                            if (logoPath.startsWith("logos/")) {
-                              logoPath = `/uploads/${logoPath}`;
-                            } else if (logoPath.startsWith("/logos/")) {
-                              logoPath = logoPath.replace("/logos/", "/uploads/logos/");
-                            } else if (!logoPath.startsWith("/")) {
-                              logoPath = `/uploads/${logoPath}`;
-                            } else {
-                              logoPath = `/uploads${logoPath}`;
-                            }
-                            
-                            return `${baseUrl}${logoPath}`;
-                          })()
-                    }
+                    src={store.logo}
                     alt={store.name}
                     width={140}
                     height={140}
