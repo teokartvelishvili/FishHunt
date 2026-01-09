@@ -7,10 +7,11 @@ import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
 import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Loader2, MapPin, User, QrCode, X } from "lucide-react";
+import { Loader2, MapPin, User, QrCode, X, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { QRCodeCanvas as QRCode } from "qrcode.react";
+import { useAuth } from "@/hooks/use-auth";
 import "./StorePage.css";
 
 interface StoreData {
@@ -43,10 +44,15 @@ function StorePageContent({ slug }: StorePageProps) {
   const [showQRModal, setShowQRModal] = useState(false);
   const { t } = useLanguage();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
+
+  // Check if current user is the store owner
+  const isOwner = user && user.storeSlug === slug;
 
   useEffect(() => {
-    fetchStoreData();
-  }, [slug]);
+    // Fetch with owner check if user is logged in and is the owner
+    fetchStoreData(isOwner || false);
+  }, [slug, isOwner]);
 
   useEffect(() => {
     if (storeData) {
@@ -56,13 +62,14 @@ function StorePageContent({ slug }: StorePageProps) {
     }
   }, [storeData]);
 
-  const fetchStoreData = async () => {
+  const fetchStoreData = async (ownerCheck: boolean = false) => {
     try {
       setIsLoading(true);
       setError(null);
 
       const page = searchParams.get("page") || "1";
-      const response = await fetch(`/api/stores/${slug}?page=${page}`);
+      const ownerParam = ownerCheck ? "&isOwner=true" : "";
+      const response = await fetch(`/api/stores/${slug}?page=${page}${ownerParam}`);
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -209,10 +216,20 @@ function StorePageContent({ slug }: StorePageProps) {
       {/* Products Section */}
       <div className="products-section">
         <div className="products-header">
-          <h2 className="products-title">Products ({products.total})</h2>
-          <p className="products-subtitle">
-            Browse all products from {store.name}
-          </p>
+          <div className="products-header-top">
+            <div>
+              <h2 className="products-title">Products ({products.total})</h2>
+              <p className="products-subtitle">
+                Browse all products from {store.name}
+              </p>
+            </div>
+            {isOwner && (
+              <Link href="/admin/products/create" className="add-product-button">
+                <Plus size={20} />
+                {t("store.addProduct")}
+              </Link>
+            )}
+          </div>
         </div>
 
         {products.items.length > 0 ? (
@@ -221,6 +238,7 @@ function StorePageContent({ slug }: StorePageProps) {
               products={products.items}
               currentPage={products.page}
               totalPages={products.pages}
+              showStatus={isOwner || false}
             />
           </div>
         ) : (
@@ -313,14 +331,16 @@ function StorePageContent({ slug }: StorePageProps) {
 
 export default function StorePage({ slug }: StorePageProps) {
   return (
-    <Suspense fallback={
-      <div className="loading-container">
-        <div className="loading-content">
-          <Loader2 className="loading-spinner" />
-          <p className="loading-text">Loading store...</p>
+    <Suspense
+      fallback={
+        <div className="loading-container">
+          <div className="loading-content">
+            <Loader2 className="loading-spinner" />
+            <p className="loading-text">Loading store...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <StorePageContent slug={slug} />
     </Suspense>
   );

@@ -5,7 +5,13 @@ import {
   NotFoundException,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { UsersService } from '@/users/services/users.service';
 import { ProductsService } from '@/products/services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
@@ -24,7 +30,9 @@ export class StoresController {
   ) {}
 
   @Get('check-slug')
-  @ApiOperation({ summary: 'Check if slug is available and suggest alternatives' })
+  @ApiOperation({
+    summary: 'Check if slug is available and suggest alternatives',
+  })
   @ApiQuery({ name: 'slug', description: 'Slug to check' })
   @ApiResponse({
     status: 200,
@@ -42,7 +50,7 @@ export class StoresController {
 
     // Check if slug is taken
     const existingUser = await this.usersService.findByStoreSlug(slug);
-    
+
     if (!existingUser) {
       return {
         available: true,
@@ -66,6 +74,7 @@ export class StoresController {
   @Get(':slug')
   @ApiOperation({ summary: 'Get store by slug with products' })
   @ApiParam({ name: 'slug', description: 'Store slug' })
+  @ApiQuery({ name: 'isOwner', description: 'Is the current user the store owner', required: false })
   @ApiResponse({
     status: 200,
     description: 'Store data with products',
@@ -75,6 +84,7 @@ export class StoresController {
     @Param('slug') slug: string,
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '20',
+    @Query('isOwner') isOwner: string = 'false',
   ) {
     // Find user by slug
     const user = await this.usersService.findByStoreSlug(slug);
@@ -83,11 +93,15 @@ export class StoresController {
     }
 
     // Get products for this seller
+    // If owner is viewing their own store, show all products (any status)
+    // Otherwise, only show approved products
+    const showAllStatuses = isOwner === 'true';
+    
     const products = await this.productsService.findMany({
       user: user,
       page,
       limit,
-      status: ProductStatus.APPROVED, // Only show approved products
+      status: showAllStatuses ? undefined : ProductStatus.APPROVED,
     });
 
     // Get logo URL from S3 if logo path exists

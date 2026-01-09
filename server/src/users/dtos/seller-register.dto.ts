@@ -25,7 +25,9 @@ export class SellerRegisterDto {
     description: 'მაღაზიის უნიკალური საიტის სახელი (URL slug)',
     required: false,
   })
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim().toLowerCase() : value,
+  )
   @IsOptional()
   @IsString()
   storeSlug?: string;

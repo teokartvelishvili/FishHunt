@@ -75,14 +75,20 @@ export function SellerRegisterForm() {
   // Check slug availability
   const checkSlugAvailability = async (slug: string) => {
     if (!slug || slug.length < 3) {
-      setSlugCheckResult({ available: false, suggestedSlug: null, checking: false });
+      setSlugCheckResult({
+        available: false,
+        suggestedSlug: null,
+        checking: false,
+      });
       return;
     }
 
     setSlugCheckResult((prev) => ({ ...prev, checking: true }));
 
     try {
-      const response = await fetch(`/api/stores/check-slug?slug=${encodeURIComponent(slug)}`);
+      const response = await fetch(
+        `/api/stores/check-slug?slug=${encodeURIComponent(slug)}`
+      );
       const data = await response.json();
 
       setSlugCheckResult({
@@ -97,7 +103,11 @@ export function SellerRegisterForm() {
       }
     } catch (error) {
       console.error("Error checking slug:", error);
-      setSlugCheckResult({ available: true, suggestedSlug: null, checking: false });
+      setSlugCheckResult({
+        available: true,
+        suggestedSlug: null,
+        checking: false,
+      });
     }
   };
 
@@ -418,30 +428,38 @@ export function SellerRegisterForm() {
             {slugCheckResult.checking && (
               <span className="slug-status slug-checking">⏳</span>
             )}
-            {!slugCheckResult.checking && storeSlug && storeSlug.length >= 3 && (
-              <span className={`slug-status ${slugCheckResult.available ? 'slug-available' : 'slug-taken'}`}>
-                {slugCheckResult.available ? '✓' : '✗'}
-              </span>
-            )}
+            {!slugCheckResult.checking &&
+              storeSlug &&
+              storeSlug.length >= 3 && (
+                <span
+                  className={`slug-status ${
+                    slugCheckResult.available ? "slug-available" : "slug-taken"
+                  }`}
+                >
+                  {slugCheckResult.available ? "✓" : "✗"}
+                </span>
+              )}
           </div>
           {errors.storeSlug && (
             <p className="error-text">{errors.storeSlug.message}</p>
           )}
-          {!slugCheckResult.available && slugCheckResult.suggestedSlug && storeSlug !== slugCheckResult.suggestedSlug && (
-            <p className="slug-suggestion">
-              {t("auth.slugTaken")} 
-              <button
-                type="button"
-                className="slug-suggestion-link"
-                onClick={() => {
-                  setValue("storeSlug", slugCheckResult.suggestedSlug!);
-                  setSlugManuallyEdited(false);
-                }}
-              >
-                {slugCheckResult.suggestedSlug}
-              </button>
-            </p>
-          )}
+          {!slugCheckResult.available &&
+            slugCheckResult.suggestedSlug &&
+            storeSlug !== slugCheckResult.suggestedSlug && (
+              <p className="slug-suggestion">
+                {t("auth.slugTaken")}
+                <button
+                  type="button"
+                  className="slug-suggestion-link"
+                  onClick={() => {
+                    setValue("storeSlug", slugCheckResult.suggestedSlug!);
+                    setSlugManuallyEdited(false);
+                  }}
+                >
+                  {slugCheckResult.suggestedSlug}
+                </button>
+              </p>
+            )}
           <p className="hint-text">{t("auth.storeSlugHint")}</p>
         </div>
 

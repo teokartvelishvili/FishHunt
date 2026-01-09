@@ -34,6 +34,34 @@
   overflow: hidden;
 }
 
+/* Status badge for product approval status (visible to store owners) */
+.status-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  background: linear-gradient(45deg, #f39c12, #e67e22);
+}
+
+.status-rejected {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+.status-approved {
+  background: linear-gradient(45deg, #27ae60, #2ecc71);
+}
+
 .discount-badge {
   position: absolute;
   top: 5px;

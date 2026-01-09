@@ -24,6 +24,7 @@ export const TRANSLATIONS: Translations = {
       orders: "შეკვეთები",
       adminPanel: "ადმინ პანელი",
       products: "პროდუქტები",
+      myStore: "ჩემი გვერდი",
       users: "მომხმარებლები",
       categories: "კატეგორიები",
       banners: "ბანერები",
@@ -40,6 +41,12 @@ export const TRANSLATIONS: Translations = {
       video: "ვიდეო",
       shop: "პროდუქტები",
       forum: "ფორუმი",
+    },
+    // Store Page
+    store: {
+      addProduct: "პროდუქტის დამატება",
+      shareStore: "გაზიარება",
+      noProducts: "პროდუქტები ჯერ არ არის",
     },
     // Footer
     footer: {
@@ -434,7 +441,8 @@ export const TRANSLATIONS: Translations = {
       enterCompanyName: "შეიყვანეთ კომპანიის სახელი",
       storeSlug: "საიტის მისამართი",
       enterStoreSlug: "შეიყვანეთ საიტის მისამართი",
-      storeSlugHint: "ეს იქნება თქვენი მაღაზიის ლინკი. მხოლოდ ლათინური ასოები, ციფრები და ტირე.",
+      storeSlugHint:
+        "ეს იქნება თქვენი მაღაზიის ლინკი. მხოლოდ ლათინური ასოები, ციფრები და ტირე.",
       slugTaken: "ეს მისამართი დაკავებულია. გამოიყენეთ:",
       storeAddress: "მაღაზიის მისამართი",
       enterStoreAddress: "შეიყვანეთ მაღაზიის მისამართი",
@@ -1274,6 +1282,7 @@ export const TRANSLATIONS: Translations = {
       orders: "Orders",
       adminPanel: "Admin Panel",
       products: "Products",
+      myStore: "My Store",
       users: "Users",
       categories: "Categories",
       banners: "Banners",
@@ -1290,6 +1299,12 @@ export const TRANSLATIONS: Translations = {
       video: "Video",
       shop: "Shop",
       forum: "Forum",
+    },
+    // Store Page
+    store: {
+      addProduct: "Add Product",
+      shareStore: "Share",
+      noProducts: "No products yet",
     },
     // Footer
     footer: {
@@ -1354,7 +1369,8 @@ export const TRANSLATIONS: Translations = {
       enterCompanyName: "Enter company name",
       storeSlug: "Store URL",
       enterStoreSlug: "Enter store URL",
-      storeSlugHint: "This will be your store link. Only lowercase letters, numbers and hyphens.",
+      storeSlugHint:
+        "This will be your store link. Only lowercase letters, numbers and hyphens.",
       slugTaken: "This URL is taken. Use:",
       storeAddress: "Store Address",
       enterStoreAddress: "Enter store address",
@@ -2445,6 +2461,7 @@ export const TRANSLATIONS: Translations = {
       orders: "Заказы",
       adminPanel: "Админ панель",
       products: "Продукты",
+      myStore: "Мой магазин",
       users: "Пользователи",
       categories: "Категории",
       banners: "Баннеры",
@@ -2460,6 +2477,12 @@ export const TRANSLATIONS: Translations = {
       video: "Видео",
       shop: "Магазин",
       forum: "Форум",
+    },
+    // Store Page
+    store: {
+      addProduct: "Добавить продукт",
+      shareStore: "Поделиться",
+      noProducts: "Продуктов пока нет",
     },
     // Footer
     footer: {
@@ -2524,7 +2547,8 @@ export const TRANSLATIONS: Translations = {
       enterCompanyName: "Введите название компании",
       storeSlug: "Адрес сайта",
       enterStoreSlug: "Введите адрес сайта",
-      storeSlugHint: "Это будет ссылка на ваш магазин. Только латинские буквы, цифры и дефис.",
+      storeSlugHint:
+        "Это будет ссылка на ваш магазин. Только латинские буквы, цифры и дефис.",
       slugTaken: "Этот адрес занят. Используйте:",
       storeAddress: "Адрес магазина",
       enterStoreAddress: "Введите адрес магазина",

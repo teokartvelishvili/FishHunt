@@ -63,7 +63,9 @@ async function migrateSellersWithSlugs() {
       })
       .toArray();
 
-    console.log(`📋 ნაპოვნია ${sellersWithoutSlug.length} სელერი სლაგის გარეშე`);
+    console.log(
+      `📋 ნაპოვნია ${sellersWithoutSlug.length} სელერი სლაგის გარეშე`,
+    );
 
     if (sellersWithoutSlug.length === 0) {
       console.log('✅ ყველა სელერს უკვე აქვს სლაგი!');

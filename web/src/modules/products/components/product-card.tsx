@@ -243,12 +243,14 @@ interface ProductCardProps {
   product: Product;
   className?: string;
   theme?: "default" | "handmade-theme";
+  showStatus?: boolean;
 }
 
 export function ProductCard({
   product,
   className = "",
   theme = "default",
+  showStatus = false,
 }: ProductCardProps) {
   let t: (key: string, values?: Record<string, string | number>) => string;
   let language: string;
@@ -389,6 +391,15 @@ export function ProductCard({
 
   return (
     <div className={`product-card ${theme} ${className}`}>
+      {/* Status badge for store owner */}
+      {showStatus && product.status && (
+        <div className={`status-badge status-${product.status.toLowerCase()}`}>
+          {product.status === "PENDING" && (language === "en" ? "Pending" : "ელოდება დასტურს")}
+          {product.status === "APPROVED" && (language === "en" ? "Approved" : "დადასტურებული")}
+          {product.status === "REJECTED" && (language === "en" ? "Rejected" : "უარყოფილი")}
+        </div>
+      )}
+
       {/* Discount badge */}
       {isDiscounted && (
         <div className="discount-badge">-{product.discountPercentage}%</div>

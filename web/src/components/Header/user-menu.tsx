@@ -19,6 +19,7 @@ import {
   LogOut,
   X,
   BarChart3,
+  Store,
 } from "lucide-react";
 
 export default function UserMenu() {
@@ -173,6 +174,16 @@ export default function UserMenu() {
               <div className="user-menu-dropdown-label">
                 {t("userMenu.adminDashboard")}
               </div>
+              {user.role === Role.Seller && user.storeSlug && (
+                <Link
+                  href={`/store/${user.storeSlug}`}
+                  className="user-menu-dropdown-item"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Store size={20} />
+                  {t("navigation.myStore")}
+                </Link>
+              )}
               <Link
                 href="/admin/products"
                 className="user-menu-dropdown-item"

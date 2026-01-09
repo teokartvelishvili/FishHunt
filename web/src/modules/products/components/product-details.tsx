@@ -483,7 +483,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <div className="pd-brand-logo">
                   <Image
                     src={product.brandLogo}
-                    alt={`${product.brand || 'Brand'} logo`}
+                    alt={`${product.brand || "Brand"} logo`}
                     width={40}
                     height={40}
                     className="pd-brand-logo-image"

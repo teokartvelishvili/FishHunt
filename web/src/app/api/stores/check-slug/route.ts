@@ -6,14 +6,13 @@ export async function GET(request: NextRequest) {
     const slug = searchParams.get("slug");
 
     if (!slug) {
-      return NextResponse.json(
-        { error: "Slug is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
 
     // Forward the request to the backend API
-    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/stores/check-slug?slug=${encodeURIComponent(slug)}`;
+    const backendUrl = `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/stores/check-slug?slug=${encodeURIComponent(slug)}`;
 
     const response = await fetch(backendUrl, {
       method: "GET",

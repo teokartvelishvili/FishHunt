@@ -56,6 +56,7 @@ interface ProductGridProps {
   theme?: "default";
   isShopPage?: boolean;
   selectedAgeGroup?: string;
+  showStatus?: boolean;
 }
 
 export function ProductGrid({
@@ -67,6 +68,7 @@ export function ProductGrid({
   onPageChange,
   isShopPage = false,
   selectedAgeGroup,
+  showStatus = false,
 }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
   const [pages, setPages] = useState(totalPages);
@@ -233,7 +235,7 @@ export function ProductGrid({
       <style jsx>{paginationStyles}</style>
       <div className="grid-container">
         {products.map((product) => (
-          <ProductCard key={product._id} product={product} theme={theme} />
+          <ProductCard key={product._id} product={product} theme={theme} showStatus={showStatus} />
         ))}
       </div>
 
