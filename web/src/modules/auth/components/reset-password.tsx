@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +8,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 
 import "./reset-password.css";
 
-export function ResetPasswordForm() {
+function ResetPasswordFormContent() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -94,7 +94,8 @@ export function ResetPasswordForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="newPassword" className="block text-sm font-medium">
-             newPassword</label>
+              newPassword
+            </label>
             <input
               id="newPassword"
               type="password"
@@ -138,5 +139,13 @@ export function ResetPasswordForm() {
         </form>
       )}
     </div>
+  );
+}
+
+export function ResetPasswordForm() {
+  return (
+    <Suspense fallback={<div className="loading">Loading...</div>}>
+      <ResetPasswordFormContent />
+    </Suspense>
   );
 }

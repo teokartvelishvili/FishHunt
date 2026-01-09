@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { ProductFilters } from "@/modules/products/components/product-filters";
 import { getProducts } from "@/modules/products/api/get-products";
@@ -9,7 +9,7 @@ import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 
-const ShopContent = () => {
+const ShopContentInner = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useLanguage();
@@ -371,6 +371,14 @@ const ShopContent = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ShopContent = () => {
+  return (
+    <Suspense fallback={<div className="shop-loading">Loading...</div>}>
+      <ShopContentInner />
+    </Suspense>
   );
 };
 

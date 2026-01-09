@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogin } from "../hooks/use-auth";
 // import { FaGoogle } from "react-icons/fa";
@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import "./login-form.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 
-export function LoginForm() {
+function LoginFormContent() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
@@ -153,5 +153,13 @@ export function LoginForm() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export function LoginForm() {
+  return (
+    <Suspense fallback={<div className="loading">Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }
