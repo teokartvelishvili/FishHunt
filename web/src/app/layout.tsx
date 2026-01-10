@@ -12,6 +12,7 @@ import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/Header/header";
 import { VisitorTracker } from "@/components/visitor-tracker";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { BecomeSellerPopup } from "@/components/BecomeSellerPopup/BecomeSellerPopup";
 // import SiteTimer from "@/components/SiteTimer/SiteTimer";
 
 export const metadata: Metadata = {
@@ -127,6 +128,7 @@ export default function RootLayout({
               <CheckoutProvider>
                 <LanguageProvider>
                   <VisitorTracker />
+                  <BecomeSellerPopup />
                   {/* <SiteTimer /> */}
                   <Header />
                   <main className="flex-1">{children}</main>
