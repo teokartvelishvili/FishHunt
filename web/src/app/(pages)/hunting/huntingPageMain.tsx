@@ -96,25 +96,56 @@ function HuntingPageMain() {
   const [showCategory2, setShowCategory2] = useState(false);
   const [showCategory3, setShowCategory3] = useState(false);
 
-  const currentYear = new Date().getFullYear();
-  const seasonStartWaterfowl = new Date(currentYear, 10, 1);
-  const seasonEndWaterfowl = new Date(currentYear + 1, 2, 1);
-  const seasonStartOthers = getFourthSaturdayOfAugust(currentYear);
-  const seasonEndOthers = new Date(currentYear + 1, 1, 15);
-  const seasonStartLimitedWaterfowl = new Date(currentYear, 8, 10);
-  const seasonEndLimitedWaterfowl = new Date(currentYear, 11, 31);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  const computeSeasonRange = (startMonth: number, startDay: number, endMonth: number, endDay: number) => {
+    // months: 1-12
+    let start = new Date(currentYear, startMonth - 1, startDay);
+    let end = new Date(currentYear, endMonth - 1, endDay);
+
+    if (startMonth <= endMonth) {
+      // same-year season
+      if (now > end) {
+        // next year's occurrence
+        start = new Date(currentYear + 1, startMonth - 1, startDay);
+        end = new Date(currentYear + 1, endMonth - 1, endDay);
+      }
+    } else {
+      // crossing-year season (e.g., Nov -> Mar)
+      if (now.getMonth() + 1 >= startMonth) {
+        // season started this year and ends next year
+        start = new Date(currentYear, startMonth - 1, startDay);
+        end = new Date(currentYear + 1, endMonth - 1, endDay);
+      } else {
+        // season started last year and ends this year
+        start = new Date(currentYear - 1, startMonth - 1, startDay);
+        end = new Date(currentYear, endMonth - 1, endDay);
+      }
+    }
+
+    return { start, end };
+  };
+
+  // Waterfowl: 01.11 - 01.03 (crosses year)
+  const { start: seasonStartWaterfowl, end: seasonEndWaterfowl } = computeSeasonRange(11, 1, 3, 1);
+  // Limited waterfowl: 10.09 - 31.12 (same year)
+  const { start: seasonStartLimitedWaterfowl, end: seasonEndLimitedWaterfowl } = computeSeasonRange(9, 10, 12, 31);
+  // Other birds: 4th Saturday of August - 15 Feb (crosses year)
+  const startYearForOthers = now.getMonth() + 1 >= 8 ? currentYear : currentYear - 1;
+  const seasonStartOthers = getFourthSaturdayOfAugust(startYearForOthers);
+  const seasonEndOthers = new Date(startYearForOthers + 1, 1, 15);
 
   const statusWaterfowl = getSeasonStatus(seasonStartWaterfowl, seasonEndWaterfowl, t);
   const statusOthers = getSeasonStatus(seasonStartOthers, seasonEndOthers, t);
   const statusLimitedWaterfowl = getSeasonStatus(seasonStartLimitedWaterfowl, seasonEndLimitedWaterfowl, t);
-  
+
   const seasonDates = [
     { start: seasonStartWaterfowl, end: seasonEndWaterfowl },
     { start: seasonStartOthers, end: seasonEndOthers },
     { start: seasonStartLimitedWaterfowl, end: seasonEndLimitedWaterfowl },
   ];
 
-  const now = new Date();
   const openSeasons = seasonDates.filter(({ start, end }) => now >= start && now <= end);
   const upcomingSeasons = seasonDates.filter(({ start }) => now < start);
 
