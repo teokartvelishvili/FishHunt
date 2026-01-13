@@ -394,9 +394,12 @@ export function ProductCard({
       {/* Status badge for store owner */}
       {showStatus && product.status && (
         <div className={`status-badge status-${product.status.toLowerCase()}`}>
-          {product.status === "PENDING" && (language === "en" ? "Pending" : "ელოდება დასტურს")}
-          {product.status === "APPROVED" && (language === "en" ? "Approved" : "დადასტურებული")}
-          {product.status === "REJECTED" && (language === "en" ? "Rejected" : "უარყოფილი")}
+          {product.status === "PENDING" &&
+            (language === "en" ? "Pending" : "ელოდება დასტურს")}
+          {product.status === "APPROVED" &&
+            (language === "en" ? "Approved" : "დადასტურებული")}
+          {product.status === "REJECTED" &&
+            (language === "en" ? "Rejected" : "უარყოფილი")}
         </div>
       )}
 

@@ -46,17 +46,27 @@ class CategoryStructureDto {
 
 class ProductVariantDto {
   @IsString()
-  size: string;
+  @IsOptional()
+  size?: string;
 
   @IsString()
-  color: string;
+  @IsOptional()
+  color?: string;
 
   @IsString()
   @IsOptional()
   colorEn?: string;
 
+  @IsString()
+  @IsOptional()
+  ageGroup?: string;
+
   @IsNumber()
   stock: number;
+
+  @IsNumber()
+  @IsOptional()
+  price?: number; // Optional price override for this variant
 
   @IsString()
   @IsOptional()

@@ -48,6 +48,7 @@ export interface ProductVariant {
   size?: string;
   color?: string;
   stock: number;
+  price?: number; // Optional price override for this variant
 }
 
 export interface Color {

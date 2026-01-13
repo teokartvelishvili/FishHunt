@@ -69,7 +69,9 @@ function StorePageContent({ slug }: StorePageProps) {
 
       const page = searchParams.get("page") || "1";
       const ownerParam = ownerCheck ? "&isOwner=true" : "";
-      const response = await fetch(`/api/stores/${slug}?page=${page}${ownerParam}`);
+      const response = await fetch(
+        `/api/stores/${slug}?page=${page}${ownerParam}`
+      );
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -224,7 +226,10 @@ function StorePageContent({ slug }: StorePageProps) {
               </p>
             </div>
             {isOwner && (
-              <Link href="/admin/products/create" className="add-product-button">
+              <Link
+                href="/admin/products/create"
+                className="add-product-button"
+              >
                 <Plus size={20} />
                 {t("store.addProduct")}
               </Link>

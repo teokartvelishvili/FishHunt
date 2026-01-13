@@ -28,6 +28,7 @@ export interface ProductFormData {
     size?: string;
     color?: string;
     stock: number;
+    price?: number;
   }[];
 }
 

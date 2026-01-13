@@ -260,3 +260,126 @@
     transform: rotate(360deg);
   }
 }
+
+/* Variants Section Styling */
+.variants-section {
+  background: linear-gradient(135deg, #f0f7f0 0%, #fff 100%);
+  border: 1.5px solid rgba(42, 85, 48, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 8px 0;
+}
+
+.variants-title {
+  color: #2a5530;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.variants-subtitle {
+  color: #666;
+  font-size: 13px;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.stock-variant-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid rgba(42, 85, 48, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.stock-variant-row:hover {
+  border-color: rgba(42, 85, 48, 0.25);
+  box-shadow: 0 2px 8px rgba(42, 85, 48, 0.08);
+}
+
+.stock-variant-row:last-child {
+  margin-bottom: 0;
+}
+
+.variant-label {
+  flex: 1;
+  font-weight: 600;
+  color: #2a5530;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+.variant-inputs {
+  display: flex;
+  gap: 16px;
+}
+
+.variant-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.variant-input-group label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.variant-input-group input {
+  width: 100px;
+  padding: 8px 12px;
+  border: 1.5px solid rgba(42, 85, 48, 0.15);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2a5530;
+  background: #f8fdf8;
+  transition: all 0.2s ease;
+}
+
+.variant-input-group input:focus {
+  outline: none;
+  border-color: #2a5530;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.1);
+}
+
+.variant-input-group input::placeholder {
+  color: #aaa;
+  font-size: 12px;
+}
+
+/* Mobile responsive for variants */
+@media (max-width: 600px) {
+  .stock-variant-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .variant-label {
+    min-width: auto;
+  }
+
+  .variant-inputs {
+    width: 100%;
+  }
+
+  .variant-input-group {
+    flex: 1;
+  }
+
+  .variant-input-group input {
+    width: 100%;
+  }
+}

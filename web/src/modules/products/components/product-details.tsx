@@ -240,7 +240,8 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const currentImageIndex_state = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = currentImageIndex_state;
   const [quantity, setQuantity] = useState(1);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
@@ -249,6 +250,47 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [activeTab, setActiveTab] = useState<"description" | "video">(
     "description"
   ); // Active tab state
+
+  // Extract sizes, colors, ageGroups from variants if product-level arrays are empty
+  const availableSizes = useMemo(() => {
+    if (product.sizes && product.sizes.length > 0) {
+      return product.sizes;
+    }
+    if (product.variants && product.variants.length > 0) {
+      const sizesFromVariants = product.variants
+        .map((v) => v.size)
+        .filter((s): s is string => !!s);
+      return [...new Set(sizesFromVariants)];
+    }
+    return [];
+  }, [product.sizes, product.variants]);
+
+  const availableColorsFromProduct = useMemo(() => {
+    if (product.colors && product.colors.length > 0) {
+      return product.colors;
+    }
+    if (product.variants && product.variants.length > 0) {
+      const colorsFromVariants = product.variants
+        .map((v) => v.color)
+        .filter((c): c is string => !!c);
+      return [...new Set(colorsFromVariants)];
+    }
+    return [];
+  }, [product.colors, product.variants]);
+
+  const availableAgeGroupsFromProduct = useMemo(() => {
+    if (product.ageGroups && product.ageGroups.length > 0) {
+      return product.ageGroups;
+    }
+    if (product.variants && product.variants.length > 0) {
+      const ageGroupsFromVariants = product.variants
+        .map((v) => v.ageGroup)
+        .filter((ag): ag is string => !!ag);
+      return [...new Set(ageGroupsFromVariants)];
+    }
+    return [];
+  }, [product.ageGroups, product.variants]);
+
   const { data: availableColors = [] } = useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
@@ -339,11 +381,40 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     return isAfterStart && isBeforeEnd;
   };
 
+  // Get the selected variant (if any)
+  const selectedVariant = useMemo(() => {
+    // If no variants exist, return null
+    if (!product.variants || product.variants.length === 0) return null;
+    
+    // Find a matching variant based on selected attributes
+    // Only match on attributes that exist in the variants
+    const variant = product.variants.find((v) => {
+      // Check if size matches (only if variant has size and sizes are available)
+      const sizeMatches = !v.size || !selectedSize || v.size === selectedSize;
+      // Check if color matches (only if variant has color and colors are available)
+      const colorMatches = !v.color || !selectedColor || v.color === selectedColor;
+      // Check if ageGroup matches (only if variant has ageGroup and ageGroups are available)
+      const ageGroupMatches = !v.ageGroup || !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
+      
+      return sizeMatches && colorMatches && ageGroupMatches;
+    });
+    
+    return variant || null;
+  }, [selectedSize, selectedColor, selectedAgeGroup, product.variants]);
+
+  // Get the base price (variant price if exists, otherwise product price)
+  const basePrice = useMemo(() => {
+    if (selectedVariant?.price !== undefined && selectedVariant.price > 0) {
+      return selectedVariant.price;
+    }
+    return product.price;
+  }, [selectedVariant, product.price]);
+
   // Calculate discounted pd-price
   const calculateDiscountedPrice = () => {
-    if (!hasActiveDiscount()) return product.price;
-    const discountAmount = (product.price * product.discountPercentage!) / 100;
-    return product.price - discountAmount;
+    if (!hasActiveDiscount()) return basePrice;
+    const discountAmount = (basePrice * product.discountPercentage!) / 100;
+    return basePrice - discountAmount;
   };
 
   const isDiscounted = hasActiveDiscount();
@@ -353,19 +424,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     // Calculate available quantity based on selected attributes
     let stock = product.countInStock || 0;
 
-    // If product has variants, adjust stock based on selected attributes
-    if (product.variants && product.variants.length > 0) {
-      const variant = product.variants.find(
-        (v) =>
-          (!v.size || v.size === selectedSize) &&
-          (!v.color || v.color === selectedColor) &&
-          (!v.ageGroup || v.ageGroup === selectedAgeGroup)
-      );
-      stock = variant ? variant.stock : 0;
+    // If product has variants and we have a selected variant, use variant stock
+    if (selectedVariant && selectedVariant.stock !== undefined) {
+      stock = selectedVariant.stock;
+    } else if (product.variants && product.variants.length > 0) {
+      // If variants exist but no specific one is selected, calculate total available stock
+      // from all variants that match current selections
+      const matchingVariants = product.variants.filter((v) => {
+        const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
+        const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
+        const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+        return sizeMatches && colorMatches && ageGroupMatches;
+      });
+      
+      if (matchingVariants.length > 0) {
+        stock = matchingVariants.reduce((sum, v) => sum + (v.stock || 0), 0);
+      }
     }
 
     return stock;
-  }, [selectedSize, selectedColor, selectedAgeGroup, product]);
+  }, [selectedVariant, selectedSize, selectedColor, selectedAgeGroup, product.countInStock, product.variants]);
 
   const router = useRouter();
   const { t, language } = useLanguage();
@@ -378,25 +456,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-  const isOutOfStock = product.countInStock === 0;
+  
+  // Use availableQuantity for out of stock check to be dynamic based on variant selection
+  const isOutOfStock = availableQuantity === 0;
 
-  // Initialize default selections based on product data
+  // Initialize default selections based on product data (extracted from variants if needed)
   useEffect(() => {
     // Set default size if sizes array exists
-    if (product.sizes && product.sizes.length > 0) {
-      setSelectedSize(product.sizes[0]);
+    if (availableSizes.length > 0) {
+      setSelectedSize(availableSizes[0]);
     }
 
     // Set default color if colors array exists
-    if (product.colors && product.colors.length > 0) {
-      setSelectedColor(product.colors[0]);
+    if (availableColorsFromProduct.length > 0) {
+      setSelectedColor(availableColorsFromProduct[0]);
     }
 
     // Set default age group if ageGroups array exists
-    if (product.ageGroups && product.ageGroups.length > 0) {
-      setSelectedAgeGroup(product.ageGroups[0]);
+    if (availableAgeGroupsFromProduct.length > 0) {
+      setSelectedAgeGroup(availableAgeGroupsFromProduct[0]);
     }
-  }, [product]);
+  }, [availableSizes, availableColorsFromProduct, availableAgeGroupsFromProduct]);
 
   // Function to open fullscreen image
   const openFullscreen = () => {
@@ -534,7 +614,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {isDiscounted ? (
               <div className="pd-price-container">
                 <span className="pd-original-price-details">
-                  {product.price.toFixed(2)}{" "}
+                  {basePrice.toFixed(2)}{" "}
                   {language === "en" ? "GEL" : "ლარი"}
                 </span>
                 <span className="pd-price pd-discounted-price-details">
@@ -543,7 +623,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
             ) : (
               <span className="pd-price">
-                {product.price.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
+                {basePrice.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
               </span>
             )}
           </div>
@@ -555,17 +635,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <div className="pd-product-options-container">
               {" "}
               {/* Age Group Selector - only show if product has age groups */}
-              {product.ageGroups && product.ageGroups.length > 0 && (
+              {availableAgeGroupsFromProduct.length > 0 && (
                 <div className="pd-select-container">
                   <select
                     className="pd-option-select"
                     value={selectedAgeGroup}
                     onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                    disabled={isOutOfStock || product.ageGroups.length === 0}
+                    disabled={isOutOfStock}
                   >
                     {" "}
                     <option value="">{t("product.selectAgeGroup")}</option>
-                    {product.ageGroups.map((ageGroup) => (
+                    {availableAgeGroupsFromProduct.map((ageGroup) => (
                       <option key={ageGroup} value={ageGroup}>
                         {getLocalizedAgeGroupName(ageGroup)}
                       </option>
@@ -574,18 +654,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}
               {/* Size Selector - only show if product has sizes */}
-              {product.sizes && product.sizes.length > 0 && (
+              {availableSizes.length > 0 && (
                 <div className="pd-select-container">
                   {" "}
                   <select
                     className="pd-option-select"
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
-                    disabled={isOutOfStock || product.sizes.length === 0}
+                    disabled={isOutOfStock}
                   >
                     {" "}
                     <option value="">{t("product.selectSize")}</option>
-                    {product.sizes.map((size) => (
+                    {availableSizes.map((size) => (
                       <option key={size} value={size}>
                         {size}
                       </option>
@@ -594,18 +674,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}{" "}
               {/* Color selector - only show if product has colors */}
-              {product.colors && product.colors.length > 0 && (
+              {availableColorsFromProduct.length > 0 && (
                 <div className="pd-select-container">
                   {" "}
                   <select
                     className="pd-option-select2"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
-                    disabled={isOutOfStock || product.colors.length === 0}
+                    disabled={isOutOfStock}
                   >
                     {" "}
                     <option value="">{t("product.selectColor")}</option>
-                    {product.colors.map((color) => (
+                    {availableColorsFromProduct.map((color) => (
                       <option key={color} value={color}>
                         {getLocalizedColorName(color)}
                       </option>
@@ -702,13 +782,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               price={finalPrice}
               disabled={
                 availableQuantity <= 0 ||
-                (product.sizes && product.sizes.length > 0 && !selectedSize) ||
-                (product.colors &&
-                  product.colors.length > 0 &&
-                  !selectedColor) ||
-                (product.ageGroups &&
-                  product.ageGroups.length > 0 &&
-                  !selectedAgeGroup)
+                (availableSizes.length > 0 && !selectedSize) ||
+                (availableColorsFromProduct.length > 0 && !selectedColor) ||
+                (availableAgeGroupsFromProduct.length > 0 && !selectedAgeGroup)
               }
             />
           </div>

@@ -59,7 +59,8 @@ export function BecomeSellerPopup() {
     ka: {
       title: "გახდი გამყიდველი!",
       subtitle: "შექმენი პირადი ონლაინ მაღაზია",
-      description: "გაყიდე შენი პროდუქტები ათასობით მომხმარებელზე. რეგისტრაცია უფასოა!",
+      description:
+        "გაყიდე შენი პროდუქტები ათასობით მომხმარებელზე. რეგისტრაცია უფასოა!",
       benefits: [
         "უფასო რეგისტრაცია",
         "საკუთარი მაღაზიის გვერდი",
@@ -71,19 +72,17 @@ export function BecomeSellerPopup() {
     en: {
       title: "Become a Seller!",
       subtitle: "Create Your Own Online Store",
-      description: "Sell your products to thousands of customers. Registration is free!",
-      benefits: [
-        "Free registration",
-        "Your own store page",
-        "Quick sales",
-      ],
+      description:
+        "Sell your products to thousands of customers. Registration is free!",
+      benefits: ["Free registration", "Your own store page", "Quick sales"],
       button: "Start Now",
       later: "Maybe Later",
     },
     ru: {
       title: "Стань продавцом!",
       subtitle: "Создай свой онлайн-магазин",
-      description: "Продавай свои товары тысячам покупателей. Регистрация бесплатна!",
+      description:
+        "Продавай свои товары тысячам покупателей. Регистрация бесплатна!",
       benefits: [
         "Бесплатная регистрация",
         "Собственная страница магазина",
@@ -94,7 +93,8 @@ export function BecomeSellerPopup() {
     },
   };
 
-  const t = translations[language as keyof typeof translations] || translations.ka;
+  const t =
+    translations[language as keyof typeof translations] || translations.ka;
 
   return (
     <div className="become-seller-overlay" onClick={handleClose}>

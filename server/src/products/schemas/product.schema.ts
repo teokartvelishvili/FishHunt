@@ -79,6 +79,9 @@ export class ProductVariant {
   stock: number;
 
   @Prop({ required: false })
+  price?: number; // Optional price override for this variant
+
+  @Prop({ required: false })
   sku?: string;
 }
 

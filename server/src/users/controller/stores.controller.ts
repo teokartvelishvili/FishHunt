@@ -74,7 +74,11 @@ export class StoresController {
   @Get(':slug')
   @ApiOperation({ summary: 'Get store by slug with products' })
   @ApiParam({ name: 'slug', description: 'Store slug' })
-  @ApiQuery({ name: 'isOwner', description: 'Is the current user the store owner', required: false })
+  @ApiQuery({
+    name: 'isOwner',
+    description: 'Is the current user the store owner',
+    required: false,
+  })
   @ApiResponse({
     status: 200,
     description: 'Store data with products',
@@ -96,7 +100,7 @@ export class StoresController {
     // If owner is viewing their own store, show all products (any status)
     // Otherwise, only show approved products
     const showAllStatuses = isOwner === 'true';
-    
+
     const products = await this.productsService.findMany({
       user: user,
       page,

@@ -235,7 +235,12 @@ export function ProductGrid({
       <style jsx>{paginationStyles}</style>
       <div className="grid-container">
         {products.map((product) => (
-          <ProductCard key={product._id} product={product} theme={theme} showStatus={showStatus} />
+          <ProductCard
+            key={product._id}
+            product={product}
+            theme={theme}
+            showStatus={showStatus}
+          />
         ))}
       </div>
 

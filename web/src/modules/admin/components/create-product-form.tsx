@@ -63,7 +63,9 @@ export function CreateProductForm({
   const [errors, setErrors] = useState<
     Partial<Record<keyof ProductFormData, string>>
   >({});
-  const [formData, setFormData] = useState<ProductFormData & { _id?: string; videoFile?: File }>(
+  const [formData, setFormData] = useState<
+    ProductFormData & { _id?: string; videoFile?: File }
+  >(
     initialData || {
       name: "",
       nameEn: "",
@@ -107,7 +109,9 @@ export function CreateProductForm({
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [videoUploadStatus, setVideoUploadStatus] = useState<string | null>(null);
+  const [videoUploadStatus, setVideoUploadStatus] = useState<string | null>(
+    null
+  );
 
   // Fetch categories
   const { data: categories, isLoading: isCategoriesLoading } = useQuery<
@@ -230,6 +234,33 @@ export function CreateProductForm({
       console.log("InitialData hashtags:", initialData.hashtags);
       console.log("InitialData variants:", initialData.variants);
 
+      // Extract ageGroups, sizes, colors from variants if product-level arrays are empty
+      let extractedAgeGroups = initialData.ageGroups || [];
+      let extractedSizes = initialData.sizes || [];
+      let extractedColors = initialData.colors || [];
+
+      // If product-level arrays are empty but variants exist, extract from variants
+      if (initialData.variants && initialData.variants.length > 0) {
+        if (extractedAgeGroups.length === 0) {
+          const ageGroupsFromVariants = initialData.variants
+            .map((v) => v.ageGroup)
+            .filter((ag): ag is string => !!ag);
+          extractedAgeGroups = [...new Set(ageGroupsFromVariants)];
+        }
+        if (extractedSizes.length === 0) {
+          const sizesFromVariants = initialData.variants
+            .map((v) => v.size)
+            .filter((s): s is string => !!s);
+          extractedSizes = [...new Set(sizesFromVariants)];
+        }
+        if (extractedColors.length === 0) {
+          const colorsFromVariants = initialData.variants
+            .map((v) => v.color)
+            .filter((c): c is string => !!c);
+          extractedColors = [...new Set(colorsFromVariants)];
+        }
+      }
+
       // Basic form data setup
       setFormData((prev) => ({
         ...prev,
@@ -247,9 +278,9 @@ export function CreateProductForm({
         descriptionEn: initialData.descriptionEn || "",
         price: initialData.price || 0,
         countInStock: initialData.countInStock || 0,
-        ageGroups: initialData.ageGroups || [],
-        sizes: initialData.sizes || [],
-        colors: initialData.colors || [],
+        ageGroups: extractedAgeGroups,
+        sizes: extractedSizes,
+        colors: extractedColors,
         hashtags: initialData.hashtags || [],
         videoDescription: initialData.videoDescription || "",
       }));
@@ -431,6 +462,11 @@ export function CreateProductForm({
       ...prev,
       [name]: processedValue,
     }));
+
+    // When base price changes, update all variants that don't have custom prices
+    if (name === "price" && typeof processedValue === "number" && processedValue > 0) {
+      setAllVariantPrices(processedValue);
+    }
 
     // Validate the field in real-time to clear errors as user types
     if (
@@ -790,33 +826,45 @@ export function CreateProductForm({
       }
 
       const data = await response.json();
-      
+
       // Upload video to YouTube if provided (works for both create and edit)
       if (formData.videoFile) {
         try {
           console.log("🎬 ვიდეოს ატვირთვა იწყება...");
-          console.log("📁 ვიდეო ფაილი:", formData.videoFile.name, formData.videoFile.size, "bytes");
-          
+          console.log(
+            "📁 ვიდეო ფაილი:",
+            formData.videoFile.name,
+            formData.videoFile.size,
+            "bytes"
+          );
+
           setVideoUploadStatus(
             language === "en"
               ? "📤 Uploading video to YouTube..."
               : "📤 ვიდეო იტვირთება YouTube-ზე..."
           );
-          
+
           // Get correct product ID for video description
-          const productIdForVideo = isEdit ? formData._id : (data._id || data.id);
-          
+          const productIdForVideo = isEdit ? formData._id : data._id || data.id;
+
           const videoFormData = new FormData();
           videoFormData.append("video", formData.videoFile);
           videoFormData.append("title", `${formData.name} - ${formData.brand}`);
           videoFormData.append(
             "description",
-            `${formData.description}\n\n🛒 იხილეთ პროდუქტი: https://fishhunt.ge/products/${productIdForVideo}\n\n${formData.hashtags?.map(tag => `#${tag}`).join(" ") || ""}`
+            `${
+              formData.description
+            }\n\n🛒 იხილეთ პროდუქტი: https://fishhunt.ge/products/${productIdForVideo}\n\n${
+              formData.hashtags?.map((tag) => `#${tag}`).join(" ") || ""
+            }`
           );
           videoFormData.append("tags", formData.hashtags?.join(",") || "");
           videoFormData.append("privacyStatus", "public");
 
-          console.log("📤 გაგზავნის URL:", `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`);
+          console.log(
+            "📤 გაგზავნის URL:",
+            `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`
+          );
           console.log("🔑 Token:", token ? "არსებობს ✓" : "არ არის ❌");
 
           const videoResponse = await fetch(
@@ -829,7 +877,7 @@ export function CreateProductForm({
               },
             }
           );
-          
+
           console.log("📥 Response Status:", videoResponse.status);
           console.log("📥 Response OK:", videoResponse.ok);
 
@@ -839,13 +887,13 @@ export function CreateProductForm({
           if (videoResponse.ok) {
             const videoData = await videoResponse.json();
             console.log("✅ ვიდეო წარმატებით აიტვირთა:", videoData);
-            
+
             setVideoUploadStatus(
               language === "en"
                 ? "🔄 Updating product with video..."
                 : "🔄 პროდუქტი ახლდება ვიდეოთი..."
             );
-            
+
             // Update product with video embed URL
             const updateFormData = new FormData();
             updateFormData.append(
@@ -854,7 +902,7 @@ export function CreateProductForm({
             );
 
             // Use correct product ID (for both create and edit modes)
-            const productId = isEdit ? formData._id : (data._id || data.id);
+            const productId = isEdit ? formData._id : data._id || data.id;
 
             await fetch(
               `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
@@ -880,7 +928,7 @@ export function CreateProductForm({
                   ? "Your video has been uploaded to YouTube"
                   : "თქვენი ვიდეო აიტვირთა YouTube-ზე",
             });
-            
+
             // Clear status after 3 seconds
             setTimeout(() => setVideoUploadStatus(null), 3000);
           } else {
@@ -888,40 +936,49 @@ export function CreateProductForm({
             console.error("❌ ვიდეოს ატვირთვა ვერ მოხერხდა:");
             console.error("Status:", videoResponse.status);
             console.error("Error:", errorText);
-            
+
             setVideoUploadStatus(
               language === "en"
                 ? "❌ Video upload failed"
                 : "❌ ვიდეოს ატვირთვა ვერ მოხერხდა"
             );
-            
+
             toast({
-              title: language === "en" ? "Video Upload Failed" : "ვიდეოს ატვირთვა ვერ მოხერხდა",
+              title:
+                language === "en"
+                  ? "Video Upload Failed"
+                  : "ვიდეოს ატვირთვა ვერ მოხერხდა",
               description:
                 language === "en"
                   ? "Product created but video upload failed"
                   : "პროდუქტი შეიქმნა, მაგრამ ვიდეოს ატვირთვა ვერ მოხერხდა",
               variant: "destructive",
             });
-            
+
             setTimeout(() => setVideoUploadStatus(null), 5000);
           }
         } catch (videoError) {
           console.error("💥 ვიდეოს ატვირთვისას მოხდა შეცდომა:");
           console.error(videoError);
-          
+
           setVideoUploadStatus(
             language === "en"
               ? "❌ Upload error occurred"
               : "❌ ატვირთვისას მოხდა შეცდომა"
           );
-          
+
           toast({
-            title: language === "en" ? "Video Upload Error" : "ვიდეოს ატვირთვის შეცდომა",
-            description: videoError instanceof Error ? videoError.message : "დაფიქსირდა შეცდომა",
+            title:
+              language === "en"
+                ? "Video Upload Error"
+                : "ვიდეოს ატვირთვის შეცდომა",
+            description:
+              videoError instanceof Error
+                ? videoError.message
+                : "დაფიქსირდა შეცდომა",
             variant: "destructive",
           });
-          
+
           setTimeout(() => setVideoUploadStatus(null), 5000);
           // Don't fail the whole operation if video upload fails
         }
@@ -980,22 +1037,48 @@ export function CreateProductForm({
         // If we have initial data with attribute selections, make sure they're valid
         // for this subcategory before applying them
         if (initialData) {
-          if (initialData.ageGroups && Array.isArray(initialData.ageGroups)) {
-            const validAgeGroups = initialData.ageGroups.filter((ag) =>
+          // Extract ageGroups from variants if product-level array is empty
+          let ageGroupsToCheck = initialData.ageGroups || [];
+          let sizesToCheck = initialData.sizes || [];
+          let colorsToCheck = initialData.colors || [];
+
+          if (initialData.variants && initialData.variants.length > 0) {
+            if (ageGroupsToCheck.length === 0) {
+              const ageGroupsFromVariants = initialData.variants
+                .map((v) => v.ageGroup)
+                .filter((ag): ag is string => !!ag);
+              ageGroupsToCheck = [...new Set(ageGroupsFromVariants)];
+            }
+            if (sizesToCheck.length === 0) {
+              const sizesFromVariants = initialData.variants
+                .map((v) => v.size)
+                .filter((s): s is string => !!s);
+              sizesToCheck = [...new Set(sizesFromVariants)];
+            }
+            if (colorsToCheck.length === 0) {
+              const colorsFromVariants = initialData.variants
+                .map((v) => v.color)
+                .filter((c): c is string => !!c);
+              colorsToCheck = [...new Set(colorsFromVariants)];
+            }
+          }
+
+          if (ageGroupsToCheck.length > 0) {
+            const validAgeGroups = ageGroupsToCheck.filter((ag) =>
               subcategory.ageGroups.includes(ag)
             );
             setSelectedAgeGroups(validAgeGroups);
           }
 
-          if (initialData.sizes && Array.isArray(initialData.sizes)) {
-            const validSizes = initialData.sizes.filter((size) =>
+          if (sizesToCheck.length > 0) {
+            const validSizes = sizesToCheck.filter((size) =>
               subcategory.sizes.includes(size)
             );
             setSelectedSizes(validSizes);
           }
 
-          if (initialData.colors && Array.isArray(initialData.colors)) {
-            const validColors = initialData.colors.filter((color) =>
+          if (colorsToCheck.length > 0) {
+            const validColors = colorsToCheck.filter((color) =>
               subcategory.colors.includes(color)
             );
             setSelectedColors(validColors);
@@ -1016,9 +1099,10 @@ export function CreateProductForm({
     };
   }, []);
 
-  const { stocks, totalCount, setStockCount } = useStocks({
+  const { stocks, totalCount, setStockCount, setVariantPrice, setAllVariantPrices } = useStocks({
     initialData,
     attributes: [selectedAgeGroups, selectedSizes, selectedColors],
+    basePrice: formData.price,
   });
 
   return (
@@ -1036,10 +1120,8 @@ export function CreateProductForm({
         )}{" "}
         {/* Video Upload Section */}
         <div className="video-section">
-          <h3>
-            {language === "en" ? "Product Video" : "პროდუქტის ვიდეო"}
-          </h3>
-          
+          <h3>{language === "en" ? "Product Video" : "პროდუქტის ვიდეო"}</h3>
+
           <div>
             <label htmlFor="videoFile">
               {language === "en"
@@ -1074,45 +1156,76 @@ export function CreateProductForm({
               }}
               className="create-product-input"
             />
-            <small style={{ color: "#666", fontSize: "0.9rem", display: "block", marginTop: "4px" }}>
+            <small
+              style={{
+                color: "#666",
+                fontSize: "0.9rem",
+                display: "block",
+                marginTop: "4px",
+              }}
+            >
               {language === "en"
                 ? "Supported formats: MP4, AVI, MOV, WMV. Max size: 500MB"
                 : "მხარდაჭერილი ფორმატები: MP4, AVI, MOV, WMV. მაქს. ზომა: 500MB"}
             </small>
-            
+
             {/* Show selected file or upload status */}
             {formData.videoFile && !videoUploadStatus && (
-              <div style={{ 
-                marginTop: "8px", 
-                padding: "6px 10px",
-                backgroundColor: "#e8f5e9",
-                color: "#2e7d32",
-                borderRadius: "4px",
-                border: "1px solid #a5d6a7",
-                fontSize: "0.9rem"
-              }}>
+              <div
+                style={{
+                  marginTop: "8px",
+                  padding: "6px 10px",
+                  backgroundColor: "#e8f5e9",
+                  color: "#2e7d32",
+                  borderRadius: "4px",
+                  border: "1px solid #a5d6a7",
+                  fontSize: "0.9rem",
+                }}
+              >
                 ✓ {formData.videoFile.name} (
                 {(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)
               </div>
             )}
-            
+
             {/* Video Upload Status Indicator */}
             {videoUploadStatus && (
-              <div style={{ 
-                marginTop: "12px", 
-                padding: "10px 14px",
-                backgroundColor: videoUploadStatus.includes("✅") ? "#d4edda" : videoUploadStatus.includes("❌") ? "#f8d7da" : "#fff3cd",
-                color: videoUploadStatus.includes("✅") ? "#155724" : videoUploadStatus.includes("❌") ? "#721c24" : "#856404",
-                borderRadius: "4px",
-                fontSize: "0.95rem",
-                fontWeight: "500",
-                border: `1px solid ${videoUploadStatus.includes("✅") ? "#c3e6cb" : videoUploadStatus.includes("❌") ? "#f5c6cb" : "#ffeaa7"}`,
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
-                {videoUploadStatus.includes("📤") && <span style={{ animation: "pulse 1.5s infinite" }}>📤</span>}
-                {videoUploadStatus.includes("🔄") && <span style={{ animation: "spin 1s linear infinite" }}>🔄</span>}
+              <div
+                style={{
+                  marginTop: "12px",
+                  padding: "10px 14px",
+                  backgroundColor: videoUploadStatus.includes("✅")
+                    ? "#d4edda"
+                    : videoUploadStatus.includes("❌")
+                    ? "#f8d7da"
+                    : "#fff3cd",
+                  color: videoUploadStatus.includes("✅")
+                    ? "#155724"
+                    : videoUploadStatus.includes("❌")
+                    ? "#721c24"
+                    : "#856404",
+                  borderRadius: "4px",
+                  fontSize: "0.95rem",
+                  fontWeight: "500",
+                  border: `1px solid ${
+                    videoUploadStatus.includes("✅")
+                      ? "#c3e6cb"
+                      : videoUploadStatus.includes("❌")
+                      ? "#f5c6cb"
+                      : "#ffeaa7"
+                  }`,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {videoUploadStatus.includes("📤") && (
+                  <span style={{ animation: "pulse 1.5s infinite" }}>📤</span>
+                )}
+                {videoUploadStatus.includes("🔄") && (
+                  <span style={{ animation: "spin 1s linear infinite" }}>
+                    🔄
+                  </span>
+                )}
                 <span>{videoUploadStatus}</span>
               </div>
             )}
@@ -1120,18 +1233,22 @@ export function CreateProductForm({
 
           {/* Show current video status in edit mode */}
           {isEdit && formData.videoDescription && !formData.videoFile && (
-            <div style={{ 
-              marginTop: "12px",
-              padding: "10px",
-              backgroundColor: "#e3f2fd",
-              color: "#1565c0",
-              borderRadius: "4px",
-              border: "1px solid #90caf9",
-              fontSize: "0.9rem"
-            }}>
-              <strong>ℹ️ {language === "en" ? "Current video:" : "მიმდინარე ვიდეო:"}</strong>
+            <div
+              style={{
+                marginTop: "12px",
+                padding: "10px",
+                backgroundColor: "#e3f2fd",
+                color: "#1565c0",
+                borderRadius: "4px",
+                border: "1px solid #90caf9",
+                fontSize: "0.9rem",
+              }}
+            >
+              <strong>
+                ℹ️ {language === "en" ? "Current video:" : "მიმდინარე ვიდეო:"}
+              </strong>
               <br />
-              {language === "en" 
+              {language === "en"
                 ? "This product already has a video. Upload a new video to replace it."
                 : "ამ პროდუქტს უკვე აქვს ვიდეო. ატვირთეთ ახალი ვიდეო რომ შეცვალოთ."}
             </div>
@@ -1416,29 +1533,69 @@ export function CreateProductForm({
             )}
           </div>
         )}
-        {stocks &&
-          stocks.map((stock) => (
-            <div
-              key={`${stock.ageGroup} - ${stock.size} - ${stock.color}`}
-              className="stock-info"
-            >
-              {" "}
-              <label>
-                {stock.ageGroup ? getLocalizedAgeGroupName(stock.ageGroup) : ""}{" "}
-                - {stock.size || ""} -{" "}
-                {stock.color ? getLocalizedColorName(stock.color) : ""}
-              </label>
-              <input
-                id="countInStock"
-                name="countInStock"
-                type="number"
-                value={stock.stock}
-                onChange={(elem) => setStockCount(stock, +elem.target.value)}
-                min={0}
-                required
-              />
-            </div>
-          ))}{" "}
+        {stocks && stocks.length > 0 && (
+          <div className="variants-section">
+            <h3 className="variants-title">
+              {language === "en"
+                ? "Variant Stock & Pricing"
+                : "ვარიანტების მარაგი და ფასი"}
+            </h3>
+            <p className="variants-subtitle">
+              {language === "en"
+                ? "Leave price empty to use the base price, or enter a specific price for this variant."
+                : "დატოვეთ ფასი ცარიელი საბაზისო ფასის გამოსაყენებლად, ან შეიყვანეთ კონკრეტული ფასი ამ ვარიანტისთვის."}
+            </p>
+            {stocks.map((stock) => (
+              <div
+                key={`${stock.ageGroup}-${stock.size}-${stock.color}`}
+                className="stock-variant-row"
+              >
+                <div className="variant-label">
+                  {[
+                    stock.ageGroup
+                      ? getLocalizedAgeGroupName(stock.ageGroup)
+                      : null,
+                    stock.size || null,
+                    stock.color ? getLocalizedColorName(stock.color) : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" / ")}
+                </div>
+                <div className="variant-inputs">
+                  <div className="variant-input-group">
+                    <label>{language === "en" ? "Stock" : "მარაგი"}</label>
+                    <input
+                      type="number"
+                      value={stock.stock}
+                      onChange={(e) => setStockCount(stock, +e.target.value)}
+                      min={0}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="variant-input-group">
+                    <label>{language === "en" ? "Price" : "ფასი"} (₾)</label>
+                    <input
+                      type="number"
+                      value={stock.price ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setVariantPrice(
+                          stock,
+                          value === "" ? undefined : +value
+                        );
+                      }}
+                      min={0}
+                      step="0.01"
+                      placeholder={
+                        language === "en" ? "Base price" : "საბაზისო"
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <div>
           <label htmlFor="countInStock">{t("adminProducts.stock")}</label>
           <input
@@ -1519,7 +1676,7 @@ export function CreateProductForm({
               </div>
             </div>
           )}
-        </div> 
+        </div>
         <div>
           <label htmlFor="brand">{t("adminProducts.brand")}</label>
           <input
