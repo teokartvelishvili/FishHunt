@@ -55,6 +55,7 @@ export interface Color {
   _id: string;
   name: string;
   nameEn?: string;
+  hexCode?: string;
   isActive: boolean;
 }
 

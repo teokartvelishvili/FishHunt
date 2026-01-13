@@ -239,6 +239,43 @@ interface ProductDetailsProps {
   product: Product;
 }
 
+// Default color hex codes mapping for Georgian color names
+const defaultColorHexMap: Record<string, string> = {
+  // Georgian
+  "შავი": "#000000",
+  "თეთრი": "#FFFFFF",
+  "წითელი": "#E53935",
+  "ლურჯი": "#1E88E5",
+  "მწვანე": "#43A047",
+  "ყვითელი": "#FDD835",
+  "ნარინჯისფერი": "#FB8C00",
+  "იასამნისფერი": "#8E24AA",
+  "ვარდისფერი": "#EC407A",
+  "ყავისფერი": "#795548",
+  "ნაცრისფერი": "#9E9E9E",
+  "ოქროსფერი": "#FFD700",
+  "ვერცხლისფერი": "#C0C0C0",
+  "ბეჟი": "#D7CCC8",
+  "ტურქუაზი": "#00BCD4",
+  // English
+  "black": "#000000",
+  "white": "#FFFFFF",
+  "red": "#E53935",
+  "blue": "#1E88E5",
+  "green": "#43A047",
+  "yellow": "#FDD835",
+  "orange": "#FB8C00",
+  "purple": "#8E24AA",
+  "pink": "#EC407A",
+  "brown": "#795548",
+  "gray": "#9E9E9E",
+  "grey": "#9E9E9E",
+  "gold": "#FFD700",
+  "silver": "#C0C0C0",
+  "beige": "#D7CCC8",
+  "turquoise": "#00BCD4",
+};
+
 export function ProductDetails({ product }: ProductDetailsProps) {
   const currentImageIndex_state = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = currentImageIndex_state;
@@ -633,86 +670,115 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           />
           {!isOutOfStock && (
             <div className="pd-product-options-container">
-              {" "}
-              {/* Age Group Selector - only show if product has age groups */}
+              {/* Age Group Selector - Button Style */}
               {availableAgeGroupsFromProduct.length > 0 && (
-                <div className="pd-select-container">
-                  <select
-                    className="pd-option-select"
-                    value={selectedAgeGroup}
-                    onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                    disabled={isOutOfStock}
-                  >
-                    {" "}
-                    <option value="">{t("product.selectAgeGroup")}</option>
+                <div className="pd-variant-group">
+                  <label className="pd-variant-label">
+                    {t("product.ageGroup") || "ასაკობრივი ჯგუფი"}
+                  </label>
+                  <div className="pd-variant-buttons">
                     {availableAgeGroupsFromProduct.map((ageGroup) => (
-                      <option key={ageGroup} value={ageGroup}>
+                      <button
+                        key={ageGroup}
+                        type="button"
+                        className={`pd-variant-btn ${selectedAgeGroup === ageGroup ? "selected" : ""}`}
+                        onClick={() => setSelectedAgeGroup(ageGroup)}
+                        disabled={isOutOfStock}
+                      >
                         {getLocalizedAgeGroupName(ageGroup)}
-                      </option>
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
               )}
-              {/* Size Selector - only show if product has sizes */}
+
+              {/* Size Selector - Button Style like ASOS/Zara */}
               {availableSizes.length > 0 && (
-                <div className="pd-select-container">
-                  {" "}
-                  <select
-                    className="pd-option-select"
-                    value={selectedSize}
-                    onChange={(e) => setSelectedSize(e.target.value)}
-                    disabled={isOutOfStock}
-                  >
-                    {" "}
-                    <option value="">{t("product.selectSize")}</option>
+                <div className="pd-variant-group">
+                  <label className="pd-variant-label">
+                    {t("product.size") || "ზომა"}
+                    {selectedSize && <span className="pd-selected-value">: {selectedSize}</span>}
+                  </label>
+                  <div className="pd-size-buttons">
                     {availableSizes.map((size) => (
-                      <option key={size} value={size}>
+                      <button
+                        key={size}
+                        type="button"
+                        className={`pd-size-btn ${selectedSize === size ? "selected" : ""}`}
+                        onClick={() => setSelectedSize(size)}
+                        disabled={isOutOfStock}
+                      >
                         {size}
-                      </option>
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
-              )}{" "}
-              {/* Color selector - only show if product has colors */}
+              )}
+
+              {/* Color Selector - Circle Swatches like Amazon/Nike */}
               {availableColorsFromProduct.length > 0 && (
-                <div className="pd-select-container">
-                  {" "}
-                  <select
-                    className="pd-option-select2"
-                    value={selectedColor}
-                    onChange={(e) => setSelectedColor(e.target.value)}
-                    disabled={isOutOfStock}
-                  >
-                    {" "}
-                    <option value="">{t("product.selectColor")}</option>
-                    {availableColorsFromProduct.map((color) => (
-                      <option key={color} value={color}>
-                        {getLocalizedColorName(color)}
-                      </option>
-                    ))}
-                  </select>
+                <div className="pd-variant-group">
+                  <label className="pd-variant-label">
+                    {t("product.color") || "ფერი"}
+                    {selectedColor && <span className="pd-selected-value">: {getLocalizedColorName(selectedColor)}</span>}
+                  </label>
+                  <div className="pd-color-swatches">
+                    {availableColorsFromProduct.map((color) => {
+                      // Get color hex code - first from API, then from default map, then fallback
+                      const apiColor = availableColors.find(c => c.name === color);
+                      const colorHex = apiColor?.hexCode || defaultColorHexMap[color] || defaultColorHexMap[color.toLowerCase()] || "#cccccc";
+                      const isLightColor = colorHex.toLowerCase() === "#ffffff" || colorHex.toLowerCase() === "#fff" || color === "თეთრი" || color === "white";
+                      return (
+                        <button
+                          key={color}
+                          type="button"
+                          className={`pd-color-swatch ${selectedColor === color ? "selected" : ""}`}
+                          onClick={() => setSelectedColor(color)}
+                          disabled={isOutOfStock}
+                          title={getLocalizedColorName(color)}
+                          style={{ backgroundColor: colorHex }}
+                        >
+                          {selectedColor === color && (
+                            <span className="pd-color-check" style={{ color: isLightColor ? "#333" : "#fff" }}>✓</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
-              {/* Quantity Selector */}
+
+              {/* Quantity Selector - Modern Style */}
               {availableQuantity > 0 && (
-                <div className="pd-select-container">
-                  <select
-                    className="pd-option-select"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    disabled={availableQuantity <= 0}
-                  >
-                    {Array.from(
-                      { length: availableQuantity },
-                      (_, i) => i + 1
-                    ).map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
+                <div className="pd-variant-group">
+                  <label className="pd-variant-label">
+                    {t("product.quantity") || "რაოდენობა"}
+                  </label>
+                  <div className="pd-quantity-selector">
+                    <button
+                      type="button"
+                      className="pd-qty-btn"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                    >
+                      −
+                    </button>
+                    <span className="pd-qty-value">{quantity}</span>
+                    <button
+                      type="button"
+                      className="pd-qty-btn"
+                      onClick={() => setQuantity(Math.min(availableQuantity, quantity + 1))}
+                      disabled={quantity >= availableQuantity}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="pd-stock-info">
+                    {availableQuantity} {t("product.inStock") || "მარაგშია"}
+                  </span>
                 </div>
               )}
+
               {/* Stock Status */}
               {availableQuantity <= 0 && (
                 <div className="pd-out-of-stock-message">

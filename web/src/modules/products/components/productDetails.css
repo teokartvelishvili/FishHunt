@@ -594,9 +594,211 @@
   margin: 24px 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
+/* Variant Group Container */
+.pd-variant-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pd-variant-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a5530;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pd-selected-value {
+  font-weight: 400;
+  text-transform: none;
+  color: #666;
+}
+
+/* Age Group & Generic Variant Buttons */
+.pd-variant-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pd-variant-btn {
+  padding: 10px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pd-variant-btn:hover:not(:disabled) {
+  border-color: #2a5530;
+  background: rgba(42, 85, 48, 0.05);
+}
+
+.pd-variant-btn.selected {
+  border-color: #2a5530;
+  background: #2a5530;
+  color: #fff;
+}
+
+.pd-variant-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size Buttons - Square Style like ASOS/Zara */
+.pd-size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pd-size-btn {
+  min-width: 50px;
+  height: 50px;
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-size-btn:hover:not(:disabled) {
+  border-color: #2a5530;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.15);
+}
+
+.pd-size-btn.selected {
+  border-color: #2a5530;
+  background: #2a5530;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.25);
+}
+
+.pd-size-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Color Swatches - Circle Style like Amazon/Nike */
+.pd-color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pd-color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pd-color-swatch:hover:not(:disabled) {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.pd-color-swatch.selected {
+  border-color: #2a5530;
+  border-width: 3px;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(42, 85, 48, 0.3);
+}
+
+.pd-color-swatch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pd-color-check {
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* For light colors, use dark checkmark */
+.pd-color-swatch[style*="background-color: #fff"],
+.pd-color-swatch[style*="background-color: #ffffff"],
+.pd-color-swatch[style*="background-color: rgb(255, 255, 255)"] .pd-color-check {
+  color: #333;
+  text-shadow: none;
+}
+
+/* Quantity Selector - Modern Style */
+.pd-quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.pd-qty-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: #f5f5f5;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-qty-btn:hover:not(:disabled) {
+  background: #2a5530;
+  color: #fff;
+}
+
+.pd-qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pd-qty-value {
+  width: 60px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.pd-stock-info {
+  margin-left: 16px;
+  font-size: 14px;
+  color: #2a5530;
+  font-weight: 500;
+}
+
+/* Legacy select styles - keep for backwards compatibility */
 .option-select,
 .pd-option-select2 {
   width: 100%;
@@ -625,6 +827,36 @@
   background: rgba(211, 47, 47, 0.1);
   border-radius: 8px;
   border: 1px solid #d32f2f;
+}
+
+/* Mobile Responsive for Variant Selectors */
+@media (max-width: 480px) {
+  .pd-size-btn {
+    min-width: 44px;
+    height: 44px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .pd-color-swatch {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .pd-qty-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pd-qty-value {
+    width: 50px;
+  }
+  
+  .pd-stock-info {
+    display: block;
+    margin-left: 0;
+    margin-top: 8px;
+  }
 }
 
 .pd-price-section {
