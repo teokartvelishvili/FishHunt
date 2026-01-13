@@ -149,6 +149,18 @@ export class Product {
   @Prop({ type: [String], default: [] })
   colorsEn?: string[];
 
+  // Color-specific images: array of {color: string, image: string}
+  @Prop({
+    type: [
+      {
+        color: { type: String, required: true },
+        image: { type: String, required: true },
+      },
+    ],
+    default: [],
+  })
+  colorImages?: { color: string; image: string }[];
+
   // Add categoryStructure field
   @Prop({ type: Object })
   categoryStructure?: CategoryStructure;

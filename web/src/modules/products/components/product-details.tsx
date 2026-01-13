@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
@@ -289,6 +289,48 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     "description"
   ); // Active tab state
 
+  // Create combined images array including color images
+  const allImages = useMemo(() => {
+    const images = [...product.images];
+    // Add color images that are not already in the main images
+    if (product.colorImages && product.colorImages.length > 0) {
+      product.colorImages.forEach((ci) => {
+        if (!images.includes(ci.image)) {
+          images.push(ci.image);
+        }
+      });
+    }
+    return images;
+  }, [product.images, product.colorImages]);
+
+  // Get image for a specific color from colorImages
+  const getColorImage = useCallback(
+    (color: string): string | null => {
+      if (!product.colorImages || product.colorImages.length === 0) {
+        return null;
+      }
+      const colorImage = product.colorImages.find((ci) => ci.color === color);
+      return colorImage?.image || null;
+    },
+    [product.colorImages]
+  );
+
+  // Handle color selection - changes image if color has a specific image
+  const handleColorSelect = useCallback(
+    (color: string) => {
+      setSelectedColor(color);
+      const colorImage = getColorImage(color);
+      if (colorImage) {
+        // Find if this color image is in allImages array
+        const imageIndex = allImages.findIndex((img) => img === colorImage);
+        if (imageIndex !== -1) {
+          setCurrentImageIndex(imageIndex);
+        }
+      }
+    },
+    [getColorImage, allImages, setCurrentImageIndex]
+  );
+
   // Extract sizes, colors, ageGroups from variants if product-level arrays are empty
   const availableSizes = useMemo(() => {
     if (product.sizes && product.sizes.length > 0) {
@@ -512,42 +554,46 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   // Check if a specific size has any stock (with current color and ageGroup selections)
   const isSizeAvailable = (size: string): boolean => {
     if (!product.variants || product.variants.length === 0) return true;
-    
+
     const matchingVariants = product.variants.filter((v) => {
       const sizeMatches = v.size === size;
-      const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
-      const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+      const colorMatches =
+        !selectedColor || !v.color || v.color === selectedColor;
+      const ageGroupMatches =
+        !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
       return sizeMatches && colorMatches && ageGroupMatches;
     });
-    
+
     return matchingVariants.some((v) => (v.stock || 0) > 0);
   };
 
   // Check if a specific color has any stock (with current size and ageGroup selections)
   const isColorAvailable = (color: string): boolean => {
     if (!product.variants || product.variants.length === 0) return true;
-    
+
     const matchingVariants = product.variants.filter((v) => {
       const colorMatches = v.color === color;
       const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
-      const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+      const ageGroupMatches =
+        !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
       return colorMatches && sizeMatches && ageGroupMatches;
     });
-    
+
     return matchingVariants.some((v) => (v.stock || 0) > 0);
   };
 
   // Check if a specific ageGroup has any stock (with current size and color selections)
   const isAgeGroupAvailable = (ageGroup: string): boolean => {
     if (!product.variants || product.variants.length === 0) return true;
-    
+
     const matchingVariants = product.variants.filter((v) => {
       const ageGroupMatches = v.ageGroup === ageGroup;
       const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
-      const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
+      const colorMatches =
+        !selectedColor || !v.color || v.color === selectedColor;
       return ageGroupMatches && sizeMatches && colorMatches;
     });
-    
+
     return matchingVariants.some((v) => (v.stock || 0) > 0);
   };
 
@@ -609,7 +655,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 onClick={openFullscreen} // Add click handler to open fullscreen
               >
                 <Image
-                  src={product.images[currentImageIndex]}
+                  src={allImages[currentImageIndex] || product.images[0]}
                   alt={displayName}
                   fill
                   quality={90}
@@ -622,7 +668,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           {/* Thumbnails below main image */}
           <div className="pd-thumbnail-container">
-            {product.images.map((image, index) => (
+            {allImages.map((image, index) => (
               <motion.button
                 key={image}
                 onClick={() => setCurrentImageIndex(index)}
@@ -654,19 +700,20 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             }
           >
             <div className="pd-brand-details">
-              {!brandLogoError && (product.brandLogo || product.user?.storeLogo) && (
-                <div className="pd-brand-logo">
-                  <Image
-                    src={product.brandLogo || product.user?.storeLogo || ""}
-                    alt={`${product.brand || "Brand"} logo`}
-                    width={40}
-                    height={40}
-                    className="pd-brand-logo-image"
-                    onError={() => setBrandLogoError(true)}
-                    unoptimized
-                  />
-                </div>
-              )}
+              {!brandLogoError &&
+                (product.brandLogo || product.user?.storeLogo) && (
+                  <div className="pd-brand-logo">
+                    <Image
+                      src={product.brandLogo || product.user?.storeLogo || ""}
+                      alt={`${product.brand || "Brand"} logo`}
+                      width={40}
+                      height={40}
+                      className="pd-brand-logo-image"
+                      onError={() => setBrandLogoError(true)}
+                      unoptimized
+                    />
+                  </div>
+                )}
               <div className="pd-brand-info">
                 <div className="pd-brand-label">
                   {language === "en" ? "Brand" : "ბრენდი"}
@@ -741,7 +788,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       type="button"
                       className={`pd-variant-btn ${
                         selectedAgeGroup === ageGroup ? "selected" : ""
-                      } ${!isAgeGroupAvailable(ageGroup) ? "out-of-stock" : ""}`}
+                      } ${
+                        !isAgeGroupAvailable(ageGroup) ? "out-of-stock" : ""
+                      }`}
                       onClick={() => setSelectedAgeGroup(ageGroup)}
                       disabled={!isAgeGroupAvailable(ageGroup)}
                     >
@@ -758,9 +807,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <label className="pd-variant-label">
                   {t("product.size") || "ზომა"}
                   {selectedSize && (
-                    <span className="pd-selected-value">
-                      : {selectedSize}
-                    </span>
+                    <span className="pd-selected-value">: {selectedSize}</span>
                   )}
                 </label>
                 <div className="pd-size-buttons">
@@ -809,14 +856,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       color === "თეთრი" ||
                       color === "white";
                     const colorAvailable = isColorAvailable(color);
+                    // Check if this color has a specific image
+                    const hasColorImage = getColorImage(color) !== null;
                     return (
                       <button
                         key={color}
                         type="button"
                         className={`pd-color-swatch ${
                           selectedColor === color ? "selected" : ""
-                        } ${!colorAvailable ? "out-of-stock" : ""}`}
-                        onClick={() => setSelectedColor(color)}
+                        } ${!colorAvailable ? "out-of-stock" : ""} ${
+                          hasColorImage ? "has-image" : ""
+                        }`}
+                        onClick={() => handleColorSelect(color)}
                         disabled={!colorAvailable}
                         title={getLocalizedColorName(color)}
                         style={{ backgroundColor: colorHex }}

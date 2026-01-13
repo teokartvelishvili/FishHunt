@@ -83,6 +83,7 @@ export interface Product {
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
+  colorImages?: { color: string; image: string }[];
   categoryStructure?: CategoryStructure;
   price: number;
   countInStock: number;

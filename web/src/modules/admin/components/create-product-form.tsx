@@ -91,6 +91,11 @@ export function CreateProductForm({
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
+  // Color images state: map color name to image File or URL
+  const [colorImages, setColorImages] = useState<
+    Record<string, File | string | null>
+  >({});
+
   const [availableAgeGroups, setAvailableAgeGroups] = useState<string[]>([]);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
   const [availableColors, setAvailableColors] = useState<string[]>([]);
@@ -332,6 +337,22 @@ export function CreateProductForm({
       } else if (initialData.categoryId) {
         setSelectedCategory(String(initialData.categoryId || ""));
       }
+
+      // Load existing color images
+      console.log("InitialData colorImages:", (initialData as any).colorImages);
+      if (
+        (initialData as any).colorImages &&
+        Array.isArray((initialData as any).colorImages)
+      ) {
+        const existingColorImages: Record<string, string> = {};
+        (initialData as any).colorImages.forEach(
+          (ci: { color: string; image: string }) => {
+            existingColorImages[ci.color] = ci.image;
+          }
+        );
+        console.log("Setting colorImages from initialData:", existingColorImages);
+        setColorImages(existingColorImages);
+      }
     }
   }, [initialData]);
 
@@ -565,6 +586,29 @@ export function CreateProductForm({
     }));
   };
 
+  // Handle color image upload
+  const handleColorImageChange = (
+    color: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setColorImages((prev) => ({
+        ...prev,
+        [color]: file,
+      }));
+    }
+  };
+
+  // Remove color image
+  const handleRemoveColorImage = (color: string) => {
+    setColorImages((prev) => {
+      const updated = { ...prev };
+      delete updated[color];
+      return updated;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -755,6 +799,46 @@ export function CreateProductForm({
       }
       if (discountEndDate) {
         formDataToSend.append("discountEndDate", discountEndDate);
+      }
+
+      // Handle color images
+      console.log("colorImages state before submit:", colorImages);
+      const colorImageColors: string[] = [];
+      const colorImageFiles: File[] = [];
+      const existingColorImages: { color: string; image: string }[] = [];
+
+      Object.entries(colorImages).forEach(([color, imageOrUrl]) => {
+        console.log(`Color: ${color}, type: ${typeof imageOrUrl}, isFile: ${imageOrUrl instanceof File}`);
+        if (imageOrUrl instanceof File) {
+          colorImageColors.push(color);
+          colorImageFiles.push(imageOrUrl);
+        } else if (typeof imageOrUrl === "string") {
+          existingColorImages.push({ color, image: imageOrUrl });
+        }
+      });
+
+      console.log("colorImageFiles to send:", colorImageFiles.length);
+      console.log("existingColorImages to send:", existingColorImages);
+
+      // Append color image files
+      colorImageFiles.forEach((file) => {
+        formDataToSend.append("colorImageFiles", file);
+      });
+
+      // Append color names for new files
+      if (colorImageColors.length > 0) {
+        formDataToSend.append(
+          "colorImageColors",
+          JSON.stringify(colorImageColors)
+        );
+      }
+
+      // Append existing color images
+      if (existingColorImages.length > 0) {
+        formDataToSend.append(
+          "existingColorImages",
+          JSON.stringify(existingColorImages)
+        );
       }
 
       // Handle images - separate existing images from new ones
@@ -1537,6 +1621,67 @@ export function CreateProductForm({
                       />
                       <span>{getLocalizedColorName(color)}</span>
                     </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Color Images Section */}
+            {selectedColors.length > 0 && (
+              <div className="color-images-section">
+                <h3>
+                  {language === "en" ? "Color Images" : "ფერების სურათები"}
+                </h3>
+                <p className="color-images-hint">
+                  {language === "en"
+                    ? "Upload a specific image for each color (optional)"
+                    : "ატვირთეთ კონკრეტული სურათი თითოეული ფერისთვის (არასავალდებულო)"}
+                </p>
+                <div className="color-images-grid">
+                  {selectedColors.map((color) => (
+                    <div key={color} className="color-image-item">
+                      <div className="color-image-label">
+                        {getLocalizedColorName(color)}
+                      </div>
+                      <div className="color-image-upload">
+                        {colorImages[color] ? (
+                          <div className="color-image-preview">
+                            <Image
+                              src={
+                                colorImages[color] instanceof File
+                                  ? URL.createObjectURL(
+                                      colorImages[color] as File
+                                    )
+                                  : (colorImages[color] as string)
+                              }
+                              alt={color}
+                              width={80}
+                              height={80}
+                              className="color-preview-img"
+                            />
+                            <button
+                              type="button"
+                              className="color-image-remove"
+                              onClick={() => handleRemoveColorImage(color)}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="color-image-upload-btn">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleColorImageChange(color, e)}
+                              style={{ display: "none" }}
+                            />
+                            <span>
+                              {language === "en" ? "Upload" : "ატვირთვა"}
+                            </span>
+                          </label>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

@@ -436,6 +436,10 @@ export class ProductsService {
       updateFields.colors = Array.isArray(data.colors) ? data.colors : [];
     if (data.hashtags !== undefined)
       updateFields.hashtags = Array.isArray(data.hashtags) ? data.hashtags : [];
+    if (data.colorImages !== undefined)
+      updateFields.colorImages = Array.isArray(data.colorImages)
+        ? data.colorImages
+        : [];
 
     console.log('Updating product with hashtags:', updateFields.hashtags);
 

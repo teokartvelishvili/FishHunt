@@ -200,6 +200,7 @@ export class ProductsController {
       [
         { name: 'images', maxCount: 10 },
         { name: 'brandLogo', maxCount: 1 },
+        { name: 'colorImageFiles', maxCount: 20 },
       ],
       {
         fileFilter: (req, file, cb) => {
@@ -224,10 +225,11 @@ export class ProductsController {
     allFiles: {
       images: Express.Multer.File[];
       brandLogo?: Express.Multer.File[];
+      colorImageFiles?: Express.Multer.File[];
     },
   ) {
     const files = allFiles.images;
-    const { brandLogo } = allFiles;
+    const { brandLogo, colorImageFiles } = allFiles;
 
     if (!files || files.length === 0) {
       throw new BadRequestException('At least one image is required');
@@ -289,13 +291,70 @@ export class ProductsController {
       console.log('Parsed hashtags:', hashtags);
       console.log('ProductData hashtags:', productData.hashtags);
 
-      // Extract the main category data
+      // Process color images
+      let colorImages: { color: string; image: string }[] = [];
+
+      // Parse colorImageColors from body (array of color names corresponding to colorImageFiles)
+      let colorImageColors: string[] = [];
+      console.log('Raw colorImageColors from productData:', productData.colorImageColors);
+      console.log('Type of colorImageColors:', typeof productData.colorImageColors);
+      if (productData.colorImageColors) {
+        if (typeof productData.colorImageColors === 'string') {
+          // Could be a single value or JSON array
+          try {
+            colorImageColors = JSON.parse(productData.colorImageColors);
+            console.log('Parsed colorImageColors:', colorImageColors);
+          } catch {
+            colorImageColors = [productData.colorImageColors];
+            console.log('Single colorImageColor:', colorImageColors);
+          }
+        } else if (Array.isArray(productData.colorImageColors)) {
+          colorImageColors = productData.colorImageColors;
+          console.log('Array colorImageColors:', colorImageColors);
+        }
+      }
+
+      // Upload color image files and pair with colors
+      console.log('colorImageFiles count:', colorImageFiles?.length || 0);
+      console.log('colorImageColors:', colorImageColors);
+      if (colorImageFiles && colorImageFiles.length > 0) {
+        const colorImageUrls = await Promise.all(
+          colorImageFiles.map((file) =>
+            this.appService.uploadImageToCloudinary(file),
+          ),
+        );
+        colorImages = colorImageUrls.map((url, index) => ({
+          color: colorImageColors[index] || '',
+          image: url,
+        }));
+        console.log('Uploaded colorImages:', colorImages);
+      }
+
+      // Add existing color images
+      if (productData.existingColorImages) {
+        console.log('existingColorImages from productData:', productData.existingColorImages);
+        try {
+          const existing =
+            typeof productData.existingColorImages === 'string'
+              ? JSON.parse(productData.existingColorImages)
+              : productData.existingColorImages;
+          colorImages = [...colorImages, ...existing];
+        } catch (e) {
+          console.error('Error parsing existingColorImages:', e);
+        }
+      }
+
+      // Extract the main category data and remove colorImage fields from productData
       const {
         mainCategory,
         subCategory,
         videoDescription,
+        colorImageColors: _colorImageColors,
+        existingColorImages: _existingColorImages,
         ...otherProductData
       } = productData;
+
+      console.log('Final colorImages to save:', colorImages);
 
       // Create the product with proper category references
       return this.productsService.create({
@@ -313,6 +372,7 @@ export class ProductsController {
         images: imageUrls,
         brandLogo: brandLogoUrl,
         videoDescription,
+        colorImages,
       });
     } catch (error) {
       console.error('Error creating product:', error);
@@ -330,6 +390,7 @@ export class ProductsController {
     FileFieldsInterceptor([
       { name: 'images', maxCount: 10 },
       { name: 'brandLogo', maxCount: 1 },
+      { name: 'colorImageFiles', maxCount: 20 },
     ]),
   )
   async updateProduct(
@@ -341,6 +402,7 @@ export class ProductsController {
     files: {
       images?: Express.Multer.File[];
       brandLogo?: Express.Multer.File[];
+      colorImageFiles?: Express.Multer.File[];
     },
   ) {
     const product = await this.productsService.findById(id);
@@ -426,11 +488,66 @@ export class ProductsController {
           ? existingImages
           : product.images; // Keep original images if no new ones provided
 
-      // Remove user property if it exists in productData to avoid schema conflicts
+      // Process color images
+      let colorImages: { color: string; image: string }[] = [];
+
+      // Parse colorImageColors from body
+      let colorImageColors: string[] = [];
+      if ((productData as any).colorImageColors) {
+        const rawColors = (productData as any).colorImageColors;
+        if (typeof rawColors === 'string') {
+          try {
+            colorImageColors = JSON.parse(rawColors);
+          } catch {
+            colorImageColors = [rawColors];
+          }
+        } else if (Array.isArray(rawColors)) {
+          colorImageColors = rawColors;
+        }
+      }
+
+      // Upload new color image files
+      if (files?.colorImageFiles?.length) {
+        const colorImageUrls = await Promise.all(
+          files.colorImageFiles.map((file) =>
+            this.appService.uploadImageToCloudinary(file),
+          ),
+        );
+        colorImages = colorImageUrls.map((url, index) => ({
+          color: colorImageColors[index] || '',
+          image: url,
+        }));
+      }
+
+      // Add existing color images
+      if ((productData as any).existingColorImages) {
+        try {
+          const existing =
+            typeof (productData as any).existingColorImages === 'string'
+              ? JSON.parse((productData as any).existingColorImages)
+              : (productData as any).existingColorImages;
+          colorImages = [...colorImages, ...existing];
+        } catch (e) {
+          console.error('Error parsing existingColorImages:', e);
+        }
+      }
+
+      // If no new color images, keep existing from product
+      if (colorImages.length === 0 && product.colorImages) {
+        colorImages = product.colorImages;
+      }
+
+      // Remove user property, colorImage fields, and parsed array fields to avoid conflicts
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
         user: userFromData,
         existingImages: _,
+        colorImageColors: _colorImageColors,
+        existingColorImages: _existingColorImages,
+        ageGroups: _ageGroups,
+        sizes: _sizes,
+        colors: _colors,
+        hashtags: _hashtags,
         ...productDataWithoutUser
       } = productData as any;
 
@@ -455,7 +572,12 @@ export class ProductsController {
         ...productDataWithoutUser,
         mainCategory,
         subCategory,
+        ageGroups,
+        sizes,
+        colors,
+        hashtags,
         images: finalImages,
+        colorImages,
         ...(brandLogoUrl && { brandLogo: brandLogoUrl }),
         ...(user.role === Role.Seller && { status: ProductStatus.PENDING }),
       };

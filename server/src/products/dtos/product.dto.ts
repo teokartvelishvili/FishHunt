@@ -16,6 +16,14 @@ import {
 } from '../schemas/product.schema';
 import { Type } from 'class-transformer';
 
+class ColorImageDto {
+  @IsString()
+  color: string;
+
+  @IsString()
+  image: string;
+}
+
 class CategoryStructureDto {
   @IsEnum(MainCategory)
   main: MainCategory;
@@ -211,6 +219,13 @@ export class ProductDto {
   @IsString()
   @IsOptional()
   existingImages?: string;
+
+  // Color-specific images
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ColorImageDto)
+  colorImages?: ColorImageDto[];
 }
 
 export class FindAllProductsDto {
