@@ -28,6 +28,7 @@ import {
   CATEGORY_MAPPING,
 } from '@/utils/subcategories';
 import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
+import { AwsS3Service } from '@/aws-s3/aws-s3.service';
 
 interface FindManyParams {
   keyword?: string;
@@ -52,6 +53,7 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Order.name) private orderModel: Model<Order>,
+    private awsS3Service: AwsS3Service,
   ) {}
 
   async findTopRated(): Promise<ProductDocument[]> {
@@ -216,7 +218,7 @@ export class ProductsService {
       .findById(id)
       .populate(
         'user',
-        'name email ownerFirstName ownerLastName storeAddress storeSlug',
+        'name email ownerFirstName ownerLastName storeAddress storeSlug storeLogoPath storeLogo',
       )
       .populate('mainCategory')
       .populate('subCategory');
@@ -257,6 +259,41 @@ export class ProductsService {
         main: mainCat,
         sub: product.category,
       };
+    }
+
+    // Refresh brandLogo URL if it's an S3 path or expired pre-signed URL
+    if (product.brandLogo) {
+      // Check if brandLogo is an S3 path (starts with 'logos/') or contains expired signature
+      if (
+        product.brandLogo.startsWith('logos/') ||
+        (product.brandLogo.includes('X-Amz-Signature') &&
+          product.brandLogo.includes('fish-hunt.s3'))
+      ) {
+        // Extract path from pre-signed URL if needed
+        let s3Path = product.brandLogo;
+        if (product.brandLogo.includes('fish-hunt.s3')) {
+          const urlParts = product.brandLogo.split('?')[0];
+          const pathMatch = urlParts.match(/\.com\/(.+)$/);
+          if (pathMatch) {
+            s3Path = pathMatch[1];
+          }
+        }
+        // Generate fresh pre-signed URL
+        const freshUrl = await this.awsS3Service.getImageByFileId(s3Path);
+        if (freshUrl) {
+          product.brandLogo = freshUrl;
+        }
+      }
+    }
+
+    // Also refresh user's storeLogo if it's from S3
+    if (product.user && (product.user as any).storeLogoPath) {
+      const freshStoreLogo = await this.awsS3Service.getImageByFileId(
+        (product.user as any).storeLogoPath,
+      );
+      if (freshStoreLogo) {
+        (product.user as any).storeLogo = freshStoreLogo;
+      }
     }
 
     return product;

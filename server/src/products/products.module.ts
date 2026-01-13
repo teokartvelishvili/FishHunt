@@ -12,6 +12,7 @@ import { Model } from 'mongoose';
 import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
 import { AiModule } from '@/ai/ai.module';
 import { UsersModule } from '@/users/users.module';
+import { AwsS3Module } from '@/aws-s3/aws-s3.module';
 
 // Add a provider to manually drop the problematic index on module initialization
 export class IndexCleanupService implements OnModuleInit {
@@ -93,6 +94,7 @@ export class IndexCleanupService implements OnModuleInit {
     ]),
     CloudinaryModule,
     AiModule,
+    AwsS3Module,
     forwardRef(() => UsersModule),
   ],
   providers: [

@@ -464,7 +464,11 @@ export function CreateProductForm({
     }));
 
     // When base price changes, update all variants that don't have custom prices
-    if (name === "price" && typeof processedValue === "number" && processedValue > 0) {
+    if (
+      name === "price" &&
+      typeof processedValue === "number" &&
+      processedValue > 0
+    ) {
       setAllVariantPrices(processedValue);
     }
 
@@ -1099,7 +1103,13 @@ export function CreateProductForm({
     };
   }, []);
 
-  const { stocks, totalCount, setStockCount, setVariantPrice, setAllVariantPrices } = useStocks({
+  const {
+    stocks,
+    totalCount,
+    setStockCount,
+    setVariantPrice,
+    setAllVariantPrices,
+  } = useStocks({
     initialData,
     attributes: [selectedAgeGroups, selectedSizes, selectedColors],
     basePrice: formData.price,
@@ -1800,16 +1810,15 @@ export function CreateProductForm({
         <div>
           <label htmlFor="brandLogo">{t("adminProducts.brandLogo")}</label>
           <div className="brand-logo-container">
-            {(user?.storeLogo || typeof formData.brandLogo === "string") && (
+            {(typeof formData.brandLogo === "string" || user?.storeLogo) && (
               <div className="image-preview">
                 <Image
                   loader={({ src }) => src}
                   alt="Brand logo"
                   src={
-                    user?.storeLogo ||
-                    (typeof formData.brandLogo === "string"
+                    typeof formData.brandLogo === "string"
                       ? formData.brandLogo
-                      : "")
+                      : user?.storeLogo || ""
                   }
                   width={100}
                   height={100}

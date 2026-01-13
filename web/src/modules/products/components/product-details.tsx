@@ -242,38 +242,38 @@ interface ProductDetailsProps {
 // Default color hex codes mapping for Georgian color names
 const defaultColorHexMap: Record<string, string> = {
   // Georgian
-  "შავი": "#000000",
-  "თეთრი": "#FFFFFF",
-  "წითელი": "#E53935",
-  "ლურჯი": "#1E88E5",
-  "მწვანე": "#43A047",
-  "ყვითელი": "#FDD835",
-  "ნარინჯისფერი": "#FB8C00",
-  "იასამნისფერი": "#8E24AA",
-  "ვარდისფერი": "#EC407A",
-  "ყავისფერი": "#795548",
-  "ნაცრისფერი": "#9E9E9E",
-  "ოქროსფერი": "#FFD700",
-  "ვერცხლისფერი": "#C0C0C0",
-  "ბეჟი": "#D7CCC8",
-  "ტურქუაზი": "#00BCD4",
+  შავი: "#000000",
+  თეთრი: "#FFFFFF",
+  წითელი: "#E53935",
+  ლურჯი: "#1E88E5",
+  მწვანე: "#43A047",
+  ყვითელი: "#FDD835",
+  ნარინჯისფერი: "#FB8C00",
+  იასამნისფერი: "#8E24AA",
+  ვარდისფერი: "#EC407A",
+  ყავისფერი: "#795548",
+  ნაცრისფერი: "#9E9E9E",
+  ოქროსფერი: "#FFD700",
+  ვერცხლისფერი: "#C0C0C0",
+  ბეჟი: "#D7CCC8",
+  ტურქუაზი: "#00BCD4",
   // English
-  "black": "#000000",
-  "white": "#FFFFFF",
-  "red": "#E53935",
-  "blue": "#1E88E5",
-  "green": "#43A047",
-  "yellow": "#FDD835",
-  "orange": "#FB8C00",
-  "purple": "#8E24AA",
-  "pink": "#EC407A",
-  "brown": "#795548",
-  "gray": "#9E9E9E",
-  "grey": "#9E9E9E",
-  "gold": "#FFD700",
-  "silver": "#C0C0C0",
-  "beige": "#D7CCC8",
-  "turquoise": "#00BCD4",
+  black: "#000000",
+  white: "#FFFFFF",
+  red: "#E53935",
+  blue: "#1E88E5",
+  green: "#43A047",
+  yellow: "#FDD835",
+  orange: "#FB8C00",
+  purple: "#8E24AA",
+  pink: "#EC407A",
+  brown: "#795548",
+  gray: "#9E9E9E",
+  grey: "#9E9E9E",
+  gold: "#FFD700",
+  silver: "#C0C0C0",
+  beige: "#D7CCC8",
+  turquoise: "#00BCD4",
 };
 
 export function ProductDetails({ product }: ProductDetailsProps) {
@@ -284,6 +284,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [brandLogoError, setBrandLogoError] = useState(false);
   const [activeTab, setActiveTab] = useState<"description" | "video">(
     "description"
   ); // Active tab state
@@ -422,20 +423,22 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const selectedVariant = useMemo(() => {
     // If no variants exist, return null
     if (!product.variants || product.variants.length === 0) return null;
-    
+
     // Find a matching variant based on selected attributes
     // Only match on attributes that exist in the variants
     const variant = product.variants.find((v) => {
       // Check if size matches (only if variant has size and sizes are available)
       const sizeMatches = !v.size || !selectedSize || v.size === selectedSize;
       // Check if color matches (only if variant has color and colors are available)
-      const colorMatches = !v.color || !selectedColor || v.color === selectedColor;
+      const colorMatches =
+        !v.color || !selectedColor || v.color === selectedColor;
       // Check if ageGroup matches (only if variant has ageGroup and ageGroups are available)
-      const ageGroupMatches = !v.ageGroup || !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
-      
+      const ageGroupMatches =
+        !v.ageGroup || !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
+
       return sizeMatches && colorMatches && ageGroupMatches;
     });
-    
+
     return variant || null;
   }, [selectedSize, selectedColor, selectedAgeGroup, product.variants]);
 
@@ -469,18 +472,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       // from all variants that match current selections
       const matchingVariants = product.variants.filter((v) => {
         const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
-        const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
-        const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+        const colorMatches =
+          !selectedColor || !v.color || v.color === selectedColor;
+        const ageGroupMatches =
+          !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
         return sizeMatches && colorMatches && ageGroupMatches;
       });
-      
+
       if (matchingVariants.length > 0) {
         stock = matchingVariants.reduce((sum, v) => sum + (v.stock || 0), 0);
       }
     }
 
     return stock;
-  }, [selectedVariant, selectedSize, selectedColor, selectedAgeGroup, product.countInStock, product.variants]);
+  }, [
+    selectedVariant,
+    selectedSize,
+    selectedColor,
+    selectedAgeGroup,
+    product.countInStock,
+    product.variants,
+  ]);
 
   const router = useRouter();
   const { t, language } = useLanguage();
@@ -493,9 +505,51 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-  
+
   // Use availableQuantity for out of stock check to be dynamic based on variant selection
   const isOutOfStock = availableQuantity === 0;
+
+  // Check if a specific size has any stock (with current color and ageGroup selections)
+  const isSizeAvailable = (size: string): boolean => {
+    if (!product.variants || product.variants.length === 0) return true;
+    
+    const matchingVariants = product.variants.filter((v) => {
+      const sizeMatches = v.size === size;
+      const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
+      const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+      return sizeMatches && colorMatches && ageGroupMatches;
+    });
+    
+    return matchingVariants.some((v) => (v.stock || 0) > 0);
+  };
+
+  // Check if a specific color has any stock (with current size and ageGroup selections)
+  const isColorAvailable = (color: string): boolean => {
+    if (!product.variants || product.variants.length === 0) return true;
+    
+    const matchingVariants = product.variants.filter((v) => {
+      const colorMatches = v.color === color;
+      const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
+      const ageGroupMatches = !selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup;
+      return colorMatches && sizeMatches && ageGroupMatches;
+    });
+    
+    return matchingVariants.some((v) => (v.stock || 0) > 0);
+  };
+
+  // Check if a specific ageGroup has any stock (with current size and color selections)
+  const isAgeGroupAvailable = (ageGroup: string): boolean => {
+    if (!product.variants || product.variants.length === 0) return true;
+    
+    const matchingVariants = product.variants.filter((v) => {
+      const ageGroupMatches = v.ageGroup === ageGroup;
+      const sizeMatches = !selectedSize || !v.size || v.size === selectedSize;
+      const colorMatches = !selectedColor || !v.color || v.color === selectedColor;
+      return ageGroupMatches && sizeMatches && colorMatches;
+    });
+    
+    return matchingVariants.some((v) => (v.stock || 0) > 0);
+  };
 
   // Initialize default selections based on product data (extracted from variants if needed)
   useEffect(() => {
@@ -513,7 +567,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (availableAgeGroupsFromProduct.length > 0) {
       setSelectedAgeGroup(availableAgeGroupsFromProduct[0]);
     }
-  }, [availableSizes, availableColorsFromProduct, availableAgeGroupsFromProduct]);
+  }, [
+    availableSizes,
+    availableColorsFromProduct,
+    availableAgeGroupsFromProduct,
+  ]);
 
   // Function to open fullscreen image
   const openFullscreen = () => {
@@ -596,14 +654,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             }
           >
             <div className="pd-brand-details">
-              {product.brandLogo && (
+              {!brandLogoError && (product.brandLogo || product.user?.storeLogo) && (
                 <div className="pd-brand-logo">
                   <Image
-                    src={product.brandLogo}
+                    src={product.brandLogo || product.user?.storeLogo || ""}
                     alt={`${product.brand || "Brand"} logo`}
                     width={40}
                     height={40}
                     className="pd-brand-logo-image"
+                    onError={() => setBrandLogoError(true)}
+                    unoptimized
                   />
                 </div>
               )}
@@ -651,8 +711,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {isDiscounted ? (
               <div className="pd-price-container">
                 <span className="pd-original-price-details">
-                  {basePrice.toFixed(2)}{" "}
-                  {language === "en" ? "GEL" : "ლარი"}
+                  {basePrice.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
                 </span>
                 <span className="pd-price pd-discounted-price-details">
                   {finalPrice.toFixed(2)} {language === "en" ? "GEL" : "ლარი"}
@@ -668,125 +727,155 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             url={typeof window !== "undefined" ? window.location.href : ""}
             title={`Check out ${displayName} by ${product.brand} on FishHunt`}
           />
-          {!isOutOfStock && (
-            <div className="pd-product-options-container">
-              {/* Age Group Selector - Button Style */}
-              {availableAgeGroupsFromProduct.length > 0 && (
-                <div className="pd-variant-group">
-                  <label className="pd-variant-label">
-                    {t("product.ageGroup") || "ასაკობრივი ჯგუფი"}
-                  </label>
-                  <div className="pd-variant-buttons">
-                    {availableAgeGroupsFromProduct.map((ageGroup) => (
-                      <button
-                        key={ageGroup}
-                        type="button"
-                        className={`pd-variant-btn ${selectedAgeGroup === ageGroup ? "selected" : ""}`}
-                        onClick={() => setSelectedAgeGroup(ageGroup)}
-                        disabled={isOutOfStock}
-                      >
-                        {getLocalizedAgeGroupName(ageGroup)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Size Selector - Button Style like ASOS/Zara */}
-              {availableSizes.length > 0 && (
-                <div className="pd-variant-group">
-                  <label className="pd-variant-label">
-                    {t("product.size") || "ზომა"}
-                    {selectedSize && <span className="pd-selected-value">: {selectedSize}</span>}
-                  </label>
-                  <div className="pd-size-buttons">
-                    {availableSizes.map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        className={`pd-size-btn ${selectedSize === size ? "selected" : ""}`}
-                        onClick={() => setSelectedSize(size)}
-                        disabled={isOutOfStock}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Color Selector - Circle Swatches like Amazon/Nike */}
-              {availableColorsFromProduct.length > 0 && (
-                <div className="pd-variant-group">
-                  <label className="pd-variant-label">
-                    {t("product.color") || "ფერი"}
-                    {selectedColor && <span className="pd-selected-value">: {getLocalizedColorName(selectedColor)}</span>}
-                  </label>
-                  <div className="pd-color-swatches">
-                    {availableColorsFromProduct.map((color) => {
-                      // Get color hex code - first from API, then from default map, then fallback
-                      const apiColor = availableColors.find(c => c.name === color);
-                      const colorHex = apiColor?.hexCode || defaultColorHexMap[color] || defaultColorHexMap[color.toLowerCase()] || "#cccccc";
-                      const isLightColor = colorHex.toLowerCase() === "#ffffff" || colorHex.toLowerCase() === "#fff" || color === "თეთრი" || color === "white";
-                      return (
-                        <button
-                          key={color}
-                          type="button"
-                          className={`pd-color-swatch ${selectedColor === color ? "selected" : ""}`}
-                          onClick={() => setSelectedColor(color)}
-                          disabled={isOutOfStock}
-                          title={getLocalizedColorName(color)}
-                          style={{ backgroundColor: colorHex }}
-                        >
-                          {selectedColor === color && (
-                            <span className="pd-color-check" style={{ color: isLightColor ? "#333" : "#fff" }}>✓</span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Quantity Selector - Modern Style */}
-              {availableQuantity > 0 && (
-                <div className="pd-variant-group">
-                  <label className="pd-variant-label">
-                    {t("product.quantity") || "რაოდენობა"}
-                  </label>
-                  <div className="pd-quantity-selector">
+          <div className="pd-product-options-container">
+            {/* Age Group Selector - Button Style */}
+            {availableAgeGroupsFromProduct.length > 0 && (
+              <div className="pd-variant-group">
+                <label className="pd-variant-label">
+                  {t("product.ageGroup") || "ასაკობრივი ჯგუფი"}
+                </label>
+                <div className="pd-variant-buttons">
+                  {availableAgeGroupsFromProduct.map((ageGroup) => (
                     <button
+                      key={ageGroup}
                       type="button"
-                      className="pd-qty-btn"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
+                      className={`pd-variant-btn ${
+                        selectedAgeGroup === ageGroup ? "selected" : ""
+                      } ${!isAgeGroupAvailable(ageGroup) ? "out-of-stock" : ""}`}
+                      onClick={() => setSelectedAgeGroup(ageGroup)}
+                      disabled={!isAgeGroupAvailable(ageGroup)}
                     >
-                      −
+                      {getLocalizedAgeGroupName(ageGroup)}
                     </button>
-                    <span className="pd-qty-value">{quantity}</span>
-                    <button
-                      type="button"
-                      className="pd-qty-btn"
-                      onClick={() => setQuantity(Math.min(availableQuantity, quantity + 1))}
-                      disabled={quantity >= availableQuantity}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <span className="pd-stock-info">
-                    {availableQuantity} {t("product.inStock") || "მარაგშია"}
-                  </span>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Stock Status */}
-              {availableQuantity <= 0 && (
-                <div className="pd-out-of-stock-message">
-                  {t("shop.outOfStock") || "არ არის მარაგში"}
+            {/* Size Selector - Button Style like ASOS/Zara */}
+            {availableSizes.length > 0 && (
+              <div className="pd-variant-group">
+                <label className="pd-variant-label">
+                  {t("product.size") || "ზომა"}
+                  {selectedSize && (
+                    <span className="pd-selected-value">
+                      : {selectedSize}
+                    </span>
+                  )}
+                </label>
+                <div className="pd-size-buttons">
+                  {availableSizes.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      className={`pd-size-btn ${
+                        selectedSize === size ? "selected" : ""
+                      } ${!isSizeAvailable(size) ? "out-of-stock" : ""}`}
+                      onClick={() => setSelectedSize(size)}
+                      disabled={!isSizeAvailable(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+
+            {/* Color Selector - Circle Swatches like Amazon/Nike */}
+            {availableColorsFromProduct.length > 0 && (
+              <div className="pd-variant-group">
+                <label className="pd-variant-label">
+                  {t("product.color") || "ფერი"}
+                  {selectedColor && (
+                    <span className="pd-selected-value">
+                      : {getLocalizedColorName(selectedColor)}
+                    </span>
+                  )}
+                </label>
+                <div className="pd-color-swatches">
+                  {availableColorsFromProduct.map((color) => {
+                    // Get color hex code - first from API, then from default map, then fallback
+                    const apiColor = availableColors.find(
+                      (c) => c.name === color
+                    );
+                    const colorHex =
+                      apiColor?.hexCode ||
+                      defaultColorHexMap[color] ||
+                      defaultColorHexMap[color.toLowerCase()] ||
+                      "#cccccc";
+                    const isLightColor =
+                      colorHex.toLowerCase() === "#ffffff" ||
+                      colorHex.toLowerCase() === "#fff" ||
+                      color === "თეთრი" ||
+                      color === "white";
+                    const colorAvailable = isColorAvailable(color);
+                    return (
+                      <button
+                        key={color}
+                        type="button"
+                        className={`pd-color-swatch ${
+                          selectedColor === color ? "selected" : ""
+                        } ${!colorAvailable ? "out-of-stock" : ""}`}
+                        onClick={() => setSelectedColor(color)}
+                        disabled={!colorAvailable}
+                        title={getLocalizedColorName(color)}
+                        style={{ backgroundColor: colorHex }}
+                      >
+                        {selectedColor === color && (
+                          <span
+                            className="pd-color-check"
+                            style={{ color: isLightColor ? "#333" : "#fff" }}
+                          >
+                            ✓
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity Selector - Modern Style */}
+            {availableQuantity > 0 && (
+              <div className="pd-variant-group">
+                <label className="pd-variant-label">
+                  {t("product.quantity") || "რაოდენობა"}
+                </label>
+                <div className="pd-quantity-selector">
+                  <button
+                    type="button"
+                    className="pd-qty-btn"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    −
+                  </button>
+                  <span className="pd-qty-value">{quantity}</span>
+                  <button
+                    type="button"
+                    className="pd-qty-btn"
+                    onClick={() =>
+                      setQuantity(Math.min(availableQuantity, quantity + 1))
+                    }
+                    disabled={quantity >= availableQuantity}
+                  >
+                    +
+                  </button>
+                </div>
+                <span className="pd-stock-info">
+                  {availableQuantity} {t("product.inStock") || "მარაგშია"}
+                </span>
+              </div>
+            )}
+
+            {/* Stock Status */}
+            {availableQuantity <= 0 && (
+              <div className="pd-out-of-stock-message">
+                {t("shop.outOfStock") || "არ არის მარაგში"}
+              </div>
+            )}
+          </div>
           {/* New Tabs UI with Description and Video */}
           <div className="pd-tabs">
             {/* Tab controls */}

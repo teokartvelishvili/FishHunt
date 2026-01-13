@@ -76,7 +76,11 @@ export const generateCombinations = (
  * @param basePrice Base price to use for new variants
  * @returns An object with stocks array and setStockCount function
  */
-export const useStocks = ({ initialData, attributes, basePrice = 0 }: UseStocksProps) => {
+export const useStocks = ({
+  initialData,
+  attributes,
+  basePrice = 0,
+}: UseStocksProps) => {
   const [stocks, setStocks] = useState<Record<string, StockItem>>({});
   const [initialized, setInitialized] = useState(false);
 
@@ -113,8 +117,9 @@ export const useStocks = ({ initialData, attributes, basePrice = 0 }: UseStocksP
 
       // For new combinations or first initialization, try to find matching variant from initialData
       let initialStock = 0;
-      let initialPrice: number | undefined = basePrice > 0 ? basePrice : undefined;
-      
+      let initialPrice: number | undefined =
+        basePrice > 0 ? basePrice : undefined;
+
       if (initialData?.variants && initialData.variants.length > 0) {
         const matchingVariant = initialData.variants.find(
           (variant) =>
@@ -125,7 +130,12 @@ export const useStocks = ({ initialData, attributes, basePrice = 0 }: UseStocksP
         if (matchingVariant) {
           initialStock = matchingVariant.stock || 0;
           // Use variant price if exists, otherwise fallback to basePrice
-          initialPrice = matchingVariant.price !== undefined ? matchingVariant.price : (basePrice > 0 ? basePrice : undefined);
+          initialPrice =
+            matchingVariant.price !== undefined
+              ? matchingVariant.price
+              : basePrice > 0
+              ? basePrice
+              : undefined;
         }
       }
 
@@ -137,9 +147,11 @@ export const useStocks = ({ initialData, attributes, basePrice = 0 }: UseStocksP
     });
 
     // Only update state if something changed
-    const keysChanged = JSON.stringify(Object.keys(newStocks).sort()) !== JSON.stringify(Object.keys(stocks).sort());
+    const keysChanged =
+      JSON.stringify(Object.keys(newStocks).sort()) !==
+      JSON.stringify(Object.keys(stocks).sort());
     const valuesChanged = !initialized && Object.keys(newStocks).length > 0;
-    
+
     if (keysChanged || valuesChanged) {
       setStocks(newStocks);
       if (!initialized) {
@@ -248,23 +260,23 @@ export const useStocks = ({ initialData, attributes, basePrice = 0 }: UseStocksP
   );
 
   // Function to set price for all variants that don't have a custom price
-  const setAllVariantPrices = useCallback(
-    (basePrice: number) => {
-      setStocks((prevStocks) => {
-        const newStocks: Record<string, StockItem> = {};
-        Object.entries(prevStocks).forEach(([key, item]) => {
-          // Only set price if it's undefined or 0 (not custom set)
-          // Or if the variant price was previously set to the old base price
-          newStocks[key] = {
-            ...item,
-            price: item.price === undefined || item.price === 0 ? basePrice : item.price,
-          };
-        });
-        return newStocks;
+  const setAllVariantPrices = useCallback((basePrice: number) => {
+    setStocks((prevStocks) => {
+      const newStocks: Record<string, StockItem> = {};
+      Object.entries(prevStocks).forEach(([key, item]) => {
+        // Only set price if it's undefined or 0 (not custom set)
+        // Or if the variant price was previously set to the old base price
+        newStocks[key] = {
+          ...item,
+          price:
+            item.price === undefined || item.price === 0
+              ? basePrice
+              : item.price,
+        };
       });
-    },
-    []
-  );
+      return newStocks;
+    });
+  }, []);
 
   // Return both the stocks array, the setter function, and total count
   return {

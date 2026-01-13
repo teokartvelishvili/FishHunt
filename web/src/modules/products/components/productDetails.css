@@ -175,13 +175,26 @@
 }
 
 .pd-brand-logo {
-  width: auto;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #ec9843;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.pd-brand-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .pd-brand-name {
@@ -639,7 +652,7 @@
 
 .pd-variant-btn:hover:not(:disabled) {
   border-color: #2a5530;
-  background: rgba(42, 85, 48, 0.05);
+  /* background: rgba(42, 85, 48, 0.05); */
 }
 
 .pd-variant-btn.selected {
@@ -651,6 +664,12 @@
 .pd-variant-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.pd-variant-btn.out-of-stock {
+  opacity: 0.4;
+  text-decoration: line-through;
+  background: #f5f5f5;
 }
 
 /* Size Buttons - Square Style like ASOS/Zara */
@@ -695,6 +714,12 @@
   cursor: not-allowed;
 }
 
+.pd-size-btn.out-of-stock {
+  opacity: 0.4;
+  text-decoration: line-through;
+  background: #f5f5f5;
+}
+
 /* Color Swatches - Circle Style like Amazon/Nike */
 .pd-color-swatches {
   display: flex;
@@ -733,6 +758,22 @@
   cursor: not-allowed;
 }
 
+.pd-color-swatch.out-of-stock {
+  opacity: 0.35;
+  position: relative;
+}
+
+.pd-color-swatch.out-of-stock::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #d32f2f;
+  transform: rotate(-45deg);
+}
+
 .pd-color-check {
   color: #fff;
   font-size: 16px;
@@ -743,7 +784,8 @@
 /* For light colors, use dark checkmark */
 .pd-color-swatch[style*="background-color: #fff"],
 .pd-color-swatch[style*="background-color: #ffffff"],
-.pd-color-swatch[style*="background-color: rgb(255, 255, 255)"] .pd-color-check {
+.pd-color-swatch[style*="background-color: rgb(255, 255, 255)"]
+  .pd-color-check {
   color: #333;
   text-shadow: none;
 }
@@ -756,15 +798,16 @@
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
+  width: fit-content;
 }
 
 .pd-qty-btn {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border: none;
   background: #f5f5f5;
   color: #333;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -784,9 +827,9 @@
 }
 
 .pd-qty-value {
-  width: 60px;
+  width: 40px;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #333;
 }
@@ -837,21 +880,21 @@
     padding: 6px 12px;
     font-size: 13px;
   }
-  
+
   .pd-color-swatch {
     width: 36px;
     height: 36px;
   }
-  
+
   .pd-qty-btn {
     width: 40px;
     height: 40px;
   }
-  
+
   .pd-qty-value {
     width: 50px;
   }
-  
+
   .pd-stock-info {
     display: block;
     margin-left: 0;
