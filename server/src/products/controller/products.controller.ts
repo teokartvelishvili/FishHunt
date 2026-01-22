@@ -296,8 +296,14 @@ export class ProductsController {
 
       // Parse colorImageColors from body (array of color names corresponding to colorImageFiles)
       let colorImageColors: string[] = [];
-      console.log('Raw colorImageColors from productData:', productData.colorImageColors);
-      console.log('Type of colorImageColors:', typeof productData.colorImageColors);
+      console.log(
+        'Raw colorImageColors from productData:',
+        productData.colorImageColors,
+      );
+      console.log(
+        'Type of colorImageColors:',
+        typeof productData.colorImageColors,
+      );
       if (productData.colorImageColors) {
         if (typeof productData.colorImageColors === 'string') {
           // Could be a single value or JSON array
@@ -332,7 +338,10 @@ export class ProductsController {
 
       // Add existing color images
       if (productData.existingColorImages) {
-        console.log('existingColorImages from productData:', productData.existingColorImages);
+        console.log(
+          'existingColorImages from productData:',
+          productData.existingColorImages,
+        );
         try {
           const existing =
             typeof productData.existingColorImages === 'string'

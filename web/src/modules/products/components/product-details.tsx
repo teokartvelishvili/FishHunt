@@ -779,7 +779,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {availableAgeGroupsFromProduct.length > 0 && (
               <div className="pd-variant-group">
                 <label className="pd-variant-label">
-                  {t("product.ageGroup") || "ასაკობრივი ჯგუფი"}
+                  {t("product.ageGroup") || "სხვა ატრიბუტი"}
                 </label>
                 <div className="pd-variant-buttons">
                   {availableAgeGroupsFromProduct.map((ageGroup) => (

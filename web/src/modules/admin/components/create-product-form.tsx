@@ -350,7 +350,10 @@ export function CreateProductForm({
             existingColorImages[ci.color] = ci.image;
           }
         );
-        console.log("Setting colorImages from initialData:", existingColorImages);
+        console.log(
+          "Setting colorImages from initialData:",
+          existingColorImages
+        );
         setColorImages(existingColorImages);
       }
     }
@@ -808,7 +811,11 @@ export function CreateProductForm({
       const existingColorImages: { color: string; image: string }[] = [];
 
       Object.entries(colorImages).forEach(([color, imageOrUrl]) => {
-        console.log(`Color: ${color}, type: ${typeof imageOrUrl}, isFile: ${imageOrUrl instanceof File}`);
+        console.log(
+          `Color: ${color}, type: ${typeof imageOrUrl}, isFile: ${
+            imageOrUrl instanceof File
+          }`
+        );
         if (imageOrUrl instanceof File) {
           colorImageColors.push(color);
           colorImageFiles.push(imageOrUrl);

@@ -586,7 +586,7 @@ export function ProductFilters({
           {selectedSubCategoryId && getAvailableAttributes('ageGroups').length > 0 && (
             <div className="filter-group">
               <label className="filter-label">
-                {language === 'ge' ? 'ასაკობრივი ჯგუფი' : language === 'en' ? 'Age Group' : 'Возрастная группа'}
+                {language === 'ge' ? 'სხვა ატრიბუტი' : language === 'en' ? 'Other Attribute' : 'Другой атрибут'}
               </label>
               <div className="attribute-options">
                 {getAvailableAttributes('ageGroups').map((ageGroup) => (

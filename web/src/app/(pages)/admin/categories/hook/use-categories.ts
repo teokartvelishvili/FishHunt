@@ -646,12 +646,12 @@ export const useCreateAgeGroup = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ageGroups"] });
       queryClient.invalidateQueries({ queryKey: ["attributes"] });
-      toast.success("ასაკობრივი ჯგუფი წარმატებით დაემატა");
+      toast.success("ახალი ჯგუფი წარმატებით დაემატა");
     },
     onError: (error: unknown) => {
       const err = error as ApiError;
       toast.error(
-        err.response?.data?.message || "ასაკობრივი ჯგუფის დამატება ვერ მოხერხდა"
+        err.response?.data?.message || "ახალი ჯგუფის დამატება ვერ მოხერხდა"
       );
     },
   });
@@ -687,13 +687,13 @@ export const useUpdateAgeGroup = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ageGroups"] });
       queryClient.invalidateQueries({ queryKey: ["attributes"] });
-      toast.success("ასაკობრივი ჯგუფი წარმატებით განახლდა");
+      toast.success("ახალი ჯგუფი წარმატებით განახლდა");
     },
     onError: (error: unknown) => {
       const err = error as ApiError;
       toast.error(
         err.response?.data?.message ||
-          "ასაკობრივი ჯგუფის განახლება ვერ მოხერხდა"
+          "ახალი ჯგუფის განახლება ვერ მოხერხდა"
       );
     },
   });
@@ -712,12 +712,12 @@ export const useDeleteAgeGroup = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ageGroups"] });
       queryClient.invalidateQueries({ queryKey: ["attributes"] });
-      toast.success("ასაკობრივი ჯგუფი წარმატებით წაიშალა");
+      toast.success("ახალი ჯგუფი წარმატებით წაიშალა");
     },
     onError: (error: unknown) => {
       const err = error as ApiError;
       toast.error(
-        err.response?.data?.message || "ასაკობრივი ჯგუფის წაშლა ვერ მოხერხდა"
+        err.response?.data?.message || "ახალი ჯგუფის წაშლა ვერ მოხერხდა"
       );
     },
   });
