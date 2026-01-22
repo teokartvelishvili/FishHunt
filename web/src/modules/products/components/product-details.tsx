@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
-import { X } from "lucide-react"; // Added X icon for close button
+import { X, ChevronLeft, ChevronRight } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import "./productDetails.css";
@@ -1006,6 +1006,22 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               >
                 <X />
               </button>
+              
+              {/* Left Navigation Arrow */}
+              {product.images.length > 1 && (
+                <button
+                  className="pd-fullscreen-nav pd-fullscreen-nav-left"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((prev) =>
+                      prev === 0 ? product.images.length - 1 : prev - 1
+                    );
+                  }}
+                >
+                  <ChevronLeft size={32} />
+                </button>
+              )}
+              
               <div
                 className="pd-fullscreen-image-container"
                 onClick={(e) => e.stopPropagation()}
@@ -1018,7 +1034,29 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   quality={100}
                   className="pd-fullscreen-image"
                 />
+                
+                {/* Image Counter */}
+                {product.images.length > 1 && (
+                  <div className="pd-fullscreen-counter">
+                    {currentImageIndex + 1} / {product.images.length}
+                  </div>
+                )}
               </div>
+              
+              {/* Right Navigation Arrow */}
+              {product.images.length > 1 && (
+                <button
+                  className="pd-fullscreen-nav pd-fullscreen-nav-right"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((prev) =>
+                      prev === product.images.length - 1 ? 0 : prev + 1
+                    );
+                  }}
+                >
+                  <ChevronRight size={32} />
+                </button>
+              )}
             </div>
           )}
         </div>
