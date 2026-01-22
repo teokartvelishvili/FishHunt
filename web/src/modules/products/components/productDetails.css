@@ -970,14 +970,19 @@
 }
 
 .pd-fullscreen-image-container {
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 85vw;
+  max-height: 80vh;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pd-fullscreen-image {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 8px;
 }
@@ -1038,6 +1043,15 @@
 
 /* Responsive Fullscreen Navigation */
 @media (max-width: 768px) {
+  .pd-fullscreen-image-container {
+    max-width: 90vw;
+    max-height: 70vh;
+  }
+
+  .pd-fullscreen-image {
+    max-height: 70vh;
+  }
+
   .pd-fullscreen-nav {
     width: 40px;
     height: 40px;
@@ -1071,6 +1085,15 @@
 }
 
 @media (max-width: 480px) {
+  .pd-fullscreen-image-container {
+    max-width: 95vw;
+    max-height: 65vh;
+  }
+
+  .pd-fullscreen-image {
+    max-height: 65vh;
+  }
+
   .pd-fullscreen-nav {
     width: 36px;
     height: 36px;
