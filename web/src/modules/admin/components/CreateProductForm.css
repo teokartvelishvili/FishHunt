@@ -159,18 +159,160 @@
   font-family: inherit;
 }
 
+/* Enhanced File Upload Styling */
 .create-product-file {
-  padding: 10px 14px;
+  display: none;
+}
+
+.image-upload-area {
+  position: relative;
+}
+
+.image-upload-area label,
+.custom-file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 24px;
   border: 2px dashed #d1d5db;
-  border-radius: 8px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 120px;
+}
+
+.image-upload-area label:hover,
+.custom-file-upload:hover {
+  border-color: #2a5530;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 85, 48, 0.15);
+}
+
+.image-upload-area label::before {
+  content: "📷";
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.image-upload-area label::after {
+  content: attr(data-text);
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Brand Logo Upload */
+.brand-logo-container .create-product-file + label,
+.brand-logo-upload-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
   background: #fafafa;
   cursor: pointer;
   transition: all 0.2s ease;
+  gap: 10px;
 }
 
-.create-product-file:hover {
+.brand-logo-container .create-product-file + label:hover {
   border-color: #2a5530;
   background: #f0fdf4;
+}
+
+/* File input wrapper for custom styling */
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.file-upload-btn:hover {
+  border-color: #2a5530;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #2a5530;
+}
+
+.file-upload-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.logo-upload-btn {
+  display: inline-flex !important;
+  width: auto !important;
+  padding: 12px 20px !important;
+}
+
+/* Video Upload Area */
+.video-upload-area {
+  position: relative;
+}
+
+.video-upload-btn {
+  background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%) !important;
+  border-color: #4a4a6a !important;
+  color: white !important;
+}
+
+.video-upload-btn:hover {
+  background: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%) !important;
+  border-color: #6a6a8a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+.video-upload-btn small {
+  color: #9ca3af !important;
+}
+
+/* File selected badge with icon */
+.file-selected-badge {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+  border-radius: 8px;
+  font-size: 13px;
+  border: 1px solid #86efac;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-selected-badge svg {
+  flex-shrink: 0;
 }
 
 /* Field Hints */

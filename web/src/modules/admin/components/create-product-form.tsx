@@ -1640,8 +1640,19 @@ export function CreateProductForm({
           </div>
           <div className="form-section-content">
             <div className="form-field">
-              <label htmlFor="images">{t("adminProducts.images")}</label>
+              <label>{t("adminProducts.images")}</label>
               <div className="image-upload-area">
+                <label htmlFor="images" className="file-upload-btn">
+                  <ImageIcon size={24} />
+                  <span>
+                    {language === "en" 
+                      ? "Click to upload product images" 
+                      : "დააჭირეთ სურათების ასატვირთად"}
+                  </span>
+                  <small style={{ color: '#9ca3af', fontSize: '12px' }}>
+                    {language === "en" ? "JPG, PNG, WEBP" : "JPG, PNG, WEBP"}
+                  </small>
+                </label>
                 <input
                   id="images"
                   name="images"
@@ -1651,10 +1662,10 @@ export function CreateProductForm({
                   className="create-product-file"
                   multiple
                 />
-                {formData.images.length === 0 && (
-                  <p className="upload-reminder">{t("adminProducts.uploadReminder")}</p>
-                )}
               </div>
+              {formData.images.length === 0 && (
+                <p className="upload-reminder">{t("adminProducts.uploadReminder")}</p>
+              )}
               <div className="image-preview-container">
                 {formData.images.map((image, index) => {
                   const imageUrl = image instanceof File ? URL.createObjectURL(image) : image;
@@ -1684,7 +1695,7 @@ export function CreateProductForm({
             </div>
 
             <div className="form-field">
-              <label htmlFor="brandLogo">{t("adminProducts.brandLogo")}</label>
+              <label>{t("adminProducts.brandLogo")}</label>
               <div className="brand-logo-container">
                 {(typeof formData.brandLogo === "string" || user?.storeLogo) && (
                   <div className="image-preview">
@@ -1703,6 +1714,10 @@ export function CreateProductForm({
                     />
                   </div>
                 )}
+                <label htmlFor="brandLogo" className="file-upload-btn logo-upload-btn">
+                  <ImageIcon size={20} />
+                  <span>{language === "en" ? "Upload Logo" : "ლოგოს ატვირთვა"}</span>
+                </label>
                 <input
                   id="brandLogo"
                   name="brandLogo"
@@ -1732,43 +1747,54 @@ export function CreateProductForm({
           </div>
           <div className="form-section-content">
             <div className="form-field">
-              <label htmlFor="videoFile">
+              <label>
                 {language === "en"
                   ? "Upload Video (YouTube)"
                   : "ვიდეოს ატვირთვა (YouTube)"}
               </label>
-              <input
-                type="file"
-                id="videoFile"
-                name="videoFile"
-                accept="video/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const maxSize = 500 * 1024 * 1024;
-                    if (file.size > maxSize) {
-                      alert(
-                        language === "en"
-                          ? "Video file is too large. Maximum size is 500MB."
-                          : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB."
-                      );
-                      e.target.value = "";
-                      return;
+              <div className="video-upload-area">
+                <label htmlFor="videoFile" className="file-upload-btn video-upload-btn">
+                  <Video size={24} />
+                  <span>
+                    {language === "en" 
+                      ? "Click to upload video" 
+                      : "დააჭირეთ ვიდეოს ასატვირთად"}
+                  </span>
+                  <small style={{ color: '#9ca3af', fontSize: '12px' }}>
+                    {language === "en" 
+                      ? "MP4, AVI, MOV, WMV • Max: 500MB" 
+                      : "MP4, AVI, MOV, WMV • მაქს: 500MB"}
+                  </small>
+                </label>
+                <input
+                  type="file"
+                  id="videoFile"
+                  name="videoFile"
+                  accept="video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const maxSize = 500 * 1024 * 1024;
+                      if (file.size > maxSize) {
+                        alert(
+                          language === "en"
+                            ? "Video file is too large. Maximum size is 500MB."
+                            : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB."
+                        );
+                        e.target.value = "";
+                        return;
+                      }
+                      setFormData((prev) => ({ ...prev, videoFile: file }));
                     }
-                    setFormData((prev) => ({ ...prev, videoFile: file }));
-                  }
-                }}
-                className="create-product-input"
-              />
-              <small className="field-hint">
-                {language === "en"
-                  ? "MP4, AVI, MOV, WMV. Max: 500MB"
-                  : "MP4, AVI, MOV, WMV. მაქს: 500MB"}
-              </small>
+                  }}
+                  className="create-product-file"
+                />
+              </div>
 
               {formData.videoFile && !videoUploadStatus && (
                 <div className="file-selected-badge">
-                  ✓ {formData.videoFile.name} ({(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)
+                  <Video size={16} />
+                  <span>✓ {formData.videoFile.name} ({(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
                 </div>
               )}
 
