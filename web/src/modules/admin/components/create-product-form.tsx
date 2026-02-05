@@ -81,7 +81,7 @@ export function CreateProductForm({
       brandLogo: undefined,
       videoDescription: "",
       videoFile: undefined,
-    }
+    },
   );
 
   // State for new category structure
@@ -101,7 +101,7 @@ export function CreateProductForm({
   const [availableColors, setAvailableColors] = useState<string[]>([]);
 
   const [deliveryType, setDeliveryType] = useState<"SELLER" | "FishHunt">(
-    "FishHunt"
+    "FishHunt",
   );
   const [minDeliveryDays, setMinDeliveryDays] = useState("");
   const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
@@ -115,8 +115,10 @@ export function CreateProductForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [videoUploadStatus, setVideoUploadStatus] = useState<string | null>(
-    null
+    null,
   );
+  const [isVariantsExpanded, setIsVariantsExpanded] = useState(false);
+  const [isAttributesExpanded, setIsAttributesExpanded] = useState(false);
 
   // Fetch categories
   const { data: categories, isLoading: isCategoriesLoading } = useQuery<
@@ -125,7 +127,7 @@ export function CreateProductForm({
     queryKey: ["categories"],
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/categories?includeInactive=false`
+        `${process.env.NEXT_PUBLIC_API_URL}/categories?includeInactive=false`,
       );
       return response.json();
     },
@@ -139,7 +141,7 @@ export function CreateProductForm({
     queryFn: async () => {
       if (!selectedCategory) return [];
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/subcategories?categoryId=${selectedCategory}&includeInactive=false`
+        `${process.env.NEXT_PUBLIC_API_URL}/subcategories?categoryId=${selectedCategory}&includeInactive=false`,
       );
       return response.json();
     },
@@ -170,7 +172,7 @@ export function CreateProductForm({
     queryFn: async () => {
       try {
         const response = await fetchWithAuth(
-          "/categories/attributes/age-groups"
+          "/categories/attributes/age-groups",
         );
         if (!response.ok) {
           return [];
@@ -189,7 +191,7 @@ export function CreateProductForm({
     if (language === "en") {
       // Find the color in availableColorsData to get its English name
       const colorObj = availableColorsData.find(
-        (color) => color.name === colorName
+        (color) => color.name === colorName,
       );
       return colorObj?.nameEn || colorName;
     }
@@ -201,7 +203,7 @@ export function CreateProductForm({
     if (language === "en") {
       // Find the age group in availableAgeGroupsData to get its English name
       const ageGroupObj = availableAgeGroupsData.find(
-        (ageGroup) => ageGroup.name === ageGroupName
+        (ageGroup) => ageGroup.name === ageGroupName,
       );
       return ageGroupObj?.nameEn || ageGroupName;
     }
@@ -212,7 +214,7 @@ export function CreateProductForm({
   useEffect(() => {
     if (subcategories && selectedSubcategory) {
       const subcategory = subcategories.find(
-        (sub) => sub.id === selectedSubcategory
+        (sub) => sub.id === selectedSubcategory,
       );
       if (subcategory) {
         setAvailableAgeGroups(subcategory.ageGroups || []);
@@ -348,11 +350,11 @@ export function CreateProductForm({
         (initialData as any).colorImages.forEach(
           (ci: { color: string; image: string }) => {
             existingColorImages[ci.color] = ci.image;
-          }
+          },
         );
         console.log(
           "Setting colorImages from initialData:",
-          existingColorImages
+          existingColorImages,
         );
         setColorImages(existingColorImages);
       }
@@ -476,7 +478,7 @@ export function CreateProductForm({
     }
   };
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     const processedValue =
@@ -526,25 +528,25 @@ export function CreateProductForm({
 
   const handleAttributeChange = (
     type: "ageGroups" | "sizes" | "colors",
-    value: string
+    value: string,
   ) => {
     if (type === "ageGroups") {
       setSelectedAgeGroups((prev) =>
         prev.includes(value)
           ? prev.filter((item) => item !== value)
-          : [...prev, value]
+          : [...prev, value],
       );
     } else if (type === "sizes") {
       setSelectedSizes((prev) =>
         prev.includes(value)
           ? prev.filter((item) => item !== value)
-          : [...prev, value]
+          : [...prev, value],
       );
     } else if (type === "colors") {
       setSelectedColors((prev) =>
         prev.includes(value)
           ? prev.filter((item) => item !== value)
-          : [...prev, value]
+          : [...prev, value],
       );
     }
   };
@@ -592,7 +594,7 @@ export function CreateProductForm({
   // Handle color image upload
   const handleColorImageChange = (
     color: string,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -626,7 +628,7 @@ export function CreateProductForm({
       const isPriceValid = validateField("price", formData.price);
       const isDescriptionValid = validateField(
         "description",
-        formData.description
+        formData.description,
       );
 
       if (!isNameValid || !isPriceValid || !isDescriptionValid) {
@@ -650,7 +652,8 @@ export function CreateProductForm({
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (
         formData.images.some(
-          (image) => image instanceof File && !allowedTypes.includes(image.type)
+          (image) =>
+            image instanceof File && !allowedTypes.includes(image.type),
         )
       ) {
         setErrors((prev) => ({
@@ -682,7 +685,7 @@ export function CreateProductForm({
           setServerError(
             language === "en"
               ? "Discount percentage must be between 0 and 100"
-              : "ფასდაკლების პროცენტი უნდა იყოს 0-სა და 100-ს შორის"
+              : "ფასდაკლების პროცენტი უნდა იყოს 0-სა და 100-ს შორის",
           );
           setPending(false);
           return;
@@ -699,7 +702,7 @@ export function CreateProductForm({
             setServerError(
               language === "en"
                 ? "Discount end date must be after start date"
-                : "ფასდაკლების დასრულების თარიღი უნდა იყოს დაწყების თარიღის შემდეგ"
+                : "ფასდაკლების დასრულების თარიღი უნდა იყოს დაწყების თარიღის შემდეგ",
             );
             setPending(false);
             return;
@@ -764,7 +767,7 @@ export function CreateProductForm({
       if (isSeller) {
         formDataToSend.append(
           "brand",
-          user?.name || user?.storeName || formData.brand || "FishHunt"
+          user?.name || user?.storeName || formData.brand || "FishHunt",
         );
       } else {
         formDataToSend.append("brand", formData.brand || "FishHunt");
@@ -814,7 +817,7 @@ export function CreateProductForm({
         console.log(
           `Color: ${color}, type: ${typeof imageOrUrl}, isFile: ${
             imageOrUrl instanceof File
-          }`
+          }`,
         );
         if (imageOrUrl instanceof File) {
           colorImageColors.push(color);
@@ -836,7 +839,7 @@ export function CreateProductForm({
       if (colorImageColors.length > 0) {
         formDataToSend.append(
           "colorImageColors",
-          JSON.stringify(colorImageColors)
+          JSON.stringify(colorImageColors),
         );
       }
 
@@ -844,7 +847,7 @@ export function CreateProductForm({
       if (existingColorImages.length > 0) {
         formDataToSend.append(
           "existingColorImages",
-          JSON.stringify(existingColorImages)
+          JSON.stringify(existingColorImages),
         );
       }
 
@@ -906,7 +909,7 @@ export function CreateProductForm({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -930,13 +933,13 @@ export function CreateProductForm({
             "📁 ვიდეო ფაილი:",
             formData.videoFile.name,
             formData.videoFile.size,
-            "bytes"
+            "bytes",
           );
 
           setVideoUploadStatus(
             language === "en"
               ? "📤 Uploading video to YouTube..."
-              : "📤 ვიდეო იტვირთება YouTube-ზე..."
+              : "📤 ვიდეო იტვირთება YouTube-ზე...",
           );
 
           // Get correct product ID for video description
@@ -951,14 +954,14 @@ export function CreateProductForm({
               formData.description
             }\n\n🛒 იხილეთ პროდუქტი: https://fishhunt.ge/products/${productIdForVideo}\n\n${
               formData.hashtags?.map((tag) => `#${tag}`).join(" ") || ""
-            }`
+            }`,
           );
           videoFormData.append("tags", formData.hashtags?.join(",") || "");
           videoFormData.append("privacyStatus", "public");
 
           console.log(
             "📤 გაგზავნის URL:",
-            `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`
+            `${process.env.NEXT_PUBLIC_API_URL}/youtube/upload`,
           );
           console.log("🔑 Token:", token ? "არსებობს ✓" : "არ არის ❌");
 
@@ -970,7 +973,7 @@ export function CreateProductForm({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
 
           console.log("📥 Response Status:", videoResponse.status);
@@ -986,14 +989,14 @@ export function CreateProductForm({
             setVideoUploadStatus(
               language === "en"
                 ? "🔄 Updating product with video..."
-                : "🔄 პროდუქტი ახლდება ვიდეოთი..."
+                : "🔄 პროდუქტი ახლდება ვიდეოთი...",
             );
 
             // Update product with video embed URL
             const updateFormData = new FormData();
             updateFormData.append(
               "videoDescription",
-              `<iframe width="560" height="315" src="${videoData.embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+              `<iframe width="560" height="315" src="${videoData.embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
             );
 
             // Use correct product ID (for both create and edit modes)
@@ -1007,13 +1010,13 @@ export function CreateProductForm({
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
-              }
+              },
             );
 
             setVideoUploadStatus(
               language === "en"
                 ? "✅ Video uploaded successfully!"
-                : "✅ ვიდეო წარმატებით აიტვირთა!"
+                : "✅ ვიდეო წარმატებით აიტვირთა!",
             );
 
             toast({
@@ -1035,7 +1038,7 @@ export function CreateProductForm({
             setVideoUploadStatus(
               language === "en"
                 ? "❌ Video upload failed"
-                : "❌ ვიდეოს ატვირთვა ვერ მოხერხდა"
+                : "❌ ვიდეოს ატვირთვა ვერ მოხერხდა",
             );
 
             toast({
@@ -1059,7 +1062,7 @@ export function CreateProductForm({
           setVideoUploadStatus(
             language === "en"
               ? "❌ Upload error occurred"
-              : "❌ ატვირთვისას მოხდა შეცდომა"
+              : "❌ ატვირთვისას მოხდა შეცდომა",
           );
 
           toast({
@@ -1109,7 +1112,9 @@ export function CreateProductForm({
     } catch (error) {
       console.error("Error:", error);
       setServerError(
-        error instanceof Error ? error.message : t("adminProducts.generalError")
+        error instanceof Error
+          ? error.message
+          : t("adminProducts.generalError"),
       );
     } finally {
       setPending(false);
@@ -1120,7 +1125,7 @@ export function CreateProductForm({
   useEffect(() => {
     if (selectedSubcategory && subcategories) {
       const subcategory = subcategories.find(
-        (sub) => String(sub.id) === String(selectedSubcategory)
+        (sub) => String(sub.id) === String(selectedSubcategory),
       );
 
       if (subcategory) {
@@ -1160,21 +1165,21 @@ export function CreateProductForm({
 
           if (ageGroupsToCheck.length > 0) {
             const validAgeGroups = ageGroupsToCheck.filter((ag) =>
-              subcategory.ageGroups.includes(ag)
+              subcategory.ageGroups.includes(ag),
             );
             setSelectedAgeGroups(validAgeGroups);
           }
 
           if (sizesToCheck.length > 0) {
             const validSizes = sizesToCheck.filter((size) =>
-              subcategory.sizes.includes(size)
+              subcategory.sizes.includes(size),
             );
             setSelectedSizes(validSizes);
           }
 
           if (colorsToCheck.length > 0) {
             const validColors = colorsToCheck.filter((color) =>
-              subcategory.colors.includes(color)
+              subcategory.colors.includes(color),
             );
             setSelectedColors(validColors);
           }
@@ -1201,6 +1206,8 @@ export function CreateProductForm({
     setVariantPrice,
     setVariantAttribute,
     setAllVariantPrices,
+    duplicateVariant,
+    removeVariant,
   } = useStocks({
     initialData,
     attributes: [selectedAgeGroups, selectedSizes, selectedColors],
@@ -1244,7 +1251,7 @@ export function CreateProductForm({
                     alert(
                       language === "en"
                         ? "Video file is too large. Maximum size is 500MB."
-                        : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB."
+                        : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB.",
                     );
                     e.target.value = "";
                     return;
@@ -1298,13 +1305,13 @@ export function CreateProductForm({
                   backgroundColor: videoUploadStatus.includes("✅")
                     ? "#d4edda"
                     : videoUploadStatus.includes("❌")
-                    ? "#f8d7da"
-                    : "#fff3cd",
+                      ? "#f8d7da"
+                      : "#fff3cd",
                   color: videoUploadStatus.includes("✅")
                     ? "#155724"
                     : videoUploadStatus.includes("❌")
-                    ? "#721c24"
-                    : "#856404",
+                      ? "#721c24"
+                      : "#856404",
                   borderRadius: "4px",
                   fontSize: "0.95rem",
                   fontWeight: "500",
@@ -1312,8 +1319,8 @@ export function CreateProductForm({
                     videoUploadStatus.includes("✅")
                       ? "#c3e6cb"
                       : videoUploadStatus.includes("❌")
-                      ? "#f5c6cb"
-                      : "#ffeaa7"
+                        ? "#f5c6cb"
+                        : "#ffeaa7"
                   }`,
                   display: "flex",
                   alignItems: "center",
@@ -1578,19 +1585,35 @@ export function CreateProductForm({
         {/* Attributes Section */}
         {selectedSubcategory && (
           <div className="attributes-section">
-            {availableAgeGroups.length > 0 && (
-              <div className="attribute-group">
-                <h3>{t("adminProducts.ageGroups")}</h3>
-                <div className="attribute-options">
-                  {availableAgeGroups.map((ageGroup) => (
-                    <label key={ageGroup} className="attribute-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={selectedAgeGroups.includes(ageGroup)}
-                        onChange={() =>
-                          handleAttributeChange("ageGroups", ageGroup)
-                        }
-                      />{" "}
+            <button
+              type="button"
+              className="attributes-toggle-btn"
+              onClick={() => setIsAttributesExpanded(!isAttributesExpanded)}
+            >
+              <span className="attributes-toggle-icon">
+                {isAttributesExpanded ? "▼" : "►"}
+              </span>
+              <h3 className="attributes-section-title">
+                {language === "en"
+                  ? `Product Attributes (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length} selected)`
+                  : `პროდუქტის ატრიბუტები (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length} არჩეული)`}
+              </h3>
+            </button>
+            {isAttributesExpanded && (
+              <>
+                {availableAgeGroups.length > 0 && (
+                  <div className="attribute-group">
+                    <h3>{t("adminProducts.ageGroups")}</h3>
+                    <div className="attribute-options">
+                      {availableAgeGroups.map((ageGroup) => (
+                        <label key={ageGroup} className="attribute-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedAgeGroups.includes(ageGroup)}
+                            onChange={() =>
+                              handleAttributeChange("ageGroups", ageGroup)
+                            }
+                          />{" "}
                       <span>{getLocalizedAgeGroupName(ageGroup)}</span>
                     </label>
                   ))}
@@ -1658,7 +1681,7 @@ export function CreateProductForm({
                               src={
                                 colorImages[color] instanceof File
                                   ? URL.createObjectURL(
-                                      colorImages[color] as File
+                                      colorImages[color] as File,
                                     )
                                   : (colorImages[color] as string)
                               }
@@ -1694,86 +1717,138 @@ export function CreateProductForm({
                 </div>
               </div>
             )}
+              </>
+            )}
           </div>
         )}
         {stocks && stocks.length > 0 && (
           <div className="variants-section">
-            <h3 className="variants-title">
-              {language === "en"
-                ? "Variant Stock & Pricing"
-                : "ვარიანტების მარაგი და ფასი"}
-            </h3>
-            <p className="variants-subtitle">
-              {language === "en"
-                ? "Set stock, price, and optional attribute for each variant. Leave price empty to use the base price."
-                : "თითოეული ვარიანტისთვის მიუთითეთ მარაგი, ფასი და საჭიროების შემთხვევაში დამატებითი ატრიბუტი. ფასი დატოვეთ ცარიელი საბაზისო ფასის გამოსაყენებლად."}
-            </p>
-            {stocks.map((stock) => (
-              <div
-                key={`${stock.ageGroup}-${stock.size}-${stock.color}`}
-                className="stock-variant-row"
-              >
-                <div className="variant-label">
-                  {[
-                    stock.ageGroup
-                      ? getLocalizedAgeGroupName(stock.ageGroup)
-                      : null,
-                    stock.size || null,
-                    stock.color ? getLocalizedColorName(stock.color) : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" / ") || (language === "en" ? "Default variant" : "ძირითადი ვარიანტი")}
-                </div>
-                <div className="variant-inputs">
-                  <div className="variant-input-group">
-                    <label>{language === "en" ? "Stock" : "მარაგი"}</label>
-                    <input
-                      type="number"
-                      value={stock.stock}
-                      onChange={(e) => setStockCount(stock, +e.target.value)}
-                      min={0}
-                      placeholder="0"
-                    />
+            <button
+              type="button"
+              className="variants-toggle-btn"
+              onClick={() => setIsVariantsExpanded(!isVariantsExpanded)}
+            >
+              <span className="variants-toggle-icon">
+                {isVariantsExpanded ? "▼" : "►"}
+              </span>
+              <h3 className="variants-title">
+                {language === "en"
+                  ? `Variant Stock & Pricing (${stocks.length})`
+                  : `ვარიანტების მარაგი და ფასი (${stocks.length})`}
+              </h3>
+            </button>
+            {isVariantsExpanded && (
+              <>
+                <p className="variants-subtitle">
+                  {language === "en"
+                    ? "Set stock, price, and optional attribute for each variant. Leave price empty to use the base price. Use + to duplicate a variant with a different attribute."
+                    : "თითოეული ვარიანტისთვის მიუთითეთ მარაგი, ფასი და საჭიროების შემთხვევაში დამატებითი ატრიბუტი. ფასი დატოვეთ ცარიელი საბაზისო ფასის გამოსაყენებლად. გამოიყენეთ + სხვა ატრიბუტით ვარიანტის დასამატებლად."}
+                </p>
+                {stocks.map((stock) => (
+                  <div key={stock.variantId} className="stock-variant-row">
+                    <div className="variant-label">
+                      {[
+                        stock.ageGroup
+                          ? getLocalizedAgeGroupName(stock.ageGroup)
+                          : null,
+                        stock.size || null,
+                        stock.color ? getLocalizedColorName(stock.color) : null,
+                        stock.attribute || null,
+                      ]
+                        .filter(Boolean)
+                        .join(" / ") ||
+                        (language === "en"
+                          ? "Default variant"
+                          : "ძირითადი ვარიანტი")}
+                    </div>
+                    <div className="variant-inputs">
+                      <div className="variant-input-group">
+                        <label>{language === "en" ? "Stock" : "მარაგი"}</label>
+                        <input
+                          type="number"
+                          value={stock.stock}
+                          onChange={(e) =>
+                            setStockCount(stock, +e.target.value)
+                          }
+                          min={0}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="variant-input-group">
+                        <label>
+                          {language === "en" ? "Price" : "ფასი"} (₾)
+                        </label>
+                        <input
+                          type="number"
+                          value={stock.price ?? ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setVariantPrice(
+                              stock,
+                              value === "" ? undefined : +value,
+                            );
+                          }}
+                          min={0}
+                          step="0.01"
+                          placeholder={
+                            language === "en" ? "Base price" : "საბაზისო"
+                          }
+                        />
+                      </div>
+                      <div className="variant-input-group variant-attribute-group">
+                        <label>
+                          {language === "en" ? "Attribute" : "ატრიბუტი"}
+                        </label>
+                        <input
+                          type="text"
+                          value={stock.attribute || ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setVariantAttribute(
+                              stock,
+                              value === "" ? undefined : value,
+                            );
+                          }}
+                          placeholder={
+                            language === "en"
+                              ? "e.g., with frame"
+                              : "მაგ: ჩარჩოთი"
+                          }
+                        />
+                      </div>
+                      <div className="variant-actions">
+                        <button
+                          type="button"
+                          className="variant-action-btn duplicate-btn"
+                          onClick={() => duplicateVariant(stock)}
+                          title={
+                            language === "en"
+                              ? "Duplicate variant"
+                              : "ვარიანტის კოპირება"
+                          }
+                        >
+                          +
+                        </button>
+                        {stock.attribute && (
+                          <button
+                            type="button"
+                            className="variant-action-btn remove-btn"
+                            onClick={() => removeVariant(stock)}
+                            title={
+                              language === "en"
+                                ? "Remove variant"
+                                : "ვარიანტის წაშლა"
+                            }
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="variant-input-group">
-                    <label>{language === "en" ? "Price" : "ფასი"} (₾)</label>
-                    <input
-                      type="number"
-                      value={stock.price ?? ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setVariantPrice(
-                          stock,
-                          value === "" ? undefined : +value
-                        );
-                      }}
-                      min={0}
-                      step="0.01"
-                      placeholder={
-                        language === "en" ? "Base price" : "საბაზისო"
-                      }
-                    />
-                  </div>
-                  <div className="variant-input-group variant-attribute-group">
-                    <label>{language === "en" ? "Attribute" : "ატრიბუტი"}</label>
-                    <input
-                      type="text"
-                      value={stock.attribute || ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setVariantAttribute(
-                          stock,
-                          value === "" ? undefined : value
-                        );
-                      }}
-                      placeholder={
-                        language === "en" ? "e.g., with frame" : "მაგ: ჩარჩოთი"
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </div>
         )}
         <div>
@@ -2126,7 +2201,7 @@ export function CreateProductForm({
             !selectedSubcategory ||
             formData.images.length === 0 ||
             Object.values(errors).some(
-              (error) => error !== undefined && error !== null && error !== ""
+              (error) => error !== undefined && error !== null && error !== "",
             )
           }
           style={{

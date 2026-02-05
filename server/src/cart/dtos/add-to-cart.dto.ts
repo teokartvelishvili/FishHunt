@@ -26,4 +26,12 @@ export class AddToCartDto {
   @IsString()
   @IsOptional()
   ageGroup?: string;
+
+  @IsString()
+  @IsOptional()
+  attribute?: string; // Per-variant attribute (e.g., "with frame", "with paddle")
+
+  @IsString()
+  @IsOptional()
+  image?: string; // Color-specific image URL
 }

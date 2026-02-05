@@ -9,4 +9,5 @@ export interface CartItem {
   size?: string; // Add size field
   color?: string; // Add color field
   ageGroup?: string; // Add ageGroup field
+  attribute?: string; // Add attribute field for per-variant attributes
 }

@@ -18,7 +18,7 @@ export async function generateMetadata({
       `${process.env.NEXT_PUBLIC_API_URL}/stores/${slug}`,
       {
         cache: "no-store",
-      }
+      },
     );
 
     if (!response.ok) {

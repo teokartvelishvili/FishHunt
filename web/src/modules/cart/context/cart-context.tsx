@@ -20,14 +20,14 @@ interface CartContextType {
     productId: string,
     size?: string,
     color?: string,
-    ageGroup?: string
+    ageGroup?: string,
   ) => Promise<void>;
   updateQuantity: (
     productId: string,
     qty: number,
     size?: string,
     color?: string,
-    ageGroup?: string
+    ageGroup?: string,
   ) => Promise<void>;
   clearCart: () => Promise<void>;
   addToCart: (
@@ -36,7 +36,9 @@ interface CartContextType {
     size?: string,
     color?: string,
     ageGroup?: string,
-    price?: number
+    price?: number,
+    image?: string,
+    attribute?: string,
   ) => Promise<void>;
   totalItems: number;
 }
@@ -97,7 +99,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const addToCart = useCallback(
@@ -107,7 +109,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       size = "",
       color = "",
       ageGroup = "",
-      price?: number
+      price?: number,
+      image?: string,
+      attribute?: string,
     ) => {
       // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
       if (!user) {
@@ -127,6 +131,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           color: string;
           ageGroup: string;
           price?: number;
+          image?: string;
+          attribute?: string;
         } = {
           productId,
           qty: quantity,
@@ -138,6 +144,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Add price if provided (discounted price)
         if (price !== undefined) {
           requestData.price = price;
+        }
+
+        // Add image if provided (color-specific image)
+        if (image) {
+          requestData.image = image;
+        }
+
+        // Add attribute if provided (per-variant attribute)
+        if (attribute) {
+          requestData.attribute = attribute;
         }
 
         const { data } = await apiClient.post("/cart/items", requestData);
@@ -171,7 +187,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const updateQuantity = useCallback(
@@ -180,7 +196,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       qty: number,
       size?: string,
       color?: string,
-      ageGroup?: string
+      ageGroup?: string,
     ) => {
       // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
       if (!user) {
@@ -221,7 +237,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const removeItem = useCallback(
@@ -229,7 +245,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       productId: string,
       size?: string,
       color?: string,
-      ageGroup?: string
+      ageGroup?: string,
     ) => {
       // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
       if (!user) {
@@ -267,7 +283,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const clearCart = useCallback(async () => {

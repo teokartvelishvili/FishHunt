@@ -266,15 +266,38 @@
   background: linear-gradient(135deg, #f0f7f0 0%, #fff 100%);
   border: 1.5px solid rgba(42, 85, 48, 0.15);
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px 20px;
   margin: 8px 0;
+}
+
+.variants-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.variants-toggle-btn:hover {
+  opacity: 0.8;
+}
+
+.variants-toggle-icon {
+  color: #2a5530;
+  font-size: 12px;
+  transition: transform 0.3s ease;
 }
 
 .variants-title {
   color: #2a5530;
   font-size: 16px;
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -282,7 +305,7 @@
 .variants-subtitle {
   color: #666;
   font-size: 13px;
-  margin: 0 0 16px 0;
+  margin: 12px 0 16px 0;
   line-height: 1.4;
 }
 
@@ -498,6 +521,47 @@
   font-weight: 500;
 }
 
+/* Attributes Section Toggle */
+.attributes-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border: 1.5px solid rgba(42, 85, 48, 0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 8px 0;
+}
+
+.attributes-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.attributes-toggle-btn:hover {
+  opacity: 0.8;
+}
+
+.attributes-toggle-icon {
+  color: #2a5530;
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.attributes-section-title {
+  color: #2a5530;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Variant Attributes Section */
 .variant-attributes-section {
   margin-top: 16px;
@@ -567,7 +631,11 @@
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: linear-gradient(135deg, rgba(42, 85, 48, 0.08) 0%, rgba(42, 85, 48, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(42, 85, 48, 0.08) 0%,
+    rgba(42, 85, 48, 0.04) 100%
+  );
   border: 1px solid rgba(42, 85, 48, 0.15);
   border-radius: 20px;
   font-size: 13px;
@@ -623,6 +691,48 @@
   font-size: 12px;
 }
 
+/* Variant action buttons (duplicate/remove) */
+.variant-actions {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  padding-bottom: 4px;
+}
+
+.variant-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.duplicate-btn {
+  background: #2a5530;
+  color: white;
+}
+
+.duplicate-btn:hover {
+  background: #1e3d23;
+  transform: scale(1.05);
+}
+
+.remove-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.remove-btn:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+
 /* Make the variant inputs row more flexible */
 .stock-variant-row .variant-inputs {
   display: flex;
@@ -634,7 +744,7 @@
   .stock-variant-row .variant-inputs {
     flex-direction: column;
   }
-  
+
   .variant-attribute-group {
     flex: 1;
   }

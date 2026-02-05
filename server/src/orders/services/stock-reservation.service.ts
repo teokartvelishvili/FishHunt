@@ -119,13 +119,14 @@ export class StockReservationService {
       if (
         product.variants &&
         product.variants.length > 0 &&
-        (item.size || item.color || item.ageGroup)
+        (item.size || item.color || item.ageGroup || item.attribute)
       ) {
         const variantIndex = product.variants.findIndex(
           (v) =>
             v.size === item.size &&
             v.color === item.color &&
-            v.ageGroup === item.ageGroup,
+            v.ageGroup === item.ageGroup &&
+            v.attribute === item.attribute,
         );
 
         if (variantIndex >= 0) {
@@ -135,6 +136,7 @@ export class StockReservationService {
             size: item.size,
             color: item.color,
             ageGroup: item.ageGroup,
+            attribute: item.attribute,
             stock: item.qty,
           });
         }
@@ -144,6 +146,7 @@ export class StockReservationService {
           size: item.size,
           color: item.color,
           ageGroup: item.ageGroup,
+          attribute: item.attribute,
           stock: item.qty,
         });
         product.countInStock += item.qty;

@@ -44,7 +44,7 @@ export const productSchema = z.object({
   subcategory: z
     .string()
     .refine(
-      (value) => value !== "" && value !== "default" && value !== undefined
+      (value) => value !== "" && value !== "default" && value !== undefined,
     ),
   categoryId: z.string().optional(),
   ageGroups: z.array(z.string()).optional(),

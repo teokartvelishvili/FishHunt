@@ -39,6 +39,9 @@ export class CartItem {
 
   @Prop({ required: false, type: String })
   ageGroup?: string;
+
+  @Prop({ required: false, type: String })
+  attribute?: string;
 }
 
 export const CartItemSchema = SchemaFactory.createForClass(CartItem);

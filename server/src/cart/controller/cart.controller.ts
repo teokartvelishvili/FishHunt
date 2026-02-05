@@ -29,7 +29,8 @@ export class CartController {
 
   @Post('items')
   addToCart(
-    @Body() { productId, qty, size, color, ageGroup, price }: AddToCartDto,
+    @Body()
+    { productId, qty, size, color, ageGroup, price, image, attribute }: AddToCartDto,
     @CurrentUser() user: UserDocument,
   ) {
     if (!productId) {
@@ -43,6 +44,8 @@ export class CartController {
       color,
       ageGroup,
       price,
+      image,
+      attribute,
     );
   }
 
@@ -70,7 +73,8 @@ export class CartController {
       size,
       color,
       ageGroup,
-    }: { size?: string; color?: string; ageGroup?: string },
+      attribute,
+    }: { size?: string; color?: string; ageGroup?: string; attribute?: string },
     @CurrentUser() user: UserDocument,
   ) {
     return this.cartService.removeCartItem(
@@ -79,6 +83,7 @@ export class CartController {
       size,
       color,
       ageGroup,
+      attribute,
     );
   }
 

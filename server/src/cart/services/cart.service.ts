@@ -41,7 +41,8 @@ export class CartService {
             (v) =>
               v.size === item.size &&
               v.color === item.color &&
-              v.ageGroup === item.ageGroup,
+              v.ageGroup === item.ageGroup &&
+              v.attribute === item.attribute,
           )?.stock || product.countInStock;
       }
       return item;
@@ -108,22 +109,37 @@ export class CartService {
     color?: string,
     ageGroup?: string,
     price?: number,
+    image?: string,
+    attribute?: string,
   ): Promise<CartDocument> {
     const product = await this.productsService.findById(productId);
     if (!product) throw new NotFoundException('Product not found');
 
     const cart = await this.getCart(user);
 
-    // Check if we have this exact variant in the cart
+    // Check if we have this exact variant in the cart (including attribute)
     const existingItem = cart.items.find(
       (item) =>
         item.productId.toString() === productId &&
         item.size === size &&
         item.color === color &&
-        item.ageGroup === ageGroup,
+        item.ageGroup === ageGroup &&
+        item.attribute === attribute,
     );
 
-    console.log('Existing item:', product.variants, size, color, ageGroup);
+    console.log('Existing item:', product.variants, size, color, ageGroup, attribute);
+
+    // Determine the image to use: provided image > colorImage > first product image
+    let cartImage = image;
+    if (!cartImage && color && product.colorImages?.length) {
+      const colorImage = product.colorImages.find((ci) => ci.color === color);
+      if (colorImage?.image) {
+        cartImage = colorImage.image;
+      }
+    }
+    if (!cartImage) {
+      cartImage = product.images[0];
+    }
 
     if (existingItem) {
       existingItem.qty = qty;
@@ -131,22 +147,27 @@ export class CartService {
       if (price !== undefined) {
         existingItem.price = price;
       }
+      // Update image if provided
+      if (cartImage) {
+        existingItem.image = cartImage;
+      }
     } else {
       const cartItem: CartItem = {
         productId: product._id.toString(),
         name: product.name,
         nameEn: product.nameEn,
-        image: product.images[0],
+        image: cartImage,
         price: price ?? product.price, // Use provided price (discounted) or fallback to product price
         countInStock:
           product.variants?.find(
             (v) =>
-              v.size === size && v.color === color && v.ageGroup === ageGroup,
+              v.size === size && v.color === color && v.ageGroup === ageGroup && v.attribute === attribute,
           )?.stock || product.countInStock,
         qty,
         size,
         color,
         ageGroup,
+        attribute,
       };
       cart.items.push(cartItem);
     }
@@ -161,17 +182,19 @@ export class CartService {
     size?: string,
     color?: string,
     ageGroup?: string,
+    attribute?: string,
   ): Promise<CartDocument> {
     const cart = await this.getCart(user);
 
-    // Filter items to remove the specific variant
+    // Filter items to remove the specific variant (including attribute)
     cart.items = cart.items.filter(
       (item) =>
         !(
           item.productId.toString() === productId &&
           (!size || item.size === size) &&
           (!color || item.color === color) &&
-          (!ageGroup || item.ageGroup === ageGroup)
+          (!ageGroup || item.ageGroup === ageGroup) &&
+          (!attribute || item.attribute === attribute)
         ),
     );
 

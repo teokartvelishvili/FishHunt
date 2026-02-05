@@ -31,9 +31,11 @@ function AddToCartButton({
   selectedSize = "",
   selectedColor = "",
   selectedAgeGroup = "",
+  selectedAttribute = "",
   quantity = 1,
   disabled = false,
   price, // Add pd-price parameter
+  image, // Add image parameter for color-specific image
 }: {
   productId: string;
   countInStock?: number;
@@ -41,9 +43,11 @@ function AddToCartButton({
   selectedSize?: string;
   selectedColor?: string;
   selectedAgeGroup?: string;
+  selectedAttribute?: string;
   quantity?: number;
   disabled?: boolean;
   price?: number; // Add pd-price parameter type
+  image?: string; // Add image parameter type
 }) {
   const [pending, setPending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -52,14 +56,16 @@ function AddToCartButton({
   const handleClick = async () => {
     setPending(true);
     try {
-      // Add variant info including ageGroup if available
+      // Add variant info including ageGroup and attribute if available
       await addToCart(
         productId,
         quantity,
         selectedSize,
         selectedColor,
         selectedAgeGroup,
-        price // Pass the discounted price
+        price, // Pass the discounted price
+        image, // Pass the color-specific image
+        selectedAttribute, // Pass the selected attribute
       );
 
       // მხოლოდ წარმატებული დამატების შემდეგ ვაჩვენოთ success message
@@ -177,7 +183,7 @@ function SimilarProducts({
         });
 
         const response = await fetchWithAuth(
-          `/products?${searchParams.toString()}`
+          `/products?${searchParams.toString()}`,
         );
 
         if (!response.ok) {
@@ -287,16 +293,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedAttribute, setSelectedAttribute] = useState<string>("");
   const [brandLogoError, setBrandLogoError] = useState(false);
   const [activeTab, setActiveTab] = useState<"description" | "video">(
-    "description"
+    "description",
   ); // Active tab state
 
-  // Create combined images array including color images
+  // Create combined images array including color images (filter out empty strings)
   const allImages = useMemo(() => {
-    const images = [...product.images];
+    const images = [...product.images].filter(
+      (img) => img && img.trim() !== "",
+    );
     // Add color images that are not already in the main images
     if (product.colorImages && product.colorImages.length > 0) {
       product.colorImages.forEach((ci) => {
-        if (!images.includes(ci.image)) {
+        if (ci.image && ci.image.trim() !== "" && !images.includes(ci.image)) {
           images.push(ci.image);
         }
       });
@@ -313,13 +321,59 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       const colorImage = product.colorImages.find((ci) => ci.color === color);
       return colorImage?.image || null;
     },
-    [product.colorImages]
+    [product.colorImages],
+  );
+
+  // Get available attributes for a specific color and size combination
+  const getAttributesForVariant = useCallback(
+    (color: string, size?: string): string[] => {
+      if (!product.variants || product.variants.length === 0) return [];
+      const attributesForVariant = product.variants
+        .filter((v) => {
+          const colorMatches = !color || v.color === color;
+          const sizeMatches = !size || !v.size || v.size === size;
+          return colorMatches && sizeMatches && v.attribute;
+        })
+        .map((v) => v.attribute as string);
+      return [...new Set(attributesForVariant)];
+    },
+    [product.variants],
+  );
+
+  // Check if a color+size combination has a variant without attribute
+  const variantHasNoAttribute = useCallback(
+    (color: string, size?: string): boolean => {
+      if (!product.variants || product.variants.length === 0) return true;
+      return product.variants.some((v) => {
+        const colorMatches = !color || v.color === color;
+        const sizeMatches = !size || !v.size || v.size === size;
+        return colorMatches && sizeMatches && !v.attribute;
+      });
+    },
+    [product.variants],
   );
 
   // Handle color selection - changes image if color has a specific image
+  // Also selects appropriate attribute based on available variants
   const handleColorSelect = useCallback(
     (color: string) => {
       setSelectedColor(color);
+      
+      // Handle attribute selection based on color+size combination
+      const hasNoAttributeVariant = variantHasNoAttribute(color, selectedSize);
+      const attributesForVariant = getAttributesForVariant(color, selectedSize);
+      
+      if (hasNoAttributeVariant) {
+        // If variant has no-attribute option, select empty attribute
+        setSelectedAttribute("");
+      } else if (attributesForVariant.length > 0) {
+        // If variant only has options with attributes, select the first one
+        setSelectedAttribute(attributesForVariant[0]);
+      } else {
+        // No variants for this combination, clear attribute
+        setSelectedAttribute("");
+      }
+      
       const colorImage = getColorImage(color);
       if (colorImage) {
         // Find if this color image is in allImages array
@@ -329,7 +383,35 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         }
       }
     },
-    [getColorImage, allImages, setCurrentImageIndex]
+    [getColorImage, allImages, setCurrentImageIndex, variantHasNoAttribute, getAttributesForVariant, selectedSize],
+  );
+
+  // Handle size selection - also updates attribute based on available variants
+  const handleSizeSelect = useCallback(
+    (size: string) => {
+      setSelectedSize(size);
+      
+      // Handle attribute selection based on color+size combination
+      const hasNoAttributeVariant = variantHasNoAttribute(selectedColor, size);
+      const attributesForVariant = getAttributesForVariant(selectedColor, size);
+      
+      if (hasNoAttributeVariant) {
+        // If variant has no-attribute option, select empty attribute
+        setSelectedAttribute("");
+      } else if (attributesForVariant.length > 0) {
+        // Check if current attribute is still available for this size
+        if (selectedAttribute && attributesForVariant.includes(selectedAttribute)) {
+          // Keep current attribute
+        } else {
+          // Select the first available attribute
+          setSelectedAttribute(attributesForVariant[0]);
+        }
+      } else {
+        // No variants for this combination, clear attribute
+        setSelectedAttribute("");
+      }
+    },
+    [variantHasNoAttribute, getAttributesForVariant, selectedColor, selectedAttribute],
   );
 
   // Extract sizes, colors, ageGroups from variants if product-level arrays are empty
@@ -405,7 +487,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     queryFn: async () => {
       try {
         const response = await fetchWithAuth(
-          "/categories/attributes/age-groups"
+          "/categories/attributes/age-groups",
         );
         if (!response.ok) {
           return [];
@@ -423,7 +505,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (language === "en") {
       // Find the color in availableColors to get its English name
       const colorObj = availableColors.find(
-        (color) => color.name === colorName
+        (color) => color.name === colorName,
       );
       return colorObj?.nameEn || colorName;
     }
@@ -435,7 +517,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (language === "en") {
       // Find the age group in availableAgeGroups to get its English name
       const ageGroupObj = availableAgeGroups.find(
-        (ageGroup) => ageGroup.name === ageGroupName
+        (ageGroup) => ageGroup.name === ageGroupName,
       );
       return ageGroupObj?.nameEn || ageGroupName;
     }
@@ -489,15 +571,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       // Check if ageGroup matches (only if variant has ageGroup and ageGroups are available)
       const ageGroupMatches =
         !v.ageGroup || !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
-      // Check if attribute matches (only if variant has attribute)
-      const attributeMatches =
-        !v.attribute || !selectedAttribute || v.attribute === selectedAttribute;
+      // Check if attribute matches
+      // If variant has an attribute, it must match selectedAttribute
+      // If variant has no attribute, it matches when no attribute is selected
+      const attributeMatches = v.attribute
+        ? v.attribute === selectedAttribute
+        : !selectedAttribute || availableAttributesFromProduct.length === 0;
 
       return sizeMatches && colorMatches && ageGroupMatches && attributeMatches;
     });
 
     return variant || null;
-  }, [selectedSize, selectedColor, selectedAgeGroup, selectedAttribute, product.variants]);
+  }, [
+    selectedSize,
+    selectedColor,
+    selectedAgeGroup,
+    selectedAttribute,
+    product.variants,
+    availableAttributesFromProduct,
+  ]);
 
   // Get the base price (variant price if exists, otherwise product price)
   const basePrice = useMemo(() => {
@@ -612,13 +704,30 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   // Initialize default selections based on product data (extracted from variants if needed)
   useEffect(() => {
     // Set default size if sizes array exists
-    if (availableSizes.length > 0) {
-      setSelectedSize(availableSizes[0]);
+    const firstSize = availableSizes.length > 0 ? availableSizes[0] : "";
+    if (firstSize) {
+      setSelectedSize(firstSize);
     }
 
     // Set default color if colors array exists
     if (availableColorsFromProduct.length > 0) {
-      setSelectedColor(availableColorsFromProduct[0]);
+      const firstColor = availableColorsFromProduct[0];
+      setSelectedColor(firstColor);
+      
+      // Set default attribute based on first color+size combination
+      const hasNoAttributeVariant = variantHasNoAttribute(firstColor, firstSize);
+      const attributesForVariant = getAttributesForVariant(firstColor, firstSize);
+      
+      if (hasNoAttributeVariant) {
+        // If variant has no-attribute option, select empty attribute
+        setSelectedAttribute("");
+      } else if (attributesForVariant.length > 0) {
+        // If variant only has options with attributes, select the first one
+        setSelectedAttribute(attributesForVariant[0]);
+      }
+    } else if (availableAttributesFromProduct.length > 0) {
+      // No colors but has attributes - set first attribute
+      setSelectedAttribute(availableAttributesFromProduct[0]);
     }
 
     // Set default age group if ageGroups array exists
@@ -629,6 +738,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     availableSizes,
     availableColorsFromProduct,
     availableAgeGroupsFromProduct,
+    availableAttributesFromProduct,
+    variantHasNoAttribute,
+    getAttributesForVariant,
   ]);
 
   // Function to open fullscreen image
@@ -735,8 +847,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     (language === "en"
                       ? "Unknown Brand"
                       : language === "ru"
-                      ? "Неизвестный бренд"
-                      : "უცნობი ბრენდი")}
+                        ? "Неизвестный бренд"
+                        : "უცნობი ბრენდი")}
                 </div>
                 {/* Seller Info */}
                 {product.user && (
@@ -745,8 +857,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       {language === "en"
                         ? "Seller"
                         : language === "ru"
-                        ? "Продавец"
-                        : "გამყიდველი"}
+                          ? "Продавец"
+                          : "გამყიდველი"}
                     </div>
                     <div className="pd-seller-name">
                       {product.user.ownerFirstName && product.user.ownerLastName
@@ -830,7 +942,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       className={`pd-size-btn ${
                         selectedSize === size ? "selected" : ""
                       } ${!isSizeAvailable(size) ? "out-of-stock" : ""}`}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => handleSizeSelect(size)}
                       disabled={!isSizeAvailable(size)}
                     >
                       {size}
@@ -855,7 +967,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   {availableColorsFromProduct.map((color) => {
                     // Get color hex code - first from API, then from default map, then fallback
                     const apiColor = availableColors.find(
-                      (c) => c.name === color
+                      (c) => c.name === color,
                     );
                     const colorHex =
                       apiColor?.hexCode ||
@@ -899,27 +1011,47 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
             )}
 
-            {/* Variant Attributes Selector */}
-            {availableAttributesFromProduct.length > 0 && (
+            {/* Variant Attributes Selector - show only if selected color+size has attributes */}
+            {getAttributesForVariant(selectedColor, selectedSize).length > 0 && (
               <div className="pd-variant-group">
                 <label className="pd-variant-label">
                   {language === "en" ? "Option" : "ვარიანტი"}
-                  {selectedAttribute && (
+                  {selectedAttribute ? (
                     <span className="pd-selected-value">
                       : {selectedAttribute}
                     </span>
-                  )}
+                  ) : variantHasNoAttribute(selectedColor, selectedSize) ? (
+                    <span className="pd-selected-value">
+                      : {language === "en" ? "Standard" : "სტანდარტული"}
+                    </span>
+                  ) : null}
                 </label>
                 <div className="pd-variant-buttons">
-                  {availableAttributesFromProduct.map((attr) => {
+                  {/* Show "Standard" option if color+size has a variant without attribute */}
+                  {variantHasNoAttribute(selectedColor, selectedSize) && (
+                    <button
+                      type="button"
+                      className={`pd-variant-btn ${
+                        selectedAttribute === "" ? "selected" : ""
+                      }`}
+                      onClick={() => setSelectedAttribute("")}
+                    >
+                      {language === "en" ? "Standard" : "სტანდარტული"}
+                    </button>
+                  )}
+                  {getAttributesForVariant(selectedColor, selectedSize).map((attr) => {
                     // Check if this attribute is available (has stock)
                     const attrAvailable = product.variants?.some(
                       (v) =>
                         v.attribute === attr &&
                         v.stock > 0 &&
-                        (!selectedColor || !v.color || v.color === selectedColor) &&
+                        (!selectedColor ||
+                          !v.color ||
+                          v.color === selectedColor) &&
                         (!selectedSize || !v.size || v.size === selectedSize) &&
-                        (!selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup)
+                        (!selectedAgeGroup ||
+                          !v.ageGroup ||
+                          v.ageGroup === selectedAgeGroup),
                     );
                     return (
                       <button
@@ -1036,13 +1168,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               selectedSize={selectedSize}
               selectedColor={selectedColor}
               selectedAgeGroup={selectedAgeGroup}
+              selectedAttribute={selectedAttribute}
               quantity={quantity}
               price={finalPrice}
+              image={
+                selectedColor
+                  ? getColorImage(selectedColor) || product.images[0]
+                  : product.images[0]
+              }
               disabled={
                 availableQuantity <= 0 ||
                 (availableSizes.length > 0 && !selectedSize) ||
                 (availableColorsFromProduct.length > 0 && !selectedColor) ||
-                (availableAgeGroupsFromProduct.length > 0 && !selectedAgeGroup)
+                (availableAgeGroupsFromProduct.length > 0 && !selectedAgeGroup) ||
+                // Require attribute selection only if color+size has attributes and no standard (no-attribute) variant
+                (getAttributesForVariant(selectedColor, selectedSize).length > 0 && !variantHasNoAttribute(selectedColor, selectedSize) && !selectedAttribute)
               }
             />
           </div>
@@ -1058,51 +1198,53 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               >
                 <X />
               </button>
-              
+
               {/* Left Navigation Arrow */}
-              {product.images.length > 1 && (
+              {allImages.length > 1 && (
                 <button
                   className="pd-fullscreen-nav pd-fullscreen-nav-left"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentImageIndex((prev) =>
-                      prev === 0 ? product.images.length - 1 : prev - 1
+                      prev === 0 ? allImages.length - 1 : prev - 1,
                     );
                   }}
                 >
                   <ChevronLeft size={32} />
                 </button>
               )}
-              
+
               <div
                 className="pd-fullscreen-image-container"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Image
-                  src={product.images[currentImageIndex]}
-                  alt={displayName}
-                  width={1200}
-                  height={1200}
-                  quality={100}
-                  className="pd-fullscreen-image"
-                />
-                
+                {allImages[currentImageIndex] && (
+                  <Image
+                    src={allImages[currentImageIndex]}
+                    alt={displayName}
+                    width={1200}
+                    height={1200}
+                    quality={100}
+                    className="pd-fullscreen-image"
+                  />
+                )}
+
                 {/* Image Counter */}
-                {product.images.length > 1 && (
+                {allImages.length > 1 && (
                   <div className="pd-fullscreen-counter">
-                    {currentImageIndex + 1} / {product.images.length}
+                    {currentImageIndex + 1} / {allImages.length}
                   </div>
                 )}
               </div>
-              
+
               {/* Right Navigation Arrow */}
-              {product.images.length > 1 && (
+              {allImages.length > 1 && (
                 <button
                   className="pd-fullscreen-nav pd-fullscreen-nav-right"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentImageIndex((prev) =>
-                      prev === product.images.length - 1 ? 0 : prev + 1
+                      prev === allImages.length - 1 ? 0 : prev + 1,
                     );
                   }}
                 >
@@ -1127,8 +1269,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {language === "en"
               ? "Write a Review"
               : language === "ru"
-              ? "Написать отзыв"
-              : "შეფასების დაწერა"}
+                ? "Написать отзыв"
+                : "შეფასების დაწერა"}
           </h3>
           <ReviewForm
             productId={product._id}

@@ -22,6 +22,7 @@ export interface OrderItem {
   size?: string;
   color?: string;
   ageGroup?: string;
+  attribute?: string;
   product?: {
     deliveryType?: string; // Use string type to avoid enum conversion issues
     minDeliveryDays?: number;

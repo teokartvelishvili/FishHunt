@@ -66,25 +66,26 @@ export class OrdersService {
           if (
             product.variants &&
             product.variants.length > 0 &&
-            (item.size || item.color || item.ageGroup)
+            (item.size || item.color || item.ageGroup || item.attribute)
           ) {
-            // Find the specific variant
+            // Find the specific variant (including attribute)
             const variantIndex = product.variants.findIndex(
               (v) =>
                 v.size === item.size &&
                 v.color === item.color &&
-                v.ageGroup === item.ageGroup,
+                v.ageGroup === item.ageGroup &&
+                v.attribute === item.attribute,
             );
 
             if (variantIndex === -1) {
               throw new BadRequestException(
-                `Variant not found for product ${product.name} (${item.size}/${item.color}/${item.ageGroup})`,
+                `Variant not found for product ${product.name} (${item.size}/${item.color}/${item.ageGroup}/${item.attribute || 'no attribute'})`,
               );
             }
 
             if (product.variants[variantIndex].stock < item.qty) {
               throw new BadRequestException(
-                `Not enough stock for product ${product.name} variant (${item.size}/${item.color}/${item.ageGroup}). Available: ${product.variants[variantIndex].stock}, Requested: ${item.qty}`,
+                `Not enough stock for product ${product.name} variant (${item.size}/${item.color}/${item.ageGroup}/${item.attribute || 'no attribute'}). Available: ${product.variants[variantIndex].stock}, Requested: ${item.qty}`,
               );
             }
 
@@ -243,14 +244,15 @@ export class OrdersService {
         if (
           product.variants &&
           product.variants.length > 0 &&
-          (item.size || item.color || item.ageGroup)
+          (item.size || item.color || item.ageGroup || item.attribute)
         ) {
-          // Check variant stock
+          // Check variant stock (including attribute)
           const variant = product.variants.find(
             (v) =>
               v.size === item.size &&
               v.color === item.color &&
-              v.ageGroup === item.ageGroup,
+              v.ageGroup === item.ageGroup &&
+              v.attribute === item.attribute,
           );
 
           if (variant && variant.stock >= 0) {
@@ -265,7 +267,7 @@ export class OrdersService {
 
         if (!stockAvailable) {
           throw new BadRequestException(
-            `Product "${item.name}" ${item.size ? `(${item.size}/${item.color}/${item.ageGroup})` : ''} is no longer available. Stock has been exhausted.`,
+            `Product "${item.name}" ${item.size ? `(${item.size}/${item.color}/${item.ageGroup}/${item.attribute || ''})` : ''} is no longer available. Stock has been exhausted.`,
           );
         }
       }

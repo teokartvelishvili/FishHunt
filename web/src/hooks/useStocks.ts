@@ -10,6 +10,7 @@ interface UseStocksProps {
 // Updated StockItem to have named fields
 interface StockItem {
   _id?: string; // Optional ID for existing items
+  variantId: string; // Unique ID for this variant (for React key)
   ageGroup?: string;
   size?: string;
   color?: string;
@@ -19,11 +20,15 @@ interface StockItem {
   price?: number; // Optional price override for this variant
 }
 
+// Generate unique ID
+let variantIdCounter = 0;
+const generateVariantId = () => `variant_${++variantIdCounter}_${Date.now()}`;
+
 // Modified to create objects with named fields
 export const generateCombinations = (
   attrArrays: string[][],
   index: number = 0,
-  current: { ageGroup?: string; size?: string; color?: string } = {}
+  current: { ageGroup?: string; size?: string; color?: string } = {},
 ): Array<{ ageGroup?: string; size?: string; color?: string }> => {
   // Return empty array if all attribute arrays are empty
   if (attrArrays.every((arr) => arr.length === 0)) {
@@ -63,7 +68,7 @@ export const generateCombinations = (
     const nextCombinations = generateCombinations(
       attrArrays,
       index + 1,
-      newCombination
+      newCombination,
     );
 
     combinations.push(...nextCombinations);
@@ -83,15 +88,13 @@ export const useStocks = ({
   attributes,
   basePrice = 0,
 }: UseStocksProps) => {
-  const [stocks, setStocks] = useState<Record<string, StockItem>>({});
+  // Use array of StockItems with unique variantId
+  const [stocks, setStocks] = useState<StockItem[]>([]);
   const [initialized, setInitialized] = useState(false);
 
   // Generate combinations whenever attributes change
   const combinations = useMemo(() => {
-    // Filter out empty attribute arrays
-    const filteredAttributes = [...attributes]; // Create a copy to avoid mutating the original
-
-    // Generate combinations with named fields
+    const filteredAttributes = [...attributes];
     return generateCombinations(filteredAttributes);
   }, [attributes]);
 
@@ -99,234 +102,208 @@ export const useStocks = ({
   useEffect(() => {
     if (combinations.length === 0) return;
 
-    // Create new stocks object preserving existing counts
-    const newStocks: Record<string, StockItem> = {};
+    // For edit mode, wait until we actually have variant data to load
+    // Check if this is an edit (initialData exists) but variants haven't been loaded yet
+    const isEditMode = initialData !== undefined;
+    const hasVariantsToLoad = initialData?.variants && initialData.variants.length > 0;
 
-    // Add all new combinations
-    combinations.forEach((combo) => {
-      // Create a key from the combination fields (without attribute since it's per-variant)
-      const key = JSON.stringify({
-        ageGroup: combo.ageGroup,
-        size: combo.size,
-        color: combo.color,
-      });
+    if (!initialized) {
+      const newStocks: StockItem[] = [];
 
-      // If already initialized and this combination exists, keep its values
-      if (initialized && stocks[key]) {
-        newStocks[key] = stocks[key];
-        return;
-      }
-
-      // For new combinations or first initialization, try to find matching variant from initialData
-      let initialStock = 0;
-      let initialPrice: number | undefined =
-        basePrice > 0 ? basePrice : undefined;
-      let initialAttribute: string | undefined = undefined;
-
-      if (initialData?.variants && initialData.variants.length > 0) {
-        const matchingVariant = initialData.variants.find(
-          (variant) =>
-            variant.ageGroup === combo.ageGroup &&
-            variant.size === combo.size &&
-            variant.color === combo.color
-        );
-        if (matchingVariant) {
-          initialStock = matchingVariant.stock || 0;
-          initialAttribute = matchingVariant.attribute;
-          // Use variant price if exists, otherwise fallback to basePrice
-          initialPrice =
-            matchingVariant.price !== undefined
-              ? matchingVariant.price
-              : basePrice > 0
-              ? basePrice
-              : undefined;
-        }
-      }
-
-      newStocks[key] = {
-        ...combo,
-        stock: initialStock,
-        price: initialPrice,
-        attribute: initialAttribute,
-      };
-    });
-
-    // Only update state if something changed
-    const keysChanged =
-      JSON.stringify(Object.keys(newStocks).sort()) !==
-      JSON.stringify(Object.keys(stocks).sort());
-    const valuesChanged = !initialized && Object.keys(newStocks).length > 0;
-
-    if (keysChanged || valuesChanged) {
-      setStocks(newStocks);
-      if (!initialized) {
+      // First, if we have initialData with variants, load ALL of them
+      if (hasVariantsToLoad && initialData.variants) {
+        initialData.variants.forEach((variant) => {
+          newStocks.push({
+            variantId: generateVariantId(),
+            ageGroup: variant.ageGroup,
+            size: variant.size,
+            color: variant.color,
+            stock: variant.stock || 0,
+            price: variant.price,
+            attribute: variant.attribute,
+          });
+        });
+        
+        // Mark as initialized only after loading variants
+        setStocks(newStocks);
+        setInitialized(true);
+      } else if (!isEditMode) {
+        // For new product mode (no initialData), create empty combinations
+        combinations.forEach((combo) => {
+          newStocks.push({
+            variantId: generateVariantId(),
+            ...combo,
+            stock: 0,
+            price: basePrice > 0 ? basePrice : undefined,
+            attribute: undefined,
+          });
+        });
+        
+        setStocks(newStocks);
         setInitialized(true);
       }
-    }
-  }, [combinations, stocks, initialData?.variants, basePrice, initialized]);
-
-  // Function to update stock count by combination fields
-  const setStockCount = useCallback(
-    (
-      combo: { ageGroup?: string; size?: string; color?: string },
-      stock: number
-    ) => {
-      const key = JSON.stringify({
-        ageGroup: combo.ageGroup,
-        size: combo.size,
-        color: combo.color,
-      });
-
+      // If isEditMode but no variants yet, don't initialize - wait for variants to load
+    } else {
+      // When initialized, only add new combinations that don't exist
+      // Don't remove or modify existing variants (to preserve stock/price from edit mode)
       setStocks((prevStocks) => {
-        // Check if this combination exists
-        if (!prevStocks[key]) {
-          console.warn(`Stock combination not found: ${JSON.stringify(combo)}`);
+        // Skip if no real combinations yet (all empty values)
+        const hasRealCombinations = combinations.some(
+          (c) => c.ageGroup || c.size || c.color
+        );
+        if (!hasRealCombinations && prevStocks.length > 0) {
           return prevStocks;
         }
 
-        // Return updated stocks
-        return {
-          ...prevStocks,
-          [key]: {
-            ...prevStocks[key],
-            stock,
-          },
-        };
-      });
-    },
-    []
-  );
+        let updated = false;
+        const newStocks = [...prevStocks];
 
-  // Function to update variant price by combination fields
+        combinations.forEach((combo) => {
+          // Check if this combination already exists (with any attribute)
+          const exists = newStocks.some(
+            (s) =>
+              s.ageGroup === combo.ageGroup &&
+              s.size === combo.size &&
+              s.color === combo.color,
+          );
+
+          // Only add new base variant if no variant with this combination exists
+          if (!exists) {
+            updated = true;
+            newStocks.push({
+              variantId: generateVariantId(),
+              ...combo,
+              stock: 0,
+              price: basePrice > 0 ? basePrice : undefined,
+              attribute: undefined,
+            });
+          }
+        });
+
+        // Only filter out variants if combinations actually have values
+        // This prevents removing variants when combinations is just [{}]
+        if (hasRealCombinations) {
+          const filteredStocks = newStocks.filter((stock) => {
+            return combinations.some(
+              (combo) =>
+                combo.ageGroup === stock.ageGroup &&
+                combo.size === stock.size &&
+                combo.color === stock.color,
+            );
+          });
+
+          if (filteredStocks.length !== newStocks.length) {
+            updated = true;
+            return filteredStocks;
+          }
+        }
+
+        return updated ? newStocks : prevStocks;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [combinations, initialData?.variants, basePrice, initialized]);
+
+  // Function to update stock count by variantId
+  const setStockCount = useCallback((variant: StockItem, stock: number) => {
+    setStocks((prevStocks) =>
+      prevStocks.map((s) =>
+        s.variantId === variant.variantId ? { ...s, stock } : s,
+      ),
+    );
+  }, []);
+
+  // Function to update variant price by variantId
   const setVariantPrice = useCallback(
-    (
-      combo: { ageGroup?: string; size?: string; color?: string },
-      price: number | undefined
-    ) => {
-      const key = JSON.stringify({
-        ageGroup: combo.ageGroup,
-        size: combo.size,
-        color: combo.color,
-      });
-
-      setStocks((prevStocks) => {
-        // Check if this combination exists
-        if (!prevStocks[key]) {
-          console.warn(`Stock combination not found: ${JSON.stringify(combo)}`);
-          return prevStocks;
-        }
-
-        // Return updated stocks with price
-        return {
-          ...prevStocks,
-          [key]: {
-            ...prevStocks[key],
-            price,
-          },
-        };
-      });
-    },
-    []
-  );
-
-  // Function to update variant attribute by combination fields
-  const setVariantAttribute = useCallback(
-    (
-      combo: { ageGroup?: string; size?: string; color?: string },
-      attribute: string | undefined
-    ) => {
-      const key = JSON.stringify({
-        ageGroup: combo.ageGroup,
-        size: combo.size,
-        color: combo.color,
-      });
-
-      setStocks((prevStocks) => {
-        // Check if this combination exists
-        if (!prevStocks[key]) {
-          console.warn(`Stock combination not found: ${JSON.stringify(combo)}`);
-          return prevStocks;
-        }
-
-        // Return updated stocks with attribute
-        return {
-          ...prevStocks,
-          [key]: {
-            ...prevStocks[key],
-            attribute,
-          },
-        };
-      });
-    },
-    []
-  );
-
-  const [isInitialRender, setIsInitialRender] = useState(true);
-
-  // Initialize stock counts and prices from initialData variants when combinations are ready
-  useEffect(() => {
-    if (combinations.length > 0 && isInitialRender && initialData?.variants) {
-      console.log(
-        "Setting initial stock counts and prices:",
-        initialData.variants
+    (variant: StockItem, price: number | undefined) => {
+      setStocks((prevStocks) =>
+        prevStocks.map((s) =>
+          s.variantId === variant.variantId ? { ...s, price } : s,
+        ),
       );
+    },
+    [],
+  );
 
-      initialData.variants.forEach((variant) => {
-        console.log("Setting variant:", variant);
-        setStockCount(variant, variant.stock);
-        // Also set the price if it exists
-        if (variant.price !== undefined) {
-          setVariantPrice(variant, variant.price);
-        }
-        // Also set the attribute if it exists
-        if (variant.attribute !== undefined) {
-          setVariantAttribute(variant, variant.attribute);
-        }
-      });
+  // Function to update variant attribute by variantId
+  const setVariantAttribute = useCallback(
+    (variant: StockItem, attribute: string | undefined) => {
+      setStocks((prevStocks) =>
+        prevStocks.map((s) =>
+          s.variantId === variant.variantId ? { ...s, attribute } : s,
+        ),
+      );
+    },
+    [],
+  );
 
-      setIsInitialRender(false);
-    }
-  }, [
-    combinations.length,
-    isInitialRender,
-    initialData?.variants,
-    setStockCount,
-    setVariantPrice,
-    setVariantAttribute,
-  ]);
+  // Function to duplicate a variant (for adding variants with different attributes)
+  const duplicateVariant = useCallback((variant: StockItem) => {
+    setStocks((prevStocks) => {
+      // Find a unique attribute name
+      let duplicateNum = 1;
+      let newAttribute = `ახალი_${duplicateNum}`;
+
+      while (
+        prevStocks.some(
+          (s) =>
+            s.ageGroup === variant.ageGroup &&
+            s.size === variant.size &&
+            s.color === variant.color &&
+            s.attribute === newAttribute,
+        )
+      ) {
+        duplicateNum++;
+        newAttribute = `ახალი_${duplicateNum}`;
+      }
+
+      return [
+        ...prevStocks,
+        {
+          ...variant,
+          variantId: generateVariantId(),
+          attribute: newAttribute,
+          stock: 0,
+        },
+      ];
+    });
+  }, []);
+
+  // Function to remove a variant
+  const removeVariant = useCallback((variant: StockItem) => {
+    setStocks((prevStocks) =>
+      prevStocks.filter((s) => s.variantId !== variant.variantId),
+    );
+  }, []);
 
   // Calculate total count from all stock items
   const totalCount = useMemo(
-    () => Object.values(stocks).reduce((sum, item) => sum + item.stock, 0),
-    [stocks]
+    () => stocks.reduce((sum, item) => sum + item.stock, 0),
+    [stocks],
   );
 
   // Function to set price for all variants that don't have a custom price
-  const setAllVariantPrices = useCallback((basePrice: number) => {
-    setStocks((prevStocks) => {
-      const newStocks: Record<string, StockItem> = {};
-      Object.entries(prevStocks).forEach(([key, item]) => {
-        // Only set price if it's undefined or 0 (not custom set)
-        // Or if the variant price was previously set to the old base price
-        newStocks[key] = {
-          ...item,
-          price:
-            item.price === undefined || item.price === 0
-              ? basePrice
-              : item.price,
-        };
-      });
-      return newStocks;
-    });
+  const setAllVariantPrices = useCallback((newBasePrice: number) => {
+    setStocks((prevStocks) =>
+      prevStocks.map((item) => ({
+        ...item,
+        price:
+          item.price === undefined || item.price === 0
+            ? newBasePrice
+            : item.price,
+      })),
+    );
   }, []);
 
   // Return both the stocks array, the setter function, and total count
   return {
-    stocks: useMemo(() => Object.values(stocks), [stocks]),
+    stocks,
     setStockCount,
     setVariantPrice,
     setVariantAttribute,
     setAllVariantPrices,
+    duplicateVariant,
+    removeVariant,
     totalCount,
   };
 };

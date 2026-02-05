@@ -22,6 +22,7 @@ export class Order {
         size: { required: false, type: String },
         color: { required: false, type: String },
         ageGroup: { required: false, type: String },
+        attribute: { required: false, type: String },
         productId: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
