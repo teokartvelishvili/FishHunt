@@ -29,6 +29,8 @@ export interface ProductFormData {
     color?: string;
     stock: number;
     price?: number;
+    attribute?: string; // Additional variant attribute (e.g., "with frame", "with paddle")
+    attributeEn?: string; // English translation for the attribute
   }[];
 }
 

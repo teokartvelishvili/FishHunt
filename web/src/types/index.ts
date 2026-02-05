@@ -49,6 +49,8 @@ export interface ProductVariant {
   color?: string;
   stock: number;
   price?: number; // Optional price override for this variant
+  attribute?: string; // Additional variant attribute (e.g., "with frame", "with paddle")
+  attributeEn?: string; // English translation for the attribute
 }
 
 export interface Color {

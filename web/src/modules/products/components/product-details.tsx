@@ -284,6 +284,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [selectedAttribute, setSelectedAttribute] = useState<string>("");
   const [brandLogoError, setBrandLogoError] = useState(false);
   const [activeTab, setActiveTab] = useState<"description" | "video">(
     "description"
@@ -370,6 +371,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
     return [];
   }, [product.ageGroups, product.variants]);
+
+  // Get available variant attributes from product variants
+  const availableAttributesFromProduct = useMemo(() => {
+    if (product.variants && product.variants.length > 0) {
+      const attributesFromVariants = product.variants
+        .map((v) => v.attribute)
+        .filter((a): a is string => !!a);
+      return [...new Set(attributesFromVariants)];
+    }
+    return [];
+  }, [product.variants]);
 
   const { data: availableColors = [] } = useQuery<Color[]>({
     queryKey: ["colors"],
@@ -477,12 +489,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       // Check if ageGroup matches (only if variant has ageGroup and ageGroups are available)
       const ageGroupMatches =
         !v.ageGroup || !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
+      // Check if attribute matches (only if variant has attribute)
+      const attributeMatches =
+        !v.attribute || !selectedAttribute || v.attribute === selectedAttribute;
 
-      return sizeMatches && colorMatches && ageGroupMatches;
+      return sizeMatches && colorMatches && ageGroupMatches && attributeMatches;
     });
 
     return variant || null;
-  }, [selectedSize, selectedColor, selectedAgeGroup, product.variants]);
+  }, [selectedSize, selectedColor, selectedAgeGroup, selectedAttribute, product.variants]);
 
   // Get the base price (variant price if exists, otherwise product price)
   const basePrice = useMemo(() => {
@@ -547,9 +562,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-
-  // Use availableQuantity for out of stock check to be dynamic based on variant selection
-  const isOutOfStock = availableQuantity === 0;
 
   // Check if a specific size has any stock (with current color and ageGroup selections)
   const isSizeAvailable = (size: string): boolean => {
@@ -880,6 +892,46 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             ✓
                           </span>
                         )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Variant Attributes Selector */}
+            {availableAttributesFromProduct.length > 0 && (
+              <div className="pd-variant-group">
+                <label className="pd-variant-label">
+                  {language === "en" ? "Option" : "ვარიანტი"}
+                  {selectedAttribute && (
+                    <span className="pd-selected-value">
+                      : {selectedAttribute}
+                    </span>
+                  )}
+                </label>
+                <div className="pd-variant-buttons">
+                  {availableAttributesFromProduct.map((attr) => {
+                    // Check if this attribute is available (has stock)
+                    const attrAvailable = product.variants?.some(
+                      (v) =>
+                        v.attribute === attr &&
+                        v.stock > 0 &&
+                        (!selectedColor || !v.color || v.color === selectedColor) &&
+                        (!selectedSize || !v.size || v.size === selectedSize) &&
+                        (!selectedAgeGroup || !v.ageGroup || v.ageGroup === selectedAgeGroup)
+                    );
+                    return (
+                      <button
+                        key={attr}
+                        type="button"
+                        className={`pd-variant-btn ${
+                          selectedAttribute === attr ? "selected" : ""
+                        } ${!attrAvailable ? "out-of-stock" : ""}`}
+                        onClick={() => setSelectedAttribute(attr)}
+                        disabled={!attrAvailable}
+                      >
+                        {attr}
                       </button>
                     );
                   })}

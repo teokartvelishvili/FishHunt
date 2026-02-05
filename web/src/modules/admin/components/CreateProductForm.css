@@ -497,3 +497,145 @@
   color: #2a5530;
   font-weight: 500;
 }
+
+/* Variant Attributes Section */
+.variant-attributes-section {
+  margin-top: 16px;
+}
+
+.variant-attributes-hint {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.variant-attribute-input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.variant-attribute-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(42, 85, 48, 0.15);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2a5530;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.variant-attribute-input:focus {
+  outline: none;
+  border-color: #2a5530;
+  box-shadow: 0 0 0 3px rgba(42, 85, 48, 0.1);
+}
+
+.variant-attribute-input::placeholder {
+  color: #999;
+}
+
+.add-variant-attribute-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #2a5530 0%, #3d7a47 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-variant-attribute-btn:hover {
+  background: linear-gradient(135deg, #3d7a47 0%, #2a5530 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(42, 85, 48, 0.2);
+}
+
+.variant-attributes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.variant-attribute-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(42, 85, 48, 0.08) 0%, rgba(42, 85, 48, 0.04) 100%);
+  border: 1px solid rgba(42, 85, 48, 0.15);
+  border-radius: 20px;
+  font-size: 13px;
+  color: #2a5530;
+  font-weight: 500;
+}
+
+.remove-variant-attribute-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(229, 57, 53, 0.1);
+  color: #e53935;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.remove-variant-attribute-btn:hover {
+  background: #e53935;
+  color: white;
+}
+
+/* Per-variant attribute input in stock row */
+.variant-attribute-group {
+  flex: 1.5;
+}
+
+.variant-attribute-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid rgba(42, 85, 48, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #2a5530;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.variant-attribute-group input:focus {
+  outline: none;
+  border-color: #2a5530;
+  box-shadow: 0 0 0 2px rgba(42, 85, 48, 0.1);
+}
+
+.variant-attribute-group input::placeholder {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Make the variant inputs row more flexible */
+.stock-variant-row .variant-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .stock-variant-row .variant-inputs {
+    flex-direction: column;
+  }
+  
+  .variant-attribute-group {
+    flex: 1;
+  }
+}

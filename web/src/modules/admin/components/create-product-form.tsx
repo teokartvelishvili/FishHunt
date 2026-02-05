@@ -1199,6 +1199,7 @@ export function CreateProductForm({
     totalCount,
     setStockCount,
     setVariantPrice,
+    setVariantAttribute,
     setAllVariantPrices,
   } = useStocks({
     initialData,
@@ -1704,8 +1705,8 @@ export function CreateProductForm({
             </h3>
             <p className="variants-subtitle">
               {language === "en"
-                ? "Leave price empty to use the base price, or enter a specific price for this variant."
-                : "დატოვეთ ფასი ცარიელი საბაზისო ფასის გამოსაყენებლად, ან შეიყვანეთ კონკრეტული ფასი ამ ვარიანტისთვის."}
+                ? "Set stock, price, and optional attribute for each variant. Leave price empty to use the base price."
+                : "თითოეული ვარიანტისთვის მიუთითეთ მარაგი, ფასი და საჭიროების შემთხვევაში დამატებითი ატრიბუტი. ფასი დატოვეთ ცარიელი საბაზისო ფასის გამოსაყენებლად."}
             </p>
             {stocks.map((stock) => (
               <div
@@ -1721,7 +1722,7 @@ export function CreateProductForm({
                     stock.color ? getLocalizedColorName(stock.color) : null,
                   ]
                     .filter(Boolean)
-                    .join(" / ")}
+                    .join(" / ") || (language === "en" ? "Default variant" : "ძირითადი ვარიანტი")}
                 </div>
                 <div className="variant-inputs">
                   <div className="variant-input-group">
@@ -1750,6 +1751,23 @@ export function CreateProductForm({
                       step="0.01"
                       placeholder={
                         language === "en" ? "Base price" : "საბაზისო"
+                      }
+                    />
+                  </div>
+                  <div className="variant-input-group variant-attribute-group">
+                    <label>{language === "en" ? "Attribute" : "ატრიბუტი"}</label>
+                    <input
+                      type="text"
+                      value={stock.attribute || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setVariantAttribute(
+                          stock,
+                          value === "" ? undefined : value
+                        );
+                      }}
+                      placeholder={
+                        language === "en" ? "e.g., with frame" : "მაგ: ჩარჩოთი"
                       }
                     />
                   </div>

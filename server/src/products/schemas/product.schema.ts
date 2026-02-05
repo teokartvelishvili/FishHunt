@@ -83,6 +83,14 @@ export class ProductVariant {
 
   @Prop({ required: false })
   sku?: string;
+
+  // Additional attribute for variants (e.g., "with frame", "with paddle")
+  @Prop({ required: false })
+  attribute?: string;
+
+  // Georgian translation for the attribute
+  @Prop({ required: false })
+  attributeEn?: string;
 }
 
 export const ProductVariantSchema =

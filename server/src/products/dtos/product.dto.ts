@@ -79,6 +79,16 @@ class ProductVariantDto {
   @IsString()
   @IsOptional()
   sku?: string;
+
+  // Additional attribute for variants (e.g., "with frame", "with paddle")
+  @IsString()
+  @IsOptional()
+  attribute?: string;
+
+  // English translation for the attribute
+  @IsString()
+  @IsOptional()
+  attributeEn?: string;
 }
 
 export class ProductDto {

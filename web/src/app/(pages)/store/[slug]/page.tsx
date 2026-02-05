@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import StorePage from "./StorePage";
 
@@ -51,7 +50,7 @@ export async function generateMetadata({
         images: data.store.logo ? [data.store.logo] : [],
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Store | FishHunt",
       description: "Shop unique products on FishHunt.",

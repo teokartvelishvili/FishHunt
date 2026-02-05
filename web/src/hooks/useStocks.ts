@@ -13,6 +13,8 @@ interface StockItem {
   ageGroup?: string;
   size?: string;
   color?: string;
+  attribute?: string; // Additional variant attribute (e.g., "with frame", "with paddle") - set per variant
+  attributeEn?: string; // English translation for the attribute
   stock: number;
   price?: number; // Optional price override for this variant
 }
@@ -102,7 +104,7 @@ export const useStocks = ({
 
     // Add all new combinations
     combinations.forEach((combo) => {
-      // Create a key from the combination fields
+      // Create a key from the combination fields (without attribute since it's per-variant)
       const key = JSON.stringify({
         ageGroup: combo.ageGroup,
         size: combo.size,
@@ -119,6 +121,7 @@ export const useStocks = ({
       let initialStock = 0;
       let initialPrice: number | undefined =
         basePrice > 0 ? basePrice : undefined;
+      let initialAttribute: string | undefined = undefined;
 
       if (initialData?.variants && initialData.variants.length > 0) {
         const matchingVariant = initialData.variants.find(
@@ -129,6 +132,7 @@ export const useStocks = ({
         );
         if (matchingVariant) {
           initialStock = matchingVariant.stock || 0;
+          initialAttribute = matchingVariant.attribute;
           // Use variant price if exists, otherwise fallback to basePrice
           initialPrice =
             matchingVariant.price !== undefined
@@ -143,6 +147,7 @@ export const useStocks = ({
         ...combo,
         stock: initialStock,
         price: initialPrice,
+        attribute: initialAttribute,
       };
     });
 
@@ -224,6 +229,38 @@ export const useStocks = ({
     []
   );
 
+  // Function to update variant attribute by combination fields
+  const setVariantAttribute = useCallback(
+    (
+      combo: { ageGroup?: string; size?: string; color?: string },
+      attribute: string | undefined
+    ) => {
+      const key = JSON.stringify({
+        ageGroup: combo.ageGroup,
+        size: combo.size,
+        color: combo.color,
+      });
+
+      setStocks((prevStocks) => {
+        // Check if this combination exists
+        if (!prevStocks[key]) {
+          console.warn(`Stock combination not found: ${JSON.stringify(combo)}`);
+          return prevStocks;
+        }
+
+        // Return updated stocks with attribute
+        return {
+          ...prevStocks,
+          [key]: {
+            ...prevStocks[key],
+            attribute,
+          },
+        };
+      });
+    },
+    []
+  );
+
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   // Initialize stock counts and prices from initialData variants when combinations are ready
@@ -241,6 +278,10 @@ export const useStocks = ({
         if (variant.price !== undefined) {
           setVariantPrice(variant, variant.price);
         }
+        // Also set the attribute if it exists
+        if (variant.attribute !== undefined) {
+          setVariantAttribute(variant, variant.attribute);
+        }
       });
 
       setIsInitialRender(false);
@@ -251,6 +292,7 @@ export const useStocks = ({
     initialData?.variants,
     setStockCount,
     setVariantPrice,
+    setVariantAttribute,
   ]);
 
   // Calculate total count from all stock items
@@ -283,6 +325,7 @@ export const useStocks = ({
     stocks: useMemo(() => Object.values(stocks), [stocks]),
     setStockCount,
     setVariantPrice,
+    setVariantAttribute,
     setAllVariantPrices,
     totalCount,
   };
