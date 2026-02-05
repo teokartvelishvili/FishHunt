@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Package, Tag, Truck, Percent, Video, ImageIcon, Hash, Info, ChevronDown, ChevronRight, Layers, Palette, Ruler, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
@@ -1226,606 +1226,390 @@ export function CreateProductForm({
           <div className="server-error">
             <p className="create-product-error text-center">{serverError}</p>
           </div>
-        )}{" "}
-        {/* Video Upload Section */}
-        <div className="video-section">
-          <h3>{language === "en" ? "Product Video" : "პროდუქტის ვიდეო"}</h3>
+        )}
 
-          <div>
-            <label htmlFor="videoFile">
-              {language === "en"
-                ? "Upload Video (will be uploaded to YouTube)"
-                : "ვიდეოს ატვირთვა (აიტვირთება YouTube-ზე)"}
-            </label>
-            <input
-              type="file"
-              id="videoFile"
-              name="videoFile"
-              accept="video/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // Check file size (max 500MB)
-                  const maxSize = 500 * 1024 * 1024; // 500MB
-                  if (file.size > maxSize) {
-                    alert(
-                      language === "en"
-                        ? "Video file is too large. Maximum size is 500MB."
-                        : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB.",
-                    );
-                    e.target.value = "";
-                    return;
-                  }
-                  // Store file in state
-                  setFormData((prev) => ({
-                    ...prev,
-                    videoFile: file,
-                  }));
-                }
-              }}
-              className="create-product-input"
-            />
-            <small
-              style={{
-                color: "#666",
-                fontSize: "0.9rem",
-                display: "block",
-                marginTop: "4px",
-              }}
-            >
-              {language === "en"
-                ? "Supported formats: MP4, AVI, MOV, WMV. Max size: 500MB"
-                : "მხარდაჭერილი ფორმატები: MP4, AVI, MOV, WMV. მაქს. ზომა: 500MB"}
-            </small>
-
-            {/* Show selected file or upload status */}
-            {formData.videoFile && !videoUploadStatus && (
-              <div
-                style={{
-                  marginTop: "8px",
-                  padding: "6px 10px",
-                  backgroundColor: "#e8f5e9",
-                  color: "#2e7d32",
-                  borderRadius: "4px",
-                  border: "1px solid #a5d6a7",
-                  fontSize: "0.9rem",
-                }}
-              >
-                ✓ {formData.videoFile.name} (
-                {(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)
-              </div>
-            )}
-
-            {/* Video Upload Status Indicator */}
-            {videoUploadStatus && (
-              <div
-                style={{
-                  marginTop: "12px",
-                  padding: "10px 14px",
-                  backgroundColor: videoUploadStatus.includes("✅")
-                    ? "#d4edda"
-                    : videoUploadStatus.includes("❌")
-                      ? "#f8d7da"
-                      : "#fff3cd",
-                  color: videoUploadStatus.includes("✅")
-                    ? "#155724"
-                    : videoUploadStatus.includes("❌")
-                      ? "#721c24"
-                      : "#856404",
-                  borderRadius: "4px",
-                  fontSize: "0.95rem",
-                  fontWeight: "500",
-                  border: `1px solid ${
-                    videoUploadStatus.includes("✅")
-                      ? "#c3e6cb"
-                      : videoUploadStatus.includes("❌")
-                        ? "#f5c6cb"
-                        : "#ffeaa7"
-                  }`,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                {videoUploadStatus.includes("📤") && (
-                  <span style={{ animation: "pulse 1.5s infinite" }}>📤</span>
-                )}
-                {videoUploadStatus.includes("🔄") && (
-                  <span style={{ animation: "spin 1s linear infinite" }}>
-                    🔄
-                  </span>
-                )}
-                <span>{videoUploadStatus}</span>
-              </div>
-            )}
+        {/* Section 1: Basic Information */}
+        <div className="form-section">
+          <div className="form-section-header">
+            <Package size={20} />
+            <h2>{language === "en" ? "Basic Information" : "ძირითადი ინფორმაცია"}</h2>
           </div>
-
-          {/* Show current video status in edit mode */}
-          {isEdit && formData.videoDescription && !formData.videoFile && (
-            <div
-              style={{
-                marginTop: "12px",
-                padding: "10px",
-                backgroundColor: "#e3f2fd",
-                color: "#1565c0",
-                borderRadius: "4px",
-                border: "1px solid #90caf9",
-                fontSize: "0.9rem",
-              }}
-            >
-              <strong>
-                ℹ️ {language === "en" ? "Current video:" : "მიმდინარე ვიდეო:"}
-              </strong>
-              <br />
-              {language === "en"
-                ? "This product already has a video. Upload a new video to replace it."
-                : "ამ პროდუქტს უკვე აქვს ვიდეო. ატვირთეთ ახალი ვიდეო რომ შეცვალოთ."}
+          <div className="form-section-content">
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="name">{t("adminProducts.productNameGe")}</label>
+                <input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="create-product-input"
+                  required
+                />
+                {errors.name && <p className="create-product-error">{errors.name}</p>}
+              </div>
+              <div className="form-field">
+                <label htmlFor="nameEn">{t("adminProducts.productNameEn")}</label>
+                <input
+                  id="nameEn"
+                  name="nameEn"
+                  value={formData.nameEn}
+                  onChange={handleChange}
+                  className="create-product-input"
+                  placeholder={t("adminProducts.productNameEnPlaceholder")}
+                />
+                {errors.nameEn && <p className="create-product-error">{errors.nameEn}</p>}
+              </div>
             </div>
-          )}
 
-          <div style={{ marginTop: "16px" }}>
-            <label htmlFor="videoDescription">
-              {language === "en"
-                ? "Or paste YouTube embed code (optional)"
-                : "ან ჩასვით YouTube embed კოდი (არასავალდებულო)"}
-            </label>
-            <textarea
-              id="videoDescription"
-              name="videoDescription"
-              value={formData.videoDescription || ""}
-              onChange={handleChange}
-              className="create-product-textarea"
-              placeholder={
-                language === "en"
-                  ? "Paste YouTube embed code or iframe here (if video is already uploaded)"
-                  : "ჩასვით YouTube embed კოდი ან iframe აქ (თუ ვიდეო უკვე ატვირთული გაქვთ)"
-              }
-              rows={3}
-            />
-          </div>
-        </div>
-        {/* Discount Section */}
-        <div className="discount-section">
-          <h3>
-            {language === "en"
-              ? "Discount Settings"
-              : "ფასდაკლების პარამეტრები"}
-          </h3>
+            <div className="form-field">
+              <label htmlFor="description">{t("adminProducts.descriptionGe")}</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="create-product-textarea"
+                required
+              />
+              {errors.description && <p className="create-product-error">{errors.description}</p>}
+            </div>
 
-          <div>
-            <label htmlFor="discountPercentage">
-              {language === "en"
-                ? "Discount Percentage (%)"
-                : "ფასდაკლების პროცენტი (%)"}
-            </label>
-            <input
-              id="discountPercentage"
-              type="number"
-              value={discountPercentage}
-              onChange={(e) => setDiscountPercentage(e.target.value)}
-              className="create-product-input"
-              placeholder={
-                language === "en"
-                  ? "Enter discount percentage (0-100)"
-                  : "შეიყვანეთ ფასდაკლების პროცენტი (0-100)"
-              }
-              min={0}
-              max={100}
-              step={0.01}
-            />
-            <small
-              style={{
-                color: "#666",
-                fontSize: "0.9rem",
-                display: "block",
-                marginTop: "4px",
-              }}
-            >
-              {language === "en"
-                ? "Leave empty or set to 0 for no discount"
-                : "დატოვეთ ცარიელი ან დააყენეთ 0 ფასდაკლების გარეშე"}
-            </small>
-          </div>
+            <div className="form-field">
+              <label htmlFor="descriptionEn">{t("adminProducts.descriptionEn")}</label>
+              <textarea
+                id="descriptionEn"
+                name="descriptionEn"
+                value={formData.descriptionEn}
+                onChange={handleChange}
+                className="create-product-textarea"
+                placeholder={t("adminProducts.descriptionEnPlaceholder")}
+              />
+              {errors.descriptionEn && <p className="create-product-error">{errors.descriptionEn}</p>}
+            </div>
 
-          {discountPercentage && parseFloat(discountPercentage) > 0 && (
-            <>
-              <div>
-                <label htmlFor="discountStartDate">
-                  {language === "en"
-                    ? "Discount Start Date"
-                    : "ფასდაკლების დაწყების თარიღი"}
-                </label>
+            <div className="form-row form-row-3">
+              <div className="form-field">
+                <label htmlFor="price">{t("adminProducts.price")} (₾)</label>
                 <input
-                  id="discountStartDate"
-                  type="date"
-                  value={discountStartDate}
-                  onChange={(e) => setDiscountStartDate(e.target.value)}
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="create-product-input"
+                  required
+                />
+                {errors.price && <p className="create-product-error">{errors.price}</p>}
+              </div>
+              <div className="form-field">
+                <label htmlFor="brand">{t("adminProducts.brand")}</label>
+                <input
+                  id="brand"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={handleChange}
+                  placeholder={t("adminProducts.enterBrandName")}
                   className="create-product-input"
                 />
+                {errors.brand && <p className="create-product-error">{errors.brand}</p>}
               </div>
-
-              <div>
-                <label htmlFor="discountEndDate">
-                  {language === "en"
-                    ? "Discount End Date"
-                    : "ფასდაკლების დასრულების თარიღი"}
-                </label>
+              <div className="form-field">
+                <label htmlFor="countInStock">{t("adminProducts.stock")}</label>
                 <input
-                  id="discountEndDate"
-                  type="date"
-                  value={discountEndDate}
-                  onChange={(e) => setDiscountEndDate(e.target.value)}
-                  className="create-product-input"
+                  id="countInStock"
+                  name="countInStock"
+                  type="number"
+                  disabled
+                  value={totalCount}
+                  className="create-product-input stock-input-disabled"
                 />
+                <small className="field-hint">
+                  {language === "en"
+                    ? "Auto-calculated from variants"
+                    : "ვარიანტებიდან ავტომატურად"}
+                </small>
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="name">{t("adminProducts.productNameGe")}</label>
-          <input
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="create-product-input"
-            required
-          />
-          {errors.name && <p className="create-product-error">{errors.name}</p>}
-        </div>{" "}
-        <div>
-          <label htmlFor="nameEn">{t("adminProducts.productNameEn")}</label>
-          <input
-            id="nameEn"
-            name="nameEn"
-            value={formData.nameEn}
-            onChange={handleChange}
-            className="create-product-input"
-            placeholder={t("adminProducts.productNameEnPlaceholder")}
-          />
-          {errors.nameEn && (
-            <p className="create-product-error">{errors.nameEn}</p>
-          )}
-        </div>{" "}
-        <div>
-          <label htmlFor="description">
-            {t("adminProducts.descriptionGe")}
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="create-product-textarea"
-            required
-          />
-          {errors.description && (
-            <p className="create-product-error">{errors.description}</p>
-          )}
-        </div>{" "}
-        <div>
-          <label htmlFor="descriptionEn">
-            {t("adminProducts.descriptionEn")}
-          </label>
-          <textarea
-            id="descriptionEn"
-            name="descriptionEn"
-            value={formData.descriptionEn}
-            onChange={handleChange}
-            className="create-product-textarea"
-            placeholder={t("adminProducts.descriptionEnPlaceholder")}
-          />
-          {errors.descriptionEn && (
-            <p className="create-product-error">{errors.descriptionEn}</p>
-          )}
-        </div>{" "}
-        <div>
-          <label htmlFor="price">{t("adminProducts.price")}</label>
-          <input
-            id="price"
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleChange}
-            className="create-product-input"
-            required
-          />
-          {errors.price && (
-            <p className="create-product-error">{errors.price}</p>
-          )}
+
+        {/* Section 2: Category & Subcategory */}
+        <div className="form-section">
+          <div className="form-section-header">
+            <Tag size={20} />
+            <h2>{language === "en" ? "Category" : "კატეგორია"}</h2>
+          </div>
+          <div className="form-section-content">
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="category">{t("adminProducts.category")}</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={selectedCategory}
+                  onChange={handleCategoryChange}
+                  className="create-product-select"
+                  required
+                  disabled={isCategoriesLoading}
+                >
+                  <option value="">
+                    {isCategoriesLoading
+                      ? t("adminProducts.loading")
+                      : t("adminProducts.selectCategory")}
+                  </option>
+                  {categories?.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {language === "en" && category.nameEn
+                        ? category.nameEn
+                        : category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-field">
+                <label htmlFor="subcategory">{t("adminProducts.subcategory")}</label>
+                <select
+                  id="subcategory"
+                  name="subcategory"
+                  value={selectedSubcategory}
+                  onChange={handleSubcategoryChange}
+                  className="create-product-select"
+                  required
+                  disabled={!selectedCategory || isSubcategoriesLoading}
+                >
+                  <option value="">{t("adminProducts.selectSubcategory")}</option>
+                  {subcategories?.map((subcategory) => (
+                    <option key={subcategory.id} value={subcategory.id}>
+                      {language === "en" && subcategory.nameEn
+                        ? subcategory.nameEn
+                        : subcategory.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        {/* New Category Structure */}{" "}
-        <div>
-          <label htmlFor="category">{t("adminProducts.category")}</label>
-          <select
-            id="category"
-            name="category"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            className="create-product-select"
-            required
-            disabled={isCategoriesLoading}
-          >
-            {" "}
-            <option value="">
-              {isCategoriesLoading
-                ? t("adminProducts.loading")
-                : t("adminProducts.selectCategory")}
-            </option>
-            {categories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {language === "en" && category.nameEn
-                  ? category.nameEn
-                  : category.name}
-              </option>
-            ))}
-          </select>
-        </div>{" "}
-        <div>
-          <label htmlFor="subcategory">{t("adminProducts.subcategory")}</label>
-          <select
-            id="subcategory"
-            name="subcategory"
-            value={selectedSubcategory}
-            onChange={handleSubcategoryChange}
-            className="create-product-select"
-            required
-            disabled={!selectedCategory || isSubcategoriesLoading}
-          >
-            <option value="">{t("adminProducts.selectSubcategory")}</option>
-            {subcategories?.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.id}>
-                {language === "en" && subcategory.nameEn
-                  ? subcategory.nameEn
-                  : subcategory.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* Attributes Section */}
+
+        {/* Section 3: Product Attributes - Only show when subcategory selected */}
         {selectedSubcategory && (
-          <div className="attributes-section">
+          <div className="form-section form-section-collapsible">
             <button
               type="button"
-              className="attributes-toggle-btn"
+              className="form-section-header form-section-toggle"
               onClick={() => setIsAttributesExpanded(!isAttributesExpanded)}
             >
-              <span className="attributes-toggle-icon">
-                {isAttributesExpanded ? "▼" : "►"}
-              </span>
-              <h3 className="attributes-section-title">
-                {language === "en"
-                  ? `Product Attributes (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length} selected)`
-                  : `პროდუქტის ატრიბუტები (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length} არჩეული)`}
-              </h3>
+              <div className="header-left">
+                <Layers size={20} />
+                <h2>
+                  {language === "en"
+                    ? `Attributes (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length})`
+                    : `ატრიბუტები (${selectedAgeGroups.length + selectedSizes.length + selectedColors.length})`}
+                </h2>
+              </div>
+              {isAttributesExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
             </button>
             {isAttributesExpanded && (
-              <>
+              <div className="form-section-content">
                 {availableAgeGroups.length > 0 && (
                   <div className="attribute-group">
-                    <h3>{t("adminProducts.ageGroups")}</h3>
+                    <div className="attribute-group-header">
+                      <Users size={16} />
+                      <h3>{t("adminProducts.ageGroups")}</h3>
+                    </div>
                     <div className="attribute-options">
                       {availableAgeGroups.map((ageGroup) => (
                         <label key={ageGroup} className="attribute-checkbox">
                           <input
                             type="checkbox"
                             checked={selectedAgeGroups.includes(ageGroup)}
-                            onChange={() =>
-                              handleAttributeChange("ageGroups", ageGroup)
-                            }
-                          />{" "}
-                      <span>{getLocalizedAgeGroupName(ageGroup)}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {availableSizes.length > 0 && (
-              <div className="attribute-group">
-                <h3>{t("adminProducts.sizes")}</h3>
-                <div className="attribute-options">
-                  {availableSizes.map((size) => (
-                    <label key={size} className="attribute-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={selectedSizes.includes(size)}
-                        onChange={() => handleAttributeChange("sizes", size)}
-                      />
-                      <span>{size}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {availableColors.length > 0 && (
-              <div className="attribute-group">
-                <h3>{t("adminProducts.colors")}</h3>
-                <div className="attribute-options">
-                  {availableColors.map((color) => (
-                    <label key={color} className="attribute-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={selectedColors.includes(color)}
-                        onChange={() => handleAttributeChange("colors", color)}
-                      />
-                      <span>{getLocalizedColorName(color)}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Color Images Section */}
-            {selectedColors.length > 0 && (
-              <div className="color-images-section">
-                <h3>
-                  {language === "en" ? "Color Images" : "ფერების სურათები"}
-                </h3>
-                <p className="color-images-hint">
-                  {language === "en"
-                    ? "Upload a specific image for each color (optional)"
-                    : "ატვირთეთ კონკრეტული სურათი თითოეული ფერისთვის (არასავალდებულო)"}
-                </p>
-                <div className="color-images-grid">
-                  {selectedColors.map((color) => (
-                    <div key={color} className="color-image-item">
-                      <div className="color-image-label">
-                        {getLocalizedColorName(color)}
-                      </div>
-                      <div className="color-image-upload">
-                        {colorImages[color] ? (
-                          <div className="color-image-preview">
-                            <Image
-                              src={
-                                colorImages[color] instanceof File
-                                  ? URL.createObjectURL(
-                                      colorImages[color] as File,
-                                    )
-                                  : (colorImages[color] as string)
-                              }
-                              alt={color}
-                              width={80}
-                              height={80}
-                              className="color-preview-img"
-                            />
-                            <button
-                              type="button"
-                              className="color-image-remove"
-                              onClick={() => handleRemoveColorImage(color)}
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ) : (
-                          <label className="color-image-upload-btn">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleColorImageChange(color, e)}
-                              style={{ display: "none" }}
-                            />
-                            <span>
-                              {language === "en" ? "Upload" : "ატვირთვა"}
-                            </span>
-                          </label>
-                        )}
-                      </div>
+                            onChange={() => handleAttributeChange("ageGroups", ageGroup)}
+                          />
+                          <span>{getLocalizedAgeGroupName(ageGroup)}</span>
+                        </label>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
+
+                {availableSizes.length > 0 && (
+                  <div className="attribute-group">
+                    <div className="attribute-group-header">
+                      <Ruler size={16} />
+                      <h3>{t("adminProducts.sizes")}</h3>
+                    </div>
+                    <div className="attribute-options">
+                      {availableSizes.map((size) => (
+                        <label key={size} className="attribute-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedSizes.includes(size)}
+                            onChange={() => handleAttributeChange("sizes", size)}
+                          />
+                          <span>{size}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {availableColors.length > 0 && (
+                  <div className="attribute-group">
+                    <div className="attribute-group-header">
+                      <Palette size={16} />
+                      <h3>{t("adminProducts.colors")}</h3>
+                    </div>
+                    <div className="attribute-options">
+                      {availableColors.map((color) => (
+                        <label key={color} className="attribute-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedColors.includes(color)}
+                            onChange={() => handleAttributeChange("colors", color)}
+                          />
+                          <span>{getLocalizedColorName(color)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Color Images Section */}
+                {selectedColors.length > 0 && (
+                  <div className="color-images-section">
+                    <h3>{language === "en" ? "Color Images (Optional)" : "ფერების სურათები (არასავალდებულო)"}</h3>
+                    <div className="color-images-grid">
+                      {selectedColors.map((color) => (
+                        <div key={color} className="color-image-item">
+                          <div className="color-image-label">{getLocalizedColorName(color)}</div>
+                          <div className="color-image-upload">
+                            {colorImages[color] ? (
+                              <div className="color-image-preview">
+                                <Image
+                                  src={
+                                    colorImages[color] instanceof File
+                                      ? URL.createObjectURL(colorImages[color] as File)
+                                      : (colorImages[color] as string)
+                                  }
+                                  alt={color}
+                                  width={80}
+                                  height={80}
+                                  className="color-preview-img"
+                                />
+                                <button
+                                  type="button"
+                                  className="color-image-remove"
+                                  onClick={() => handleRemoveColorImage(color)}
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ) : (
+                              <label className="color-image-upload-btn">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => handleColorImageChange(color, e)}
+                                  style={{ display: "none" }}
+                                />
+                                <span>{language === "en" ? "Upload" : "ატვირთვა"}</span>
+                              </label>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-              </>
             )}
           </div>
         )}
+
+        {/* Section 4: Variants Stock & Pricing */}
         {stocks && stocks.length > 0 && (
-          <div className="variants-section">
+          <div className="form-section form-section-collapsible">
             <button
               type="button"
-              className="variants-toggle-btn"
+              className="form-section-header form-section-toggle"
               onClick={() => setIsVariantsExpanded(!isVariantsExpanded)}
             >
-              <span className="variants-toggle-icon">
-                {isVariantsExpanded ? "▼" : "►"}
-              </span>
-              <h3 className="variants-title">
-                {language === "en"
-                  ? `Variant Stock & Pricing (${stocks.length})`
-                  : `ვარიანტების მარაგი და ფასი (${stocks.length})`}
-              </h3>
+              <div className="header-left">
+                <Package size={20} />
+                <h2>
+                  {language === "en"
+                    ? `Stock & Pricing (${stocks.length})`
+                    : `მარაგი და ფასები (${stocks.length})`}
+                </h2>
+              </div>
+              {isVariantsExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
             </button>
             {isVariantsExpanded && (
-              <>
-                <p className="variants-subtitle">
+              <div className="form-section-content">
+                <p className="section-hint">
                   {language === "en"
-                    ? "Set stock, price, and optional attribute for each variant. Leave price empty to use the base price. Use + to duplicate a variant with a different attribute."
-                    : "თითოეული ვარიანტისთვის მიუთითეთ მარაგი, ფასი და საჭიროების შემთხვევაში დამატებითი ატრიბუტი. ფასი დატოვეთ ცარიელი საბაზისო ფასის გამოსაყენებლად. გამოიყენეთ + სხვა ატრიბუტით ვარიანტის დასამატებლად."}
+                    ? "Set stock, price, and optional attribute for each variant. Leave price empty to use base price."
+                    : "თითოეული ვარიანტისთვის მიუთითეთ მარაგი და ფასი. ფასი დატოვეთ ცარიელი საბაზისო ფასისთვის."}
                 </p>
-                {stocks.map((stock) => (
-                  <div key={stock.variantId} className="stock-variant-row">
-                    <div className="variant-label">
-                      {[
-                        stock.ageGroup
-                          ? getLocalizedAgeGroupName(stock.ageGroup)
-                          : null,
-                        stock.size || null,
-                        stock.color ? getLocalizedColorName(stock.color) : null,
-                        stock.attribute || null,
-                      ]
-                        .filter(Boolean)
-                        .join(" / ") ||
-                        (language === "en"
-                          ? "Default variant"
-                          : "ძირითადი ვარიანტი")}
-                    </div>
-                    <div className="variant-inputs">
-                      <div className="variant-input-group">
-                        <label>{language === "en" ? "Stock" : "მარაგი"}</label>
-                        <input
-                          type="number"
-                          value={stock.stock}
-                          onChange={(e) =>
-                            setStockCount(stock, +e.target.value)
-                          }
-                          min={0}
-                          placeholder="0"
-                        />
+                <div className="variants-grid">
+                  {stocks.map((stock) => (
+                    <div key={stock.variantId} className="stock-variant-card">
+                      <div className="variant-card-header">
+                        {[
+                          stock.ageGroup ? getLocalizedAgeGroupName(stock.ageGroup) : null,
+                          stock.size || null,
+                          stock.color ? getLocalizedColorName(stock.color) : null,
+                          stock.attribute || null,
+                        ]
+                          .filter(Boolean)
+                          .join(" / ") ||
+                          (language === "en" ? "Default" : "ძირითადი")}
                       </div>
-                      <div className="variant-input-group">
-                        <label>
-                          {language === "en" ? "Price" : "ფასი"} (₾)
-                        </label>
-                        <input
-                          type="number"
-                          value={stock.price ?? ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setVariantPrice(
-                              stock,
-                              value === "" ? undefined : +value,
-                            );
-                          }}
-                          min={0}
-                          step="0.01"
-                          placeholder={
-                            language === "en" ? "Base price" : "საბაზისო"
-                          }
-                        />
+                      <div className="variant-card-body">
+                        <div className="variant-input-group">
+                          <label>{language === "en" ? "Stock" : "მარაგი"}</label>
+                          <input
+                            type="number"
+                            value={stock.stock}
+                            onChange={(e) => setStockCount(stock, +e.target.value)}
+                            min={0}
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="variant-input-group">
+                          <label>{language === "en" ? "Price" : "ფასი"} ₾</label>
+                          <input
+                            type="number"
+                            value={stock.price ?? ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setVariantPrice(stock, value === "" ? undefined : +value);
+                            }}
+                            min={0}
+                            step="0.01"
+                            placeholder={language === "en" ? "Base" : "საბაზ."}
+                          />
+                        </div>
+                        <div className="variant-input-group variant-attribute-input">
+                          <label>{language === "en" ? "Attr" : "ატრ."}</label>
+                          <input
+                            type="text"
+                            value={stock.attribute || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setVariantAttribute(stock, value === "" ? undefined : value);
+                            }}
+                            placeholder={language === "en" ? "e.g., with frame" : "ჩარჩოთი"}
+                          />
+                        </div>
                       </div>
-                      <div className="variant-input-group variant-attribute-group">
-                        <label>
-                          {language === "en" ? "Attribute" : "ატრიბუტი"}
-                        </label>
-                        <input
-                          type="text"
-                          value={stock.attribute || ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setVariantAttribute(
-                              stock,
-                              value === "" ? undefined : value,
-                            );
-                          }}
-                          placeholder={
-                            language === "en"
-                              ? "e.g., with frame"
-                              : "მაგ: ჩარჩოთი"
-                          }
-                        />
-                      </div>
-                      <div className="variant-actions">
+                      <div className="variant-card-actions">
                         <button
                           type="button"
                           className="variant-action-btn duplicate-btn"
                           onClick={() => duplicateVariant(stock)}
-                          title={
-                            language === "en"
-                              ? "Duplicate variant"
-                              : "ვარიანტის კოპირება"
-                          }
+                          title={language === "en" ? "Duplicate" : "კოპირება"}
                         >
                           +
                         </button>
@@ -1834,363 +1618,371 @@ export function CreateProductForm({
                             type="button"
                             className="variant-action-btn remove-btn"
                             onClick={() => removeVariant(stock)}
-                            title={
-                              language === "en"
-                                ? "Remove variant"
-                                : "ვარიანტის წაშლა"
-                            }
+                            title={language === "en" ? "Remove" : "წაშლა"}
                           >
                             ×
                           </button>
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         )}
-        <div>
-          <label htmlFor="countInStock">{t("adminProducts.stock")}</label>
-          <input
-            id="countInStock"
-            name="countInStock"
-            type="number"
-            disabled
-            value={totalCount}
-            onChange={handleChange}
-            min={0}
-            required
-          />
-          <small
-            style={{
-              color: "#666",
-              fontSize: "0.9rem",
-              display: "block",
-              marginTop: "4px",
-            }}
-          >
-            {language === "en"
-              ? "Total stock calculated automatically from variants above."
-              : "მთლიანი მარაგი ავტომატურად ითვლება ზემოთ მითითებული ვარიანტებიდან."}
-          </small>
-          {errors.countInStock && (
-            <p className="create-product-error">{errors.countInStock}</p>
-          )}
-        </div>
-        Delivery Section
-        <div className="delivery-section">
-          <h3>მიწოდების ტიპი</h3>
-          <div className="delivery-type-options">
-            <label>
-              <input
-                type="radio"
-                name="deliveryType"
-                value="FishHunt"
-                checked={deliveryType === "FishHunt"}
-                onChange={() => setDeliveryType("FishHunt")}
-              />
-              <span>FishHunt მიწოდება</span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="deliveryType"
-                value="SELLER"
-                checked={deliveryType === "SELLER"}
-                onChange={() => setDeliveryType("SELLER")}
-              />
-              <span>გამყიდველის მიწოდება</span>
-            </label>
-          </div>
 
-          {deliveryType === "SELLER" && (
-            <div className="delivery-days">
-              <div>
-                <label htmlFor="minDeliveryDays">მინიმუმ დღეები</label>
-                <input
-                  id="minDeliveryDays"
-                  type="number"
-                  value={minDeliveryDays}
-                  onChange={(e) => setMinDeliveryDays(e.target.value)}
-                  min={1}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="maxDeliveryDays">მაქსიმუმ დღეები</label>
-                <input
-                  id="maxDeliveryDays"
-                  type="number"
-                  value={maxDeliveryDays}
-                  onChange={(e) => setMaxDeliveryDays(e.target.value)}
-                  min={1}
-                  required
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="brand">{t("adminProducts.brand")}</label>
-          <input
-            id="brand"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            placeholder={t("adminProducts.enterBrandName")}
-            className={"create-product-input"}
-          />
-          {errors.brand && (
-            <p className="create-product-error">{errors.brand}</p>
-          )}
-        </div>
-        {/* Hashtags Field for SEO */}
-        <div>
-          <label htmlFor="hashtags">
-            {language === "en"
-              ? "Hashtags for SEO (English)"
-              : "ჰეშთეგები SEO-სთვის"}
-          </label>
-          <textarea
-            id="hashtags"
-            name="hashtags"
-            value={hashtagsInput}
-            onChange={handleHashtagsChange}
-            className="create-product-textarea"
-            placeholder={
-              language === "en"
-                ? "Enter hashtags separated by commas (e.g., handmade, art, unique)"
-                : "შეიყვანეთ ჰეშთეგები მძიმეებით გამოყოფილი (მაგ. ხელნაკეთი, ხელოვნება, უნიკალური)"
-            }
-            rows={3}
-          />
-          <small style={{ color: "#666", fontSize: "0.9rem" }}>
-            {language === "en"
-              ? "Add relevant hashtags to improve search visibility. Separate with commas."
-              : "დაამატეთ შესაბამისი ჰეშთეგები ძიების გაუმჯობესებისთვის. გამოყავით მძიმეებით."}
-          </small>
-          {/* Hashtags preview */}
-          {formData.hashtags && formData.hashtags.length > 0 && (
-            <div
-              style={{
-                marginTop: "8px",
-                padding: "8px",
-                backgroundColor: "#f8f9fa",
-                borderRadius: "4px",
-                border: "1px solid #e9ecef",
-              }}
-            >
-              <small style={{ color: "#495057", fontWeight: "bold" }}>
-                {language === "en" ? "Preview:" : "პრევიუ:"}
-              </small>
-              <div style={{ marginTop: "4px" }}>
-                {formData.hashtags.map((tag, index) => (
-                  <span
-                    key={index}
-                    style={{
-                      display: "inline-block",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      padding: "2px 6px",
-                      margin: "2px",
-                      borderRadius: "3px",
-                      fontSize: "0.8rem",
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>{" "}
-        <div>
-          <label htmlFor="images">{t("adminProducts.images")}</label>
-          <input
-            id="images"
-            name="images"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="create-product-file"
-            multiple
-          />
-          {formData.images.length === 0 && (
-            <p className="upload-reminder">
-              {t("adminProducts.uploadReminder")}
-            </p>
-          )}
-          <div className="image-preview-container">
-            {formData.images.map((image, index) => {
-              const imageUrl =
-                image instanceof File ? URL.createObjectURL(image) : image;
-              return (
-                <div key={index} className="image-preview">
-                  <Image
-                    loader={({ src }) => src}
-                    src={imageUrl}
-                    alt="Product preview"
-                    width={100}
-                    height={100}
-                    unoptimized
-                    className="preview-image"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="remove-image-button"
-                  >
-                    ✕
-                  </button>
-                </div>
-              );
-            })}
+        {/* Section 5: Images */}
+        <div className="form-section">
+          <div className="form-section-header">
+            <ImageIcon size={20} />
+            <h2>{language === "en" ? "Product Images" : "პროდუქტის სურათები"}</h2>
           </div>
-          {errors.images && (
-            <p className="create-product-error">{errors.images}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="brandLogo">{t("adminProducts.brandLogo")}</label>
-          <div className="brand-logo-container">
-            {(typeof formData.brandLogo === "string" || user?.storeLogo) && (
-              <div className="image-preview">
-                <Image
-                  loader={({ src }) => src}
-                  alt="Brand logo"
-                  src={
-                    typeof formData.brandLogo === "string"
-                      ? formData.brandLogo
-                      : user?.storeLogo || ""
-                  }
-                  width={100}
-                  height={100}
-                  unoptimized
-                  className="preview-image"
+          <div className="form-section-content">
+            <div className="form-field">
+              <label htmlFor="images">{t("adminProducts.images")}</label>
+              <div className="image-upload-area">
+                <input
+                  id="images"
+                  name="images"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="create-product-file"
+                  multiple
                 />
+                {formData.images.length === 0 && (
+                  <p className="upload-reminder">{t("adminProducts.uploadReminder")}</p>
+                )}
+              </div>
+              <div className="image-preview-container">
+                {formData.images.map((image, index) => {
+                  const imageUrl = image instanceof File ? URL.createObjectURL(image) : image;
+                  return (
+                    <div key={index} className="image-preview">
+                      <Image
+                        loader={({ src }) => src}
+                        src={imageUrl}
+                        alt="Product preview"
+                        width={100}
+                        height={100}
+                        unoptimized
+                        className="preview-image"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="remove-image-button"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              {errors.images && <p className="create-product-error">{errors.images}</p>}
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="brandLogo">{t("adminProducts.brandLogo")}</label>
+              <div className="brand-logo-container">
+                {(typeof formData.brandLogo === "string" || user?.storeLogo) && (
+                  <div className="image-preview">
+                    <Image
+                      loader={({ src }) => src}
+                      alt="Brand logo"
+                      src={
+                        typeof formData.brandLogo === "string"
+                          ? formData.brandLogo
+                          : user?.storeLogo || ""
+                      }
+                      width={100}
+                      height={100}
+                      unoptimized
+                      className="preview-image"
+                    />
+                  </div>
+                )}
+                <input
+                  id="brandLogo"
+                  name="brandLogo"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        brandLogo: e.target.files?.[0],
+                      }));
+                    }
+                  }}
+                  className="create-product-file"
+                />
+              </div>
+              {errors.brandLogo && <p className="create-product-error">{errors.brandLogo}</p>}
+            </div>
+          </div>
+        </div>
+
+        {/* Section 6: Video (Collapsible) */}
+        <div className="form-section form-section-collapsible form-section-optional">
+          <div className="form-section-header">
+            <Video size={20} />
+            <h2>{language === "en" ? "Video (Optional)" : "ვიდეო (არასავალდებულო)"}</h2>
+          </div>
+          <div className="form-section-content">
+            <div className="form-field">
+              <label htmlFor="videoFile">
+                {language === "en"
+                  ? "Upload Video (YouTube)"
+                  : "ვიდეოს ატვირთვა (YouTube)"}
+              </label>
+              <input
+                type="file"
+                id="videoFile"
+                name="videoFile"
+                accept="video/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const maxSize = 500 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                      alert(
+                        language === "en"
+                          ? "Video file is too large. Maximum size is 500MB."
+                          : "ვიდეო ფაილი ძალიან დიდია. მაქსიმალური ზომა არის 500MB."
+                      );
+                      e.target.value = "";
+                      return;
+                    }
+                    setFormData((prev) => ({ ...prev, videoFile: file }));
+                  }
+                }}
+                className="create-product-input"
+              />
+              <small className="field-hint">
+                {language === "en"
+                  ? "MP4, AVI, MOV, WMV. Max: 500MB"
+                  : "MP4, AVI, MOV, WMV. მაქს: 500MB"}
+              </small>
+
+              {formData.videoFile && !videoUploadStatus && (
+                <div className="file-selected-badge">
+                  ✓ {formData.videoFile.name} ({(formData.videoFile.size / (1024 * 1024)).toFixed(2)} MB)
+                </div>
+              )}
+
+              {videoUploadStatus && (
+                <div className={`upload-status ${videoUploadStatus.includes("✅") ? "success" : videoUploadStatus.includes("❌") ? "error" : "loading"}`}>
+                  {videoUploadStatus}
+                </div>
+              )}
+            </div>
+
+            {isEdit && formData.videoDescription && !formData.videoFile && (
+              <div className="info-box">
+                <Info size={16} />
+                <span>
+                  {language === "en"
+                    ? "This product has a video. Upload new to replace."
+                    : "პროდუქტს აქვს ვიდეო. ატვირთეთ ახალი შესაცვლელად."}
+                </span>
               </div>
             )}
-            <input
-              id="brandLogo"
-              name="brandLogo"
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                if (e.target.files?.[0]) {
-                  setFormData((prev) => ({
-                    ...prev,
-                    brandLogo: e.target.files?.[0],
-                  }));
-                }
-              }}
-              className="create-product-file"
-            />
+
+            <div className="form-field">
+              <label htmlFor="videoDescription">
+                {language === "en" ? "Or YouTube Embed Code" : "ან YouTube Embed კოდი"}
+              </label>
+              <textarea
+                id="videoDescription"
+                name="videoDescription"
+                value={formData.videoDescription || ""}
+                onChange={handleChange}
+                className="create-product-textarea"
+                placeholder={language === "en" ? "Paste YouTube embed code" : "ჩასვით YouTube embed კოდი"}
+                rows={2}
+              />
+            </div>
           </div>
-          {errors.brandLogo && (
-            <p className="create-product-error">{errors.brandLogo}</p>
-          )}{" "}
-        </div>{" "}
-        {/* General Error Display */}
+        </div>
+
+        {/* Section 7: Discount (Collapsible) */}
+        <div className="form-section form-section-collapsible form-section-optional">
+          <div className="form-section-header">
+            <Percent size={20} />
+            <h2>{language === "en" ? "Discount (Optional)" : "ფასდაკლება (არასავალდებულო)"}</h2>
+          </div>
+          <div className="form-section-content">
+            <div className="form-field">
+              <label htmlFor="discountPercentage">
+                {language === "en" ? "Discount %" : "ფასდაკლება %"}
+              </label>
+              <input
+                id="discountPercentage"
+                type="number"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(e.target.value)}
+                className="create-product-input"
+                placeholder="0-100"
+                min={0}
+                max={100}
+                step={0.01}
+              />
+            </div>
+
+            {discountPercentage && parseFloat(discountPercentage) > 0 && (
+              <div className="form-row">
+                <div className="form-field">
+                  <label htmlFor="discountStartDate">
+                    {language === "en" ? "Start Date" : "დაწყება"}
+                  </label>
+                  <input
+                    id="discountStartDate"
+                    type="date"
+                    value={discountStartDate}
+                    onChange={(e) => setDiscountStartDate(e.target.value)}
+                    className="create-product-input"
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="discountEndDate">
+                    {language === "en" ? "End Date" : "დასრულება"}
+                  </label>
+                  <input
+                    id="discountEndDate"
+                    type="date"
+                    value={discountEndDate}
+                    onChange={(e) => setDiscountEndDate(e.target.value)}
+                    className="create-product-input"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section 8: Delivery */}
+        <div className="form-section">
+          <div className="form-section-header">
+            <Truck size={20} />
+            <h2>{language === "en" ? "Delivery" : "მიწოდება"}</h2>
+          </div>
+          <div className="form-section-content">
+            <div className="delivery-type-options">
+              <label className={`delivery-option ${deliveryType === "FishHunt" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="deliveryType"
+                  value="FishHunt"
+                  checked={deliveryType === "FishHunt"}
+                  onChange={() => setDeliveryType("FishHunt")}
+                />
+                <span>FishHunt {language === "en" ? "Delivery" : "მიწოდება"}</span>
+              </label>
+              <label className={`delivery-option ${deliveryType === "SELLER" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="deliveryType"
+                  value="SELLER"
+                  checked={deliveryType === "SELLER"}
+                  onChange={() => setDeliveryType("SELLER")}
+                />
+                <span>{language === "en" ? "Seller Delivery" : "გამყიდველის მიწოდება"}</span>
+              </label>
+            </div>
+
+            {deliveryType === "SELLER" && (
+              <div className="form-row delivery-days-row">
+                <div className="form-field">
+                  <label htmlFor="minDeliveryDays">
+                    {language === "en" ? "Min Days" : "მინ. დღეები"}
+                  </label>
+                  <input
+                    id="minDeliveryDays"
+                    type="number"
+                    value={minDeliveryDays}
+                    onChange={(e) => setMinDeliveryDays(e.target.value)}
+                    min={1}
+                    className="create-product-input"
+                    required
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="maxDeliveryDays">
+                    {language === "en" ? "Max Days" : "მაქს. დღეები"}
+                  </label>
+                  <input
+                    id="maxDeliveryDays"
+                    type="number"
+                    value={maxDeliveryDays}
+                    onChange={(e) => setMaxDeliveryDays(e.target.value)}
+                    min={1}
+                    className="create-product-input"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section 9: SEO Hashtags */}
+        <div className="form-section form-section-optional">
+          <div className="form-section-header">
+            <Hash size={20} />
+            <h2>{language === "en" ? "SEO Hashtags" : "SEO ჰეშთეგები"}</h2>
+          </div>
+          <div className="form-section-content">
+            <div className="form-field">
+              <textarea
+                id="hashtags"
+                name="hashtags"
+                value={hashtagsInput}
+                onChange={handleHashtagsChange}
+                className="create-product-textarea"
+                placeholder={
+                  language === "en"
+                    ? "handmade, art, unique (comma separated)"
+                    : "ხელნაკეთი, ხელოვნება, უნიკალური (მძიმით გამოყოფილი)"
+                }
+                rows={2}
+              />
+              {formData.hashtags && formData.hashtags.length > 0 && (
+                <div className="hashtags-preview">
+                  {formData.hashtags.map((tag, index) => (
+                    <span key={index} className="hashtag-badge">#{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Validation Summary */}
         {Object.keys(errors).length > 0 && (
-          <div
-            className="general-errors-display"
-            style={{
-              backgroundColor: "#fef2f2",
-              border: "2px solid #ef4444",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "16px",
-            }}
-          >
-            <h4
-              className="text-red-600 font-semibold mb-2"
-              style={{
-                color: "#dc2626",
-                fontWeight: "bold",
-                marginBottom: "8px",
-              }}
-            >
-              {t("adminProducts.fixErrorsBeforeSubmit")}:
-            </h4>
-            <ul className="text-red-600 text-sm space-y-1">
+          <div className="validation-box validation-error">
+            <h4>{t("adminProducts.fixErrorsBeforeSubmit")}:</h4>
+            <ul>
               {Object.entries(errors).map(([field, error]) => (
-                <li
-                  key={field}
-                  style={{
-                    color: "#dc2626",
-                    fontSize: "14px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  • {error}
-                </li>
+                <li key={field}>• {error}</li>
               ))}
             </ul>
           </div>
         )}
-        {/* Validation Errors Display */}
-        {(!selectedCategory ||
-          !selectedSubcategory ||
-          formData.images.length === 0) && (
-          <div
-            className="validation-errors-display"
-            style={{
-              backgroundColor: "#fefce8",
-              border: "2px solid #eab308",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "16px",
-            }}
-          >
-            <h4
-              className="text-yellow-600 font-semibold mb-2"
-              style={{
-                color: "#ca8a04",
-                fontWeight: "bold",
-                marginBottom: "8px",
-              }}
-            >
-              {t("adminProducts.requiredFields")}:
-            </h4>
-            <ul className="text-yellow-600 text-sm space-y-1">
-              {!selectedCategory && (
-                <li
-                  style={{
-                    color: "#ca8a04",
-                    fontSize: "14px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  • {t("adminProducts.selectCategoryError")}
-                </li>
-              )}
-              {!selectedSubcategory && (
-                <li
-                  style={{
-                    color: "#ca8a04",
-                    fontSize: "14px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  • {t("adminProducts.selectSubcategoryError")}
-                </li>
-              )}
-              {formData.images.length === 0 && (
-                <li
-                  style={{
-                    color: "#ca8a04",
-                    fontSize: "14px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  • {t("adminProducts.noImageSelected")}
-                </li>
-              )}
+
+        {(!selectedCategory || !selectedSubcategory || formData.images.length === 0) && (
+          <div className="validation-box validation-warning">
+            <h4>{t("adminProducts.requiredFields")}:</h4>
+            <ul>
+              {!selectedCategory && <li>• {t("adminProducts.selectCategoryError")}</li>}
+              {!selectedSubcategory && <li>• {t("adminProducts.selectSubcategoryError")}</li>}
+              {formData.images.length === 0 && <li>• {t("adminProducts.noImageSelected")}</li>}
             </ul>
           </div>
-        )}{" "}
+        )}
+
+        {/* Submit Button */}
         <button
           type="submit"
           className="create-product-button"
@@ -2200,35 +1992,11 @@ export function CreateProductForm({
             !selectedCategory ||
             !selectedSubcategory ||
             formData.images.length === 0 ||
-            Object.values(errors).some(
-              (error) => error !== undefined && error !== null && error !== "",
-            )
+            Object.values(errors).some((error) => error !== undefined && error !== null && error !== "")
           }
-          style={{
-            opacity:
-              pending ||
-              !formData.name ||
-              !selectedCategory ||
-              !selectedSubcategory ||
-              formData.images.length === 0 ||
-              Object.keys(errors).length > 0
-                ? 0.5
-                : 1,
-            cursor:
-              pending ||
-              !formData.name ||
-              !selectedCategory ||
-              !selectedSubcategory ||
-              formData.images.length === 0 ||
-              Object.keys(errors).length > 0
-                ? "not-allowed"
-                : "pointer",
-          }}
         >
-          {pending && <Loader2 className="loader" />}
-          {isEdit
-            ? t("adminProducts.updateProduct")
-            : t("adminProducts.createProduct")}
+          {pending && <Loader2 className="loader animate-spin" />}
+          {isEdit ? t("adminProducts.updateProduct") : t("adminProducts.createProduct")}
         </button>
       </form>
     </div>
